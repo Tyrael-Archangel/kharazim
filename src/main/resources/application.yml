@@ -1,0 +1,16 @@
+server:
+  port: 9408
+  servlet:
+    context-path: /digital-api
+
+spring:
+  main:
+    banner-mode: off
+  application:
+    name: kharazim
+
+logging:
+  level:
+    root: info
+  charset:
+    console: UTF-8
