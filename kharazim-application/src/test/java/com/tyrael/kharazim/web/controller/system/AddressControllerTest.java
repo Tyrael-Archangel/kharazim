@@ -36,13 +36,13 @@ class AddressControllerTest extends BaseControllerTest<AddressController> {
     @Test
     void queryCities() {
         // 四川省
-        super.performWhenCall(mockController.queryCities("23"));
+        super.performWhenCall(mockController.queryCities("22"));
     }
 
     @Test
     void queryCounties() {
         // 四川省-成都市
-        super.performWhenCall(mockController.queryCounties("23-1"));
+        super.performWhenCall(mockController.queryCounties("22-1"));
     }
 
 }
