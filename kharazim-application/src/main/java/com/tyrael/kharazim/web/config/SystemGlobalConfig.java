@@ -36,6 +36,11 @@ public class SystemGlobalConfig {
     private boolean enablePrintRequestLog = false;
 
     /**
+     * 是否使用内部mock的redis
+     */
+    private boolean useInnerMockRedis = false;
+
+    /**
      * 编码生成实现方式
      */
     private CodeGeneratorType codeGenerator = CodeGeneratorType.DATASOURCE;

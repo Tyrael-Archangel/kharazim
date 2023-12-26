@@ -107,6 +107,9 @@ public class Knife4jConfig {
 
             String userNameAndPassword = decodeBase64(auth.substring(6));
             String[] userNameAndPasswordArray = userNameAndPassword.split(":");
+            if (userNameAndPasswordArray.length != 2) {
+                throw new UnauthorizedException("Unauthorized");
+            }
 
             LoginRequest loginRequest = new LoginRequest();
             loginRequest.setUserName(userNameAndPasswordArray[0]);
