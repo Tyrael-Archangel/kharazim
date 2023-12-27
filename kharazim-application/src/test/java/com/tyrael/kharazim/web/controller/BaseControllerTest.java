@@ -3,15 +3,14 @@ package com.tyrael.kharazim.web.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.tyrael.kharazim.application.base.auth.AuthUser;
-import com.tyrael.kharazim.application.base.auth.CurrentUser;
-import com.tyrael.kharazim.application.base.auth.CurrentUserHolder;
-import com.tyrael.kharazim.application.base.auth.CurrentUserMethodArgumentResolver;
+import com.tyrael.kharazim.application.base.auth.*;
 import com.tyrael.kharazim.common.util.RandomStringUtil;
+import com.tyrael.kharazim.mock.MockAuth;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import org.apache.commons.lang3.ObjectUtils;
+import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mockito;
 import org.mockito.internal.configuration.plugins.Plugins;
 import org.mockito.internal.handler.MockHandlerImpl;
@@ -20,6 +19,7 @@ import org.mockito.mock.MockCreationSettings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.DefaultParameterNameDiscoverer;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.annotation.AnnotatedElementUtils;
@@ -40,6 +40,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import java.io.IOException;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -70,11 +71,38 @@ public abstract class BaseControllerTest<T> {
     protected MockMvc mockMvc;
     @Autowired
     protected ObjectMapper objectMapper;
+    @MockBean
+    private GlobalAuthInterceptor globalAuthInterceptor;
+    private boolean globalAuthInterceptorInitialized = false;
 
     public BaseControllerTest(Class<T> controller) {
         MockCreationSettings<T> settings = Mockito.withSettings().build(controller);
         this.mockController = Plugins.getMockMaker()
                 .createMock(settings, new ControllerRequestMappingParseMockHandler<>(settings));
+    }
+
+    protected AuthUser mockAdmin() {
+        AuthUser authUser = new AuthUser();
+        authUser.setId(0L);
+        authUser.setCode("000000");
+        authUser.setSuperAdmin(true);
+        authUser.setName("admin");
+        authUser.setNickName("超级管理员");
+        return authUser;
+    }
+
+    @BeforeEach
+    public synchronized void initGlobalAuthInterceptorMockBean() throws IOException {
+        if (globalAuthInterceptorInitialized) {
+            return;
+        }
+
+        Mockito.when(globalAuthInterceptor.preHandle(Mockito.any(), Mockito.any(), Mockito.any()))
+                .then(invocation -> {
+                    MockAuth.mockCurrentAdmin();
+                    return true;
+                });
+        globalAuthInterceptorInitialized = true;
     }
 
     /**
