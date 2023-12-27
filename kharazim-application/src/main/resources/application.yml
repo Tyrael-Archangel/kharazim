@@ -27,3 +27,12 @@ system:
   global:
     use-inner-mock-redis: true
     code-generator: datasource
+
+springdoc:
+  group-configs:
+    - group: "系统接口"
+      packages-to-scan:
+        - com.tyrael.kharazim.web.controller.system
+    - group: "用户管理"
+      packages-to-scan:
+        - com.tyrael.kharazim.web.controller.user
