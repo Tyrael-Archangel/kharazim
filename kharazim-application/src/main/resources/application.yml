@@ -26,3 +26,4 @@ knife4j:
 system:
   global:
     use-inner-mock-redis: true
+    code-generator: datasource
