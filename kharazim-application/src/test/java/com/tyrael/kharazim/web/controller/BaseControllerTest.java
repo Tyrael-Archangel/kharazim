@@ -58,7 +58,9 @@ import java.util.stream.Stream;
  * @author Tyrael Archangel
  * @since 2023/12/21
  */
-@SpringBootTest
+@SpringBootTest(properties = {
+        "system.global.enable-print-request-log=false"
+})
 @AutoConfigureMockMvc
 public abstract class BaseControllerTest<T> {
 
