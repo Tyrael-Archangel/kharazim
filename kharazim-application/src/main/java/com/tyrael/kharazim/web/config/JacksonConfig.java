@@ -55,7 +55,7 @@ public class JacksonConfig {
     @Bean
     @Primary
     public ObjectMapper jacksonObjectMapper(Jackson2ObjectMapperBuilder builder) {
-        DefaultDeserializationContext dc = new DefaultDeserializationContext.Impl(EnumBeanDeserializerFactory.instance);
+        DefaultDeserializationContext dc = new DefaultDeserializationContext.Impl(EnumBeanDeserializerFactory.INSTANCE);
         ObjectMapper objectMapper = new ObjectMapper(null, null, dc);
         builder.configure(objectMapper);
         return objectMapper;
@@ -109,7 +109,7 @@ public class JacksonConfig {
 
     private static class EnumBeanDeserializerFactory extends BeanDeserializerFactory {
 
-        public static final EnumBeanDeserializerFactory instance = new EnumBeanDeserializerFactory(
+        public static final EnumBeanDeserializerFactory INSTANCE = new EnumBeanDeserializerFactory(
                 new DeserializerFactoryConfig());
 
         private final Map<Class<?>, JsonDeserializer<?>> jsonDeserializerCache;

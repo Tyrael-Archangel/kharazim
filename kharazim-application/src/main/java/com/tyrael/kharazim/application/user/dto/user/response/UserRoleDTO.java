@@ -13,8 +13,12 @@ public class UserRoleDTO {
 
     private Long userId;
     private Long roleId;
-    private boolean admin;
+    private Boolean admin;
     private String roleCode;
     private String roleName;
+
+    public boolean isAdmin() {
+        return Boolean.TRUE.equals(admin);
+    }
 
 }

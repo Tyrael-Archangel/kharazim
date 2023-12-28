@@ -99,7 +99,13 @@ public interface DictService {
      */
     String findItemName(String dictCode, String dictItemValue);
 
-
+    /**
+     * 查询字典项
+     *
+     * @param dictCode      字典
+     * @param dictItemValue 字典项值
+     * @return 字典项
+     */
     DictItem findItem(String dictCode, String dictItemValue);
 
     /**
