@@ -27,6 +27,19 @@ system:
   global:
     use-inner-mock-redis: true
     code-generator: datasource
+    enable-print-request-log: true
+    request-log:
+      ignore-urls:
+        - ${server.servlet.context-path}/
+        - /**/favicon.ico
+        - /**/api-docs/**
+        - /**/webjars/**
+        - /**/swagger-resources/**
+        - /**/system/request-log/**
+        - /**/system/address/**
+        - /**/system/dict/**/pages
+        - /**/system/dict/**/form
+        - /**/system/dict/types/*/items
 
 springdoc:
   group-configs:
