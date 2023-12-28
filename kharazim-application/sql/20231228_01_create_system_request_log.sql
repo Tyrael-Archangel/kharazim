@@ -15,7 +15,7 @@ create table `system_request_log`
     `user_name`        varchar(64),
     `start_time`       datetime(3),
     `end_time`         datetime(3),
-    `cost_mills`       int as (((`end_time` - `start_time`) * 1000)),
+    `cost_mills`       int as ((`end_time` - `start_time`) * 1000),
     index idx_start (`start_time`),
     index idx_end (`end_time`)
 ) comment '系统请求日志';
