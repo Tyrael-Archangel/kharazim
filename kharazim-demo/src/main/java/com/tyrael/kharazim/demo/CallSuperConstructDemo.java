@@ -18,7 +18,11 @@ public class CallSuperConstructDemo {
     public static class SubEntity extends SuperEntity {
 
         public SubEntity() {
-            super(buildName());
+            this(buildName());
+        }
+
+        public SubEntity(String name) {
+            super(name);
         }
 
         private static String buildName() {
@@ -31,7 +35,6 @@ public class CallSuperConstructDemo {
     public static class SuperEntity {
 
         protected final String name;
-        protected String age;
 
         public SuperEntity(String name) {
             this.name = name;
