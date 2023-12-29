@@ -7,7 +7,7 @@ import java.util.Scanner;
  * @author Tyrael Archangel
  * @since 2023/12/29
  */
-public class ChatApp {
+public class SimpleChatApp {
 
     public static void main(String[] args) throws IOException {
 
