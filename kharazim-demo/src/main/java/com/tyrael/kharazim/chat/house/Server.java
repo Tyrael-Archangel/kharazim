@@ -83,7 +83,6 @@ public class Server {
                 clients.put(clientName, socket);
                 clientsNames.put(socket, clientName);
                 String msg = "[" + clientName + "]加入群聊";
-                System.out.println(msg);
                 sendBroadcastMsg(msg, socket);
             }
         }
@@ -98,7 +97,6 @@ public class Server {
         } else {
             msg = "[" + clientName + "]退出群聊";
         }
-        System.out.println(msg);
         sendBroadcastMsg(msg, socket);
     }
 
