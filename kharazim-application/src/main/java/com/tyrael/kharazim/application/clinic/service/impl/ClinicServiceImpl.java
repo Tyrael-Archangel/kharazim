@@ -4,13 +4,19 @@ import com.tyrael.kharazim.application.clinic.domain.Clinic;
 import com.tyrael.kharazim.application.clinic.mapper.ClinicMapper;
 import com.tyrael.kharazim.application.clinic.service.ClinicService;
 import com.tyrael.kharazim.application.clinic.vo.AddClinicRequest;
+import com.tyrael.kharazim.application.clinic.vo.ClinicVO;
+import com.tyrael.kharazim.application.clinic.vo.PageClinicRequest;
 import com.tyrael.kharazim.application.config.BusinessCodeConstants;
 import com.tyrael.kharazim.application.system.service.CodeGenerator;
+import com.tyrael.kharazim.common.dto.PageResponse;
 import com.tyrael.kharazim.common.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Tyrael Archangel
@@ -22,6 +28,30 @@ public class ClinicServiceImpl implements ClinicService {
 
     private final CodeGenerator codeGenerator;
     private final ClinicMapper clinicMapper;
+
+    @Override
+    public PageResponse<ClinicVO> page(PageClinicRequest pageRequest) {
+        PageResponse<Clinic> pageData = clinicMapper.page(pageRequest);
+
+        List<ClinicVO> clinics = pageData.getData()
+                .stream()
+                .map(this::clinicVO)
+                .collect(Collectors.toList());
+
+        return PageResponse.success(clinics,
+                pageData.getTotalCount(),
+                pageData.getPageSize(),
+                pageData.getPageNum());
+    }
+
+    private ClinicVO clinicVO(Clinic clinic) {
+        return ClinicVO.builder()
+                .code(clinic.getCode())
+                .name(clinic.getName())
+                .englishName(clinic.getEnglishName())
+                .status(clinic.getStatus())
+                .build();
+    }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
