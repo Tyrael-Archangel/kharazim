@@ -102,6 +102,7 @@ public class JacksonConfig {
                 ignoreWriteNameEnums.add(currentName);
             } catch (NoSuchFieldException e) {
                 writeNameEnums.add(currentName);
+//                gen.writeStringField(currentName + "Name", value.getName());
             }
         }
 
