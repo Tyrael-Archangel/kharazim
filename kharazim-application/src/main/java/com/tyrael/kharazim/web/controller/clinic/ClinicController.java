@@ -2,7 +2,9 @@ package com.tyrael.kharazim.web.controller.clinic;
 
 import com.tyrael.kharazim.application.clinic.service.ClinicService;
 import com.tyrael.kharazim.application.clinic.vo.ClinicVO;
+import com.tyrael.kharazim.application.clinic.vo.ListClinicRequest;
 import com.tyrael.kharazim.application.clinic.vo.PageClinicRequest;
+import com.tyrael.kharazim.common.dto.MultiResponse;
 import com.tyrael.kharazim.common.dto.PageResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -30,4 +32,9 @@ public class ClinicController {
         return clinicService.page(pageRequest);
     }
 
+    @GetMapping("/list")
+    @Operation(summary = "诊所（机构）列表")
+    public MultiResponse<ClinicVO> list(@ParameterObject ListClinicRequest request) {
+        return MultiResponse.success(clinicService.list(request));
+    }
 }

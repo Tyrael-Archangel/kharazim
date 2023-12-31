@@ -5,6 +5,7 @@ import com.tyrael.kharazim.application.clinic.mapper.ClinicMapper;
 import com.tyrael.kharazim.application.clinic.service.ClinicService;
 import com.tyrael.kharazim.application.clinic.vo.AddClinicRequest;
 import com.tyrael.kharazim.application.clinic.vo.ClinicVO;
+import com.tyrael.kharazim.application.clinic.vo.ListClinicRequest;
 import com.tyrael.kharazim.application.clinic.vo.PageClinicRequest;
 import com.tyrael.kharazim.application.config.BusinessCodeConstants;
 import com.tyrael.kharazim.application.system.service.CodeGenerator;
@@ -42,6 +43,14 @@ public class ClinicServiceImpl implements ClinicService {
                 pageData.getTotalCount(),
                 pageData.getPageSize(),
                 pageData.getPageNum());
+    }
+
+    @Override
+    public List<ClinicVO> list(ListClinicRequest request) {
+        List<Clinic> clinics = clinicMapper.list(request);
+        return clinics.stream()
+                .map(this::clinicVO)
+                .collect(Collectors.toList());
     }
 
     private ClinicVO clinicVO(Clinic clinic) {
