@@ -1,18 +1,19 @@
 package com.tyrael.kharazim.web.controller.clinic;
 
 import com.tyrael.kharazim.application.clinic.service.ClinicService;
+import com.tyrael.kharazim.application.clinic.vo.AddClinicRequest;
 import com.tyrael.kharazim.application.clinic.vo.ClinicVO;
 import com.tyrael.kharazim.application.clinic.vo.ListClinicRequest;
 import com.tyrael.kharazim.application.clinic.vo.PageClinicRequest;
+import com.tyrael.kharazim.common.dto.DataResponse;
 import com.tyrael.kharazim.common.dto.MultiResponse;
 import com.tyrael.kharazim.common.dto.PageResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author Tyrael Archangel
@@ -37,4 +38,11 @@ public class ClinicController {
     public MultiResponse<ClinicVO> list(@ParameterObject ListClinicRequest request) {
         return MultiResponse.success(clinicService.list(request));
     }
+
+    @PostMapping("/add")
+    @Operation(summary = "新建诊所（机构）", description = "新建诊所（机构），返回诊所（机构）编码")
+    public DataResponse<String> add(@RequestBody @Valid AddClinicRequest addClinicRequest) {
+        return DataResponse.ok(clinicService.add(addClinicRequest));
+    }
+
 }
