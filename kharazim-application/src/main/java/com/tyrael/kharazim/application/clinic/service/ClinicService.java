@@ -1,9 +1,7 @@
 package com.tyrael.kharazim.application.clinic.service;
 
-import com.tyrael.kharazim.application.clinic.vo.AddClinicRequest;
-import com.tyrael.kharazim.application.clinic.vo.ClinicVO;
-import com.tyrael.kharazim.application.clinic.vo.ListClinicRequest;
-import com.tyrael.kharazim.application.clinic.vo.PageClinicRequest;
+import com.tyrael.kharazim.application.base.auth.AuthUser;
+import com.tyrael.kharazim.application.clinic.vo.*;
 import com.tyrael.kharazim.common.dto.PageResponse;
 
 import java.util.List;
@@ -37,5 +35,13 @@ public interface ClinicService {
      * @return 诊所（机构）编码
      */
     String add(AddClinicRequest addClinicRequest);
+
+    /**
+     * 修改诊所（机构）
+     *
+     * @param modifyClinicRequest {@link ModifyClinicRequest}
+     * @param currentUser         操作人
+     */
+    void modify(ModifyClinicRequest modifyClinicRequest, AuthUser currentUser);
 
 }

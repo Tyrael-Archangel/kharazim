@@ -1,14 +1,15 @@
 package com.tyrael.kharazim.web.controller.clinic;
 
+import com.tyrael.kharazim.application.base.auth.AuthUser;
+import com.tyrael.kharazim.application.base.auth.CurrentUser;
 import com.tyrael.kharazim.application.clinic.service.ClinicService;
-import com.tyrael.kharazim.application.clinic.vo.AddClinicRequest;
-import com.tyrael.kharazim.application.clinic.vo.ClinicVO;
-import com.tyrael.kharazim.application.clinic.vo.ListClinicRequest;
-import com.tyrael.kharazim.application.clinic.vo.PageClinicRequest;
+import com.tyrael.kharazim.application.clinic.vo.*;
 import com.tyrael.kharazim.common.dto.DataResponse;
 import com.tyrael.kharazim.common.dto.MultiResponse;
 import com.tyrael.kharazim.common.dto.PageResponse;
+import com.tyrael.kharazim.common.dto.Response;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -43,6 +44,14 @@ public class ClinicController {
     @Operation(summary = "新建诊所（机构）", description = "新建诊所（机构），返回诊所（机构）编码")
     public DataResponse<String> add(@RequestBody @Valid AddClinicRequest addClinicRequest) {
         return DataResponse.ok(clinicService.add(addClinicRequest));
+    }
+
+    @PostMapping("/modify")
+    @Operation(summary = "修改诊所（机构）")
+    public Response modify(@RequestBody @Valid ModifyClinicRequest modifyClinicRequest,
+                           @Schema(hidden = true) @CurrentUser AuthUser currentUser) {
+        clinicService.modify(modifyClinicRequest, currentUser);
+        return Response.success();
     }
 
 }

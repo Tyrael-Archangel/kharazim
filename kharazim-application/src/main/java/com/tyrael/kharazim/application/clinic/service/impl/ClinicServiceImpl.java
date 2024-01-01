@@ -1,12 +1,10 @@
 package com.tyrael.kharazim.application.clinic.service.impl;
 
+import com.tyrael.kharazim.application.base.auth.AuthUser;
 import com.tyrael.kharazim.application.clinic.domain.Clinic;
 import com.tyrael.kharazim.application.clinic.mapper.ClinicMapper;
 import com.tyrael.kharazim.application.clinic.service.ClinicService;
-import com.tyrael.kharazim.application.clinic.vo.AddClinicRequest;
-import com.tyrael.kharazim.application.clinic.vo.ClinicVO;
-import com.tyrael.kharazim.application.clinic.vo.ListClinicRequest;
-import com.tyrael.kharazim.application.clinic.vo.PageClinicRequest;
+import com.tyrael.kharazim.application.clinic.vo.*;
 import com.tyrael.kharazim.application.config.BusinessCodeConstants;
 import com.tyrael.kharazim.application.system.service.CodeGenerator;
 import com.tyrael.kharazim.common.dto.PageResponse;
@@ -80,6 +78,23 @@ public class ClinicServiceImpl implements ClinicService {
             throw new BusinessException("诊所（机构）名称已存在", e);
         }
         return clinic.getCode();
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void modify(ModifyClinicRequest modifyClinicRequest, AuthUser currentUser) {
+        Clinic clinic = clinicMapper.exactlyFindByCode(modifyClinicRequest.getCode());
+
+        clinic.setName(modifyClinicRequest.getName());
+        clinic.setEnglishName(modifyClinicRequest.getEnglishName());
+        clinic.setStatus(modifyClinicRequest.getStatusOrDefault());
+        clinic.setUpdate(currentUser.getCode(), currentUser.getNickName());
+
+        try {
+            clinicMapper.updateById(clinic);
+        } catch (DuplicateKeyException e) {
+            throw new BusinessException("诊所（机构）名称已存在", e);
+        }
     }
 
 }

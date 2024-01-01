@@ -1,12 +1,15 @@
 package com.tyrael.kharazim.application.clinic.mapper;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.tyrael.kharazim.application.base.LambdaQueryWrapperX;
 import com.tyrael.kharazim.application.clinic.domain.Clinic;
 import com.tyrael.kharazim.application.clinic.vo.ListClinicRequest;
 import com.tyrael.kharazim.application.clinic.vo.PageClinicRequest;
 import com.tyrael.kharazim.common.dto.PageResponse;
+import com.tyrael.kharazim.common.exception.DomainNotFoundException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -18,6 +21,32 @@ import java.util.List;
  */
 @Mapper
 public interface ClinicMapper extends BaseMapper<Clinic> {
+
+    /**
+     * find by code
+     *
+     * @param code clinicCode
+     * @return {@link Clinic}
+     */
+    default Clinic findByCode(String code) {
+        LambdaQueryWrapper<Clinic> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.eq(Clinic::getCode, code);
+        return selectOne(queryWrapper);
+    }
+
+    /**
+     * find by code exactly, if not exists throw DomainNotFoundException
+     *
+     * @param code clinicCode
+     * @return {@link Clinic}
+     * @throws DomainNotFoundException if code not exists
+     */
+    default Clinic exactlyFindByCode(String code) throws DomainNotFoundException {
+        Clinic clinic = findByCode(code);
+        DomainNotFoundException.assertFound(clinic, code);
+        return clinic;
+    }
+
     /**
      * 分页查询
      *
