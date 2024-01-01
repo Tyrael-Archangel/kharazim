@@ -2,6 +2,7 @@ package com.tyrael.kharazim.web.controller.clinic;
 
 import com.tyrael.kharazim.application.clinic.vo.AddClinicRequest;
 import com.tyrael.kharazim.application.clinic.vo.ListClinicRequest;
+import com.tyrael.kharazim.application.clinic.vo.ModifyClinicRequest;
 import com.tyrael.kharazim.application.clinic.vo.PageClinicRequest;
 import com.tyrael.kharazim.web.controller.BaseControllerTest;
 import org.junit.jupiter.api.Test;
@@ -35,6 +36,15 @@ class ClinicControllerTest extends BaseControllerTest<ClinicController> {
         addClinicRequest.setName("泰瑞尔诊所");
         addClinicRequest.setEnglishName("Dr.Tyrael Clinic");
         super.performWhenCall(mockController.add(addClinicRequest));
+    }
+
+    @Test
+    void modify() {
+        ModifyClinicRequest modifyClinicRequest = new ModifyClinicRequest();
+        modifyClinicRequest.setCode("CL000001");
+        modifyClinicRequest.setName("泰瑞尔-诊所");
+        modifyClinicRequest.setEnglishName("Dr. Tyrael Archangel Clinic");
+        super.performWhenCall(mockController.modify(modifyClinicRequest, super.mockAdmin()));
     }
 
 }
