@@ -42,8 +42,8 @@ class ClinicControllerTest extends BaseControllerTest<ClinicController> {
     void modify() {
         ModifyClinicRequest modifyClinicRequest = new ModifyClinicRequest();
         modifyClinicRequest.setCode("CL000001");
-        modifyClinicRequest.setName("泰瑞尔-诊所");
-        modifyClinicRequest.setEnglishName("Dr. Tyrael Archangel Clinic");
+        modifyClinicRequest.setName("泰瑞尔诊所");
+        modifyClinicRequest.setEnglishName("Dr.Tyrael Archangel Clinic");
         super.performWhenCall(mockController.modify(modifyClinicRequest, super.mockAdmin()));
     }
 
