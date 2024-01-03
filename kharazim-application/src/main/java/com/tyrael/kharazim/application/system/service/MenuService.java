@@ -16,4 +16,12 @@ public interface MenuService {
      */
     Long add(SaveMenuRequest addMenuRequest);
 
+    /**
+     * 修改菜单
+     *
+     * @param id                菜单ID
+     * @param modifyMenuRequest SaveMenuRequest
+     */
+    void modify(Long id, SaveMenuRequest modifyMenuRequest);
+
 }

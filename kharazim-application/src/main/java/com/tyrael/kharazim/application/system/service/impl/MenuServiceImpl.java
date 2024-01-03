@@ -6,6 +6,7 @@ import com.tyrael.kharazim.application.system.enums.MenuTypeEnum;
 import com.tyrael.kharazim.application.system.mapper.MenuMapper;
 import com.tyrael.kharazim.application.system.service.MenuService;
 import com.tyrael.kharazim.common.exception.BusinessException;
+import com.tyrael.kharazim.common.exception.DomainNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.dao.DuplicateKeyException;
@@ -37,6 +38,25 @@ public class MenuServiceImpl implements MenuService {
             throw new BusinessException("同一级目录下菜单名称不能重复", e);
         }
         return menu.getId();
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    @CacheEvict(cacheNames = {MENU_RESOURCES, MENU_OPTIONS_TREE, MENU_ROUTES}, allEntries = true)
+    public void modify(Long id, SaveMenuRequest modifyMenuRequest) {
+        Menu menu = menuMapper.selectById(id);
+        DomainNotFoundException.assertFound(menu, id);
+
+        Menu updateMenu = createMenu(modifyMenuRequest);
+        updateMenu.setId(menu.getId());
+        updateMenu.setCreateTime(menu.getCreateTime());
+        updateMenu.setUpdateTime(LocalDateTime.now());
+
+        try {
+            menuMapper.updateById(updateMenu);
+        } catch (DuplicateKeyException e) {
+            throw new BusinessException("同一级目录下菜单名称不能重复", e);
+        }
     }
 
     private Menu createMenu(SaveMenuRequest addMenuRequest) {
