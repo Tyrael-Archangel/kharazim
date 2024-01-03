@@ -59,7 +59,8 @@ public class Server {
                 }
                 handleMsg(socket, msgBody);
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
             removeClient(socket);
         }
     }
@@ -74,11 +75,12 @@ public class Server {
     }
 
     public void handleJoin(Socket socket, String clientName) throws IOException {
-        int maxClientSize = 5;
+        int maxClientSize = 3;
         synchronized (clients) {
             if (clients.size() >= maxClientSize) {
                 OutputStream outputStream = socket.getOutputStream();
                 SendAndReadMsgUtil.sendMsg(outputStream, MsgType.JOIN, "加入失败");
+                throw new RuntimeException("[" + clientName + "]" + "加入失败");
             } else {
                 clients.put(clientName, socket);
                 clientsNames.put(socket, clientName);

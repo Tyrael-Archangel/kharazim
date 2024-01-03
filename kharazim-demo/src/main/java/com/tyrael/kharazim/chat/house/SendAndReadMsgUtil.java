@@ -21,6 +21,10 @@ public class SendAndReadMsgUtil {
         outputStream.flush();
     }
 
+    public static void sendMsg(OutputStream outputStream, MsgType type) throws IOException {
+        sendMsg(outputStream, type, null);
+    }
+
     public static MsgBody readBody(InputStream inputStream) throws IOException {
         byte[] bodySizeBytes = new byte[4];
         int read = inputStream.read(bodySizeBytes);

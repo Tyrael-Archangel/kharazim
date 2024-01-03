@@ -41,7 +41,7 @@ public class Client {
     }
 
     public void leave() throws IOException {
-        SendAndReadMsgUtil.sendMsg(socket.getOutputStream(), MsgType.LEAVE, "再见");
+        SendAndReadMsgUtil.sendMsg(socket.getOutputStream(), MsgType.LEAVE);
         socket.close();
     }
 

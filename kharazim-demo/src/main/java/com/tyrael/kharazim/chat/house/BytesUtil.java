@@ -24,10 +24,9 @@ public class BytesUtil {
             throw new IllegalArgumentException();
         }
         int i = bytes[0] & 0xff;
-        i |= ((bytes[1] & 0xff) << 8);
-        i |= ((bytes[2] & 0xff) << 16);
-        i |= ((bytes[3] & 0xff) << 24);
-
+        i |= (bytes[1] & 0xff) << 8;
+        i |= (bytes[2] & 0xff) << 16;
+        i |= (bytes[3] & 0xff) << 24;
         return i;
     }
 
@@ -45,6 +44,7 @@ public class BytesUtil {
         int x = toInt(bytes);
         System.out.println(i);
         System.out.println(x);
+        System.out.println(0xff);
 
     }
 
