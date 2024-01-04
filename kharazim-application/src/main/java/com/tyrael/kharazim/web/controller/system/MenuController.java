@@ -1,14 +1,19 @@
 package com.tyrael.kharazim.web.controller.system;
 
+import com.tyrael.kharazim.application.system.dto.menu.MenuRouteDTO;
+import com.tyrael.kharazim.application.system.dto.menu.MenuTreeNodeDTO;
+import com.tyrael.kharazim.application.system.dto.menu.QueryMenuRequest;
 import com.tyrael.kharazim.application.system.dto.menu.SaveMenuRequest;
 import com.tyrael.kharazim.application.system.service.MenuService;
 import com.tyrael.kharazim.common.dto.DataResponse;
+import com.tyrael.kharazim.common.dto.MultiResponse;
 import com.tyrael.kharazim.common.dto.Response;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,6 +30,18 @@ import java.util.stream.Stream;
 public class MenuController {
 
     private final MenuService menuService;
+
+    @GetMapping
+    @Operation(summary = "菜单树")
+    public MultiResponse<MenuTreeNodeDTO> menuTree(@ParameterObject QueryMenuRequest queryMenuRequest) {
+        return MultiResponse.success(menuService.menuTree(queryMenuRequest));
+    }
+
+    @Operation(summary = "路由列表")
+    @GetMapping("/menu-routes")
+    public MultiResponse<MenuRouteDTO> menuRoutes() {
+        return MultiResponse.success(menuService.menuRoutes());
+    }
 
     @Operation(summary = "新增菜单")
     @PostMapping

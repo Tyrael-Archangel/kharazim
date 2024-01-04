@@ -1,21 +1,34 @@
 package com.tyrael.kharazim.application.system.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.tyrael.kharazim.application.system.domain.Menu;
+import com.tyrael.kharazim.application.system.dto.menu.MenuRouteDTO;
+import com.tyrael.kharazim.application.system.dto.menu.MenuTreeNodeDTO;
+import com.tyrael.kharazim.application.system.dto.menu.QueryMenuRequest;
 import com.tyrael.kharazim.application.system.dto.menu.SaveMenuRequest;
 import com.tyrael.kharazim.application.system.enums.MenuTypeEnum;
 import com.tyrael.kharazim.application.system.mapper.MenuMapper;
 import com.tyrael.kharazim.application.system.service.MenuService;
+import com.tyrael.kharazim.application.user.domain.Role;
+import com.tyrael.kharazim.application.user.domain.RoleMenu;
+import com.tyrael.kharazim.application.user.mapper.RoleMapper;
+import com.tyrael.kharazim.application.user.mapper.RoleMenuMapper;
+import com.tyrael.kharazim.common.dto.TreeNode;
 import com.tyrael.kharazim.common.exception.BusinessException;
 import com.tyrael.kharazim.common.exception.DomainNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.tyrael.kharazim.application.config.CacheKeyConstants.*;
 
@@ -28,6 +41,107 @@ import static com.tyrael.kharazim.application.config.CacheKeyConstants.*;
 public class MenuServiceImpl implements MenuService {
 
     private final MenuMapper menuMapper;
+    private final RoleMenuMapper roleMenuMapper;
+    private final RoleMapper roleMapper;
+
+    @Override
+    public List<MenuTreeNodeDTO> menuTree(QueryMenuRequest queryMenuRequest) {
+        List<Menu> menus = menuMapper.list(queryMenuRequest);
+        List<MenuTreeNodeDTO> menuTreeNodes = menus.stream()
+                .map(e -> {
+                    MenuTreeNodeDTO menuTreeNodeDTO = new MenuTreeNodeDTO();
+                    menuTreeNodeDTO.setId(e.getId());
+                    menuTreeNodeDTO.setParentId(e.getParentId());
+                    menuTreeNodeDTO.setName(e.getName());
+                    menuTreeNodeDTO.setIcon(e.getIcon());
+                    menuTreeNodeDTO.setComponent(e.getComponent());
+                    menuTreeNodeDTO.setSort(e.getSort());
+                    menuTreeNodeDTO.setVisibleValue(e.getVisible());
+                    menuTreeNodeDTO.setRedirect(e.getRedirect());
+                    menuTreeNodeDTO.setType(e.getMenuType());
+                    menuTreeNodeDTO.setPath(e.getPath());
+                    menuTreeNodeDTO.setPerm(e.getPerm());
+                    menuTreeNodeDTO.setCreateTime(e.getCreateTime());
+                    menuTreeNodeDTO.setUpdateTime(e.getUpdateTime());
+                    return menuTreeNodeDTO;
+                })
+                .toList();
+        return TreeNode.build(menuTreeNodes);
+    }
+
+    @Override
+    @Cacheable(cacheNames = MENU_ROUTES)
+    public List<MenuRouteDTO> menuRoutes() {
+        List<Menu> menus = menuMapper.listAll();
+        Map<Long, Set<String>> menuRoleCodesMap = menuRoles();
+        return buildMenuRouteTree(menus, menuRoleCodesMap);
+    }
+
+    private Map<Long, Set<String>> menuRoles() {
+        List<RoleMenu> roleMenus = roleMenuMapper.listAll();
+        if (roleMenus.isEmpty()) {
+            return Maps.newHashMap();
+        }
+        List<Long> roleIds = roleMenus.stream()
+                .map(RoleMenu::getRoleId)
+                .toList();
+        List<Role> roles = roleMapper.selectBatchIds(roleIds);
+        Map<Long, Role> roleMap = roles.stream()
+                .collect(Collectors.toMap(Role::getId, e -> e));
+
+        Map<Long, List<RoleMenu>> menuRoleGroup = roleMenus.stream()
+                .collect(Collectors.groupingBy(RoleMenu::getMenuId));
+
+        Map<Long, Set<String>> menuRoleCodesMap = Maps.newHashMap();
+        menuRoleGroup.forEach((menuId, rms) -> {
+            Set<String> menuRoleCodes = rms.stream()
+                    .map(rm -> roleMap.get(rm.getRoleId()))
+                    .filter(Objects::nonNull)
+                    .map(Role::getCode)
+                    .collect(Collectors.toSet());
+            menuRoleCodesMap.put(menuId, menuRoleCodes);
+        });
+
+        return menuRoleCodesMap;
+    }
+
+    private List<MenuRouteDTO> buildMenuRouteTree(List<Menu> menus, Map<Long, Set<String>> menuRoles) {
+        List<MenuRouteDTO> menuRoutes = menus.stream()
+                .filter(e -> !MenuTypeEnum.BUTTON.equals(e.getMenuType()))
+                .map(menu -> {
+                    MenuRouteDTO menuRouteDTO = new MenuRouteDTO();
+                    menuRouteDTO.setId(menu.getId());
+                    menuRouteDTO.setParentId(menu.getParentId());
+                    menuRouteDTO.setPath(menu.getPath());
+                    menuRouteDTO.setComponent(menu.getComponent());
+                    menuRouteDTO.setRedirect(menu.getRedirect());
+                    menuRouteDTO.setName(menu.getName());
+
+                    MenuRouteDTO.Meta meta = new MenuRouteDTO.Meta();
+                    meta.setTitle(menu.getName());
+                    meta.setIcon(menu.getIcon());
+                    meta.setHidden(!Boolean.TRUE.equals(menu.getVisible()));
+                    meta.setKeepAlive(true);
+                    Set<String> roleCodes = menuRoles.getOrDefault(menu.getId(), Sets.newHashSet());
+                    roleCodes.add(Role.SUPER_ADMIN_CODE);
+                    meta.setRoles(roleCodes);
+
+                    menuRouteDTO.setMeta(meta);
+
+                    return menuRouteDTO;
+                })
+                .toList();
+
+        List<MenuRouteDTO> treeMenuRoutes = TreeNode.build(menuRoutes);
+        for (MenuRouteDTO menuRoute : menuRoutes) {
+            MenuRouteDTO.Meta meta = menuRoute.getMeta();
+            Collection<MenuRouteDTO> children = menuRoute.getChildren();
+            boolean alwaysShow = CollUtil.isNotEmpty(children)
+                    && children.stream().anyMatch(child -> Boolean.FALSE.equals(child.getMeta().getHidden()));
+            meta.setAlwaysShow(alwaysShow);
+        }
+        return treeMenuRoutes;
+    }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
