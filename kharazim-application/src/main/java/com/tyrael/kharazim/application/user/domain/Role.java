@@ -57,10 +57,6 @@ public class Role {
         return deletedTimestamp != 0L;
     }
 
-    public Integer getStatusValue() {
-        return status == null ? 0 : status.getValue();
-    }
-
     public boolean isAdmin() {
         return Boolean.TRUE.equals(superAdmin);
     }
