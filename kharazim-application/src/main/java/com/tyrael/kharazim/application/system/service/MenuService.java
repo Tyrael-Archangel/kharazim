@@ -2,6 +2,8 @@ package com.tyrael.kharazim.application.system.service;
 
 import com.tyrael.kharazim.application.system.dto.menu.SaveMenuRequest;
 
+import java.util.List;
+
 /**
  * @author Tyrael Archangel
  * @since 2024/1/3
@@ -23,5 +25,12 @@ public interface MenuService {
      * @param modifyMenuRequest SaveMenuRequest
      */
     void modify(Long id, SaveMenuRequest modifyMenuRequest);
+
+    /**
+     * 删除菜单
+     *
+     * @param ids 菜单ID
+     */
+    void delete(List<Long> ids);
 
 }

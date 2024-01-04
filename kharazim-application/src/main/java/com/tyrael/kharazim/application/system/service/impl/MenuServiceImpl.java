@@ -12,8 +12,10 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static com.tyrael.kharazim.application.config.CacheKeyConstants.*;
 
@@ -56,6 +58,15 @@ public class MenuServiceImpl implements MenuService {
             menuMapper.updateById(updateMenu);
         } catch (DuplicateKeyException e) {
             throw new BusinessException("同一级目录下菜单名称不能重复", e);
+        }
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    @CacheEvict(cacheNames = {MENU_RESOURCES, MENU_OPTIONS_TREE, MENU_ROUTES}, allEntries = true)
+    public void delete(List<Long> ids) {
+        if (!CollectionUtils.isEmpty(ids)) {
+            menuMapper.deleteBatchIds(ids);
         }
     }
 

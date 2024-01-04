@@ -48,4 +48,10 @@ class MenuControllerTest extends BaseControllerTest<MenuController> {
         super.performWhenCall(mockController.modify(id, modifyMenuRequest));
     }
 
+    @Test
+    void delete() {
+        String ids = "1";
+        super.performWhenCall(mockController.delete(ids));
+    }
+
 }
