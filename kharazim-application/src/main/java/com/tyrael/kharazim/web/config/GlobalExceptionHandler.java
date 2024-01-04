@@ -75,7 +75,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler
     @ResponseBody
-    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ExceptionResponse handleDomainNotFoundException(DomainNotFoundException e, HttpServletRequest httpServletRequest) {
         log.warn(httpServletRequest.getMethod() + " " + httpServletRequest.getRequestURI() + " NOT FOUND: " + e.getSearchWord());
         return new ExceptionResponse(e, HttpStatus.NOT_FOUND.value(), systemGlobalConfig.isEnablePrintExceptionStackTrace());

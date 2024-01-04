@@ -98,4 +98,26 @@ public class MenuServiceImpl implements MenuService {
         return menu;
     }
 
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    @CacheEvict(cacheNames = {MENU_RESOURCES, MENU_OPTIONS_TREE, MENU_ROUTES}, allEntries = true)
+    public void disableVisible(Long id) {
+        Menu menu = menuMapper.selectById(id);
+        DomainNotFoundException.assertFound(menu, id);
+        menu.setVisible(Boolean.FALSE);
+        menu.setUpdateTime(LocalDateTime.now());
+        menuMapper.updateById(menu);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    @CacheEvict(cacheNames = {MENU_RESOURCES, MENU_OPTIONS_TREE, MENU_ROUTES}, allEntries = true)
+    public void enableVisible(Long id) {
+        Menu menu = menuMapper.selectById(id);
+        DomainNotFoundException.assertFound(menu, id);
+        menu.setVisible(Boolean.TRUE);
+        menu.setUpdateTime(LocalDateTime.now());
+        menuMapper.updateById(menu);
+    }
+
 }

@@ -33,4 +33,18 @@ public interface MenuService {
      */
     void delete(List<Long> ids);
 
+    /**
+     * 禁用菜单
+     *
+     * @param id 菜单ID
+     */
+    void disableVisible(Long id);
+
+    /**
+     * 启用菜单
+     *
+     * @param id 菜单ID
+     */
+    void enableVisible(Long id);
+
 }

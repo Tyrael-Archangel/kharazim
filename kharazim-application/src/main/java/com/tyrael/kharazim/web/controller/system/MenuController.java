@@ -50,4 +50,18 @@ public class MenuController {
         return Response.success();
     }
 
+    @Operation(summary = "禁用菜单")
+    @PutMapping("/disable-visible/{id}")
+    public Response disableVisible(@Parameter(description = "菜单ID", required = true) @PathVariable Long id) {
+        menuService.disableVisible(id);
+        return Response.success();
+    }
+
+    @Operation(summary = "启用菜单")
+    @PutMapping("/enable-visible/{id}")
+    public Response enableVisible(@Parameter(description = "菜单ID", required = true) @PathVariable Long id) {
+        menuService.enableVisible(id);
+        return Response.success();
+    }
+
 }

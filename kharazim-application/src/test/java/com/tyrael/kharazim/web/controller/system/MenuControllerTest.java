@@ -54,4 +54,16 @@ class MenuControllerTest extends BaseControllerTest<MenuController> {
         super.performWhenCall(mockController.delete(ids));
     }
 
+    @Test
+    void disableVisible() {
+        Long id = 1L;
+        super.performWhenCall(mockController.disableVisible(id));
+    }
+
+    @Test
+    void enableVisible() {
+        Long id = 1L;
+        super.performWhenCall(mockController.enableVisible(id));
+    }
+
 }
