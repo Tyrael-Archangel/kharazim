@@ -40,6 +40,12 @@ system:
         - /**/system/dict/**/pages
         - /**/system/dict/**/form
         - /**/system/dict/types/*/items
+    auth:
+      allow-multi-login: true
+      enable: true
+      white-list:
+        - /**/login
+        - /**/logout
 
 springdoc:
   group-configs:
