@@ -2,10 +2,7 @@ package com.tyrael.kharazim.common.dto;
 
 import lombok.Data;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -17,7 +14,7 @@ import java.util.stream.Collectors;
  * @since 2023/12/26
  */
 @Data
-public abstract class TreeNode<T, U> {
+public abstract class TreeNode<T extends TreeNode<T, U>, U> {
 
     protected U id;
     protected U parentId;
@@ -46,6 +43,10 @@ public abstract class TreeNode<T, U> {
             }
         }
         return roots;
+    }
+
+    public static <T extends TreeNode<T, U>, U> String pretty(T treeNode) {
+        return pretty(Collections.singleton(treeNode));
     }
 
     public static <T extends TreeNode<T, U>, U> String pretty(Collection<T> treeNodes) {
