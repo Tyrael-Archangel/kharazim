@@ -6,6 +6,7 @@ import com.tyrael.kharazim.application.user.dto.user.request.ChangePasswordReque
 import com.tyrael.kharazim.application.user.dto.user.request.ModifyUserRequest;
 import com.tyrael.kharazim.application.user.dto.user.request.PageUserRequest;
 import com.tyrael.kharazim.application.user.enums.EnableStatusEnum;
+import com.tyrael.kharazim.application.user.enums.UserCertificateTypeEnum;
 import com.tyrael.kharazim.application.user.enums.UserGenderEnum;
 import com.tyrael.kharazim.web.controller.BaseControllerTest;
 import org.junit.jupiter.api.Test;
@@ -43,6 +44,10 @@ class UserControllerTest extends BaseControllerTest<UserController> {
         addUserRequest.setName("Tyrael");
         addUserRequest.setNickName("泰瑞尔");
         addUserRequest.setGender(UserGenderEnum.MALE);
+        addUserRequest.setPhone("13812341234");
+        addUserRequest.setCertificateType(UserCertificateTypeEnum.ID_CARD);
+        addUserRequest.setCertificateCode("510823202308010001");
+        addUserRequest.setRoleId(1L);
         addUserRequest.setBirthday(LocalDate.of(2023, Month.AUGUST, 1));
 
         super.performWhenCall(mockController.add(addUserRequest));
