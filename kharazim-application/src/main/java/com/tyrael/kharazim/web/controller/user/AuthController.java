@@ -1,4 +1,4 @@
-package com.tyrael.kharazim.web.controller.system;
+package com.tyrael.kharazim.web.controller.user;
 
 import com.tyrael.kharazim.application.base.auth.CurrentUserHolder;
 import com.tyrael.kharazim.application.config.CacheKeyConstants;
