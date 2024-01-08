@@ -11,6 +11,7 @@ import com.tyrael.kharazim.application.customer.vo.AddCustomerAddressRequest;
 import com.tyrael.kharazim.application.customer.vo.AddCustomerInsuranceRequest;
 import com.tyrael.kharazim.application.customer.vo.AddCustomerRequest;
 import com.tyrael.kharazim.application.customer.vo.CustomerBaseVO;
+import com.tyrael.kharazim.application.system.service.CaptchaService;
 import com.tyrael.kharazim.application.system.service.CodeGenerator;
 import com.tyrael.kharazim.application.system.service.DictService;
 import com.tyrael.kharazim.common.exception.BusinessException;
@@ -37,6 +38,7 @@ public class CustomerServiceImpl implements CustomerService {
     private final CustomerConverter customerConverter;
     private final CustomerMapper customerMapper;
     private final DictService dictService;
+    private final CaptchaService captchaService;
 
     @Override
     public CustomerBaseVO findByCode(String code) {
@@ -137,7 +139,11 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     private boolean verifyCaptcha(String phone, String captcha, String captchaSerialCode) {
-        // TODO @Tyrael Archangel
+        if (StringUtils.isAnyBlank(phone, captcha, captchaSerialCode)) {
+            return false;
+        }
+
+        captchaService.verifySmsCaptcha(captcha, captchaSerialCode);
         return true;
     }
 
