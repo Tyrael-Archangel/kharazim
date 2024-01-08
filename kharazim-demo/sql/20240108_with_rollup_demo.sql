@@ -10,7 +10,7 @@ values ('Spider Man', 38.88),
        ('Bat Man', 42.99),
        ('Super Man', 51.98);
 
-select name, sum(price)
+select `name`, sum(`price`)
 from `demo_movies`
-group by name
+group by `name`
 with rollup;
