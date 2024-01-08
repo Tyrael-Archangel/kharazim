@@ -39,4 +39,17 @@ public interface CustomerMapper extends BaseMapper<Customer> {
         return customer;
     }
 
+    /**
+     * 验证会员存在
+     *
+     * @param code 会员编码
+     */
+    default void ensureCustomerExist(String code) {
+        LambdaQueryWrapper<Customer> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.eq(Customer::getCode, code);
+        if (!this.exists(queryWrapper)) {
+            throw new DomainNotFoundException("customerCode: " + code);
+        }
+    }
+
 }
