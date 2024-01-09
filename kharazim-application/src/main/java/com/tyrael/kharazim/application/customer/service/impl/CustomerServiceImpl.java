@@ -5,8 +5,10 @@ import com.tyrael.kharazim.application.config.BusinessCodeConstants;
 import com.tyrael.kharazim.application.config.DictCodeConstants;
 import com.tyrael.kharazim.application.customer.converter.CustomerConverter;
 import com.tyrael.kharazim.application.customer.domain.Customer;
+import com.tyrael.kharazim.application.customer.domain.CustomerSalesConsultant;
 import com.tyrael.kharazim.application.customer.domain.CustomerServiceUser;
 import com.tyrael.kharazim.application.customer.mapper.CustomerMapper;
+import com.tyrael.kharazim.application.customer.mapper.CustomerSalesConsultantMapper;
 import com.tyrael.kharazim.application.customer.mapper.CustomerServiceUserMapper;
 import com.tyrael.kharazim.application.customer.service.CustomerService;
 import com.tyrael.kharazim.application.customer.vo.AddCustomerAddressRequest;
@@ -41,6 +43,7 @@ public class CustomerServiceImpl implements CustomerService {
     private final CustomerConverter customerConverter;
     private final CustomerMapper customerMapper;
     private final CustomerServiceUserMapper customerServiceUserMapper;
+    private final CustomerSalesConsultantMapper customerSalesConsultantMapper;
     private final UserMapper userMapper;
     private final DictService dictService;
     private final CaptchaService captchaService;
@@ -176,7 +179,22 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void assignCustomerSalesConsultant(String customerCode, String salesConsultantCode, AuthUser currentUser) {
-        // TODO @Tyrael Archangel
+        customerMapper.ensureCustomerExist(customerCode);
+        userMapper.ensureUserExist(salesConsultantCode);
+
+        CustomerSalesConsultant customerSalesConsultant = customerSalesConsultantMapper.findByCustomerCode(customerCode);
+        if (customerSalesConsultant == null) {
+            customerSalesConsultant = new CustomerSalesConsultant();
+            customerSalesConsultant.setCustomerCode(customerCode);
+            customerSalesConsultant.setSalesConsultantCode(salesConsultantCode);
+            customerSalesConsultant.setDeletedTimestamp(0L);
+            customerSalesConsultantMapper.insert(customerSalesConsultant);
+
+        } else if (!StringUtils.equals(customerSalesConsultant.getSalesConsultantCode(), salesConsultantCode)) {
+            customerSalesConsultant.setSalesConsultantCode(salesConsultantCode);
+            customerSalesConsultant.setUpdate(currentUser.getCode(), currentUser.getNickName());
+            customerSalesConsultantMapper.updateById(customerSalesConsultant);
+        }
     }
 
     @Override

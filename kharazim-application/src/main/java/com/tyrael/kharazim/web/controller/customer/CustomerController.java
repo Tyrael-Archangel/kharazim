@@ -51,4 +51,14 @@ public class CustomerController {
         return Response.success();
     }
 
+    @PutMapping("/sales-consultant/{customerCode}/{salesConsultantCode}")
+    @Operation(summary = "设置会员的专属销售顾问")
+    public Response assignCustomerSalesConsultant(
+            @PathVariable("customerCode") @Parameter(description = "会员编码", required = true) String customerCode,
+            @PathVariable("salesConsultantCode") @Parameter(description = "销售顾问编码", required = true) String salesConsultantCode,
+            @Schema(hidden = true) @CurrentUser AuthUser currentUser) {
+        customerService.assignCustomerSalesConsultant(customerCode, salesConsultantCode, currentUser);
+        return Response.success();
+    }
+
 }

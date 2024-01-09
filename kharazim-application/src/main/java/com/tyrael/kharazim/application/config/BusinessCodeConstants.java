@@ -15,7 +15,7 @@ public enum BusinessCodeConstants {
 
     USER("用户编码", "U"),
     ROLE("角色（岗位）编码", "R"),
-    CUSTOMER("会员编码", 10),
+    CUSTOMER("会员编码", 10, "CU"),
     CUSTOMER_VALUE_CARD("会员储值卡编码", "CVC"),
     CUSTOMER_WALLET_TRANSACTION("会员交易流水号编码", "TRS"),
     CUSTOMER_FAMILY("会员家庭", "CF"),
@@ -41,7 +41,7 @@ public enum BusinessCodeConstants {
     private final int bit;
 
     BusinessCodeConstants(String desc) {
-        this(desc, DEFAULT_BIT, null);
+        this(desc, DEFAULT_BIT);
     }
 
     BusinessCodeConstants(String desc, int bit) {
