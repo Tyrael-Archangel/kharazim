@@ -6,6 +6,7 @@ import com.tyrael.kharazim.application.customer.service.CustomerService;
 import com.tyrael.kharazim.application.customer.vo.AddCustomerRequest;
 import com.tyrael.kharazim.application.customer.vo.CustomerBaseVO;
 import com.tyrael.kharazim.common.dto.DataResponse;
+import com.tyrael.kharazim.common.dto.Response;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -38,6 +39,16 @@ public class CustomerController {
     public DataResponse<String> add(@RequestBody @Valid AddCustomerRequest addCustomerRequest,
                                     @Schema(hidden = true) @CurrentUser AuthUser currentUser) {
         return DataResponse.ok(customerService.add(addCustomerRequest, currentUser));
+    }
+
+    @PutMapping("/service/{customerCode}/{serviceUserCode}")
+    @Operation(summary = "设置会员的专属客服")
+    public Response assignCustomerServiceUser(
+            @PathVariable("customerCode") @Parameter(description = "会员编码", required = true) String customerCode,
+            @PathVariable("serviceUserCode") @Parameter(description = "客服人员编码", required = true) String serviceUserCode,
+            @Schema(hidden = true) @CurrentUser AuthUser currentUser) {
+        customerService.assignCustomerServiceUser(customerCode, serviceUserCode, currentUser);
+        return Response.success();
     }
 
 }

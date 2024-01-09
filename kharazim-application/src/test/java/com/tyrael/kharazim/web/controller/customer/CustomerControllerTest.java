@@ -1,5 +1,8 @@
 package com.tyrael.kharazim.web.controller.customer;
 
+import com.tyrael.kharazim.application.customer.vo.AddCustomerRequest;
+import com.tyrael.kharazim.application.user.enums.UserCertificateTypeEnum;
+import com.tyrael.kharazim.application.user.enums.UserGenderEnum;
 import com.tyrael.kharazim.web.controller.BaseControllerTest;
 import org.junit.jupiter.api.Test;
 
@@ -19,6 +22,27 @@ class CustomerControllerTest extends BaseControllerTest<CustomerController> {
         super.performWhenCall(mockController.findByCode(customerCode));
     }
 
+    @Test
+    void add() {
+        AddCustomerRequest addCustomerRequest = new AddCustomerRequest();
+        addCustomerRequest.setName("迪亚波罗");
+        addCustomerRequest.setGender(UserGenderEnum.MALE);
+        addCustomerRequest.setBirthYear(1994);
+        addCustomerRequest.setBirthMonth(1);
+        addCustomerRequest.setBirthDayOfMonth(1);
+        addCustomerRequest.setPhone("13511112222");
+        addCustomerRequest.setCertificateType(UserCertificateTypeEnum.ID_CARD);
+        addCustomerRequest.setCertificateCode("510123111122334444");
+        addCustomerRequest.setSourceChannelDictValue("OFFLINE");
+        addCustomerRequest.setRemark("恐惧魔王");
+        super.performWhenCall(mockController.add(addCustomerRequest, super.mockAdmin()));
+    }
 
+    @Test
+    void assignCustomerServiceUser() {
+        String customerCode = "000002";
+        String serviceUserCode = "000001";
+        super.performWhenCall(mockController.assignCustomerServiceUser(customerCode, serviceUserCode, super.mockAdmin()));
+    }
 
 }

@@ -5,7 +5,9 @@ import com.tyrael.kharazim.application.config.BusinessCodeConstants;
 import com.tyrael.kharazim.application.config.DictCodeConstants;
 import com.tyrael.kharazim.application.customer.converter.CustomerConverter;
 import com.tyrael.kharazim.application.customer.domain.Customer;
+import com.tyrael.kharazim.application.customer.domain.CustomerServiceUser;
 import com.tyrael.kharazim.application.customer.mapper.CustomerMapper;
+import com.tyrael.kharazim.application.customer.mapper.CustomerServiceUserMapper;
 import com.tyrael.kharazim.application.customer.service.CustomerService;
 import com.tyrael.kharazim.application.customer.vo.AddCustomerAddressRequest;
 import com.tyrael.kharazim.application.customer.vo.AddCustomerInsuranceRequest;
@@ -14,6 +16,7 @@ import com.tyrael.kharazim.application.customer.vo.CustomerBaseVO;
 import com.tyrael.kharazim.application.system.service.CaptchaService;
 import com.tyrael.kharazim.application.system.service.CodeGenerator;
 import com.tyrael.kharazim.application.system.service.DictService;
+import com.tyrael.kharazim.application.user.mapper.UserMapper;
 import com.tyrael.kharazim.common.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -37,6 +40,8 @@ public class CustomerServiceImpl implements CustomerService {
     private final CodeGenerator codeGenerator;
     private final CustomerConverter customerConverter;
     private final CustomerMapper customerMapper;
+    private final CustomerServiceUserMapper customerServiceUserMapper;
+    private final UserMapper userMapper;
     private final DictService dictService;
     private final CaptchaService captchaService;
 
@@ -150,7 +155,22 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void assignCustomerServiceUser(String customerCode, String serviceUserCode, AuthUser currentUser) {
-        // TODO @Tyrael Archangel
+        customerMapper.ensureCustomerExist(customerCode);
+        userMapper.ensureUserExist(serviceUserCode);
+
+        CustomerServiceUser customerServiceUser = customerServiceUserMapper.findByCustomerCode(customerCode);
+        if (customerServiceUser == null) {
+            customerServiceUser = new CustomerServiceUser();
+            customerServiceUser.setCustomerCode(customerCode);
+            customerServiceUser.setServiceUserCode(serviceUserCode);
+            customerServiceUser.setDeletedTimestamp(0L);
+            customerServiceUserMapper.insert(customerServiceUser);
+
+        } else if (!StringUtils.equals(customerServiceUser.getServiceUserCode(), serviceUserCode)) {
+            customerServiceUser.setServiceUserCode(serviceUserCode);
+            customerServiceUser.setUpdate(currentUser.getCode(), currentUser.getNickName());
+            customerServiceUserMapper.updateById(customerServiceUser);
+        }
     }
 
     @Override
