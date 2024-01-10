@@ -124,14 +124,14 @@ class CustomerControllerTest extends BaseControllerTest<CustomerController> {
 
     private Set<String> addInsuranceCompanyDict() {
         List<Pair<String, String>> insuranceCompanies = List.of(
-                Pair.of("LAIA | 友邦", "AIA"),
-                Pair.of("LAllianz | 安联", "ALLIANZ"),
-                Pair.of("LAXA | 安盛", "AXA"),
-                Pair.of("LBupa | 保柏", "BUPA"),
-                Pair.of("LCigna | 信诺", "CIGNA"),
-                Pair.of("LCigna & CMB | 招商信诺", "CIGNACMB"),
-                Pair.of("LMSH | 万欣和", "MSH"),
-                Pair.of("LPINGAN | 中国平安", "PINGAN"));
+                Pair.of("AIA | 友邦", "AIA"),
+                Pair.of("Allianz | 安联", "ALLIANZ"),
+                Pair.of("AXA | 安盛", "AXA"),
+                Pair.of("Bupa | 保柏", "BUPA"),
+                Pair.of("Cigna | 信诺", "CIGNA"),
+                Pair.of("Cigna & CMB | 招商信诺", "CIGNACMB"),
+                Pair.of("MSH | 万欣和", "MSH"),
+                Pair.of("PINGAN | 中国平安", "PINGAN"));
 
         for (int i = 0; i < insuranceCompanies.size(); i++) {
             Pair<String, String> insuranceCompany = insuranceCompanies.get(i);
