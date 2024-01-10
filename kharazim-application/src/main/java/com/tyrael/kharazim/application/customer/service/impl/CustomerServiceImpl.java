@@ -5,8 +5,10 @@ import com.tyrael.kharazim.application.config.BusinessCodeConstants;
 import com.tyrael.kharazim.application.config.DictCodeConstants;
 import com.tyrael.kharazim.application.customer.converter.CustomerConverter;
 import com.tyrael.kharazim.application.customer.domain.Customer;
+import com.tyrael.kharazim.application.customer.domain.CustomerAddress;
 import com.tyrael.kharazim.application.customer.domain.CustomerSalesConsultant;
 import com.tyrael.kharazim.application.customer.domain.CustomerServiceUser;
+import com.tyrael.kharazim.application.customer.mapper.CustomerAddressMapper;
 import com.tyrael.kharazim.application.customer.mapper.CustomerMapper;
 import com.tyrael.kharazim.application.customer.mapper.CustomerSalesConsultantMapper;
 import com.tyrael.kharazim.application.customer.mapper.CustomerServiceUserMapper;
@@ -42,6 +44,7 @@ public class CustomerServiceImpl implements CustomerService {
     private final CodeGenerator codeGenerator;
     private final CustomerConverter customerConverter;
     private final CustomerMapper customerMapper;
+    private final CustomerAddressMapper customerAddressMapper;
     private final CustomerServiceUserMapper customerServiceUserMapper;
     private final CustomerSalesConsultantMapper customerSalesConsultantMapper;
     private final UserMapper userMapper;
@@ -200,8 +203,39 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Long addAddress(AddCustomerAddressRequest addCustomerAddressRequest) {
-        // TODO @Tyrael Archangel
-        return null;
+        String customerCode = addCustomerAddressRequest.getCustomerCode();
+        customerMapper.ensureCustomerExist(customerCode);
+
+        CustomerAddress customerAddress = buildCustomerAddress(addCustomerAddressRequest);
+        customerAddressMapper.insert(customerAddress);
+
+        if (addCustomerAddressRequest.isCustomerDefaultAddress()) {
+            customerAddressMapper.markAddressDefault(customerCode, customerAddress.getId());
+        } else {
+            // 如果会员只有唯一的地址，则设置为默认地址
+            List<CustomerAddress> customerAddresses = customerAddressMapper.listByCustomerCode(customerCode);
+            if (customerAddresses.size() == 1) {
+                customerAddressMapper.markAddressDefault(customerCode, customerAddress.getId());
+            }
+        }
+
+        return customerAddress.getId();
+    }
+
+    private CustomerAddress buildCustomerAddress(AddCustomerAddressRequest addCustomerAddressRequest) {
+        CustomerAddress customerAddress = new CustomerAddress();
+        customerAddress.setCustomerCode(addCustomerAddressRequest.getCustomerCode());
+        customerAddress.setProvinceCode(addCustomerAddressRequest.getProvinceCode());
+        customerAddress.setProvinceName(addCustomerAddressRequest.getProvinceName());
+        customerAddress.setContact(addCustomerAddressRequest.getContact());
+        customerAddress.setContactPhone(addCustomerAddressRequest.getContactPhone());
+        customerAddress.setCityCode(addCustomerAddressRequest.getCityCode());
+        customerAddress.setCityName(addCustomerAddressRequest.getCityName());
+        customerAddress.setCountyCode(addCustomerAddressRequest.getCountyCode());
+        customerAddress.setCountyName(addCustomerAddressRequest.getCountyName());
+        customerAddress.setDetailAddress(addCustomerAddressRequest.getDetailAddress());
+        customerAddress.setDefaultAddress(false);
+        return customerAddress;
     }
 
     @Override
