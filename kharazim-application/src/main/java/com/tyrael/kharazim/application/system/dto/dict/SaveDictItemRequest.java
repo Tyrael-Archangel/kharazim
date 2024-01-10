@@ -26,14 +26,10 @@ public class SaveDictItemRequest {
     @Size(max = 64, message = "字典项值超长")
     private String value;
 
-    @Schema(description = "类型状态：1->启用;0->禁用")
-    private Integer status;
+    @Schema(description = "是否启用")
+    private Boolean enable = Boolean.TRUE;
 
     @Schema(description = "排序")
     private Integer sort;
 
-    @Schema(hidden = true)
-    public boolean getEnable() {
-        return status == null || status == 1;
-    }
 }

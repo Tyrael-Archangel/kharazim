@@ -4,6 +4,7 @@ import com.tyrael.kharazim.application.base.auth.AuthUser;
 import com.tyrael.kharazim.application.base.auth.CurrentUser;
 import com.tyrael.kharazim.application.customer.service.CustomerService;
 import com.tyrael.kharazim.application.customer.vo.AddCustomerAddressRequest;
+import com.tyrael.kharazim.application.customer.vo.AddCustomerInsuranceRequest;
 import com.tyrael.kharazim.application.customer.vo.AddCustomerRequest;
 import com.tyrael.kharazim.application.customer.vo.CustomerBaseVO;
 import com.tyrael.kharazim.common.dto.DataResponse;
@@ -46,6 +47,13 @@ public class CustomerController {
     @Operation(summary = "新建会员地址", description = "新建会员地址，返回会员地址ID")
     public DataResponse<Long> addAddress(@RequestBody @Valid AddCustomerAddressRequest addCustomerAddressRequest) {
         return DataResponse.ok(customerService.addAddress(addCustomerAddressRequest));
+    }
+
+    @PostMapping("/insurance")
+    @Operation(summary = "新增会员保险", description = "新增会员保险，返回会员保险ID")
+    public DataResponse<Long> addInsurance(
+            @RequestBody @Valid AddCustomerInsuranceRequest addCustomerInsuranceRequest) {
+        return DataResponse.ok(customerService.addInsurance(addCustomerInsuranceRequest));
     }
 
     @PutMapping("/service/{customerCode}/{serviceUserCode}")

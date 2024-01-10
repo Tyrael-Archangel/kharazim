@@ -4,14 +4,8 @@ import com.tyrael.kharazim.application.base.auth.AuthUser;
 import com.tyrael.kharazim.application.config.BusinessCodeConstants;
 import com.tyrael.kharazim.application.config.DictCodeConstants;
 import com.tyrael.kharazim.application.customer.converter.CustomerConverter;
-import com.tyrael.kharazim.application.customer.domain.Customer;
-import com.tyrael.kharazim.application.customer.domain.CustomerAddress;
-import com.tyrael.kharazim.application.customer.domain.CustomerSalesConsultant;
-import com.tyrael.kharazim.application.customer.domain.CustomerServiceUser;
-import com.tyrael.kharazim.application.customer.mapper.CustomerAddressMapper;
-import com.tyrael.kharazim.application.customer.mapper.CustomerMapper;
-import com.tyrael.kharazim.application.customer.mapper.CustomerSalesConsultantMapper;
-import com.tyrael.kharazim.application.customer.mapper.CustomerServiceUserMapper;
+import com.tyrael.kharazim.application.customer.domain.*;
+import com.tyrael.kharazim.application.customer.mapper.*;
 import com.tyrael.kharazim.application.customer.service.CustomerService;
 import com.tyrael.kharazim.application.customer.vo.AddCustomerAddressRequest;
 import com.tyrael.kharazim.application.customer.vo.AddCustomerInsuranceRequest;
@@ -24,6 +18,7 @@ import com.tyrael.kharazim.application.user.mapper.UserMapper;
 import com.tyrael.kharazim.common.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -45,6 +40,7 @@ public class CustomerServiceImpl implements CustomerService {
     private final CustomerConverter customerConverter;
     private final CustomerMapper customerMapper;
     private final CustomerAddressMapper customerAddressMapper;
+    private final CustomerInsuranceMapper customerInsuranceMapper;
     private final CustomerServiceUserMapper customerServiceUserMapper;
     private final CustomerSalesConsultantMapper customerSalesConsultantMapper;
     private final UserMapper userMapper;
@@ -241,8 +237,41 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Long addInsurance(AddCustomerInsuranceRequest addCustomerInsuranceRequest) {
-        // TODO @Tyrael Archangel
-        return null;
+        String customerCode = addCustomerInsuranceRequest.getCustomerCode();
+        customerMapper.ensureCustomerExist(customerCode);
+
+        CustomerInsurance customerInsurance = createCustomerInsurance(addCustomerInsuranceRequest);
+        try {
+            customerInsuranceMapper.insert(customerInsurance);
+        } catch (DuplicateKeyException e) {
+            throw new BusinessException("保单号已存在", e);
+        }
+
+        if (addCustomerInsuranceRequest.isCustomerDefaultInsurance()) {
+            customerInsuranceMapper.markInsuranceDefault(customerCode, customerInsurance.getId());
+        } else {
+            // 如果会员只有唯一的保险，则设置为默认保险
+            List<CustomerInsurance> customerInsurances = customerInsuranceMapper.listByCustomerCode(customerCode);
+            if (customerInsurances.size() == 1) {
+                customerInsuranceMapper.markInsuranceDefault(customerCode, customerInsurance.getId());
+            }
+        }
+
+        return customerInsurance.getId();
+    }
+
+    private CustomerInsurance createCustomerInsurance(AddCustomerInsuranceRequest addCustomerInsuranceRequest) {
+        String insuranceCompany = addCustomerInsuranceRequest.getCompanyDictValue();
+        dictService.ensureDictItemEnable(DictCodeConstants.INSURANCE_COMPANY, insuranceCompany);
+
+        CustomerInsurance customerInsurance = new CustomerInsurance();
+        customerInsurance.setCustomerCode(addCustomerInsuranceRequest.getCustomerCode());
+        customerInsurance.setCompanyDict(insuranceCompany);
+        customerInsurance.setPolicyNumber(addCustomerInsuranceRequest.getPolicyNumber());
+        customerInsurance.setDuration(addCustomerInsuranceRequest.getDuration());
+        customerInsurance.setBenefits(addCustomerInsuranceRequest.getBenefits());
+        customerInsurance.setDeletedTimestamp(0L);
+        return customerInsurance;
     }
 
 }
