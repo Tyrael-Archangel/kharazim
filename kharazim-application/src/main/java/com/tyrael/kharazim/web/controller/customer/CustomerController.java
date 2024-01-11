@@ -3,10 +3,7 @@ package com.tyrael.kharazim.web.controller.customer;
 import com.tyrael.kharazim.application.base.auth.AuthUser;
 import com.tyrael.kharazim.application.base.auth.CurrentUser;
 import com.tyrael.kharazim.application.customer.service.CustomerService;
-import com.tyrael.kharazim.application.customer.vo.AddCustomerAddressRequest;
-import com.tyrael.kharazim.application.customer.vo.AddCustomerInsuranceRequest;
-import com.tyrael.kharazim.application.customer.vo.AddCustomerRequest;
-import com.tyrael.kharazim.application.customer.vo.CustomerBaseVO;
+import com.tyrael.kharazim.application.customer.vo.*;
 import com.tyrael.kharazim.common.dto.DataResponse;
 import com.tyrael.kharazim.common.dto.Response;
 import io.swagger.v3.oas.annotations.Operation;
@@ -41,6 +38,15 @@ public class CustomerController {
     public DataResponse<String> add(@RequestBody @Valid AddCustomerRequest addCustomerRequest,
                                     @Schema(hidden = true) @CurrentUser AuthUser currentUser) {
         return DataResponse.ok(customerService.add(addCustomerRequest, currentUser));
+    }
+
+    @PostMapping("/{code}")
+    @Operation(summary = "修改会员")
+    public Response modify(@PathVariable("code") @Parameter(description = "会员编码", required = true) String code,
+                           @RequestBody @Valid ModifyCustomerRequest modifyCustomerRequest,
+                           @Schema(hidden = true) @CurrentUser AuthUser currentUser) {
+        customerService.modify(code, modifyCustomerRequest, currentUser);
+        return Response.success();
     }
 
     @PostMapping("/address")

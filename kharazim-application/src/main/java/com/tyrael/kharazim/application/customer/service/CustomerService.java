@@ -1,10 +1,7 @@
 package com.tyrael.kharazim.application.customer.service;
 
 import com.tyrael.kharazim.application.base.auth.AuthUser;
-import com.tyrael.kharazim.application.customer.vo.AddCustomerAddressRequest;
-import com.tyrael.kharazim.application.customer.vo.AddCustomerInsuranceRequest;
-import com.tyrael.kharazim.application.customer.vo.AddCustomerRequest;
-import com.tyrael.kharazim.application.customer.vo.CustomerBaseVO;
+import com.tyrael.kharazim.application.customer.vo.*;
 
 /**
  * @author Tyrael Archangel
@@ -28,6 +25,15 @@ public interface CustomerService {
      * @return 新增的会员编码
      */
     String add(AddCustomerRequest addCustomerRequest, AuthUser currentUser);
+
+    /**
+     * 修改会员信息
+     *
+     * @param code                  会员编码
+     * @param modifyCustomerRequest {@link ModifyCustomerRequest}
+     * @param currentUser           操作人
+     */
+    void modify(String code, ModifyCustomerRequest modifyCustomerRequest, AuthUser currentUser);
 
     /**
      * 设置会员专属客服

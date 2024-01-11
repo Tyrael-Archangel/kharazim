@@ -7,10 +7,7 @@ import com.tyrael.kharazim.application.customer.converter.CustomerConverter;
 import com.tyrael.kharazim.application.customer.domain.*;
 import com.tyrael.kharazim.application.customer.mapper.*;
 import com.tyrael.kharazim.application.customer.service.CustomerService;
-import com.tyrael.kharazim.application.customer.vo.AddCustomerAddressRequest;
-import com.tyrael.kharazim.application.customer.vo.AddCustomerInsuranceRequest;
-import com.tyrael.kharazim.application.customer.vo.AddCustomerRequest;
-import com.tyrael.kharazim.application.customer.vo.CustomerBaseVO;
+import com.tyrael.kharazim.application.customer.vo.*;
 import com.tyrael.kharazim.application.system.service.CaptchaService;
 import com.tyrael.kharazim.application.system.service.CodeGenerator;
 import com.tyrael.kharazim.application.system.service.DictService;
@@ -93,6 +90,35 @@ public class CustomerServiceImpl implements CustomerService {
         }
 
         return customerCode;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void modify(String code, ModifyCustomerRequest modifyCustomerRequest, AuthUser currentUser) {
+        Customer customer = customerMapper.exactlyFindByCode(code);
+
+        Integer birthYear = modifyCustomerRequest.getBirthYear();
+        Integer birthMonth = modifyCustomerRequest.getBirthMonth();
+        Integer birthDayOfMonth = modifyCustomerRequest.getBirthDayOfMonth();
+        checkBirthday(birthYear, birthMonth, birthDayOfMonth);
+
+        customer.setName(modifyCustomerRequest.getName());
+        customer.setGender(modifyCustomerRequest.getGender());
+        customer.setBirthYear(birthYear);
+        customer.setBirthMonth(birthMonth);
+        customer.setBirthDayOfMonth(birthDayOfMonth);
+        String originalPhone = customer.getPhone();
+        String phone = modifyCustomerRequest.getPhone();
+        customer.setPhone(phone);
+        if (!StringUtils.equals(originalPhone, phone)) {
+            customer.setPhoneVerified(false);
+        }
+        customer.setCertificateType(modifyCustomerRequest.getCertificateType());
+        customer.setCertificateCode(modifyCustomerRequest.getCertificateCode());
+        customer.setRemark(modifyCustomerRequest.getRemark());
+
+        customer.setUpdate(currentUser.getCode(), currentUser.getNickName());
+        customerMapper.updateById(customer);
     }
 
     private Customer buildCustomer(AddCustomerRequest request) {
