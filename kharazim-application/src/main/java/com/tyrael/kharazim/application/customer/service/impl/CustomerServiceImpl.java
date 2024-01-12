@@ -1,5 +1,6 @@
 package com.tyrael.kharazim.application.customer.service.impl;
 
+import com.google.common.collect.Lists;
 import com.tyrael.kharazim.application.base.auth.AuthUser;
 import com.tyrael.kharazim.application.config.BusinessCodeConstants;
 import com.tyrael.kharazim.application.config.DictCodeConstants;
@@ -23,7 +24,10 @@ import org.springframework.util.CollectionUtils;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.MonthDay;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Tyrael Archangel
@@ -119,6 +123,58 @@ public class CustomerServiceImpl implements CustomerService {
 
         customer.setUpdate(currentUser.getCode(), currentUser.getNickName());
         customerMapper.updateById(customer);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void modifySource(ModifyCustomerSourceRequest modifySourceRequest, AuthUser currentUser) {
+        String customerCode = modifySourceRequest.getCustomerCode();
+        Customer customer = customerMapper.exactlyFindByCode(customerCode);
+
+        String sourceCustomerCode = modifySourceRequest.getSourceCustomerCode();
+        customerMapper.ensureCustomerExist(sourceCustomerCode);
+
+        ensureCustomerSourceNotCircular(customer, sourceCustomerCode);
+
+        customer.setSourceCustomerCode(sourceCustomerCode);
+        customer.setUpdate(currentUser.getCode(), currentUser.getNickName());
+        customerMapper.updateById(customer);
+    }
+
+    /**
+     * 验证会员的来源会员不能形成循环
+     */
+    private void ensureCustomerSourceNotCircular(Customer customer, String sourceCustomerCode) {
+        BusinessException.assertTrue(!StringUtils.equals(customer.getCode(), sourceCustomerCode),
+                "会员的来源会员不能选择自己");
+
+        LinkedHashMap<String, Customer> customerLink = new LinkedHashMap<>();
+        customerLink.put(customer.getCode(), customer);
+
+        String tempSourceCustomerCode = sourceCustomerCode;
+        while (true) {
+            Customer sourceCustomer = customerMapper.findByCode(tempSourceCustomerCode);
+            if (sourceCustomer == null) {
+                return;
+            }
+            String sourceSourceCustomerCode = sourceCustomer.getSourceCustomerCode();
+            if (StringUtils.isEmpty(sourceSourceCustomerCode)) {
+                return;
+            }
+
+            customerLink.put(sourceCustomer.getCode(), sourceCustomer);
+            tempSourceCustomerCode = sourceSourceCustomerCode;
+
+            if (customerLink.containsKey(sourceSourceCustomerCode)) {
+                LinkedList<String> circulation = customerLink.values()
+                        .stream()
+                        .map(c -> c.getName() + "(" + c.getCode() + ")")
+                        .collect(Collectors.toCollection(LinkedList::new));
+                circulation.add(customer.getName() + "(" + customer.getCode() + ")");
+                String circulationString = String.join(" -> ", Lists.reverse(circulation));
+                throw new BusinessException("会员的来源会员关系形成循环：" + circulationString);
+            }
+        }
     }
 
     private Customer buildCustomer(AddCustomerRequest request) {

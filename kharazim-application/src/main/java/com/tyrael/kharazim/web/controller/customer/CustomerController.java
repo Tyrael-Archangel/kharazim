@@ -49,6 +49,14 @@ public class CustomerController {
         return Response.success();
     }
 
+    @PostMapping("/modify-source")
+    @Operation(summary = "修改会员的来源会员")
+    public Response modifySource(@RequestBody @Valid ModifyCustomerSourceRequest modifySourceRequest,
+                                 @Schema(hidden = true) @CurrentUser AuthUser currentUser) {
+        customerService.modifySource(modifySourceRequest, currentUser);
+        return Response.success();
+    }
+
     @PostMapping("/address")
     @Operation(summary = "新建会员地址", description = "新建会员地址，返回会员地址ID")
     public DataResponse<Long> addAddress(@RequestBody @Valid AddCustomerAddressRequest addCustomerAddressRequest) {

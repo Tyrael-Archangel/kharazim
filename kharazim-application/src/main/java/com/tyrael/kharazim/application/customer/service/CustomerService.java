@@ -36,6 +36,14 @@ public interface CustomerService {
     void modify(String code, ModifyCustomerRequest modifyCustomerRequest, AuthUser currentUser);
 
     /**
+     * 修改会员的来源会员
+     *
+     * @param modifySourceRequest {@link ModifyCustomerSourceRequest}
+     * @param currentUser         操作人
+     */
+    void modifySource(ModifyCustomerSourceRequest modifySourceRequest, AuthUser currentUser);
+
+    /**
      * 设置会员专属客服
      *
      * @param customerCode    会员编码
