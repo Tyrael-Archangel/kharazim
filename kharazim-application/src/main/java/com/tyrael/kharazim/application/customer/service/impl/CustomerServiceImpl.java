@@ -177,6 +177,22 @@ public class CustomerServiceImpl implements CustomerService {
         }
     }
 
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void bindPhone(BindCustomerPhoneRequest request, AuthUser currentUser) {
+        String customerCode = request.getCustomerCode();
+        Customer customer = customerMapper.exactlyFindByCode(customerCode);
+
+        String phone = request.getPhone();
+        boolean success = this.verifyCaptcha(phone, request.getCaptcha(), request.getCaptchaSerialCode());
+        BusinessException.assertTrue(success, "会员绑定手机号失败");
+
+        customer.setPhone(phone);
+        customer.setPhoneVerified(Boolean.TRUE);
+        customer.setUpdate(currentUser.getCode(), currentUser.getNickName());
+        customerMapper.updateById(customer);
+    }
+
     private Customer buildCustomer(AddCustomerRequest request) {
         String sourceCustomerCode = request.getSourceCustomerCode();
         if (StringUtils.isNotBlank(sourceCustomerCode)) {

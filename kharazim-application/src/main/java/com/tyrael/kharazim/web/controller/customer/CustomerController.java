@@ -57,6 +57,14 @@ public class CustomerController {
         return Response.success();
     }
 
+    @PostMapping("/bind-phone")
+    @Operation(summary = "会员绑定手机号")
+    public Response bindPhone(@RequestBody @Valid BindCustomerPhoneRequest bindCustomerPhoneRequest,
+                              @Schema(hidden = true) @CurrentUser AuthUser currentUser) {
+        customerService.bindPhone(bindCustomerPhoneRequest, currentUser);
+        return Response.success();
+    }
+
     @PostMapping("/address")
     @Operation(summary = "新建会员地址", description = "新建会员地址，返回会员地址ID")
     public DataResponse<Long> addAddress(@RequestBody @Valid AddCustomerAddressRequest addCustomerAddressRequest) {

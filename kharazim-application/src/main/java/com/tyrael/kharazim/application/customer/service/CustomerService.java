@@ -44,6 +44,14 @@ public interface CustomerService {
     void modifySource(ModifyCustomerSourceRequest modifySourceRequest, AuthUser currentUser);
 
     /**
+     * 绑定手机号
+     *
+     * @param bindCustomerPhoneRequest {@link BindCustomerPhoneRequest}
+     * @param currentUser              操作人
+     */
+    void bindPhone(BindCustomerPhoneRequest bindCustomerPhoneRequest, AuthUser currentUser);
+
+    /**
      * 设置会员专属客服
      *
      * @param customerCode    会员编码
