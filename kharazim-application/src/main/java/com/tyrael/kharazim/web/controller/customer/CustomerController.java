@@ -65,6 +65,14 @@ public class CustomerController {
         return Response.success();
     }
 
+    @PutMapping("/unbind-phone/{code}")
+    @Operation(summary = "会员解绑手机号")
+    public Response unbindPhone(@PathVariable("code") @Parameter(description = "会员编码", required = true) String code,
+                                @Schema(hidden = true) @CurrentUser AuthUser currentUser) {
+        customerService.unbindPhone(code, currentUser);
+        return Response.success();
+    }
+
     @PostMapping("/address")
     @Operation(summary = "新建会员地址", description = "新建会员地址，返回会员地址ID")
     public DataResponse<Long> addAddress(@RequestBody @Valid AddCustomerAddressRequest addCustomerAddressRequest) {

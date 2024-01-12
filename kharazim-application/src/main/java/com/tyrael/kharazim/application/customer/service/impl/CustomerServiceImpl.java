@@ -193,6 +193,16 @@ public class CustomerServiceImpl implements CustomerService {
         customerMapper.updateById(customer);
     }
 
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void unbindPhone(String code, AuthUser currentUser) {
+        Customer customer = customerMapper.exactlyFindByCode(code);
+
+        customer.setPhoneVerified(false);
+        customer.setUpdate(currentUser.getCode(), currentUser.getNickName());
+        customerMapper.updateById(customer);
+    }
+
     private Customer buildCustomer(AddCustomerRequest request) {
         String sourceCustomerCode = request.getSourceCustomerCode();
         if (StringUtils.isNotBlank(sourceCustomerCode)) {

@@ -52,6 +52,14 @@ public interface CustomerService {
     void bindPhone(BindCustomerPhoneRequest bindCustomerPhoneRequest, AuthUser currentUser);
 
     /**
+     * 解绑手机号
+     *
+     * @param code        会员编码
+     * @param currentUser 操作人
+     */
+    void unbindPhone(String code, AuthUser currentUser);
+
+    /**
      * 设置会员专属客服
      *
      * @param customerCode    会员编码
