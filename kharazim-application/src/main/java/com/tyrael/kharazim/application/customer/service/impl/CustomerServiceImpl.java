@@ -389,6 +389,40 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
+    public void modifyCustomerAddress(ModifyCustomerAddressRequest modifyCustomerAddressRequest, AuthUser currentUser) {
+        Long customerAddressId = modifyCustomerAddressRequest.getCustomerAddressId();
+        CustomerAddress customerAddress = customerAddressMapper.selectById(customerAddressId);
+        DomainNotFoundException.assertFound(customerAddress, customerAddressId);
+
+        customerAddress.setContact(modifyCustomerAddressRequest.getContact());
+        customerAddress.setContactPhone(modifyCustomerAddressRequest.getContactPhone());
+        customerAddress.setProvinceCode(modifyCustomerAddressRequest.getProvinceCode());
+        customerAddress.setProvinceName(modifyCustomerAddressRequest.getProvinceName());
+        customerAddress.setCityCode(modifyCustomerAddressRequest.getCityCode());
+        customerAddress.setCityName(modifyCustomerAddressRequest.getCityName());
+        customerAddress.setCountyCode(modifyCustomerAddressRequest.getCountyCode());
+        customerAddress.setCountyName(modifyCustomerAddressRequest.getCountyName());
+        customerAddress.setDetailAddress(modifyCustomerAddressRequest.getDetailAddress());
+
+        customerAddress.setUpdate(currentUser.getCode(), currentUser.getNickName());
+
+        customerAddressMapper.updateById(customerAddress);
+
+        if (modifyCustomerAddressRequest.isCustomerDefaultAddress()
+                && !Boolean.TRUE.equals(customerAddress.getDefaultAddress())) {
+            customerAddressMapper.markAddressDefault(customerAddress.getCustomerCode(), customerAddressId);
+        }
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void markAddressDefault(String customerCode, Long customerAddressId) {
+        customerMapper.ensureCustomerExist(customerCode);
+        customerAddressMapper.markAddressDefault(customerCode, customerAddressId);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
     public Long addInsurance(AddCustomerInsuranceRequest addCustomerInsuranceRequest) {
         String customerCode = addCustomerInsuranceRequest.getCustomerCode();
         customerMapper.ensureCustomerExist(customerCode);

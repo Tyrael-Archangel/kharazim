@@ -103,6 +103,23 @@ public class CustomerController {
         return Response.success();
     }
 
+    @PostMapping("/address/modify")
+    @Operation(summary = "修改会员地址")
+    public Response modifyCustomerAddress(@RequestBody @Valid ModifyCustomerAddressRequest modifyCustomerAddressRequest,
+                                          @Schema(hidden = true) @CurrentUser AuthUser currentUser) {
+        customerService.modifyCustomerAddress(modifyCustomerAddressRequest, currentUser);
+        return Response.success();
+    }
+
+    @PutMapping("/address/{customerCode}/{customerAddressId}")
+    @Operation(summary = "将指定的会员地址设置为默认地址")
+    public Response markAddressDefault(
+            @PathVariable("customerCode") @Parameter(description = "会员编码", required = true) String customerCode,
+            @PathVariable("customerAddressId") @Parameter(description = "会员地址ID", required = true) Long customerAddressId) {
+        customerService.markAddressDefault(customerCode, customerAddressId);
+        return Response.success();
+    }
+
     @PostMapping("/insurance")
     @Operation(summary = "新增会员保险", description = "新增会员保险，返回会员保险ID")
     public DataResponse<Long> addInsurance(

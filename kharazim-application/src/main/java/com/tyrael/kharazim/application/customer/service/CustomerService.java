@@ -112,6 +112,22 @@ public interface CustomerService {
     void deleteCustomerAddress(String customerCode, Long customerAddressId);
 
     /**
+     * 修改会员地址
+     *
+     * @param modifyCustomerAddressRequest {@link ModifyCustomerAddressRequest}
+     * @param currentUser                  操作人
+     */
+    void modifyCustomerAddress(ModifyCustomerAddressRequest modifyCustomerAddressRequest, AuthUser currentUser);
+
+    /**
+     * 将指定的会员地址设置为默认地址
+     *
+     * @param customerCode      会员编码
+     * @param customerAddressId 会员地址ID
+     */
+    void markAddressDefault(String customerCode, Long customerAddressId);
+
+    /**
      * 新增会员保险
      *
      * @param addCustomerInsuranceRequest AddCustomerInsuranceRequest

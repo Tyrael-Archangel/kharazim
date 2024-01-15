@@ -119,6 +119,13 @@ class CustomerControllerTest extends BaseControllerTest<CustomerController> {
     }
 
     @Test
+    void markAddressDefault() {
+        String customerCode = "CU0000000001";
+        long customerAddressId = 3L;
+        super.performWhenCall(mockController.markAddressDefault(customerCode, customerAddressId));
+    }
+
+    @Test
     void addInsurance() {
 
         Set<String> companyItems = dictService.findEnabledItems(DictCodeConstants.INSURANCE_COMPANY);
