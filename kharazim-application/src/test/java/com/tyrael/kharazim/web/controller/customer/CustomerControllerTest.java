@@ -4,6 +4,7 @@ import com.tyrael.kharazim.application.config.DictCodeConstants;
 import com.tyrael.kharazim.application.customer.vo.AddCustomerAddressRequest;
 import com.tyrael.kharazim.application.customer.vo.AddCustomerInsuranceRequest;
 import com.tyrael.kharazim.application.customer.vo.AddCustomerRequest;
+import com.tyrael.kharazim.application.customer.vo.ListCustomerRequest;
 import com.tyrael.kharazim.application.system.dto.address.AddressTreeNodeDTO;
 import com.tyrael.kharazim.application.system.dto.dict.SaveDictItemRequest;
 import com.tyrael.kharazim.application.system.service.AddressQueryService;
@@ -55,6 +56,14 @@ class CustomerControllerTest extends BaseControllerTest<CustomerController> {
         addCustomerRequest.setSourceChannelDictValue("OFFLINE");
         addCustomerRequest.setRemark("恐惧魔王");
         super.performWhenCall(mockController.add(addCustomerRequest, super.mockAdmin()));
+    }
+
+    @Test
+    void list() {
+        ListCustomerRequest request = new ListCustomerRequest();
+        request.setConditionType(ListCustomerRequest.QueryConditionType.NAME);
+        request.setKeyword("迪亚波罗");
+        super.performWhenCall(mockController.list(request));
     }
 
     @Test
