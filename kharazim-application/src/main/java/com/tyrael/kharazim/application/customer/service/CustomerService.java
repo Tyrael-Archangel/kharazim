@@ -104,6 +104,14 @@ public interface CustomerService {
     Long addAddress(AddCustomerAddressRequest addCustomerAddressRequest);
 
     /**
+     * 删除会员地址
+     *
+     * @param customerCode      会员编码
+     * @param customerAddressId 会员地址ID
+     */
+    void deleteCustomerAddress(String customerCode, Long customerAddressId);
+
+    /**
      * 新增会员保险
      *
      * @param addCustomerInsuranceRequest AddCustomerInsuranceRequest

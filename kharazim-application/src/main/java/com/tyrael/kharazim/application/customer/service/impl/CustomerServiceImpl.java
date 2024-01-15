@@ -14,6 +14,7 @@ import com.tyrael.kharazim.application.system.service.CodeGenerator;
 import com.tyrael.kharazim.application.system.service.DictService;
 import com.tyrael.kharazim.application.user.mapper.UserMapper;
 import com.tyrael.kharazim.common.exception.BusinessException;
+import com.tyrael.kharazim.common.exception.DomainNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.DuplicateKeyException;
@@ -359,6 +360,31 @@ public class CustomerServiceImpl implements CustomerService {
         customerAddress.setDetailAddress(addCustomerAddressRequest.getDetailAddress());
         customerAddress.setDefaultAddress(false);
         return customerAddress;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteCustomerAddress(String customerCode, Long customerAddressId) {
+        CustomerAddress customerAddress = customerAddressMapper.selectById(customerAddressId);
+        DomainNotFoundException.assertFound(customerAddress, customerAddressId);
+
+        if (!StringUtils.equals(customerAddress.getCustomerCode(), customerCode)) {
+            throw new BusinessException("地址与会员不匹配");
+        }
+
+        customerAddressMapper.deleteById(customerAddressId);
+        List<CustomerAddress> customerAddresses = customerAddressMapper.listByCustomerCode(customerCode);
+        if (customerAddresses.isEmpty()) {
+            return;
+        }
+        boolean hasDefaultAddress = customerAddresses.stream()
+                .anyMatch(e -> Boolean.TRUE.equals(e.getDefaultAddress()));
+        if (hasDefaultAddress) {
+            return;
+        }
+        customerAddresses.stream()
+                .max(Comparator.comparing(CustomerAddress::getUpdateTime))
+                .ifPresent(latest -> customerAddressMapper.markAddressDefault(customerCode, latest.getId()));
     }
 
     @Override

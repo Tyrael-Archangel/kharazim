@@ -94,6 +94,15 @@ public class CustomerController {
         return DataResponse.ok(customerService.addAddress(addCustomerAddressRequest));
     }
 
+    @DeleteMapping("/address/{customerCode}/{customerAddressId}")
+    @Operation(summary = "删除会员地址")
+    public Response deleteCustomerAddress(
+            @PathVariable("customerCode") @Parameter(description = "会员编码", required = true) String customerCode,
+            @PathVariable("customerAddressId") @Parameter(description = "会员地址ID", required = true) Long customerAddressId) {
+        customerService.deleteCustomerAddress(customerCode, customerAddressId);
+        return Response.success();
+    }
+
     @PostMapping("/insurance")
     @Operation(summary = "新增会员保险", description = "新增会员保险，返回会员保险ID")
     public DataResponse<Long> addInsurance(
