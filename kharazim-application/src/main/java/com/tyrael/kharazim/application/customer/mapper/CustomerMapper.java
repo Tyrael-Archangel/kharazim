@@ -4,8 +4,12 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.tyrael.kharazim.application.customer.domain.Customer;
+import com.tyrael.kharazim.application.customer.vo.ListCustomerRequest;
 import com.tyrael.kharazim.common.exception.DomainNotFoundException;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
 
 /**
  * @author Tyrael Archangel
@@ -50,6 +54,26 @@ public interface CustomerMapper extends BaseMapper<Customer> {
         if (!this.exists(queryWrapper)) {
             throw new DomainNotFoundException("customerCode: " + code);
         }
+    }
+
+    /**
+     * list
+     *
+     * @param request ListCustomerRequestVO
+     * @return Customers
+     */
+    default List<Customer> list(ListCustomerRequest request) {
+        LambdaQueryWrapper<Customer> queryWrapper = Wrappers.lambdaQuery();
+        String keyword = StringUtils.trim(request.getKeyword());
+        if (StringUtils.isNotBlank(keyword)) {
+            queryWrapper = switch (request.getConditionType()) {
+                case NAME -> queryWrapper.like(Customer::getName, keyword);
+                case PHONE -> queryWrapper.eq(Customer::getPhone, keyword);
+                case CERTIFICATE -> queryWrapper.eq(Customer::getCertificateCode, keyword);
+            };
+        }
+
+        return selectList(queryWrapper);
     }
 
 }

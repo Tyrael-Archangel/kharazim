@@ -263,6 +263,14 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
+    public List<CustomerSimpleVO> listSimpleInfo(ListCustomerRequest request) {
+        List<Customer> customers = customerMapper.list(request);
+        return customers.stream()
+                .map(customerConverter::customerSimpleVO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     @Transactional(rollbackFor = Exception.class)
     public void assignCustomerServiceUser(String customerCode, String serviceUserCode, AuthUser currentUser) {
         customerMapper.ensureCustomerExist(customerCode);

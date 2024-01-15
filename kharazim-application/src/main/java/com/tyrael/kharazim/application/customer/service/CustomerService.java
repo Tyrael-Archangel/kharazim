@@ -3,6 +3,8 @@ package com.tyrael.kharazim.application.customer.service;
 import com.tyrael.kharazim.application.base.auth.AuthUser;
 import com.tyrael.kharazim.application.customer.vo.*;
 
+import java.util.List;
+
 /**
  * @author Tyrael Archangel
  * @since 2024/1/8
@@ -58,6 +60,14 @@ public interface CustomerService {
      * @param currentUser 操作人
      */
     void unbindPhone(String code, AuthUser currentUser);
+
+    /**
+     * 根据指定条件（姓名、电话、证件号码）过滤用户
+     *
+     * @param request ListCustomerRequestVO
+     * @return 用户基本信息
+     */
+    List<CustomerSimpleVO> listSimpleInfo(ListCustomerRequest request);
 
     /**
      * 设置会员专属客服

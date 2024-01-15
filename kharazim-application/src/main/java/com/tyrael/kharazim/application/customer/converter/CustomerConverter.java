@@ -3,6 +3,7 @@ package com.tyrael.kharazim.application.customer.converter;
 import com.tyrael.kharazim.application.config.DictCodeConstants;
 import com.tyrael.kharazim.application.customer.domain.Customer;
 import com.tyrael.kharazim.application.customer.vo.CustomerBaseVO;
+import com.tyrael.kharazim.application.customer.vo.CustomerSimpleVO;
 import com.tyrael.kharazim.application.system.service.DictService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -42,6 +43,19 @@ public class CustomerConverter {
                 .remark(customer.getRemark())
                 .sourceChannelDictValue(sourceChannelDict)
                 .sourceChannel(sourceChannel)
+                .build();
+    }
+
+    /**
+     * Customer -> CustomerSimpleVO
+     */
+    public CustomerSimpleVO customerSimpleVO(Customer customer) {
+        return CustomerSimpleVO.builder()
+                .code(customer.getCode())
+                .name(customer.getName())
+                .phone(customer.getPhone())
+                .certificateType(customer.getCertificateType())
+                .certificateCode(customer.getCertificateCode())
                 .build();
     }
 

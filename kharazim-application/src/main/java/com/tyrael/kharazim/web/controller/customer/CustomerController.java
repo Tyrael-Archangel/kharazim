@@ -5,6 +5,7 @@ import com.tyrael.kharazim.application.base.auth.CurrentUser;
 import com.tyrael.kharazim.application.customer.service.CustomerService;
 import com.tyrael.kharazim.application.customer.vo.*;
 import com.tyrael.kharazim.common.dto.DataResponse;
+import com.tyrael.kharazim.common.dto.MultiResponse;
 import com.tyrael.kharazim.common.dto.Response;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -12,6 +13,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -71,6 +73,12 @@ public class CustomerController {
                                 @Schema(hidden = true) @CurrentUser AuthUser currentUser) {
         customerService.unbindPhone(code, currentUser);
         return Response.success();
+    }
+
+    @GetMapping("/list")
+    @Operation(summary = "根据指定条件（姓名、电话、证件号码）过滤会员")
+    public MultiResponse<CustomerSimpleVO> list(@ParameterObject @Valid ListCustomerRequest request) {
+        return MultiResponse.success(customerService.listSimpleInfo(request));
     }
 
     @PostMapping("/address")
