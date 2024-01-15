@@ -70,6 +70,14 @@ public interface CustomerService {
     List<CustomerSimpleVO> listSimpleInfo(ListCustomerRequest request);
 
     /**
+     * 查询会员地址
+     *
+     * @param code 会员编码
+     * @return 会员地址
+     */
+    List<CustomerAddressVO> addresses(String code);
+
+    /**
      * 设置会员专属客服
      *
      * @param customerCode    会员编码

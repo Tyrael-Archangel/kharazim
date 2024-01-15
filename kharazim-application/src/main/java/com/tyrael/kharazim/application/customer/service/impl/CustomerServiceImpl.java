@@ -24,6 +24,7 @@ import org.springframework.util.CollectionUtils;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.MonthDay;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -310,6 +311,16 @@ public class CustomerServiceImpl implements CustomerService {
             customerSalesConsultant.setUpdate(currentUser.getCode(), currentUser.getNickName());
             customerSalesConsultantMapper.updateById(customerSalesConsultant);
         }
+    }
+
+    @Override
+    public List<CustomerAddressVO> addresses(String code) {
+        customerMapper.ensureCustomerExist(code);
+        List<CustomerAddress> customerAddresses = customerAddressMapper.listByCustomerCode(code);
+        return customerAddresses.stream()
+                .map(customerConverter::customerAddressVO)
+                .sorted(Comparator.comparing(CustomerAddressVO::getDefaultAddress).reversed())
+                .collect(Collectors.toList());
     }
 
     @Override

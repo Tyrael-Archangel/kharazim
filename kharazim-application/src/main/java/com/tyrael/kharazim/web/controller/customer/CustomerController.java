@@ -81,6 +81,13 @@ public class CustomerController {
         return MultiResponse.success(customerService.listSimpleInfo(request));
     }
 
+    @GetMapping("/address/{code}")
+    @Operation(summary = "查询会员地址")
+    public MultiResponse<CustomerAddressVO> addresses(
+            @PathVariable("code") @Parameter(description = "会员编码", required = true) String code) {
+        return MultiResponse.success(customerService.addresses(code));
+    }
+
     @PostMapping("/address")
     @Operation(summary = "新建会员地址", description = "新建会员地址，返回会员地址ID")
     public DataResponse<Long> addAddress(@RequestBody @Valid AddCustomerAddressRequest addCustomerAddressRequest) {

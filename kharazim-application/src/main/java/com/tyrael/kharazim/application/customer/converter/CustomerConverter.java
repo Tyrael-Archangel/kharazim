@@ -2,6 +2,8 @@ package com.tyrael.kharazim.application.customer.converter;
 
 import com.tyrael.kharazim.application.config.DictCodeConstants;
 import com.tyrael.kharazim.application.customer.domain.Customer;
+import com.tyrael.kharazim.application.customer.domain.CustomerAddress;
+import com.tyrael.kharazim.application.customer.vo.CustomerAddressVO;
 import com.tyrael.kharazim.application.customer.vo.CustomerBaseVO;
 import com.tyrael.kharazim.application.customer.vo.CustomerSimpleVO;
 import com.tyrael.kharazim.application.system.service.DictService;
@@ -56,6 +58,25 @@ public class CustomerConverter {
                 .phone(customer.getPhone())
                 .certificateType(customer.getCertificateType())
                 .certificateCode(customer.getCertificateCode())
+                .build();
+    }
+
+    /**
+     * CustomerAddress -> CustomerAddressVO
+     */
+    public CustomerAddressVO customerAddressVO(CustomerAddress customerAddress) {
+        return CustomerAddressVO.builder()
+                .customerAddressId(customerAddress.getId())
+                .contact(customerAddress.getContact())
+                .contactPhone(customerAddress.getContactPhone())
+                .provinceCode(customerAddress.getProvinceCode())
+                .provinceName(customerAddress.getProvinceName())
+                .cityCode(customerAddress.getCityCode())
+                .cityName(customerAddress.getCityName())
+                .countyCode(customerAddress.getCountyCode())
+                .countyName(customerAddress.getCountyName())
+                .detailAddress(customerAddress.getDetailAddress())
+                .defaultAddress(Boolean.TRUE.equals(customerAddress.getDefaultAddress()))
                 .build();
     }
 

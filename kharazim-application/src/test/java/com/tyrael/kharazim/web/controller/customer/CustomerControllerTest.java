@@ -67,6 +67,12 @@ class CustomerControllerTest extends BaseControllerTest<CustomerController> {
     }
 
     @Test
+    void addresses() {
+        String customerCode = "CU0000000001";
+        super.performWhenCall(mockController.addresses(customerCode));
+    }
+
+    @Test
     void addAddress() {
 
         for (int i = 0; i < 8; i++) {
