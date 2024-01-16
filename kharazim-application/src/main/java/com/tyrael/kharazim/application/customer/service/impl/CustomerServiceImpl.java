@@ -422,6 +422,15 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
+    public List<CustomerInsuranceVO> insurances(String code) {
+        customerMapper.ensureCustomerExist(code);
+        List<CustomerInsurance> customerInsurances = customerInsuranceMapper.listByCustomerCode(code);
+        return customerInsurances.stream()
+                .map(customerConverter::customerInsuranceVO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     @Transactional(rollbackFor = Exception.class)
     public Long addInsurance(AddCustomerInsuranceRequest addCustomerInsuranceRequest) {
         String customerCode = addCustomerInsuranceRequest.getCustomerCode();

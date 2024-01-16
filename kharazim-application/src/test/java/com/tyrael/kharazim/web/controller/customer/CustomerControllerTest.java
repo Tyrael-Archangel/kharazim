@@ -126,6 +126,12 @@ class CustomerControllerTest extends BaseControllerTest<CustomerController> {
     }
 
     @Test
+    void insurances() {
+        String customerCode = "CU0000000001";
+        super.performWhenCall(mockController.insurances(customerCode));
+    }
+
+    @Test
     void addInsurance() {
 
         Set<String> companyItems = dictService.findEnabledItems(DictCodeConstants.INSURANCE_COMPANY);

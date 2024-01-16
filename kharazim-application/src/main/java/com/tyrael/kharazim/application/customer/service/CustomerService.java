@@ -128,6 +128,14 @@ public interface CustomerService {
     void markAddressDefault(String customerCode, Long customerAddressId);
 
     /**
+     * 查询会员保险
+     *
+     * @param code 会员编码
+     * @return 会员保险
+     */
+    List<CustomerInsuranceVO> insurances(String code);
+
+    /**
      * 新增会员保险
      *
      * @param addCustomerInsuranceRequest AddCustomerInsuranceRequest

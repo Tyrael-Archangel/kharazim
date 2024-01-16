@@ -3,8 +3,10 @@ package com.tyrael.kharazim.application.customer.converter;
 import com.tyrael.kharazim.application.config.DictCodeConstants;
 import com.tyrael.kharazim.application.customer.domain.Customer;
 import com.tyrael.kharazim.application.customer.domain.CustomerAddress;
+import com.tyrael.kharazim.application.customer.domain.CustomerInsurance;
 import com.tyrael.kharazim.application.customer.vo.CustomerAddressVO;
 import com.tyrael.kharazim.application.customer.vo.CustomerBaseVO;
+import com.tyrael.kharazim.application.customer.vo.CustomerInsuranceVO;
 import com.tyrael.kharazim.application.customer.vo.CustomerSimpleVO;
 import com.tyrael.kharazim.application.system.service.DictService;
 import lombok.RequiredArgsConstructor;
@@ -77,6 +79,25 @@ public class CustomerConverter {
                 .countyName(customerAddress.getCountyName())
                 .detailAddress(customerAddress.getDetailAddress())
                 .defaultAddress(Boolean.TRUE.equals(customerAddress.getDefaultAddress()))
+                .build();
+    }
+
+    /**
+     * CustomerInsurance -> CustomerInsuranceVO
+     */
+    public CustomerInsuranceVO customerInsuranceVO(CustomerInsurance customerInsurance) {
+
+        String companyDict = customerInsurance.getCompanyDict();
+        String companyName = dictService.findItemName(DictCodeConstants.INSURANCE_COMPANY, companyDict);
+
+        return CustomerInsuranceVO.builder()
+                .customerInsuranceId(customerInsurance.getId())
+                .companyName(companyName)
+                .companyDictValue(companyDict)
+                .policyNumber(customerInsurance.getPolicyNumber())
+                .duration(customerInsurance.getDuration())
+                .benefits(customerInsurance.getBenefits())
+                .defaultInsurance(customerInsurance.getDefaultInsurance())
                 .build();
     }
 

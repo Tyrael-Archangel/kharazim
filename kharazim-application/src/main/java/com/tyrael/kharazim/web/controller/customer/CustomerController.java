@@ -120,6 +120,14 @@ public class CustomerController {
         return Response.success();
     }
 
+
+    @GetMapping("/insurance/{code}")
+    @Operation(summary = "查询会员保险")
+    public MultiResponse<CustomerInsuranceVO> insurances(
+            @PathVariable("code") @Parameter(description = "会员编码", required = true) String code) {
+        return MultiResponse.success(customerService.insurances(code));
+    }
+
     @PostMapping("/insurance")
     @Operation(summary = "新增会员保险", description = "新增会员保险，返回会员保险ID")
     public DataResponse<Long> addInsurance(
