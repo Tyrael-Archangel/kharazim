@@ -1,10 +1,7 @@
 package com.tyrael.kharazim.application.customer.converter;
 
 import com.tyrael.kharazim.application.config.DictCodeConstants;
-import com.tyrael.kharazim.application.customer.domain.Customer;
-import com.tyrael.kharazim.application.customer.domain.CustomerAddress;
-import com.tyrael.kharazim.application.customer.domain.CustomerInsurance;
-import com.tyrael.kharazim.application.customer.domain.CustomerServiceUser;
+import com.tyrael.kharazim.application.customer.domain.*;
 import com.tyrael.kharazim.application.customer.vo.*;
 import com.tyrael.kharazim.application.system.service.DictService;
 import com.tyrael.kharazim.application.user.domain.User;
@@ -111,6 +108,19 @@ public class CustomerConverter {
                 .serviceUserName(user.getNickName())
                 .serviceUserAvatar(user.getAvatar())
                 .updateTime(customerServiceUser.getUpdateTime())
+                .build();
+    }
+
+    /**
+     * CustomerSalesConsultant、User -> CustomerSalesConsultantVO
+     */
+    public CustomerSalesConsultantVO customerSalesConsultantVO(CustomerSalesConsultant customerSalesConsultant, User user) {
+        return CustomerSalesConsultantVO.builder()
+                .customerCode(customerSalesConsultant.getCustomerCode())
+                .salesConsultantCode(customerSalesConsultant.getSalesConsultantCode())
+                .salesConsultantName(user.getNickName())
+                .salesConsultantAvatar(user.getAvatar())
+                .updateTime(customerSalesConsultant.getUpdateTime())
                 .build();
     }
 

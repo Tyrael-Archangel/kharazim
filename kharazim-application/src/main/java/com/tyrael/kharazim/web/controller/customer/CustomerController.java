@@ -178,6 +178,13 @@ public class CustomerController {
         return Response.success();
     }
 
+    @GetMapping("/sales-consultant/{code}")
+    @Operation(summary = "查询会员的专属销售顾问")
+    public DataResponse<CustomerSalesConsultantVO> customerSalesConsultant(
+            @PathVariable("code") @Parameter(description = "会员编码", required = true) String code) {
+        return DataResponse.ok(customerService.customerSalesConsultant(code));
+    }
+
     @PutMapping("/sales-consultant/{customerCode}/{salesConsultantCode}")
     @Operation(summary = "设置会员的专属销售顾问")
     public Response assignCustomerSalesConsultant(

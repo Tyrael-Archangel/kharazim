@@ -274,27 +274,6 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void assignCustomerSalesConsultant(String customerCode, String salesConsultantCode, AuthUser currentUser) {
-        customerMapper.ensureCustomerExist(customerCode);
-        userMapper.ensureUserExist(salesConsultantCode);
-
-        CustomerSalesConsultant customerSalesConsultant = customerSalesConsultantMapper.findByCustomerCode(customerCode);
-        if (customerSalesConsultant == null) {
-            customerSalesConsultant = new CustomerSalesConsultant();
-            customerSalesConsultant.setCustomerCode(customerCode);
-            customerSalesConsultant.setSalesConsultantCode(salesConsultantCode);
-            customerSalesConsultant.setDeletedTimestamp(0L);
-            customerSalesConsultantMapper.insert(customerSalesConsultant);
-
-        } else if (!StringUtils.equals(customerSalesConsultant.getSalesConsultantCode(), salesConsultantCode)) {
-            customerSalesConsultant.setSalesConsultantCode(salesConsultantCode);
-            customerSalesConsultant.setUpdate(currentUser.getCode(), currentUser.getNickName());
-            customerSalesConsultantMapper.updateById(customerSalesConsultant);
-        }
-    }
-
-    @Override
     public List<CustomerAddressVO> addresses(String code) {
         customerMapper.ensureCustomerExist(code);
         List<CustomerAddress> customerAddresses = customerAddressMapper.listByCustomerCode(code);
@@ -532,6 +511,40 @@ public class CustomerServiceImpl implements CustomerService {
             customerServiceUser.setServiceUserCode(serviceUserCode);
             customerServiceUser.setUpdate(currentUser.getCode(), currentUser.getNickName());
             customerServiceUserMapper.updateById(customerServiceUser);
+        }
+    }
+
+    @Override
+    public CustomerSalesConsultantVO customerSalesConsultant(String code) {
+        customerMapper.ensureCustomerExist(code);
+
+        CustomerSalesConsultant customerSalesConsultant = customerSalesConsultantMapper.findByCustomerCode(code);
+        if (customerSalesConsultant == null) {
+            return null;
+        }
+        String salesConsultantCode = customerSalesConsultant.getSalesConsultantCode();
+        User user = userMapper.findByCode(salesConsultantCode);
+        return customerConverter.customerSalesConsultantVO(customerSalesConsultant, user);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void assignCustomerSalesConsultant(String customerCode, String salesConsultantCode, AuthUser currentUser) {
+        customerMapper.ensureCustomerExist(customerCode);
+        userMapper.ensureUserExist(salesConsultantCode);
+
+        CustomerSalesConsultant customerSalesConsultant = customerSalesConsultantMapper.findByCustomerCode(customerCode);
+        if (customerSalesConsultant == null) {
+            customerSalesConsultant = new CustomerSalesConsultant();
+            customerSalesConsultant.setCustomerCode(customerCode);
+            customerSalesConsultant.setSalesConsultantCode(salesConsultantCode);
+            customerSalesConsultant.setDeletedTimestamp(0L);
+            customerSalesConsultantMapper.insert(customerSalesConsultant);
+
+        } else if (!StringUtils.equals(customerSalesConsultant.getSalesConsultantCode(), salesConsultantCode)) {
+            customerSalesConsultant.setSalesConsultantCode(salesConsultantCode);
+            customerSalesConsultant.setUpdate(currentUser.getCode(), currentUser.getNickName());
+            customerSalesConsultantMapper.updateById(customerSalesConsultant);
         }
     }
 
