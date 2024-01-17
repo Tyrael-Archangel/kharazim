@@ -78,15 +78,6 @@ public interface CustomerService {
     List<CustomerAddressVO> addresses(String code);
 
     /**
-     * 设置会员专属客服
-     *
-     * @param customerCode    会员编码
-     * @param serviceUserCode 客服人员编码
-     * @param currentUser     操作人
-     */
-    void assignCustomerServiceUser(String customerCode, String serviceUserCode, AuthUser currentUser);
-
-    /**
      * 设置会员的专属销售顾问
      *
      * @param customerCode        会员编码
@@ -166,5 +157,22 @@ public interface CustomerService {
      * @param customerInsuranceId 会员保险ID
      */
     void markInsuranceDefault(String customerCode, Long customerInsuranceId);
+
+    /**
+     * 查询会员的专属客服
+     *
+     * @param customerCode 会员编码
+     * @return 会员的专属客服
+     */
+    CustomerServiceUserVO customerService(String customerCode);
+
+    /**
+     * 设置会员专属客服
+     *
+     * @param customerCode    会员编码
+     * @param serviceUserCode 客服人员编码
+     * @param currentUser     操作人
+     */
+    void assignCustomerServiceUser(String customerCode, String serviceUserCode, AuthUser currentUser);
 
 }

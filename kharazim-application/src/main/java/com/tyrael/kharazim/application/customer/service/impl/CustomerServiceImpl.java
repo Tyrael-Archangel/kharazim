@@ -12,6 +12,7 @@ import com.tyrael.kharazim.application.customer.vo.*;
 import com.tyrael.kharazim.application.system.service.CaptchaService;
 import com.tyrael.kharazim.application.system.service.CodeGenerator;
 import com.tyrael.kharazim.application.system.service.DictService;
+import com.tyrael.kharazim.application.user.domain.User;
 import com.tyrael.kharazim.application.user.mapper.UserMapper;
 import com.tyrael.kharazim.common.exception.BusinessException;
 import com.tyrael.kharazim.common.exception.DomainNotFoundException;
@@ -274,27 +275,6 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void assignCustomerServiceUser(String customerCode, String serviceUserCode, AuthUser currentUser) {
-        customerMapper.ensureCustomerExist(customerCode);
-        userMapper.ensureUserExist(serviceUserCode);
-
-        CustomerServiceUser customerServiceUser = customerServiceUserMapper.findByCustomerCode(customerCode);
-        if (customerServiceUser == null) {
-            customerServiceUser = new CustomerServiceUser();
-            customerServiceUser.setCustomerCode(customerCode);
-            customerServiceUser.setServiceUserCode(serviceUserCode);
-            customerServiceUser.setDeletedTimestamp(0L);
-            customerServiceUserMapper.insert(customerServiceUser);
-
-        } else if (!StringUtils.equals(customerServiceUser.getServiceUserCode(), serviceUserCode)) {
-            customerServiceUser.setServiceUserCode(serviceUserCode);
-            customerServiceUser.setUpdate(currentUser.getCode(), currentUser.getNickName());
-            customerServiceUserMapper.updateById(customerServiceUser);
-        }
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
     public void assignCustomerSalesConsultant(String customerCode, String salesConsultantCode, AuthUser currentUser) {
         customerMapper.ensureCustomerExist(customerCode);
         userMapper.ensureUserExist(salesConsultantCode);
@@ -520,6 +500,39 @@ public class CustomerServiceImpl implements CustomerService {
     public void markInsuranceDefault(String customerCode, Long customerInsuranceId) {
         customerMapper.ensureCustomerExist(customerCode);
         customerInsuranceMapper.markInsuranceDefault(customerCode, customerInsuranceId);
+    }
+
+    @Override
+    public CustomerServiceUserVO customerService(String customerCode) {
+        customerMapper.ensureCustomerExist(customerCode);
+        CustomerServiceUser customerServiceUser = customerServiceUserMapper.findByCustomerCode(customerCode);
+        if (customerServiceUser == null) {
+            return null;
+        }
+        String serviceUserCode = customerServiceUser.getServiceUserCode();
+        User user = userMapper.findByCode(serviceUserCode);
+        return customerConverter.customerServiceUserVO(customerServiceUser, user);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void assignCustomerServiceUser(String customerCode, String serviceUserCode, AuthUser currentUser) {
+        customerMapper.ensureCustomerExist(customerCode);
+        userMapper.ensureUserExist(serviceUserCode);
+
+        CustomerServiceUser customerServiceUser = customerServiceUserMapper.findByCustomerCode(customerCode);
+        if (customerServiceUser == null) {
+            customerServiceUser = new CustomerServiceUser();
+            customerServiceUser.setCustomerCode(customerCode);
+            customerServiceUser.setServiceUserCode(serviceUserCode);
+            customerServiceUser.setDeletedTimestamp(0L);
+            customerServiceUserMapper.insert(customerServiceUser);
+
+        } else if (!StringUtils.equals(customerServiceUser.getServiceUserCode(), serviceUserCode)) {
+            customerServiceUser.setServiceUserCode(serviceUserCode);
+            customerServiceUser.setUpdate(currentUser.getCode(), currentUser.getNickName());
+            customerServiceUserMapper.updateById(customerServiceUser);
+        }
     }
 
 }

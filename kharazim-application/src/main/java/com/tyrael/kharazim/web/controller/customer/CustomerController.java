@@ -161,6 +161,13 @@ public class CustomerController {
         return Response.success();
     }
 
+    @GetMapping("/service/{customerCode}")
+    @Operation(summary = "查询会员的专属客服")
+    public DataResponse<CustomerServiceUserVO> customerService(
+            @PathVariable("customerCode") @Parameter(description = "会员编码", required = true) String customerCode) {
+        return DataResponse.ok(customerService.customerService(customerCode));
+    }
+
     @PutMapping("/service/{customerCode}/{serviceUserCode}")
     @Operation(summary = "设置会员的专属客服")
     public Response assignCustomerServiceUser(

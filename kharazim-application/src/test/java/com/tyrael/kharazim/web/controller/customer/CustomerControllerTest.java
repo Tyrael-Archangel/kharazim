@@ -199,6 +199,12 @@ class CustomerControllerTest extends BaseControllerTest<CustomerController> {
     }
 
     @Test
+    void customerService() {
+        String customerCode = "CU0000000001";
+        super.performWhenCall(mockController.customerService(customerCode));
+    }
+
+    @Test
     void assignCustomerServiceUser() {
         String customerCode = "CU0000000001";
         String serviceUserCode = "U000002";

@@ -4,11 +4,10 @@ import com.tyrael.kharazim.application.config.DictCodeConstants;
 import com.tyrael.kharazim.application.customer.domain.Customer;
 import com.tyrael.kharazim.application.customer.domain.CustomerAddress;
 import com.tyrael.kharazim.application.customer.domain.CustomerInsurance;
-import com.tyrael.kharazim.application.customer.vo.CustomerAddressVO;
-import com.tyrael.kharazim.application.customer.vo.CustomerBaseVO;
-import com.tyrael.kharazim.application.customer.vo.CustomerInsuranceVO;
-import com.tyrael.kharazim.application.customer.vo.CustomerSimpleVO;
+import com.tyrael.kharazim.application.customer.domain.CustomerServiceUser;
+import com.tyrael.kharazim.application.customer.vo.*;
 import com.tyrael.kharazim.application.system.service.DictService;
+import com.tyrael.kharazim.application.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
@@ -98,6 +97,20 @@ public class CustomerConverter {
                 .duration(customerInsurance.getDuration())
                 .benefits(customerInsurance.getBenefits())
                 .defaultInsurance(customerInsurance.getDefaultInsurance())
+                .build();
+    }
+
+
+    /**
+     * CustomerServiceUser、User -> CustomerServiceUserVO
+     */
+    public CustomerServiceUserVO customerServiceUserVO(CustomerServiceUser customerServiceUser, User user) {
+        return CustomerServiceUserVO.builder()
+                .customerCode(customerServiceUser.getCustomerCode())
+                .serviceUserCode(customerServiceUser.getServiceUserCode())
+                .serviceUserName(user.getNickName())
+                .serviceUserAvatar(user.getAvatar())
+                .updateTime(customerServiceUser.getUpdateTime())
                 .build();
     }
 
