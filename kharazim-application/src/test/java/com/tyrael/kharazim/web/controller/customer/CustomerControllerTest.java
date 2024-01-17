@@ -192,6 +192,13 @@ class CustomerControllerTest extends BaseControllerTest<CustomerController> {
     }
 
     @Test
+    void markInsuranceDefault() {
+        String customerCode = "CU0000000001";
+        long customerInsuranceId = 2L;
+        super.performWhenCall(mockController.markInsuranceDefault(customerCode, customerInsuranceId));
+    }
+
+    @Test
     void assignCustomerServiceUser() {
         String customerCode = "CU0000000001";
         String serviceUserCode = "U000002";

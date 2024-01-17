@@ -151,4 +151,20 @@ public interface CustomerService {
      */
     void deleteCustomerInsurance(String customerCode, Long customerInsuranceId);
 
+    /**
+     * 修改会员保险
+     *
+     * @param modifyCustomerInsuranceRequest {@link ModifyCustomerInsuranceRequest}
+     * @param currentUser                    操作人
+     */
+    void modifyCustomerInsurance(ModifyCustomerInsuranceRequest modifyCustomerInsuranceRequest, AuthUser currentUser);
+
+    /**
+     * 将指定的会员保险设置为默认保险
+     *
+     * @param customerCode        会员编码
+     * @param customerInsuranceId 会员保险ID
+     */
+    void markInsuranceDefault(String customerCode, Long customerInsuranceId);
+
 }

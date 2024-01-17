@@ -144,6 +144,23 @@ public class CustomerController {
         return Response.success();
     }
 
+    @PostMapping("/insurance/modify")
+    @Operation(summary = "修改会员保险")
+    public Response modifyCustomerInsurance(@RequestBody @Valid ModifyCustomerInsuranceRequest modifyCustomerInsuranceRequest,
+                                            @Schema(hidden = true) @CurrentUser AuthUser currentUser) {
+        customerService.modifyCustomerInsurance(modifyCustomerInsuranceRequest, currentUser);
+        return Response.success();
+    }
+
+    @PutMapping("/insurance/{customerCode}/{customerInsuranceId}")
+    @Operation(summary = "将指定的会员保险设置为默认保险")
+    public Response markInsuranceDefault(
+            @PathVariable("customerCode") @Parameter(description = "会员编码", required = true) String customerCode,
+            @PathVariable("customerInsuranceId") @Parameter(description = "会员保险ID", required = true) Long customerInsuranceId) {
+        customerService.markInsuranceDefault(customerCode, customerInsuranceId);
+        return Response.success();
+    }
+
     @PutMapping("/service/{customerCode}/{serviceUserCode}")
     @Operation(summary = "设置会员的专属客服")
     public Response assignCustomerServiceUser(

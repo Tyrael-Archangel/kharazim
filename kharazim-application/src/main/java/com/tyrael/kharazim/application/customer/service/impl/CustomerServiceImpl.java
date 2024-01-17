@@ -490,4 +490,36 @@ public class CustomerServiceImpl implements CustomerService {
                     .ifPresent(first -> customerInsuranceMapper.markInsuranceDefault(customerCode, first.getId()));        }
     }
 
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void modifyCustomerInsurance(ModifyCustomerInsuranceRequest modifyCustomerInsuranceRequest, AuthUser currentUser) {
+        Long customerInsuranceId = modifyCustomerInsuranceRequest.getCustomerInsuranceId();
+        CustomerInsurance customerInsurance = customerInsuranceMapper.selectById(customerInsuranceId);
+
+        String companyDictValue = modifyCustomerInsuranceRequest.getCompanyDictValue();
+        if (!StringUtils.equalsIgnoreCase(customerInsurance.getCompanyDict(), companyDictValue)) {
+            dictService.ensureDictItemEnable(DictCodeConstants.INSURANCE_COMPANY, companyDictValue);
+            customerInsurance.setCompanyDict(companyDictValue);
+        }
+
+        customerInsurance.setPolicyNumber(modifyCustomerInsuranceRequest.getPolicyNumber());
+        customerInsurance.setDuration(modifyCustomerInsuranceRequest.getDuration());
+        customerInsurance.setBenefits(modifyCustomerInsuranceRequest.getBenefits());
+        customerInsurance.setUpdate(currentUser.getCode(), currentUser.getNickName());
+
+        customerInsuranceMapper.updateById(customerInsurance);
+
+        if (modifyCustomerInsuranceRequest.isCustomerDefaultInsurance()
+                && !Boolean.TRUE.equals(customerInsurance.getDefaultInsurance())) {
+            this.markInsuranceDefault(customerInsurance.getCustomerCode(), customerInsuranceId);
+        }
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void markInsuranceDefault(String customerCode, Long customerInsuranceId) {
+        customerMapper.ensureCustomerExist(customerCode);
+        customerInsuranceMapper.markInsuranceDefault(customerCode, customerInsuranceId);
+    }
+
 }
