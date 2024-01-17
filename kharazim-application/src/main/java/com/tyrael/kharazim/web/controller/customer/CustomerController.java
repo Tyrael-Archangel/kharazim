@@ -135,6 +135,15 @@ public class CustomerController {
         return DataResponse.ok(customerService.addInsurance(addCustomerInsuranceRequest));
     }
 
+    @DeleteMapping("/insurance/{customerCode}/{customerInsuranceId}")
+    @Operation(summary = "删除会员保险")
+    public Response deleteCustomerInsurance(
+            @PathVariable("customerCode") @Parameter(description = "会员编码", required = true) String customerCode,
+            @PathVariable("customerInsuranceId") @Parameter(description = "会员保险ID", required = true) Long customerInsuranceId) {
+        customerService.deleteCustomerInsurance(customerCode, customerInsuranceId);
+        return Response.success();
+    }
+
     @PutMapping("/service/{customerCode}/{serviceUserCode}")
     @Operation(summary = "设置会员的专属客服")
     public Response assignCustomerServiceUser(

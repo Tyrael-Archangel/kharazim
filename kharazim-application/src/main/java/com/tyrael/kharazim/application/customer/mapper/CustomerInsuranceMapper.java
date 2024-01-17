@@ -47,4 +47,17 @@ public interface CustomerInsuranceMapper extends BaseMapper<CustomerInsurance> {
         this.update(null, markAddressDefaultWrapper);
     }
 
+    /**
+     * 删除
+     *
+     * @param id 会员保险ID
+     */
+    default void deleteCustomerInsurance(Long id) {
+        LambdaUpdateWrapper<CustomerInsurance> updateWrapper = Wrappers.lambdaUpdate();
+        updateWrapper.eq(CustomerInsurance::getId, id)
+                .set(CustomerInsurance::getDeleted, Boolean.TRUE)
+                .set(CustomerInsurance::getDeletedTimestamp, System.currentTimeMillis());
+        this.update(null, updateWrapper);
+    }
+
 }

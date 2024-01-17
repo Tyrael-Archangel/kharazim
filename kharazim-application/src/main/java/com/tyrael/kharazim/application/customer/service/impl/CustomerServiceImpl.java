@@ -427,6 +427,8 @@ public class CustomerServiceImpl implements CustomerService {
         List<CustomerInsurance> customerInsurances = customerInsuranceMapper.listByCustomerCode(code);
         return customerInsurances.stream()
                 .map(customerConverter::customerInsuranceVO)
+                .sorted(Comparator.comparing(CustomerInsuranceVO::getDefaultInsurance).reversed()
+                        .thenComparing(CustomerInsuranceVO::getCustomerInsuranceId))
                 .collect(Collectors.toList());
     }
 
@@ -468,6 +470,24 @@ public class CustomerServiceImpl implements CustomerService {
         customerInsurance.setBenefits(addCustomerInsuranceRequest.getBenefits());
         customerInsurance.setDeletedTimestamp(0L);
         return customerInsurance;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteCustomerInsurance(String customerCode, Long customerInsuranceId) {
+        CustomerInsurance customerInsurance = customerInsuranceMapper.selectById(customerInsuranceId);
+        DomainNotFoundException.assertFound(customerInsurance, customerInsuranceId);
+
+        if (!StringUtils.equals(customerInsurance.getCustomerCode(), customerCode)) {
+            throw new BusinessException("保险与会员不匹配");
+        }
+        customerInsuranceMapper.deleteCustomerInsurance(customerInsuranceId);
+
+        if (Boolean.TRUE.equals(customerInsurance.getDefaultInsurance())) {
+            List<CustomerInsurance> customerInsurances = customerInsuranceMapper.listByCustomerCode(customerCode);
+            customerInsurances.stream()
+                    .min(Comparator.comparing(CustomerInsurance::getId))
+                    .ifPresent(first -> customerInsuranceMapper.markInsuranceDefault(customerCode, first.getId()));        }
     }
 
 }

@@ -185,6 +185,13 @@ class CustomerControllerTest extends BaseControllerTest<CustomerController> {
     }
 
     @Test
+    void deleteCustomerInsurance() {
+        String customerCode = "CU0000000001";
+        long customerInsuranceId = 1L;
+        super.performWhenCall(mockController.deleteCustomerInsurance(customerCode, customerInsuranceId));
+    }
+
+    @Test
     void assignCustomerServiceUser() {
         String customerCode = "CU0000000001";
         String serviceUserCode = "U000002";

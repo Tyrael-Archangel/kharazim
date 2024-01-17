@@ -143,4 +143,12 @@ public interface CustomerService {
      */
     Long addInsurance(AddCustomerInsuranceRequest addCustomerInsuranceRequest);
 
+    /**
+     * 删除会员保险
+     *
+     * @param customerCode        会员编码
+     * @param customerInsuranceId 会员保险ID
+     */
+    void deleteCustomerInsurance(String customerCode, Long customerInsuranceId);
+
 }
