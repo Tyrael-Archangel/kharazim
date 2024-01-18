@@ -1,4 +1,4 @@
-package com.tyrael.kharazim.demo;
+package com.tyrael.kharazim.demo.practice;
 
 /**
  * 最大字符串配对数目
