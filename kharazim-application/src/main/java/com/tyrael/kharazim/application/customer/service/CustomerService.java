@@ -183,4 +183,12 @@ public interface CustomerService {
      */
     void assignCustomerSalesConsultant(String customerCode, String salesConsultantCode, AuthUser currentUser);
 
+    /**
+     * 查询会员的标签
+     *
+     * @param code 会员编码
+     * @return 会员的标签
+     */
+    List<CustomerTagVO> customerTags(String code);
+
 }

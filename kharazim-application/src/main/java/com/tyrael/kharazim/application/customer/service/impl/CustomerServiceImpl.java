@@ -9,6 +9,7 @@ import com.tyrael.kharazim.application.customer.domain.*;
 import com.tyrael.kharazim.application.customer.mapper.*;
 import com.tyrael.kharazim.application.customer.service.CustomerService;
 import com.tyrael.kharazim.application.customer.vo.*;
+import com.tyrael.kharazim.application.system.domain.DictItem;
 import com.tyrael.kharazim.application.system.service.CaptchaService;
 import com.tyrael.kharazim.application.system.service.CodeGenerator;
 import com.tyrael.kharazim.application.system.service.DictService;
@@ -26,10 +27,7 @@ import org.springframework.util.CollectionUtils;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.MonthDay;
-import java.util.Comparator;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -47,6 +45,7 @@ public class CustomerServiceImpl implements CustomerService {
     private final CustomerInsuranceMapper customerInsuranceMapper;
     private final CustomerServiceUserMapper customerServiceUserMapper;
     private final CustomerSalesConsultantMapper customerSalesConsultantMapper;
+    private final CustomerTagMapper customerTagMapper;
     private final UserMapper userMapper;
     private final DictService dictService;
     private final CaptchaService captchaService;
@@ -546,6 +545,29 @@ public class CustomerServiceImpl implements CustomerService {
             customerSalesConsultant.setUpdate(currentUser.getCode(), currentUser.getNickName());
             customerSalesConsultantMapper.updateById(customerSalesConsultant);
         }
+    }
+
+    @Override
+    public List<CustomerTagVO> customerTags(String code) {
+        customerMapper.ensureCustomerExist(code);
+
+        List<CustomerTag> customerTags = customerTagMapper.listByCustomerCode(code);
+        if (customerTags.isEmpty()) {
+            return Lists.newArrayList();
+        }
+        List<DictItem> dictItems = dictService.findByDict(DictCodeConstants.CUSTOMER_TAG);
+        Map<String, String> dictItemValueToNameMap = dictItems.stream()
+                .collect(Collectors.toMap(DictItem::getValue, DictItem::getName));
+
+        return customerTags.stream()
+                .map(customerTag -> {
+                    CustomerTagVO customerTagVO = new CustomerTagVO();
+                    customerTagVO.setTagName(dictItemValueToNameMap.get(customerTag.getTagDict()));
+                    customerTagVO.setTagDictValue(customerTag.getTagDict());
+                    return customerTagVO;
+                })
+                .filter(e -> StringUtils.isNotBlank(e.getTagName()))
+                .collect(Collectors.toList());
     }
 
 }

@@ -195,4 +195,11 @@ public class CustomerController {
         return Response.success();
     }
 
+    @GetMapping("/tags/{code}")
+    @Operation(summary = "查询会员的标签")
+    public MultiResponse<CustomerTagVO> customerTags(
+            @PathVariable("code") @Parameter(description = "会员编码", required = true) String code) {
+        return MultiResponse.success(customerService.customerTags(code));
+    }
+
 }
