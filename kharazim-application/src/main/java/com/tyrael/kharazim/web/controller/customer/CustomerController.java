@@ -210,4 +210,13 @@ public class CustomerController {
         return Response.success();
     }
 
+    @DeleteMapping("/tags/{code}/{tagDictValue}")
+    @Operation(summary = "删除会员的标签")
+    public Response removeCustomerTag(
+            @PathVariable("code") @Parameter(description = "会员编码", required = true) String code,
+            @PathVariable("tagDictValue") @Parameter(description = "会员标签字典值，字典编码：customer_tag", required = true) String tagDictValue) {
+        customerService.removeCustomerTag(code, tagDictValue);
+        return Response.success();
+    }
+
 }

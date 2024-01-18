@@ -199,4 +199,12 @@ public interface CustomerService {
      */
     void addCustomerTag(AddCustomerTagRequest addCustomerTagRequest, AuthUser currentUser);
 
+    /**
+     * 删除会员的标签
+     *
+     * @param code         会员编码
+     * @param tagDictValue 会员标签字典值
+     */
+    void removeCustomerTag(String code, String tagDictValue);
+
 }

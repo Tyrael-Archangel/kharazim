@@ -258,6 +258,13 @@ class CustomerControllerTest extends BaseControllerTest<CustomerController> {
         return addDictItems(DictCodeConstants.CUSTOMER_TAG.getDictCode(), customerTags);
     }
 
+    @Test
+    void removeCustomerTag() {
+        String customerCode = "CU0000000001";
+        String tagDictValue = "common_laborer";
+        super.performWhenCall(mockController.removeCustomerTag(customerCode, tagDictValue));
+    }
+
     private Set<String> addDictItems(String dictCode, Pairs<String, String> dictItems) {
         Set<String> dictItemValues = new LinkedHashSet<>();
         for (int i = 0; i < dictItems.size(); i++) {

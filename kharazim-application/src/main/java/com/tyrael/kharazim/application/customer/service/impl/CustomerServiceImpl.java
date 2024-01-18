@@ -595,4 +595,11 @@ public class CustomerServiceImpl implements CustomerService {
         }
     }
 
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void removeCustomerTag(String code, String tagDictValue) {
+        customerMapper.ensureCustomerExist(code);
+        customerTagMapper.deleteCustomerTag(code, tagDictValue);
+    }
+
 }
