@@ -50,6 +50,7 @@ import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -63,6 +64,8 @@ import java.util.stream.Stream;
 })
 @AutoConfigureMockMvc
 public abstract class BaseControllerTest<T> {
+
+    protected final Random random = new Random();
 
     /**
      * mock出来的controller，不能用于直接调用，只能用于获取方法签名，拼接请求

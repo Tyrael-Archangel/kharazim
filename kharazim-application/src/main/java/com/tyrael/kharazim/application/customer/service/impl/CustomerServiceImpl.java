@@ -18,6 +18,7 @@ import com.tyrael.kharazim.application.user.mapper.UserMapper;
 import com.tyrael.kharazim.common.exception.BusinessException;
 import com.tyrael.kharazim.common.exception.DomainNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
@@ -34,6 +35,7 @@ import java.util.stream.Collectors;
  * @author Tyrael Archangel
  * @since 2024/1/8
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CustomerServiceImpl implements CustomerService {
@@ -445,7 +447,8 @@ public class CustomerServiceImpl implements CustomerService {
             List<CustomerInsurance> customerInsurances = customerInsuranceMapper.listByCustomerCode(customerCode);
             customerInsurances.stream()
                     .min(Comparator.comparing(CustomerInsurance::getId))
-                    .ifPresent(first -> customerInsuranceMapper.markInsuranceDefault(customerCode, first.getId()));        }
+                    .ifPresent(first -> customerInsuranceMapper.markInsuranceDefault(customerCode, first.getId()));
+        }
     }
 
     @Override
@@ -568,6 +571,28 @@ public class CustomerServiceImpl implements CustomerService {
                 })
                 .filter(e -> StringUtils.isNotBlank(e.getTagName()))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void addCustomerTag(AddCustomerTagRequest addCustomerTagRequest, AuthUser currentUser) {
+        String customerCode = addCustomerTagRequest.getCustomerCode();
+        customerMapper.ensureCustomerExist(customerCode);
+
+        Set<String> tagDictValues = addCustomerTagRequest.getTagDictValues();
+        dictService.ensureDictItemEnable(DictCodeConstants.CUSTOMER_TAG, tagDictValues);
+
+        for (String tagDict : tagDictValues) {
+            CustomerTag customerTag = new CustomerTag();
+            customerTag.setCustomerCode(customerCode);
+            customerTag.setTagDict(tagDict);
+            customerTag.setDeletedTimestamp(0L);
+            try {
+                customerTagMapper.insert(customerTag);
+            } catch (DuplicateKeyException e) {
+                log.warn("会员[" + customerCode + "]标签重复: " + tagDict);
+            }
+        }
     }
 
 }

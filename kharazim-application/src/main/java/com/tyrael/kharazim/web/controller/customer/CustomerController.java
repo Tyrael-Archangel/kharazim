@@ -202,4 +202,12 @@ public class CustomerController {
         return MultiResponse.success(customerService.customerTags(code));
     }
 
+    @PostMapping("/tags")
+    @Operation(summary = "为会员添加标签")
+    public Response addCustomerTag(@RequestBody @Valid AddCustomerTagRequest addCustomerTagRequest,
+                                   @Schema(hidden = true) @CurrentUser AuthUser currentUser) {
+        customerService.addCustomerTag(addCustomerTagRequest, currentUser);
+        return Response.success();
+    }
+
 }

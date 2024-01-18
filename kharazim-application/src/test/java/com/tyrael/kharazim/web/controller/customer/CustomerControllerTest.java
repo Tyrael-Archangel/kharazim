@@ -1,24 +1,22 @@
 package com.tyrael.kharazim.web.controller.customer;
 
+import com.google.common.collect.Sets;
 import com.tyrael.kharazim.application.config.DictCodeConstants;
-import com.tyrael.kharazim.application.customer.vo.AddCustomerAddressRequest;
-import com.tyrael.kharazim.application.customer.vo.AddCustomerInsuranceRequest;
-import com.tyrael.kharazim.application.customer.vo.AddCustomerRequest;
-import com.tyrael.kharazim.application.customer.vo.ListCustomerRequest;
+import com.tyrael.kharazim.application.customer.vo.*;
 import com.tyrael.kharazim.application.system.dto.address.AddressTreeNodeDTO;
 import com.tyrael.kharazim.application.system.dto.dict.SaveDictItemRequest;
 import com.tyrael.kharazim.application.system.service.AddressQueryService;
 import com.tyrael.kharazim.application.system.service.DictService;
 import com.tyrael.kharazim.application.user.enums.UserCertificateTypeEnum;
 import com.tyrael.kharazim.application.user.enums.UserGenderEnum;
+import com.tyrael.kharazim.common.dto.Pair;
+import com.tyrael.kharazim.common.dto.Pairs;
 import com.tyrael.kharazim.web.controller.BaseControllerTest;
-import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * @author Tyrael Archangel
@@ -85,7 +83,6 @@ class CustomerControllerTest extends BaseControllerTest<CustomerController> {
             AddressTreeNodeDTO province = null;
             AddressTreeNodeDTO city = null;
             AddressTreeNodeDTO county = null;
-            Random random = new Random();
             List<AddressTreeNodeDTO> provinces = addressQueryService.fullTree();
             if (provinces != null && !provinces.isEmpty()) {
                 province = provinces.get(random.nextInt(provinces.size()));
@@ -139,7 +136,6 @@ class CustomerControllerTest extends BaseControllerTest<CustomerController> {
             companyItems = addInsuranceCompanyDict();
         }
         List<String> companyDictValues = new ArrayList<>(companyItems);
-        Random random = new Random();
 
         String customerCode = "CU0000000001";
         for (int i = 0; i < 5; i++) {
@@ -158,30 +154,18 @@ class CustomerControllerTest extends BaseControllerTest<CustomerController> {
     }
 
     private Set<String> addInsuranceCompanyDict() {
-        List<Pair<String, String>> insuranceCompanies = List.of(
-                Pair.of("AIA | 友邦", "AIA"),
-                Pair.of("Allianz | 安联", "ALLIANZ"),
-                Pair.of("AXA | 安盛", "AXA"),
-                Pair.of("Bupa | 保柏", "BUPA"),
-                Pair.of("Cigna | 信诺", "CIGNA"),
-                Pair.of("Cigna & CMB | 招商信诺", "CIGNACMB"),
-                Pair.of("MSH | 万欣和", "MSH"),
-                Pair.of("PINGAN | 中国平安", "PINGAN"));
 
-        for (int i = 0; i < insuranceCompanies.size(); i++) {
-            Pair<String, String> insuranceCompany = insuranceCompanies.get(i);
+        Pairs<String, String> insuranceCompanies = new Pairs<String, String>()
+                .append("AIA | 友邦", "AIA")
+                .append("Allianz | 安联", "ALLIANZ")
+                .append("AXA | 安盛", "AXA")
+                .append("Bupa | 保柏", "BUPA")
+                .append("Cigna | 信诺", "CIGNA")
+                .append("Cigna & CMB | 招商信诺", "CIGNACMB")
+                .append("MSH | 万欣和", "MSH")
+                .append("PINGAN | 中国平安", "PINGAN");
 
-            SaveDictItemRequest addDictItemRequest = new SaveDictItemRequest();
-            addDictItemRequest.setTypeCode(DictCodeConstants.INSURANCE_COMPANY.getDictCode());
-            addDictItemRequest.setValue(insuranceCompany.getValue());
-            addDictItemRequest.setName(insuranceCompany.getKey());
-            addDictItemRequest.setSort(i + 1);
-            addDictItemRequest.setEnable(Boolean.TRUE);
-            dictService.addDictItem(addDictItemRequest, super.mockAdmin());
-        }
-        return insuranceCompanies.stream()
-                .map(Pair::getValue)
-                .collect(Collectors.toSet());
+        return addDictItems(DictCodeConstants.INSURANCE_COMPANY.getDictCode(), insuranceCompanies);
     }
 
     @Test
@@ -228,6 +212,66 @@ class CustomerControllerTest extends BaseControllerTest<CustomerController> {
     void customerTags() {
         String customerCode = "CU0000000001";
         super.performWhenCall(mockController.customerTags(customerCode));
+    }
+
+    @Test
+    void addCustomerTag() {
+        Set<String> customerTagDictItems = dictService.findEnabledItems(DictCodeConstants.CUSTOMER_TAG);
+        if (customerTagDictItems.isEmpty()) {
+            customerTagDictItems = addCustomerTagDict();
+        }
+
+        List<String> customerTags = new ArrayList<>(customerTagDictItems);
+        Set<String> tagDictValues = Sets.newHashSet();
+        for (int i = 0; i < 8; i++) {
+            String customerTag = customerTags.get(random.nextInt(customerTags.size()));
+            tagDictValues.add(customerTag);
+        }
+
+        String customerCode = "CU0000000001";
+        AddCustomerTagRequest addCustomerTagRequest = new AddCustomerTagRequest();
+        addCustomerTagRequest.setCustomerCode(customerCode);
+        addCustomerTagRequest.setTagDictValues(tagDictValues);
+        super.performWhenCall(mockController.addCustomerTag(addCustomerTagRequest, super.mockAdmin()));
+    }
+
+    private Set<String> addCustomerTagDict() {
+        Pairs<String, String> customerTags = new Pairs<String, String>()
+                .append("青铜", "bronze")
+                .append("白银", "silver")
+                .append("黄金", "gold")
+                .append("铂金", "platinum")
+                .append("钻石", "diamond")
+                .append("健身爱好者", "fitness_enthusiasts")
+                .append("注重保养", "pay_attention_to_maintenance")
+                .append("身材火辣", "hot_figure")
+                .append("高价值敏感", "high_value_sensitive")
+                .append("信用良好", "good_credit")
+                .append("南方人", "southerner")
+                .append("北方人", "northerner")
+                .append("外国人", "foreigner")
+                .append("企业高管", "enterprise_senior_manager")
+                .append("普通工人", "common_laborer")
+                .append("家庭妇女", "housewife")
+                .append("退休人员", "retiree")
+                .append("消费能力强", "strong_spending_power");
+        return addDictItems(DictCodeConstants.CUSTOMER_TAG.getDictCode(), customerTags);
+    }
+
+    private Set<String> addDictItems(String dictCode, Pairs<String, String> dictItems) {
+        Set<String> dictItemValues = new LinkedHashSet<>();
+        for (int i = 0; i < dictItems.size(); i++) {
+            Pair<String, String> dictItem = dictItems.get(i);
+            SaveDictItemRequest addDictItemRequest = new SaveDictItemRequest();
+            addDictItemRequest.setTypeCode(dictCode);
+            addDictItemRequest.setValue(dictItem.right());
+            addDictItemRequest.setName(dictItem.left());
+            addDictItemRequest.setSort(i + 1);
+            addDictItemRequest.setEnable(Boolean.TRUE);
+            dictService.addDictItem(addDictItemRequest, super.mockAdmin());
+            dictItemValues.add(dictItem.right());
+        }
+        return dictItemValues;
     }
 
 }

@@ -191,4 +191,12 @@ public interface CustomerService {
      */
     List<CustomerTagVO> customerTags(String code);
 
+    /**
+     * 为会员添加标签
+     *
+     * @param addCustomerTagRequest AddCustomerTagRequest
+     * @param currentUser           操作人
+     */
+    void addCustomerTag(AddCustomerTagRequest addCustomerTagRequest, AuthUser currentUser);
+
 }
