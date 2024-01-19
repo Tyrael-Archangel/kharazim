@@ -1,5 +1,7 @@
 package com.tyrael.kharazim.application.customer.service;
 
+import com.tyrael.kharazim.application.customer.vo.family.AddFamilyMemberRequest;
+import com.tyrael.kharazim.application.customer.vo.family.CreateFamilyRequest;
 import com.tyrael.kharazim.application.customer.vo.family.CustomerFamilyVO;
 import com.tyrael.kharazim.application.customer.vo.family.PageFamilyRequest;
 import com.tyrael.kharazim.common.dto.PageResponse;
@@ -25,5 +27,20 @@ public interface CustomerFamilyService {
      * @return 家庭分页数据
      */
     PageResponse<CustomerFamilyVO> page(PageFamilyRequest pageRequest);
+
+    /**
+     * 创建家庭
+     *
+     * @param createFamilyRequest CreateFamilyRequest
+     * @return 家庭编码
+     */
+    String create(CreateFamilyRequest createFamilyRequest);
+
+    /**
+     * 将会员加入家庭
+     *
+     * @param addFamilyMemberRequest AddFamilyMemberRequest
+     */
+    void addFamilyMember(AddFamilyMemberRequest addFamilyMemberRequest);
 
 }

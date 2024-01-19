@@ -1,19 +1,20 @@
 package com.tyrael.kharazim.web.controller.customer;
 
 import com.tyrael.kharazim.application.customer.service.CustomerFamilyService;
+import com.tyrael.kharazim.application.customer.vo.family.AddFamilyMemberRequest;
+import com.tyrael.kharazim.application.customer.vo.family.CreateFamilyRequest;
 import com.tyrael.kharazim.application.customer.vo.family.CustomerFamilyVO;
 import com.tyrael.kharazim.application.customer.vo.family.PageFamilyRequest;
 import com.tyrael.kharazim.common.dto.DataResponse;
 import com.tyrael.kharazim.common.dto.PageResponse;
+import com.tyrael.kharazim.common.dto.Response;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author Tyrael Archangel
@@ -38,6 +39,19 @@ public class FamilyController {
     @Operation(summary = "会员家庭分页")
     public PageResponse<CustomerFamilyVO> page(@ParameterObject PageFamilyRequest pageRequest) {
         return customerFamilyService.page(pageRequest);
+    }
+
+    @PostMapping("/create")
+    @Operation(summary = "创建家庭", description = "创建家庭，返回家庭编码")
+    public DataResponse<String> create(@RequestBody @Valid CreateFamilyRequest createFamilyRequest) {
+        return DataResponse.ok(customerFamilyService.create(createFamilyRequest));
+    }
+
+    @PostMapping("/family-member/add")
+    @Operation(summary = "将会员添加进指定的家庭")
+    public Response addFamilyMember(@RequestBody @Valid AddFamilyMemberRequest addFamilyMemberRequest) {
+        customerFamilyService.addFamilyMember(addFamilyMemberRequest);
+        return Response.success();
     }
 
 }

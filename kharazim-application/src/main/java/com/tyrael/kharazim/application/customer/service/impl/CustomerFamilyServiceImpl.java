@@ -1,6 +1,7 @@
 package com.tyrael.kharazim.application.customer.service.impl;
 
 import com.google.common.collect.Lists;
+import com.tyrael.kharazim.application.config.BusinessCodeConstants;
 import com.tyrael.kharazim.application.customer.domain.Customer;
 import com.tyrael.kharazim.application.customer.domain.Family;
 import com.tyrael.kharazim.application.customer.domain.FamilyMember;
@@ -8,14 +9,20 @@ import com.tyrael.kharazim.application.customer.mapper.CustomerMapper;
 import com.tyrael.kharazim.application.customer.mapper.FamilyMapper;
 import com.tyrael.kharazim.application.customer.mapper.FamilyMemberMapper;
 import com.tyrael.kharazim.application.customer.service.CustomerFamilyService;
+import com.tyrael.kharazim.application.customer.vo.family.AddFamilyMemberRequest;
+import com.tyrael.kharazim.application.customer.vo.family.CreateFamilyRequest;
 import com.tyrael.kharazim.application.customer.vo.family.CustomerFamilyVO;
 import com.tyrael.kharazim.application.customer.vo.family.PageFamilyRequest;
+import com.tyrael.kharazim.application.system.service.CodeGenerator;
 import com.tyrael.kharazim.common.dto.PageResponse;
+import com.tyrael.kharazim.common.exception.BusinessException;
 import com.tyrael.kharazim.common.exception.DomainNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Collection;
@@ -38,6 +45,7 @@ public class CustomerFamilyServiceImpl implements CustomerFamilyService {
     private final FamilyMapper familyMapper;
     private final FamilyMemberMapper familyMemberMapper;
     private final CustomerMapper customerMapper;
+    private final CodeGenerator codeGenerator;
 
     @Override
     public CustomerFamilyVO family(String familyCode) {
@@ -121,6 +129,50 @@ public class CustomerFamilyServiceImpl implements CustomerFamilyService {
         return families.stream()
                 .map(family -> customerFamilyVO(family, familyMemberMap.get(family.getCode()), customerMap))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public String create(CreateFamilyRequest createFamilyRequest) {
+
+        String leaderCode = createFamilyRequest.getLeaderCustomerCode();
+        customerMapper.ensureCustomerExist(leaderCode);
+
+        String familyCode = codeGenerator.next(BusinessCodeConstants.CUSTOMER_FAMILY);
+
+        Family family = new Family();
+        family.setCode(familyCode);
+        family.setName(createFamilyRequest.getFamilyName());
+        family.setLeaderCode(leaderCode);
+        family.setRemark(createFamilyRequest.getRemark());
+
+        familyMapper.insert(family);
+
+        addFamilyMember(new AddFamilyMemberRequest(familyCode, leaderCode, LEADER_NAME));
+
+        return familyCode;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void addFamilyMember(AddFamilyMemberRequest addFamilyMemberRequest) {
+        String familyCode = addFamilyMemberRequest.getFamilyCode();
+        String customerCode = addFamilyMemberRequest.getCustomerCode();
+        customerMapper.ensureCustomerExist(customerCode);
+        Family family = familyMapper.findByCode(familyCode);
+        DomainNotFoundException.assertFound(family, familyCode);
+
+        FamilyMember familyMember = new FamilyMember();
+        familyMember.setFamilyCode(familyCode);
+        familyMember.setCustomerCode(customerCode);
+        familyMember.setRelationToLeader(addFamilyMemberRequest.getRelationToLeader());
+
+        try {
+            familyMemberMapper.insert(familyMember);
+        } catch (DuplicateKeyException e) {
+            log.error("save family member error: " + e.getMessage());
+            throw new BusinessException("会员已经属于该家庭，请勿重复加入");
+        }
     }
 
 }
