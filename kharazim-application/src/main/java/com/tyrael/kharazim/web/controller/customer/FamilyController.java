@@ -2,11 +2,14 @@ package com.tyrael.kharazim.web.controller.customer;
 
 import com.tyrael.kharazim.application.customer.service.CustomerFamilyService;
 import com.tyrael.kharazim.application.customer.vo.family.CustomerFamilyVO;
+import com.tyrael.kharazim.application.customer.vo.family.PageFamilyRequest;
 import com.tyrael.kharazim.common.dto.DataResponse;
+import com.tyrael.kharazim.common.dto.PageResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,6 +32,12 @@ public class FamilyController {
     public DataResponse<CustomerFamilyVO> family(
             @PathVariable("familyCode") @Parameter(description = "家庭编码", required = true) String familyCode) {
         return DataResponse.ok(customerFamilyService.family(familyCode));
+    }
+
+    @GetMapping("/page")
+    @Operation(summary = "会员家庭分页")
+    public PageResponse<CustomerFamilyVO> page(@ParameterObject PageFamilyRequest pageRequest) {
+        return customerFamilyService.page(pageRequest);
     }
 
 }

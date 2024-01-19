@@ -1,5 +1,6 @@
 package com.tyrael.kharazim.web.controller.customer;
 
+import com.tyrael.kharazim.application.customer.vo.family.PageFamilyRequest;
 import com.tyrael.kharazim.web.controller.BaseControllerTest;
 import org.junit.jupiter.api.Test;
 
@@ -17,6 +18,12 @@ class FamilyControllerTest extends BaseControllerTest<FamilyController> {
     void family() {
         String familyCode = "CF000001";
         super.performWhenCall(mockController.family(familyCode));
+    }
+
+    @Test
+    void page() {
+        PageFamilyRequest pageRequest = new PageFamilyRequest();
+        super.performWhenCall(mockController.page(pageRequest));
     }
 
 }

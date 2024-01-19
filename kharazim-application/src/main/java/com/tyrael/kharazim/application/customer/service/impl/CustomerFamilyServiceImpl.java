@@ -9,12 +9,16 @@ import com.tyrael.kharazim.application.customer.mapper.FamilyMapper;
 import com.tyrael.kharazim.application.customer.mapper.FamilyMemberMapper;
 import com.tyrael.kharazim.application.customer.service.CustomerFamilyService;
 import com.tyrael.kharazim.application.customer.vo.family.CustomerFamilyVO;
+import com.tyrael.kharazim.application.customer.vo.family.PageFamilyRequest;
+import com.tyrael.kharazim.common.dto.PageResponse;
 import com.tyrael.kharazim.common.exception.DomainNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -50,7 +54,6 @@ public class CustomerFamilyServiceImpl implements CustomerFamilyService {
 
         return customerFamilyVO(family, familyMembers, customerMap);
     }
-
 
     private CustomerFamilyVO customerFamilyVO(Family family,
                                               List<FamilyMember> familyMembers,
@@ -88,4 +91,36 @@ public class CustomerFamilyServiceImpl implements CustomerFamilyService {
 
         return customerFamily;
     }
+
+    @Override
+    public PageResponse<CustomerFamilyVO> page(PageFamilyRequest pageRequest) {
+        PageResponse<Family> familyPage = familyMapper.page(pageRequest);
+        return PageResponse.success(
+                this.customerFamilyVO(familyPage.getData()),
+                familyPage.getTotalCount(),
+                familyPage.getPageSize(),
+                familyPage.getPageNum());
+    }
+
+    private List<CustomerFamilyVO> customerFamilyVO(Collection<Family> families) {
+        if (CollectionUtils.isEmpty(families)) {
+            return Lists.newArrayList();
+        }
+        Set<String> familyCodes = families.stream()
+                .map(Family::getCode)
+                .collect(Collectors.toSet());
+
+        List<FamilyMember> allFamilyMembers = familyMemberMapper.listByFamilyCodes(familyCodes);
+        Map<String, List<FamilyMember>> familyMemberMap = allFamilyMembers.stream()
+                .collect(Collectors.groupingBy(FamilyMember::getFamilyCode));
+        Set<String> customerCodes = allFamilyMembers.stream()
+                .map(FamilyMember::getCustomerCode)
+                .collect(Collectors.toSet());
+        Map<String, Customer> customerMap = customerMapper.mapByCodes(customerCodes);
+
+        return families.stream()
+                .map(family -> customerFamilyVO(family, familyMemberMap.get(family.getCode()), customerMap))
+                .collect(Collectors.toList());
+    }
+
 }
