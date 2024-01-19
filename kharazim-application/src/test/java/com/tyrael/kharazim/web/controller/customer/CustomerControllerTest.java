@@ -2,7 +2,7 @@ package com.tyrael.kharazim.web.controller.customer;
 
 import com.google.common.collect.Sets;
 import com.tyrael.kharazim.application.config.DictCodeConstants;
-import com.tyrael.kharazim.application.customer.vo.*;
+import com.tyrael.kharazim.application.customer.vo.customer.*;
 import com.tyrael.kharazim.application.system.dto.address.AddressTreeNodeDTO;
 import com.tyrael.kharazim.application.system.dto.dict.SaveDictItemRequest;
 import com.tyrael.kharazim.application.system.service.AddressQueryService;

@@ -2,7 +2,7 @@ package com.tyrael.kharazim.application.customer.converter;
 
 import com.tyrael.kharazim.application.config.DictCodeConstants;
 import com.tyrael.kharazim.application.customer.domain.*;
-import com.tyrael.kharazim.application.customer.vo.*;
+import com.tyrael.kharazim.application.customer.vo.customer.*;
 import com.tyrael.kharazim.application.system.service.DictService;
 import com.tyrael.kharazim.application.user.domain.User;
 import lombok.RequiredArgsConstructor;

@@ -4,12 +4,17 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.tyrael.kharazim.application.customer.domain.Customer;
-import com.tyrael.kharazim.application.customer.vo.ListCustomerRequest;
+import com.tyrael.kharazim.application.customer.vo.customer.ListCustomerRequest;
 import com.tyrael.kharazim.common.exception.DomainNotFoundException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.annotations.Mapper;
+import org.springframework.util.CollectionUtils;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author Tyrael Archangel
@@ -74,6 +79,33 @@ public interface CustomerMapper extends BaseMapper<Customer> {
         }
 
         return selectList(queryWrapper);
+    }
+
+    /**
+     * list by codes
+     *
+     * @param codes codes
+     * @return Customers
+     */
+    default List<Customer> listByCodes(Collection<String> codes) {
+        if (CollectionUtils.isEmpty(codes)) {
+            return Collections.emptyList();
+        }
+        LambdaQueryWrapper<Customer> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.in(Customer::getCode, codes);
+        return selectList(queryWrapper);
+    }
+
+    /**
+     * map by codes
+     *
+     * @param codes codes
+     * @return Map<code, Customer>
+     */
+    default Map<String, Customer> mapByCodes(Collection<String> codes) {
+        List<Customer> customers = listByCodes(codes);
+        return customers.stream()
+                .collect(Collectors.toMap(Customer::getCode, e -> e));
     }
 
 }

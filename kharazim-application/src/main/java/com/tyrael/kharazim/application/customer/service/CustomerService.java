@@ -1,7 +1,7 @@
 package com.tyrael.kharazim.application.customer.service;
 
 import com.tyrael.kharazim.application.base.auth.AuthUser;
-import com.tyrael.kharazim.application.customer.vo.*;
+import com.tyrael.kharazim.application.customer.vo.customer.*;
 
 import java.util.List;
 

@@ -8,7 +8,7 @@ import com.tyrael.kharazim.application.customer.converter.CustomerConverter;
 import com.tyrael.kharazim.application.customer.domain.*;
 import com.tyrael.kharazim.application.customer.mapper.*;
 import com.tyrael.kharazim.application.customer.service.CustomerService;
-import com.tyrael.kharazim.application.customer.vo.*;
+import com.tyrael.kharazim.application.customer.vo.customer.*;
 import com.tyrael.kharazim.application.system.domain.DictItem;
 import com.tyrael.kharazim.application.system.service.CaptchaService;
 import com.tyrael.kharazim.application.system.service.CodeGenerator;

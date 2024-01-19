@@ -3,7 +3,7 @@ package com.tyrael.kharazim.web.controller.customer;
 import com.tyrael.kharazim.application.base.auth.AuthUser;
 import com.tyrael.kharazim.application.base.auth.CurrentUser;
 import com.tyrael.kharazim.application.customer.service.CustomerService;
-import com.tyrael.kharazim.application.customer.vo.*;
+import com.tyrael.kharazim.application.customer.vo.customer.*;
 import com.tyrael.kharazim.common.dto.DataResponse;
 import com.tyrael.kharazim.common.dto.MultiResponse;
 import com.tyrael.kharazim.common.dto.Response;

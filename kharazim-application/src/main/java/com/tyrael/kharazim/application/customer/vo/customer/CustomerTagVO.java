@@ -1,4 +1,4 @@
-package com.tyrael.kharazim.application.customer.vo;
+package com.tyrael.kharazim.application.customer.vo.customer;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
