@@ -9,6 +9,11 @@ import com.tyrael.kharazim.application.customer.domain.Family;
 import com.tyrael.kharazim.application.customer.vo.family.PageFamilyRequest;
 import com.tyrael.kharazim.common.dto.PageResponse;
 import org.apache.ibatis.annotations.Mapper;
+import org.springframework.util.CollectionUtils;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author Tyrael Archangel
@@ -28,6 +33,23 @@ public interface FamilyMapper extends BaseMapper<Family> {
         queryWrapper.eq(Family::getCode, code);
         return selectOne(queryWrapper);
     }
+
+
+    /**
+     * list by codes
+     *
+     * @param familyCodes 家庭编码
+     * @return Families
+     */
+    default List<Family> listByCodes(Collection<String> familyCodes) {
+        if (CollectionUtils.isEmpty(familyCodes)) {
+            return Collections.emptyList();
+        }
+        LambdaQueryWrapper<Family> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.in(Family::getCode, familyCodes);
+        return selectList(queryWrapper);
+    }
+
     /**
      * page family
      *

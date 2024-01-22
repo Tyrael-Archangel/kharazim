@@ -243,4 +243,18 @@ public class CustomerFamilyServiceImpl implements CustomerFamilyService {
         }
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<CustomerFamilyVO> customerFamily(String customerCode) {
+        customerMapper.ensureCustomerExist(customerCode);
+
+        List<FamilyMember> familyMembers = familyMemberMapper.listByCustomerCode(customerCode);
+        Set<String> familyCodes = familyMembers.stream()
+                .map(FamilyMember::getFamilyCode)
+                .collect(Collectors.toSet());
+        List<Family> families = familyMapper.listByCodes(familyCodes);
+
+        return customerFamilyVO(families);
+    }
+
 }

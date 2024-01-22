@@ -4,6 +4,8 @@ import com.tyrael.kharazim.application.base.auth.AuthUser;
 import com.tyrael.kharazim.application.customer.vo.family.*;
 import com.tyrael.kharazim.common.dto.PageResponse;
 
+import java.util.List;
+
 /**
  * @author Tyrael Archangel
  * @since 2024/1/19
@@ -65,5 +67,13 @@ public interface CustomerFamilyService {
      * @param leaveFamilyRequest LeaveFamilyRequest
      */
     void leaveFamily(LeaveFamilyRequest leaveFamilyRequest);
+
+    /**
+     * 会员的家庭信息
+     *
+     * @param customerCode 会员编码
+     * @return 会员的家庭信息
+     */
+    List<CustomerFamilyVO> customerFamily(String customerCode);
 
 }

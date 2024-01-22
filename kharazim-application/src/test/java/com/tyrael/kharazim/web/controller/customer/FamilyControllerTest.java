@@ -68,4 +68,10 @@ class FamilyControllerTest extends BaseControllerTest<FamilyController> {
         super.performWhenCall(mockController.leaveFamily(leaveFamilyRequest));
     }
 
+    @Test
+    void customerFamily() {
+        String customerCode = "CU0000000001";
+        super.performWhenCall(mockController.customerFamily(customerCode));
+    }
+
 }

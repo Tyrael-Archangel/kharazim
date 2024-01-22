@@ -34,6 +34,18 @@ public interface FamilyMemberMapper extends BaseMapper<FamilyMember> {
     }
 
     /**
+     * list by customerCode
+     *
+     * @param customerCode 会员编码
+     * @return FamilyMember
+     */
+    default List<FamilyMember> listByCustomerCode(String customerCode) {
+        LambdaQueryWrapper<FamilyMember> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.eq(FamilyMember::getCustomerCode, customerCode);
+        return selectList(queryWrapper);
+    }
+
+    /**
      * list by familyCode
      *
      * @param familyCode familyCode

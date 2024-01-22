@@ -5,6 +5,7 @@ import com.tyrael.kharazim.application.base.auth.CurrentUser;
 import com.tyrael.kharazim.application.customer.service.CustomerFamilyService;
 import com.tyrael.kharazim.application.customer.vo.family.*;
 import com.tyrael.kharazim.common.dto.DataResponse;
+import com.tyrael.kharazim.common.dto.MultiResponse;
 import com.tyrael.kharazim.common.dto.PageResponse;
 import com.tyrael.kharazim.common.dto.Response;
 import io.swagger.v3.oas.annotations.Operation;
@@ -76,6 +77,13 @@ public class FamilyController {
     public Response leaveFamily(@RequestBody @Valid LeaveFamilyRequest leaveFamilyRequest) {
         customerFamilyService.leaveFamily(leaveFamilyRequest);
         return Response.success();
+    }
+
+    @GetMapping("/customer/{customerCode}")
+    @Operation(summary = "查询会员的家庭信息")
+    public MultiResponse<CustomerFamilyVO> customerFamily(
+            @PathVariable("customerCode") @Parameter(description = "会员编码", required = true) String customerCode) {
+        return MultiResponse.success(customerFamilyService.customerFamily(customerCode));
     }
 
 }
