@@ -71,4 +71,11 @@ public class FamilyController {
         return Response.success();
     }
 
+    @PostMapping("/family-member/leave")
+    @Operation(summary = "会员退出指定的家庭")
+    public Response leaveFamily(@RequestBody @Valid LeaveFamilyRequest leaveFamilyRequest) {
+        customerFamilyService.leaveFamily(leaveFamilyRequest);
+        return Response.success();
+    }
+
 }

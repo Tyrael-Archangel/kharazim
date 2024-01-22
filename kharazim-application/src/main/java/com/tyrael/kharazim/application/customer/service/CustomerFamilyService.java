@@ -59,4 +59,11 @@ public interface CustomerFamilyService {
     void modifyFamilyMemberRelation(ModifyFamilyMemberRelationRequest modifyFamilyMemberRelationRequest,
                                     AuthUser currentUser);
 
+    /**
+     * 会员退出指定的家庭
+     *
+     * @param leaveFamilyRequest LeaveFamilyRequest
+     */
+    void leaveFamily(LeaveFamilyRequest leaveFamilyRequest);
+
 }

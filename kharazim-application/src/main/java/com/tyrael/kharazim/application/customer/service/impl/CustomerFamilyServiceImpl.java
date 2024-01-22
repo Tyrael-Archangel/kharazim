@@ -208,4 +208,39 @@ public class CustomerFamilyServiceImpl implements CustomerFamilyService {
         familyMemberMapper.updateById(familyMember);
     }
 
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void leaveFamily(LeaveFamilyRequest leaveFamilyRequest) {
+        String familyCode = leaveFamilyRequest.getFamilyCode();
+        String customerCode = leaveFamilyRequest.getCustomerCode();
+        customerMapper.ensureCustomerExist(customerCode);
+
+        customerLeaveFamily(familyCode, customerCode);
+    }
+
+    private void customerLeaveFamily(String familyCode, String customerCode) {
+        Family family = familyMapper.findByCode(familyCode);
+        DomainNotFoundException.assertFound(family, familyCode);
+
+        if (StringUtils.equals(family.getLeaderCode(), customerCode)) {
+            // 户主要离开家庭，必须满足家庭中只剩户主才能离开家庭，同时解散该家庭
+            List<FamilyMember> familyMembers = familyMemberMapper.listByFamilyCode(familyCode);
+            boolean familyContainsOtherMember = familyMembers.stream()
+                    .anyMatch(e -> !StringUtils.equals(e.getCustomerCode(), customerCode));
+            if (familyContainsOtherMember) {
+                throw new BusinessException("家庭中存在其他成员，户主不能离开该家庭");
+            }
+
+            // familyMembers为空或者只包含户主
+            for (FamilyMember familyMember : familyMembers) {
+                familyMemberMapper.leave(familyCode, familyMember.getCustomerCode());
+            }
+            familyMapper.deleteById(family.getId());
+
+        } else {
+            // 非户主离开该家庭
+            familyMemberMapper.leave(familyCode, customerCode);
+        }
+    }
+
 }

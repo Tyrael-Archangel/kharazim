@@ -1,9 +1,6 @@
 package com.tyrael.kharazim.web.controller.customer;
 
-import com.tyrael.kharazim.application.customer.vo.family.AddFamilyMemberRequest;
-import com.tyrael.kharazim.application.customer.vo.family.CreateFamilyRequest;
-import com.tyrael.kharazim.application.customer.vo.family.ModifyFamilyMemberRelationRequest;
-import com.tyrael.kharazim.application.customer.vo.family.PageFamilyRequest;
+import com.tyrael.kharazim.application.customer.vo.family.*;
 import com.tyrael.kharazim.web.controller.BaseControllerTest;
 import org.junit.jupiter.api.Test;
 
@@ -42,7 +39,7 @@ class FamilyControllerTest extends BaseControllerTest<FamilyController> {
     void addFamilyMember() {
         AddFamilyMemberRequest addFamilyMemberRequest = new AddFamilyMemberRequest();
         addFamilyMemberRequest.setFamilyCode("CF000001");
-        addFamilyMemberRequest.setCustomerCode("CU0000000002");
+        addFamilyMemberRequest.setCustomerCode("CU0000000001");
         addFamilyMemberRequest.setRelationToLeader("demon");
         super.performWhenCall(mockController.addFamilyMember(addFamilyMemberRequest));
     }
@@ -61,6 +58,14 @@ class FamilyControllerTest extends BaseControllerTest<FamilyController> {
         modifyRelationRequest.setCustomerCode("CU0000000001");
         modifyRelationRequest.setRelationToLeader("都是魔王");
         super.performWhenCall(mockController.modifyFamilyMemberRelation(modifyRelationRequest, super.mockAdmin()));
+    }
+
+    @Test
+    void leaveFamily() {
+        LeaveFamilyRequest leaveFamilyRequest = new LeaveFamilyRequest();
+        leaveFamilyRequest.setFamilyCode("CF000001");
+        leaveFamilyRequest.setCustomerCode("CU0000000001");
+        super.performWhenCall(mockController.leaveFamily(leaveFamilyRequest));
     }
 
 }
