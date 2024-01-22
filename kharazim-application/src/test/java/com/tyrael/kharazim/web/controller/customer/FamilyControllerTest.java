@@ -2,6 +2,7 @@ package com.tyrael.kharazim.web.controller.customer;
 
 import com.tyrael.kharazim.application.customer.vo.family.AddFamilyMemberRequest;
 import com.tyrael.kharazim.application.customer.vo.family.CreateFamilyRequest;
+import com.tyrael.kharazim.application.customer.vo.family.ModifyFamilyMemberRelationRequest;
 import com.tyrael.kharazim.application.customer.vo.family.PageFamilyRequest;
 import com.tyrael.kharazim.web.controller.BaseControllerTest;
 import org.junit.jupiter.api.Test;
@@ -51,6 +52,15 @@ class FamilyControllerTest extends BaseControllerTest<FamilyController> {
         String customerCode = "CU0000000002";
         String familyCode = "CF000001";
         super.performWhenCall(mockController.setLeader(customerCode, familyCode, super.mockAdmin()));
+    }
+
+    @Test
+    void modifyFamilyMemberRelation() {
+        ModifyFamilyMemberRelationRequest modifyRelationRequest = new ModifyFamilyMemberRelationRequest();
+        modifyRelationRequest.setFamilyCode("CF000001");
+        modifyRelationRequest.setCustomerCode("CU0000000001");
+        modifyRelationRequest.setRelationToLeader("都是魔王");
+        super.performWhenCall(mockController.modifyFamilyMemberRelation(modifyRelationRequest, super.mockAdmin()));
     }
 
 }
