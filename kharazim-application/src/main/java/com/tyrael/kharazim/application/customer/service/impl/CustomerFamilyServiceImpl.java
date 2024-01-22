@@ -10,10 +10,7 @@ import com.tyrael.kharazim.application.customer.mapper.CustomerMapper;
 import com.tyrael.kharazim.application.customer.mapper.FamilyMapper;
 import com.tyrael.kharazim.application.customer.mapper.FamilyMemberMapper;
 import com.tyrael.kharazim.application.customer.service.CustomerFamilyService;
-import com.tyrael.kharazim.application.customer.vo.family.AddFamilyMemberRequest;
-import com.tyrael.kharazim.application.customer.vo.family.CreateFamilyRequest;
-import com.tyrael.kharazim.application.customer.vo.family.CustomerFamilyVO;
-import com.tyrael.kharazim.application.customer.vo.family.PageFamilyRequest;
+import com.tyrael.kharazim.application.customer.vo.family.*;
 import com.tyrael.kharazim.application.system.service.CodeGenerator;
 import com.tyrael.kharazim.common.dto.PageResponse;
 import com.tyrael.kharazim.common.exception.BusinessException;
@@ -190,6 +187,23 @@ public class CustomerFamilyServiceImpl implements CustomerFamilyService {
         familyMapper.updateById(family);
 
         familyMember.setRelationToLeader(LEADER_NAME);
+        familyMember.setUpdate(currentUser.getCode(), currentUser.getNickName());
+        familyMemberMapper.updateById(familyMember);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void modifyFamilyMemberRelation(ModifyFamilyMemberRelationRequest modifyRelationRequest,
+                                           AuthUser currentUser) {
+        String familyCode = modifyRelationRequest.getFamilyCode();
+        Family family = familyMapper.findByCode(familyCode);
+        DomainNotFoundException.assertFound(family, familyCode);
+
+        String customerCode = modifyRelationRequest.getCustomerCode();
+        FamilyMember familyMember = familyMemberMapper.findByCustomerCode(familyCode, customerCode);
+        DomainNotFoundException.assertFound(familyMember, customerCode);
+
+        familyMember.setRelationToLeader(modifyRelationRequest.getRelationToLeader());
         familyMember.setUpdate(currentUser.getCode(), currentUser.getNickName());
         familyMemberMapper.updateById(familyMember);
     }

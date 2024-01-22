@@ -1,10 +1,7 @@
 package com.tyrael.kharazim.application.customer.service;
 
 import com.tyrael.kharazim.application.base.auth.AuthUser;
-import com.tyrael.kharazim.application.customer.vo.family.AddFamilyMemberRequest;
-import com.tyrael.kharazim.application.customer.vo.family.CreateFamilyRequest;
-import com.tyrael.kharazim.application.customer.vo.family.CustomerFamilyVO;
-import com.tyrael.kharazim.application.customer.vo.family.PageFamilyRequest;
+import com.tyrael.kharazim.application.customer.vo.family.*;
 import com.tyrael.kharazim.common.dto.PageResponse;
 
 /**
@@ -52,5 +49,14 @@ public interface CustomerFamilyService {
      * @param currentUser  操作人
      */
     void setLeader(String customerCode, String familyCode, AuthUser currentUser);
+
+    /**
+     * 修改会员与户主的关系
+     *
+     * @param modifyFamilyMemberRelationRequest {@link ModifyFamilyMemberRelationRequest}
+     * @param currentUser                       操作人
+     */
+    void modifyFamilyMemberRelation(ModifyFamilyMemberRelationRequest modifyFamilyMemberRelationRequest,
+                                    AuthUser currentUser);
 
 }

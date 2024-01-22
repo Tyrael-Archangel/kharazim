@@ -3,10 +3,7 @@ package com.tyrael.kharazim.web.controller.customer;
 import com.tyrael.kharazim.application.base.auth.AuthUser;
 import com.tyrael.kharazim.application.base.auth.CurrentUser;
 import com.tyrael.kharazim.application.customer.service.CustomerFamilyService;
-import com.tyrael.kharazim.application.customer.vo.family.AddFamilyMemberRequest;
-import com.tyrael.kharazim.application.customer.vo.family.CreateFamilyRequest;
-import com.tyrael.kharazim.application.customer.vo.family.CustomerFamilyVO;
-import com.tyrael.kharazim.application.customer.vo.family.PageFamilyRequest;
+import com.tyrael.kharazim.application.customer.vo.family.*;
 import com.tyrael.kharazim.common.dto.DataResponse;
 import com.tyrael.kharazim.common.dto.PageResponse;
 import com.tyrael.kharazim.common.dto.Response;
@@ -63,6 +60,14 @@ public class FamilyController {
                               @PathVariable("familyCode") String familyCode,
                               @Schema(hidden = true) @CurrentUser AuthUser currentUser) {
         customerFamilyService.setLeader(customerCode, familyCode, currentUser);
+        return Response.success();
+    }
+
+    @PostMapping("/family-member/relation")
+    @Operation(summary = "修改会员与户主的关系")
+    public Response modifyFamilyMemberRelation(@RequestBody @Valid ModifyFamilyMemberRelationRequest modifyRelationRequest,
+                                               @Schema(hidden = true) @CurrentUser AuthUser currentUser) {
+        customerFamilyService.modifyFamilyMemberRelation(modifyRelationRequest, currentUser);
         return Response.success();
     }
 
