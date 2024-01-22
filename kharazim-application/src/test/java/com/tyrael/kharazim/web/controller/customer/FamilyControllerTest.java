@@ -46,4 +46,11 @@ class FamilyControllerTest extends BaseControllerTest<FamilyController> {
         super.performWhenCall(mockController.addFamilyMember(addFamilyMemberRequest));
     }
 
+    @Test
+    void setLeader() {
+        String customerCode = "CU0000000002";
+        String familyCode = "CF000001";
+        super.performWhenCall(mockController.setLeader(customerCode, familyCode, super.mockAdmin()));
+    }
+
 }

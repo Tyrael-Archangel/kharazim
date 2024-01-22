@@ -1,5 +1,6 @@
 package com.tyrael.kharazim.application.customer.service;
 
+import com.tyrael.kharazim.application.base.auth.AuthUser;
 import com.tyrael.kharazim.application.customer.vo.family.AddFamilyMemberRequest;
 import com.tyrael.kharazim.application.customer.vo.family.CreateFamilyRequest;
 import com.tyrael.kharazim.application.customer.vo.family.CustomerFamilyVO;
@@ -42,5 +43,14 @@ public interface CustomerFamilyService {
      * @param addFamilyMemberRequest AddFamilyMemberRequest
      */
     void addFamilyMember(AddFamilyMemberRequest addFamilyMemberRequest);
+
+    /**
+     * 设置家庭的户主
+     *
+     * @param customerCode 会员编码
+     * @param familyCode   家庭编码
+     * @param currentUser  操作人
+     */
+    void setLeader(String customerCode, String familyCode, AuthUser currentUser);
 
 }

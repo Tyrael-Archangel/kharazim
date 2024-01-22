@@ -19,6 +19,20 @@ import java.util.List;
 public interface FamilyMemberMapper extends BaseMapper<FamilyMember> {
 
     /**
+     * find by customerCode
+     *
+     * @param familyCode   家庭编码
+     * @param customerCode 会员编码
+     * @return FamilyMember
+     */
+    default FamilyMember findByCustomerCode(String familyCode, String customerCode) {
+        LambdaQueryWrapper<FamilyMember> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.eq(FamilyMember::getFamilyCode, familyCode)
+                .eq(FamilyMember::getCustomerCode, customerCode);
+        return selectOne(queryWrapper);
+    }
+
+    /**
      * list by familyCode
      *
      * @param familyCode familyCode

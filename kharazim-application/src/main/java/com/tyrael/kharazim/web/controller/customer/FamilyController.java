@@ -1,5 +1,7 @@
 package com.tyrael.kharazim.web.controller.customer;
 
+import com.tyrael.kharazim.application.base.auth.AuthUser;
+import com.tyrael.kharazim.application.base.auth.CurrentUser;
 import com.tyrael.kharazim.application.customer.service.CustomerFamilyService;
 import com.tyrael.kharazim.application.customer.vo.family.AddFamilyMemberRequest;
 import com.tyrael.kharazim.application.customer.vo.family.CreateFamilyRequest;
@@ -10,6 +12,7 @@ import com.tyrael.kharazim.common.dto.PageResponse;
 import com.tyrael.kharazim.common.dto.Response;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -51,6 +54,15 @@ public class FamilyController {
     @Operation(summary = "将会员添加进指定的家庭")
     public Response addFamilyMember(@RequestBody @Valid AddFamilyMemberRequest addFamilyMemberRequest) {
         customerFamilyService.addFamilyMember(addFamilyMemberRequest);
+        return Response.success();
+    }
+
+    @PutMapping("/set-leader/{familyCode}/{customerCode}")
+    @Operation(summary = "设置家庭的户主")
+    public Response setLeader(@PathVariable("customerCode") String customerCode,
+                              @PathVariable("familyCode") String familyCode,
+                              @Schema(hidden = true) @CurrentUser AuthUser currentUser) {
+        customerFamilyService.setLeader(customerCode, familyCode, currentUser);
         return Response.success();
     }
 

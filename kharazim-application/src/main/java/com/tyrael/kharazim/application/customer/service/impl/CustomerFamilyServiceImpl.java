@@ -1,6 +1,7 @@
 package com.tyrael.kharazim.application.customer.service.impl;
 
 import com.google.common.collect.Lists;
+import com.tyrael.kharazim.application.base.auth.AuthUser;
 import com.tyrael.kharazim.application.config.BusinessCodeConstants;
 import com.tyrael.kharazim.application.customer.domain.Customer;
 import com.tyrael.kharazim.application.customer.domain.Family;
@@ -173,6 +174,24 @@ public class CustomerFamilyServiceImpl implements CustomerFamilyService {
             log.error("save family member error: " + e.getMessage());
             throw new BusinessException("会员已经属于该家庭，请勿重复加入");
         }
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void setLeader(String customerCode, String familyCode, AuthUser currentUser) {
+        Family family = familyMapper.findByCode(familyCode);
+        DomainNotFoundException.assertFound(family, familyCode);
+
+        FamilyMember familyMember = familyMemberMapper.findByCustomerCode(familyCode, customerCode);
+        DomainNotFoundException.assertFound(familyMember, customerCode);
+
+        family.setLeaderCode(customerCode);
+        family.setUpdate(currentUser.getCode(), currentUser.getNickName());
+        familyMapper.updateById(family);
+
+        familyMember.setRelationToLeader(LEADER_NAME);
+        familyMember.setUpdate(currentUser.getCode(), currentUser.getNickName());
+        familyMemberMapper.updateById(familyMember);
     }
 
 }
