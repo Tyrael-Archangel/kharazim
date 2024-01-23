@@ -18,7 +18,7 @@ import java.io.IOException;
 @Configuration
 @ConditionalOnClass(RedisServer.class)
 @ConditionalOnProperty(value = "system.global.use-inner-mock-redis", havingValue = "true")
-public class RedisServerConfig {
+public class MockRedisServerConfig {
 
     @Bean
     public RedisServer redisServer(RedisProperties properties) throws IOException {
