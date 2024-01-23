@@ -11,7 +11,7 @@ services:
       - 9876:9876
     volumes:
       - /root/data/rocketmq/logs/namesrv:/home/rocketmq/logs
-      - /root/data/rocketmq/store/namesrv:/root/store
+      - /root/data/rocketmq/store/namesrv:/home/rocketmq/store
     command: sh mqnamesrv
   broker:
     image: docker.io/apache/rocketmq:5.1.4
@@ -21,14 +21,15 @@ services:
     mem_reservation: 1024M
     restart: always
     ports:
+      - 8081:8081
       - 10909:10909
       - 10911:10911
       - 10912:10912
     volumes:
-      - /root/data/rocketmq/logs/broker:/root/logs
-      - /root/data/rocketmq/store/broker:/root/store
+      - /root/data/rocketmq/logs/broker:/home/rocketmq/logs
+      - /root/data/rocketmq/store/broker:/home/rocketmq/store
       - /root/data/rocketmq/conf/broker.conf:/home/rocketmq/rocketmq-5.1.4/conf/broker.conf
-    command: sh mqbroker -n namesrv:9876 -c /home/rocketmq/rocketmq-5.1.4/conf/broker.conf
+    command: sh mqbroker -n namesrv:9876 --enable-proxy -c /home/rocketmq/rocketmq-5.1.4/conf/broker.conf
     depends_on:
       - namesrv
   dashboard:
