@@ -23,6 +23,7 @@ services:
     ports:
       - 10909:10909
       - 10911:10911
+      - 10912:10912
     volumes:
       - /root/data/rocketmq/logs/broker:/root/logs
       - /root/data/rocketmq/store/broker:/root/store
