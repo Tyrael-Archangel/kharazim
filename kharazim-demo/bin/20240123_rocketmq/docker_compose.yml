@@ -1,0 +1,42 @@
+version: '2'
+services:
+  namesrv:
+    image: docker.io/apache/rocketmq:5.1.4
+    privileged: true
+    container_name: rmqnamesrv
+    mem_limit: 2048M
+    mem_reservation: 1024M
+    restart: always
+    ports:
+      - 9876:9876
+    volumes:
+      - /root/data/rocketmq/logs/namesrv:/home/rocketmq/logs
+      - /root/data/rocketmq/store/namesrv:/root/store
+    command: sh mqnamesrv
+  broker:
+    image: docker.io/apache/rocketmq:5.1.4
+    privileged: true
+    container_name: rmqbroker
+    mem_limit: 2048M
+    mem_reservation: 1024M
+    restart: always
+    ports:
+      - 10909:10909
+      - 10911:10911
+    volumes:
+      - /root/data/rocketmq/logs/broker:/root/logs
+      - /root/data/rocketmq/store/broker:/root/store
+      - /root/data/rocketmq/conf/broker.conf:/home/rocketmq/rocketmq-5.1.4/conf/broker.conf
+    command: sh mqbroker -n namesrv:9876 -c /home/rocketmq/rocketmq-5.1.4/conf/broker.conf
+    depends_on:
+      - namesrv
+  dashboard:
+    image: docker.io/apacherocketmq/rocketmq-dashboard:1.0.0
+    container_name: rocketmq-dashboard
+    restart: always
+    ports:
+      - 8080:8080
+    depends_on:
+      - namesrv
+    environment:
+      - JAVA_OPTS=-Drocketmq.namesrv.addr=rmqnamesrv:9876
