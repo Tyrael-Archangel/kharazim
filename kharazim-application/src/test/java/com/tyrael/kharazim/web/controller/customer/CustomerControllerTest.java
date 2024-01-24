@@ -36,7 +36,7 @@ class CustomerControllerTest extends BaseControllerTest<CustomerController> {
 
     @Test
     void findByCode() {
-        String customerCode = "00000001";
+        String customerCode = "CU0000000001";
         super.performWhenCall(mockController.findByCode(customerCode));
     }
 
