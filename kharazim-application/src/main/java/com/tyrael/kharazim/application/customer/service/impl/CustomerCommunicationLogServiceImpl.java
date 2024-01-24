@@ -1,12 +1,14 @@
 package com.tyrael.kharazim.application.customer.service.impl;
 
 import com.google.common.collect.Sets;
+import com.tyrael.kharazim.application.base.auth.AuthUser;
 import com.tyrael.kharazim.application.config.DictCodeConstants;
 import com.tyrael.kharazim.application.customer.domain.Customer;
 import com.tyrael.kharazim.application.customer.domain.CustomerCommunicationLog;
 import com.tyrael.kharazim.application.customer.mapper.CustomerCommunicationLogMapper;
 import com.tyrael.kharazim.application.customer.mapper.CustomerMapper;
 import com.tyrael.kharazim.application.customer.service.CustomerCommunicationLogService;
+import com.tyrael.kharazim.application.customer.vo.communication.AddCustomerCommunicationLogRequest;
 import com.tyrael.kharazim.application.customer.vo.communication.CustomerCommunicationLogPageRequest;
 import com.tyrael.kharazim.application.customer.vo.communication.CustomerCommunicationLogVO;
 import com.tyrael.kharazim.application.system.domain.DictItem;
@@ -17,7 +19,9 @@ import com.tyrael.kharazim.common.dto.PageResponse;
 import com.tyrael.kharazim.common.util.CollectionUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -87,4 +91,27 @@ public class CustomerCommunicationLogServiceImpl implements CustomerCommunicatio
                 .createTime(customerCommunicationLog.getCreateTime())
                 .build();
     }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Long add(AddCustomerCommunicationLogRequest addRequest, AuthUser currentUser) {
+        customerMapper.ensureCustomerExist(addRequest.getCustomerCode());
+        dictService.ensureDictItemEnable(DictCodeConstants.CUSTOMER_COMMUNICATION_TYPE, addRequest.getTypeDictValue());
+        dictService.ensureDictItemEnable(DictCodeConstants.CUSTOMER_COMMUNICATION_EVALUATE, addRequest.getEvaluateDictValue());
+
+        CustomerCommunicationLog customerCommunicationLog = new CustomerCommunicationLog();
+        customerCommunicationLog.setTypeDict(addRequest.getTypeDictValue());
+        customerCommunicationLog.setCustomerCode(addRequest.getCustomerCode());
+        customerCommunicationLog.setServiceUserCode(currentUser.getCode());
+        customerCommunicationLog.setContent(addRequest.getContent());
+        customerCommunicationLog.setEvaluateDict(addRequest.getEvaluateDictValue());
+        customerCommunicationLog.setCommunicationTime(LocalDateTime.now());
+        customerCommunicationLog.setCreator(currentUser.getNickName());
+        customerCommunicationLog.setCreatorCode(currentUser.getCode());
+        customerCommunicationLog.setCreateTime(LocalDateTime.now());
+
+        customerCommunicationLogMapper.insert(customerCommunicationLog);
+        return customerCommunicationLog.getId();
+    }
+
 }

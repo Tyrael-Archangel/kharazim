@@ -1,5 +1,7 @@
 package com.tyrael.kharazim.application.customer.service;
 
+import com.tyrael.kharazim.application.base.auth.AuthUser;
+import com.tyrael.kharazim.application.customer.vo.communication.AddCustomerCommunicationLogRequest;
 import com.tyrael.kharazim.application.customer.vo.communication.CustomerCommunicationLogPageRequest;
 import com.tyrael.kharazim.application.customer.vo.communication.CustomerCommunicationLogVO;
 import com.tyrael.kharazim.common.dto.PageResponse;
@@ -18,5 +20,13 @@ public interface CustomerCommunicationLogService {
      */
     PageResponse<CustomerCommunicationLogVO> page(CustomerCommunicationLogPageRequest pageRequest);
 
+    /**
+     * 新建沟通记录
+     *
+     * @param addRequest  {@link AddCustomerCommunicationLogRequest}
+     * @param currentUser 操作客服
+     * @return 返回沟通记录ID
+     */
+    Long add(AddCustomerCommunicationLogRequest addRequest, AuthUser currentUser);
 
 }

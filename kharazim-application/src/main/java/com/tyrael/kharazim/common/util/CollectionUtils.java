@@ -2,9 +2,7 @@ package com.tyrael.kharazim.common.util;
 
 import cn.hutool.core.collection.CollUtil;
 
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -15,6 +13,25 @@ import java.util.stream.Collectors;
  * @since 2024/1/24
  */
 public class CollectionUtils extends CollUtil {
+
+    private static final Random RANDOM = new Random();
+
+    public static <T> T random(Collection<T> c) {
+        if (c == null || c.isEmpty()) {
+            return null;
+        }
+        int size = c.size();
+        int valueIndex = RANDOM.nextInt(size);
+        if (c instanceof List<T> list && list instanceof RandomAccess) {
+            return list.get(valueIndex);
+        }
+        for (T next : c) {
+            if (valueIndex-- <= 0) {
+                return next;
+            }
+        }
+        throw new IllegalStateException("Will not happen");
+    }
 
     public static <T, K, V> Map<K, V> convertMap(Collection<T> from,
                                                  Function<T, K> keyFunc,

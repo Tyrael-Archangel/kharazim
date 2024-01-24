@@ -18,8 +18,8 @@ public enum DictCodeConstants {
     CUSTOMER_SOURCE_CHANNEL("customer_source_channel", "会员来源渠道"),
     INSURANCE_COMPANY("insurance_company", "保险公司"),
     CUSTOMER_TAG("customer_tag", "会员标签"),
-    CUSTOMER_COMMUNICATION_TYPE("communication_type", "会员沟通记录沟通类型"),
-    CUSTOMER_COMMUNICATION_EVALUATE("communication_evaluate", "会员沟通记录沟通类型"),
+    CUSTOMER_COMMUNICATION_TYPE("communication_type", "会员沟通记录-类型"),
+    CUSTOMER_COMMUNICATION_EVALUATE("communication_evaluate", "会员沟通记录-评价"),
     PRODUCT_BRAND("product_brand", "商品品牌"),
     MEDICATION_FREQUENCY("medication_frequency", "用药频率，例如每日三次、每周两次"),
     MEDICATION_USAGE("medication_usage", "药品用法，例如口服、水煎服"),
@@ -37,10 +37,6 @@ public enum DictCodeConstants {
      * 相关的枚举类
      */
     private final Class<?> relatedEnum;
-
-    DictCodeConstants(String dictCode) {
-        this(dictCode, null, null);
-    }
 
     DictCodeConstants(String dictCode, String desc) {
         this(dictCode, desc, null);
