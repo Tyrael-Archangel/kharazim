@@ -1,6 +1,8 @@
 package com.tyrael.kharazim.application.recharge.service;
 
+import com.tyrael.kharazim.application.base.auth.AuthUser;
 import com.tyrael.kharazim.application.recharge.vo.AddRechargeCardTypeRequest;
+import com.tyrael.kharazim.application.recharge.vo.ModifyRechargeCardTypeRequest;
 
 /**
  * @author Tyrael Archangel
@@ -15,5 +17,13 @@ public interface RechargeCardTypeService {
      * @return 储值卡项编码
      */
     String create(AddRechargeCardTypeRequest addRequest);
+
+    /**
+     * 修改储值卡项
+     *
+     * @param modifyRequest {@link ModifyRechargeCardTypeRequest}
+     * @param currentUser   操作人
+     */
+    void modify(ModifyRechargeCardTypeRequest modifyRequest, AuthUser currentUser);
 
 }

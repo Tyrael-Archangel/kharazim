@@ -23,7 +23,7 @@ public enum BusinessCodeConstants {
     APPOINTMENT_ORDER("预约单", "AO"),
     TRADE_ORDER("销售单", 3, "SO"),
     TRADE_AFTER_SALE("售后单", 3, "RO"),
-    RECHARGE_CARD_TYPE("储值卡项"),
+    RECHARGE_CARD_TYPE("储值卡项", "RCT"),
     CUSTOMER_RECHARGE_CARD("会员储值单", "CRC"),
     SETTLEMENT_ORDER("结算单", "BO"),
     CLIENTELE("客户编码", 10, "KH"),
