@@ -56,6 +56,7 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
                     .excludePathPatterns(errorPath)
                     .excludePathPatterns("/favicon.ico")
                     .excludePathPatterns("/")
+                    .excludePathPatterns("/bootstrap")
                     .excludePathPatterns(knife4jResources)
                     .order(Ordered.HIGHEST_PRECEDENCE);
         }

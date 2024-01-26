@@ -16,6 +16,11 @@ public class IndexController {
 
     @RequestMapping("/")
     public Response index() {
+        return this.bootstrap();
+    }
+
+    @RequestMapping("/bootstrap")
+    public Response bootstrap() {
         return DataResponse.ok("Welcome!");
     }
 
