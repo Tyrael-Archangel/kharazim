@@ -79,4 +79,19 @@ public class RechargeCardTypeServiceImpl implements RechargeCardTypeService {
         rechargeCardTypeMapper.updateById(cardType);
     }
 
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void disableCreateNewCard(String code, AuthUser currentUser) {
+        RechargeCardType cardType = rechargeCardTypeMapper.findByCode(code);
+        DomainNotFoundException.assertFound(cardType, code);
+
+        if (cardType.forbidden()) {
+            return;
+        }
+        cardType.setCanCreateNewCard(Boolean.FALSE);
+        cardType.setUpdate(currentUser.getCode(), currentUser.getNickName());
+
+        rechargeCardTypeMapper.updateById(cardType);
+    }
+
 }

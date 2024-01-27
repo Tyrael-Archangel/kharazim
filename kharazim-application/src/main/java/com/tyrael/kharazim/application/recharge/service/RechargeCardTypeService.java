@@ -26,4 +26,12 @@ public interface RechargeCardTypeService {
      */
     void modify(ModifyRechargeCardTypeRequest modifyRequest, AuthUser currentUser);
 
+    /**
+     * 禁止发卡
+     *
+     * @param code        储值卡项编码
+     * @param currentUser 操作人
+     */
+    void disableCreateNewCard(String code, AuthUser currentUser);
+
 }

@@ -8,14 +8,12 @@ import com.tyrael.kharazim.application.recharge.vo.ModifyRechargeCardTypeRequest
 import com.tyrael.kharazim.common.dto.DataResponse;
 import com.tyrael.kharazim.common.dto.Response;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author Tyrael Archangel
@@ -40,6 +38,15 @@ public class RechargeCardTypeController {
     public Response modify(@RequestBody @Valid ModifyRechargeCardTypeRequest modifyRequest,
                            @Schema(hidden = true) @CurrentUser AuthUser currentUser) {
         rechargeCardTypeService.modify(modifyRequest, currentUser);
+        return Response.success();
+    }
+
+    @PutMapping("/disable-create-new-card/{code}")
+    @Operation(summary = "禁止发卡")
+    public Response disableCreateNewCard(
+            @PathVariable("code") @Parameter(description = "储值卡项编码", required = true) String code,
+            @Schema(hidden = true) @CurrentUser AuthUser currentUser) {
+        rechargeCardTypeService.disableCreateNewCard(code, currentUser);
         return Response.success();
     }
 

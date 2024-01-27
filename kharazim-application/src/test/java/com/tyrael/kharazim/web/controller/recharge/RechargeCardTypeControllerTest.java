@@ -4,6 +4,8 @@ import com.tyrael.kharazim.application.recharge.vo.AddRechargeCardTypeRequest;
 import com.tyrael.kharazim.application.recharge.vo.ModifyRechargeCardTypeRequest;
 import com.tyrael.kharazim.web.controller.BaseControllerTest;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 
@@ -37,6 +39,14 @@ class RechargeCardTypeControllerTest extends BaseControllerTest<RechargeCardType
         modifyRequest.setNeverExpire(Boolean.TRUE);
         modifyRequest.setDefaultAmount(BigDecimal.valueOf(5000));
         super.performWhenCall(mockController.modify(modifyRequest, super.mockAdmin()));
+    }
+
+    @Test
+    @Rollback
+    @Transactional(rollbackFor = Exception.class)
+    void disableCreateNewCard() {
+        String code = "RCT000001";
+        super.performWhenCall(mockController.disableCreateNewCard(code, super.mockAdmin()));
     }
 
 }
