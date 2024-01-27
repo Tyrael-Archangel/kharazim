@@ -2,6 +2,7 @@ package com.tyrael.kharazim.web.controller.recharge;
 
 import com.tyrael.kharazim.application.recharge.vo.AddRechargeCardTypeRequest;
 import com.tyrael.kharazim.application.recharge.vo.ModifyRechargeCardTypeRequest;
+import com.tyrael.kharazim.application.recharge.vo.PageRechargeCardTypeRequest;
 import com.tyrael.kharazim.web.controller.BaseControllerTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.annotation.Rollback;
@@ -47,6 +48,12 @@ class RechargeCardTypeControllerTest extends BaseControllerTest<RechargeCardType
     void disableCreateNewCard() {
         String code = "RCT000001";
         super.performWhenCall(mockController.disableCreateNewCard(code, super.mockAdmin()));
+    }
+
+    @Test
+    void page() {
+        PageRechargeCardTypeRequest pageRequest = new PageRechargeCardTypeRequest();
+        super.performWhenCall(mockController.page(pageRequest));
     }
 
 }

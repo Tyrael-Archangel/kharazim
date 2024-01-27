@@ -7,12 +7,18 @@ import com.tyrael.kharazim.application.recharge.mapper.RechargeCardTypeMapper;
 import com.tyrael.kharazim.application.recharge.service.RechargeCardTypeService;
 import com.tyrael.kharazim.application.recharge.vo.AddRechargeCardTypeRequest;
 import com.tyrael.kharazim.application.recharge.vo.ModifyRechargeCardTypeRequest;
+import com.tyrael.kharazim.application.recharge.vo.PageRechargeCardTypeRequest;
+import com.tyrael.kharazim.application.recharge.vo.RechargeCardTypeVO;
 import com.tyrael.kharazim.application.system.service.CodeGenerator;
+import com.tyrael.kharazim.common.dto.PageResponse;
 import com.tyrael.kharazim.common.exception.BusinessException;
 import com.tyrael.kharazim.common.exception.DomainNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Tyrael Archangel
@@ -92,6 +98,33 @@ public class RechargeCardTypeServiceImpl implements RechargeCardTypeService {
         cardType.setUpdate(currentUser.getCode(), currentUser.getNickName());
 
         rechargeCardTypeMapper.updateById(cardType);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PageResponse<RechargeCardTypeVO> page(PageRechargeCardTypeRequest pageRequest) {
+        PageResponse<RechargeCardType> cardTypePage = rechargeCardTypeMapper.page(pageRequest);
+        List<RechargeCardTypeVO> cardTypes = cardTypePage.getData()
+                .stream()
+                .map(this::cardTypeVO)
+                .collect(Collectors.toList());
+        return PageResponse.success(cardTypes,
+                cardTypePage.getTotalCount(),
+                cardTypePage.getPageSize(),
+                cardTypePage.getPageNum());
+    }
+
+    private RechargeCardTypeVO cardTypeVO(RechargeCardType cardType) {
+        RechargeCardTypeVO cardTypeVO = new RechargeCardTypeVO();
+        cardTypeVO.setId(cardType.getId());
+        cardTypeVO.setCode(cardType.getCode());
+        cardTypeVO.setName(cardType.getName());
+        cardTypeVO.setDiscountPercent(cardType.getDiscountPercent());
+        cardTypeVO.setNeverExpire(cardType.getNeverExpire());
+        cardTypeVO.setValidPeriodDays(cardType.getValidPeriodDays());
+        cardTypeVO.setDefaultAmount(cardType.getDefaultAmount());
+        cardTypeVO.setCanCreateNewCard(cardType.getCanCreateNewCard());
+        return cardTypeVO;
     }
 
 }

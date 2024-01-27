@@ -5,7 +5,10 @@ import com.tyrael.kharazim.application.base.auth.CurrentUser;
 import com.tyrael.kharazim.application.recharge.service.RechargeCardTypeService;
 import com.tyrael.kharazim.application.recharge.vo.AddRechargeCardTypeRequest;
 import com.tyrael.kharazim.application.recharge.vo.ModifyRechargeCardTypeRequest;
+import com.tyrael.kharazim.application.recharge.vo.PageRechargeCardTypeRequest;
+import com.tyrael.kharazim.application.recharge.vo.RechargeCardTypeVO;
 import com.tyrael.kharazim.common.dto.DataResponse;
+import com.tyrael.kharazim.common.dto.PageResponse;
 import com.tyrael.kharazim.common.dto.Response;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -13,6 +16,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -48,6 +52,12 @@ public class RechargeCardTypeController {
             @Schema(hidden = true) @CurrentUser AuthUser currentUser) {
         rechargeCardTypeService.disableCreateNewCard(code, currentUser);
         return Response.success();
+    }
+
+    @GetMapping("/page")
+    @Operation(summary = "储值卡项分页")
+    public PageResponse<RechargeCardTypeVO> page(@ParameterObject PageRechargeCardTypeRequest pageRequest) {
+        return rechargeCardTypeService.page(pageRequest);
     }
 
 }
