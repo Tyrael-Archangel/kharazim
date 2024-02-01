@@ -27,7 +27,7 @@ class CustomerRechargeCardControllerTest extends BaseControllerTest<CustomerRech
         rechargeRequest.setAmount(BigDecimal.valueOf(8000));
         rechargeRequest.setTraderUserCode("U000002");
         rechargeRequest.setRemark("测试: " + LocalDateTime.now());
-        super.performWhenCall(mockController.recharge(rechargeRequest, super.mockAdmin()));
+        super.performWhenCall(mockController.recharge(rechargeRequest));
     }
 
 }
