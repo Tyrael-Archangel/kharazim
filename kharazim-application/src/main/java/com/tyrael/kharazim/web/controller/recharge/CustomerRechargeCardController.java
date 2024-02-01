@@ -1,12 +1,9 @@
 package com.tyrael.kharazim.web.controller.recharge;
 
-import com.tyrael.kharazim.application.base.auth.AuthUser;
-import com.tyrael.kharazim.application.base.auth.CurrentUser;
 import com.tyrael.kharazim.application.recharge.service.CustomerRechargeCardService;
 import com.tyrael.kharazim.application.recharge.vo.CustomerRechargeRequest;
 import com.tyrael.kharazim.common.dto.Response;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -29,9 +26,8 @@ public class CustomerRechargeCardController {
 
     @PostMapping("/recharge")
     @Operation(summary = "创建储值单")
-    public Response recharge(@RequestBody @Valid CustomerRechargeRequest rechargeRequest,
-                             @Schema(hidden = true) @CurrentUser AuthUser currentUser) {
-        customerRechargeCardService.recharge(rechargeRequest, currentUser);
+    public Response recharge(@RequestBody @Valid CustomerRechargeRequest rechargeRequest) {
+        customerRechargeCardService.recharge(rechargeRequest);
         return Response.success();
     }
 

@@ -1,6 +1,5 @@
 package com.tyrael.kharazim.application.recharge.service.impl;
 
-import com.tyrael.kharazim.application.base.auth.AuthUser;
 import com.tyrael.kharazim.application.config.BusinessCodeConstants;
 import com.tyrael.kharazim.application.customer.mapper.CustomerMapper;
 import com.tyrael.kharazim.application.recharge.domain.CustomerRechargeCard;
@@ -40,15 +39,15 @@ public class CustomerRechargeCardServiceImpl implements CustomerRechargeCardServ
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void recharge(CustomerRechargeRequest rechargeRequest, AuthUser currentUser) {
+    public void recharge(CustomerRechargeRequest rechargeRequest) {
+        customerMapper.ensureCustomerExist(rechargeRequest.getCustomerCode());
+        userMapper.ensureUserExist(rechargeRequest.getTraderUserCode());
+
         CustomerRechargeCard customerRechargeCard = createCustomerRechargeCard(rechargeRequest);
         customerRechargeCardMapper.insert(customerRechargeCard);
     }
 
-
     private CustomerRechargeCard createCustomerRechargeCard(CustomerRechargeRequest rechargeRequest) {
-        customerMapper.ensureCustomerExist(rechargeRequest.getCustomerCode());
-        userMapper.ensureUserExist(rechargeRequest.getTraderUserCode());
 
         String cardTypeCode = rechargeRequest.getCardTypeCode();
         RechargeCardType rechargeCardType = rechargeCardTypeMapper.findByCode(cardTypeCode);
