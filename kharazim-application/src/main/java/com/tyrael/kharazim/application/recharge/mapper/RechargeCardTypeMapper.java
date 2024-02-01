@@ -6,9 +6,12 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.tyrael.kharazim.application.base.LambdaQueryWrapperX;
 import com.tyrael.kharazim.application.recharge.domain.RechargeCardType;
+import com.tyrael.kharazim.application.recharge.vo.ListRechargeCardTypeRequest;
 import com.tyrael.kharazim.application.recharge.vo.PageRechargeCardTypeRequest;
 import com.tyrael.kharazim.common.dto.PageResponse;
 import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
 
 /**
  * @author Tyrael Archangel
@@ -47,6 +50,20 @@ public interface RechargeCardTypeMapper extends BaseMapper<RechargeCardType> {
                 cardTypePage.getTotal(),
                 pageRequest.getPageSize(),
                 pageRequest.getPageNum());
+    }
+
+    /**
+     * list
+     *
+     * @param listRequest {@link ListRechargeCardTypeRequest}
+     * @return RechargeCardTypes
+     */
+    default List<RechargeCardType> list(ListRechargeCardTypeRequest listRequest) {
+        LambdaQueryWrapperX<RechargeCardType> queryWrapper = new LambdaQueryWrapperX<>();
+        queryWrapper.likeIfPresent(RechargeCardType::getName, listRequest.getName())
+                .eqIfPresent(RechargeCardType::getCanCreateNewCard, listRequest.getCanCreateNewCard());
+        queryWrapper.orderByAsc(RechargeCardType::getId);
+        return selectList(queryWrapper);
     }
 
 }

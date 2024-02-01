@@ -5,10 +5,7 @@ import com.tyrael.kharazim.application.config.BusinessCodeConstants;
 import com.tyrael.kharazim.application.recharge.domain.RechargeCardType;
 import com.tyrael.kharazim.application.recharge.mapper.RechargeCardTypeMapper;
 import com.tyrael.kharazim.application.recharge.service.RechargeCardTypeService;
-import com.tyrael.kharazim.application.recharge.vo.AddRechargeCardTypeRequest;
-import com.tyrael.kharazim.application.recharge.vo.ModifyRechargeCardTypeRequest;
-import com.tyrael.kharazim.application.recharge.vo.PageRechargeCardTypeRequest;
-import com.tyrael.kharazim.application.recharge.vo.RechargeCardTypeVO;
+import com.tyrael.kharazim.application.recharge.vo.*;
 import com.tyrael.kharazim.application.system.service.CodeGenerator;
 import com.tyrael.kharazim.common.dto.PageResponse;
 import com.tyrael.kharazim.common.exception.BusinessException;
@@ -125,6 +122,15 @@ public class RechargeCardTypeServiceImpl implements RechargeCardTypeService {
         cardTypeVO.setDefaultAmount(cardType.getDefaultAmount());
         cardTypeVO.setCanCreateNewCard(cardType.getCanCreateNewCard());
         return cardTypeVO;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<RechargeCardTypeVO> list(ListRechargeCardTypeRequest listRequest) {
+        List<RechargeCardType> cardTypes = rechargeCardTypeMapper.list(listRequest);
+        return cardTypes.stream()
+                .map(this::cardTypeVO)
+                .collect(Collectors.toList());
     }
 
 }

@@ -1,11 +1,10 @@
 package com.tyrael.kharazim.application.recharge.service;
 
 import com.tyrael.kharazim.application.base.auth.AuthUser;
-import com.tyrael.kharazim.application.recharge.vo.AddRechargeCardTypeRequest;
-import com.tyrael.kharazim.application.recharge.vo.ModifyRechargeCardTypeRequest;
-import com.tyrael.kharazim.application.recharge.vo.PageRechargeCardTypeRequest;
-import com.tyrael.kharazim.application.recharge.vo.RechargeCardTypeVO;
+import com.tyrael.kharazim.application.recharge.vo.*;
 import com.tyrael.kharazim.common.dto.PageResponse;
+
+import java.util.List;
 
 /**
  * @author Tyrael Archangel
@@ -44,5 +43,12 @@ public interface RechargeCardTypeService {
      * @return 储值卡项分页数据
      */
     PageResponse<RechargeCardTypeVO> page(PageRechargeCardTypeRequest pageRequest);
+
+    /**
+     * list
+     *
+     * @return 储值卡项数据
+     */
+    List<RechargeCardTypeVO> list(ListRechargeCardTypeRequest listRequest);
 
 }

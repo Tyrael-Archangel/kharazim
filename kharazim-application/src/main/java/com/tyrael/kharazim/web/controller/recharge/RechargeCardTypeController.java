@@ -3,11 +3,9 @@ package com.tyrael.kharazim.web.controller.recharge;
 import com.tyrael.kharazim.application.base.auth.AuthUser;
 import com.tyrael.kharazim.application.base.auth.CurrentUser;
 import com.tyrael.kharazim.application.recharge.service.RechargeCardTypeService;
-import com.tyrael.kharazim.application.recharge.vo.AddRechargeCardTypeRequest;
-import com.tyrael.kharazim.application.recharge.vo.ModifyRechargeCardTypeRequest;
-import com.tyrael.kharazim.application.recharge.vo.PageRechargeCardTypeRequest;
-import com.tyrael.kharazim.application.recharge.vo.RechargeCardTypeVO;
+import com.tyrael.kharazim.application.recharge.vo.*;
 import com.tyrael.kharazim.common.dto.DataResponse;
+import com.tyrael.kharazim.common.dto.MultiResponse;
 import com.tyrael.kharazim.common.dto.PageResponse;
 import com.tyrael.kharazim.common.dto.Response;
 import io.swagger.v3.oas.annotations.Operation;
@@ -58,6 +56,12 @@ public class RechargeCardTypeController {
     @Operation(summary = "储值卡项分页")
     public PageResponse<RechargeCardTypeVO> page(@ParameterObject PageRechargeCardTypeRequest pageRequest) {
         return rechargeCardTypeService.page(pageRequest);
+    }
+
+    @GetMapping("list")
+    @Operation(summary = "储值卡项列表")
+    public MultiResponse<RechargeCardTypeVO> list(@ParameterObject ListRechargeCardTypeRequest listRequest) {
+        return MultiResponse.success(rechargeCardTypeService.list(listRequest));
     }
 
 }

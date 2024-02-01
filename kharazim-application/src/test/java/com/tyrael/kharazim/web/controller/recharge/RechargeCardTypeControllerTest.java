@@ -1,6 +1,7 @@
 package com.tyrael.kharazim.web.controller.recharge;
 
 import com.tyrael.kharazim.application.recharge.vo.AddRechargeCardTypeRequest;
+import com.tyrael.kharazim.application.recharge.vo.ListRechargeCardTypeRequest;
 import com.tyrael.kharazim.application.recharge.vo.ModifyRechargeCardTypeRequest;
 import com.tyrael.kharazim.application.recharge.vo.PageRechargeCardTypeRequest;
 import com.tyrael.kharazim.web.controller.BaseControllerTest;
@@ -54,6 +55,12 @@ class RechargeCardTypeControllerTest extends BaseControllerTest<RechargeCardType
     void page() {
         PageRechargeCardTypeRequest pageRequest = new PageRechargeCardTypeRequest();
         super.performWhenCall(mockController.page(pageRequest));
+    }
+
+    @Test
+    void list() {
+        ListRechargeCardTypeRequest listRequest = new ListRechargeCardTypeRequest();
+        super.performWhenCall(mockController.list(listRequest));
     }
 
 }
