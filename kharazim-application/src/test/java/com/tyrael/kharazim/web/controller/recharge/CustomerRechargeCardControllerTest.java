@@ -1,5 +1,6 @@
 package com.tyrael.kharazim.web.controller.recharge;
 
+import com.tyrael.kharazim.application.recharge.vo.CustomerRechargeCardPageRequest;
 import com.tyrael.kharazim.application.recharge.vo.CustomerRechargeRequest;
 import com.tyrael.kharazim.web.controller.BaseControllerTest;
 import org.junit.jupiter.api.Test;
@@ -28,6 +29,12 @@ class CustomerRechargeCardControllerTest extends BaseControllerTest<CustomerRech
         rechargeRequest.setTraderUserCode("U000002");
         rechargeRequest.setRemark("测试: " + LocalDateTime.now());
         super.performWhenCall(mockController.recharge(rechargeRequest));
+    }
+
+    @Test
+    void rechargeCardPage() {
+        CustomerRechargeCardPageRequest pageRequest = new CustomerRechargeCardPageRequest();
+        super.performWhenCall(mockController.rechargeCardPage(pageRequest));
     }
 
 }

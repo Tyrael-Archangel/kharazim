@@ -1,6 +1,9 @@
 package com.tyrael.kharazim.application.recharge.service;
 
+import com.tyrael.kharazim.application.recharge.vo.CustomerRechargeCardPageRequest;
+import com.tyrael.kharazim.application.recharge.vo.CustomerRechargeCardVO;
 import com.tyrael.kharazim.application.recharge.vo.CustomerRechargeRequest;
+import com.tyrael.kharazim.common.dto.PageResponse;
 
 /**
  * @author Tyrael Archangel
@@ -14,5 +17,13 @@ public interface CustomerRechargeCardService {
      * @param rechargeRequest {@link CustomerRechargeRequest}
      */
     void recharge(CustomerRechargeRequest rechargeRequest);
+
+    /**
+     * 会员储值单分页
+     *
+     * @param pageRequest {@link CustomerRechargeCardPageRequest}
+     * @return 会员储值单分页数据
+     */
+    PageResponse<CustomerRechargeCardVO> page(CustomerRechargeCardPageRequest pageRequest);
 
 }

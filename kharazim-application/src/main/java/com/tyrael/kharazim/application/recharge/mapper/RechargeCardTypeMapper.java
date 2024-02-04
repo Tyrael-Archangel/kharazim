@@ -10,8 +10,13 @@ import com.tyrael.kharazim.application.recharge.vo.ListRechargeCardTypeRequest;
 import com.tyrael.kharazim.application.recharge.vo.PageRechargeCardTypeRequest;
 import com.tyrael.kharazim.common.dto.PageResponse;
 import org.apache.ibatis.annotations.Mapper;
+import org.springframework.util.CollectionUtils;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author Tyrael Archangel
@@ -66,4 +71,30 @@ public interface RechargeCardTypeMapper extends BaseMapper<RechargeCardType> {
         return selectList(queryWrapper);
     }
 
+    /**
+     * list by codes
+     *
+     * @param codes 储值卡项编码
+     * @return RechargeCardTypes
+     */
+    default List<RechargeCardType> listByCodes(Collection<String> codes) {
+        if (CollectionUtils.isEmpty(codes)) {
+            return Collections.emptyList();
+        }
+        LambdaQueryWrapper<RechargeCardType> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.in(RechargeCardType::getCode, codes);
+        return selectList(queryWrapper);
+    }
+
+    /**
+     * map by codes
+     *
+     * @param codes codes
+     * @return Map<code, RechargeCardType>
+     */
+    default Map<String, RechargeCardType> mapByCodes(Collection<String> codes) {
+        List<RechargeCardType> rechargeCardTypes = listByCodes(codes);
+        return rechargeCardTypes.stream()
+                .collect(Collectors.toMap(RechargeCardType::getCode, e -> e));
+    }
 }

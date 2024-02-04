@@ -1,16 +1,17 @@
 package com.tyrael.kharazim.web.controller.recharge;
 
 import com.tyrael.kharazim.application.recharge.service.CustomerRechargeCardService;
+import com.tyrael.kharazim.application.recharge.vo.CustomerRechargeCardPageRequest;
+import com.tyrael.kharazim.application.recharge.vo.CustomerRechargeCardVO;
 import com.tyrael.kharazim.application.recharge.vo.CustomerRechargeRequest;
+import com.tyrael.kharazim.common.dto.PageResponse;
 import com.tyrael.kharazim.common.dto.Response;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author Tyrael Archangel
@@ -29,6 +30,13 @@ public class CustomerRechargeCardController {
     public Response recharge(@RequestBody @Valid CustomerRechargeRequest rechargeRequest) {
         customerRechargeCardService.recharge(rechargeRequest);
         return Response.success();
+    }
+
+    @GetMapping("/page")
+    @Operation(summary = "会员储值单分页")
+    public PageResponse<CustomerRechargeCardVO> rechargeCardPage(
+            @ParameterObject @Valid CustomerRechargeCardPageRequest pageRequest) {
+        return customerRechargeCardService.page(pageRequest);
     }
 
 }

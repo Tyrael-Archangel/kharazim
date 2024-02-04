@@ -89,4 +89,11 @@ public class CustomerRechargeCard extends BaseDO {
      */
     private String chargebackUserCode;
 
+    /**
+     * 剩余金额
+     */
+    public BigDecimal getBalanceAmount() {
+        return totalAmount.subtract(consumedAmount);
+    }
+
 }
