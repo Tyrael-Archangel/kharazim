@@ -4,9 +4,11 @@ import com.tyrael.kharazim.application.recharge.service.CustomerRechargeCardServ
 import com.tyrael.kharazim.application.recharge.vo.CustomerRechargeCardPageRequest;
 import com.tyrael.kharazim.application.recharge.vo.CustomerRechargeCardVO;
 import com.tyrael.kharazim.application.recharge.vo.CustomerRechargeRequest;
+import com.tyrael.kharazim.common.dto.MultiResponse;
 import com.tyrael.kharazim.common.dto.PageResponse;
 import com.tyrael.kharazim.common.dto.Response;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +39,13 @@ public class CustomerRechargeCardController {
     public PageResponse<CustomerRechargeCardVO> rechargeCardPage(
             @ParameterObject @Valid CustomerRechargeCardPageRequest pageRequest) {
         return customerRechargeCardService.page(pageRequest);
+    }
+
+    @GetMapping("/list-effective/{customerCode}")
+    @Operation(summary = "会员有效的储值单")
+    public MultiResponse<CustomerRechargeCardVO> listCustomerEffective(
+            @PathVariable("customerCode") @Parameter(description = "会员编码", required = true) String customerCode) {
+        return MultiResponse.success(customerRechargeCardService.listCustomerEffective(customerCode));
     }
 
 }

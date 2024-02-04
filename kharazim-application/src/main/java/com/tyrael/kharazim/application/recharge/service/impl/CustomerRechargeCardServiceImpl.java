@@ -99,6 +99,12 @@ public class CustomerRechargeCardServiceImpl implements CustomerRechargeCardServ
                 pageData.getPageNum());
     }
 
+    @Override
+    public List<CustomerRechargeCardVO> listCustomerEffective(String customerCode) {
+        List<CustomerRechargeCard> rechargeCards = customerRechargeCardMapper.listEffectiveCards(customerCode);
+        return customerRechargeCards(rechargeCards);
+    }
+
     private List<CustomerRechargeCardVO> customerRechargeCards(Collection<CustomerRechargeCard> customerRechargeCards) {
         Set<String> customerCodes = Sets.newHashSet();
         Set<String> userCodes = Sets.newHashSet();

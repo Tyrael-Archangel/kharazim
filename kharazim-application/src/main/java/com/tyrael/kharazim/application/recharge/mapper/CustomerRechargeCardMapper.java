@@ -1,12 +1,17 @@
 package com.tyrael.kharazim.application.recharge.mapper;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.tyrael.kharazim.application.base.LambdaQueryWrapperX;
 import com.tyrael.kharazim.application.recharge.domain.CustomerRechargeCard;
 import com.tyrael.kharazim.application.recharge.vo.CustomerRechargeCardPageRequest;
 import com.tyrael.kharazim.common.dto.PageResponse;
 import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Tyrael Archangel
@@ -37,4 +42,29 @@ public interface CustomerRechargeCardMapper extends BaseMapper<CustomerRechargeC
                 pageRequest.getPageNum());
     }
 
+    /**
+     * 查询会员有效的储值单
+     *
+     * @param customerCode 会员编码
+     * @return 会员有效的储值单
+     */
+    default List<CustomerRechargeCard> listEffectiveCards(String customerCode) {
+        // 先在内存中过滤，如果后期数据量大，则在DB中过滤
+        List<CustomerRechargeCard> customerRechargeCards = this.listByCustomerCode(customerCode);
+        return customerRechargeCards.stream()
+                .filter(CustomerRechargeCard::effective)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * 根据会员编码查询
+     *
+     * @param customerCode 会员编码
+     * @return CustomerRechargeCards
+     */
+    default List<CustomerRechargeCard> listByCustomerCode(String customerCode) {
+        LambdaQueryWrapper<CustomerRechargeCard> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.eq(CustomerRechargeCard::getCustomerCode, customerCode);
+        return selectList(queryWrapper);
+    }
 }

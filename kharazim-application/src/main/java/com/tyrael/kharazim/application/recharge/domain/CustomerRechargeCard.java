@@ -96,4 +96,24 @@ public class CustomerRechargeCard extends BaseDO {
         return totalAmount.subtract(consumedAmount);
     }
 
+    /**
+     * 是否有效
+     */
+    public boolean effective() {
+        if (!CustomerRechargeCardStatus.PAID.equals(status)) {
+            // 未支付，或者已退卡了，无效
+            return false;
+        }
+        if (getBalanceAmount().compareTo(BigDecimal.ZERO) <= 0) {
+            // 剩余金额为0，无效
+            return false;
+        }
+
+        if (Boolean.TRUE.equals(neverExpire)) {
+            return true;
+        } else {
+            return !expireDate.isBefore(LocalDate.now());
+        }
+    }
+
 }

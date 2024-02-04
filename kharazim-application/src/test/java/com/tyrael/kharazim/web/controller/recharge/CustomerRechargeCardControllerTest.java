@@ -37,4 +37,10 @@ class CustomerRechargeCardControllerTest extends BaseControllerTest<CustomerRech
         super.performWhenCall(mockController.rechargeCardPage(pageRequest));
     }
 
+    @Test
+    void listCustomerEffective() {
+        String customerCode = "CU0000000002";
+        super.performWhenCall(mockController.listCustomerEffective(customerCode));
+    }
+
 }
