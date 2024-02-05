@@ -1,9 +1,7 @@
 package com.tyrael.kharazim.web.controller.recharge;
 
 import com.tyrael.kharazim.application.recharge.service.CustomerRechargeCardService;
-import com.tyrael.kharazim.application.recharge.vo.CustomerRechargeCardPageRequest;
-import com.tyrael.kharazim.application.recharge.vo.CustomerRechargeCardVO;
-import com.tyrael.kharazim.application.recharge.vo.CustomerRechargeRequest;
+import com.tyrael.kharazim.application.recharge.vo.*;
 import com.tyrael.kharazim.common.dto.MultiResponse;
 import com.tyrael.kharazim.common.dto.PageResponse;
 import com.tyrael.kharazim.common.dto.Response;
@@ -46,6 +44,14 @@ public class CustomerRechargeCardController {
     public MultiResponse<CustomerRechargeCardVO> listCustomerEffective(
             @PathVariable("customerCode") @Parameter(description = "会员编码", required = true) String customerCode) {
         return MultiResponse.success(customerRechargeCardService.listCustomerEffective(customerCode));
+    }
+
+    @PostMapping("/page-log/{code}")
+    @Operation(summary = "储值单分页日志记录")
+    public PageResponse<CustomerRechargeCardLogVO> pageRechargeCardLog(
+            @PathVariable("code") @Parameter(description = "储值单号", required = true) String code,
+            @ParameterObject PageCustomerRechargeCardLogRequest pageCommand) {
+        return customerRechargeCardService.pageRechargeCardLog(code, pageCommand);
     }
 
 }

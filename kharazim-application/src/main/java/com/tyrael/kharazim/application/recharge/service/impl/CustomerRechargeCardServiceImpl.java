@@ -5,13 +5,13 @@ import com.tyrael.kharazim.application.config.BusinessCodeConstants;
 import com.tyrael.kharazim.application.customer.domain.Customer;
 import com.tyrael.kharazim.application.customer.mapper.CustomerMapper;
 import com.tyrael.kharazim.application.recharge.domain.CustomerRechargeCard;
+import com.tyrael.kharazim.application.recharge.domain.CustomerRechargeCardLog;
 import com.tyrael.kharazim.application.recharge.domain.RechargeCardType;
+import com.tyrael.kharazim.application.recharge.mapper.CustomerRechargeCardLogMapper;
 import com.tyrael.kharazim.application.recharge.mapper.CustomerRechargeCardMapper;
 import com.tyrael.kharazim.application.recharge.mapper.RechargeCardTypeMapper;
 import com.tyrael.kharazim.application.recharge.service.CustomerRechargeCardService;
-import com.tyrael.kharazim.application.recharge.vo.CustomerRechargeCardPageRequest;
-import com.tyrael.kharazim.application.recharge.vo.CustomerRechargeCardVO;
-import com.tyrael.kharazim.application.recharge.vo.CustomerRechargeRequest;
+import com.tyrael.kharazim.application.recharge.vo.*;
 import com.tyrael.kharazim.application.system.service.CodeGenerator;
 import com.tyrael.kharazim.application.user.domain.User;
 import com.tyrael.kharazim.application.user.mapper.UserMapper;
@@ -26,10 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.tyrael.kharazim.application.recharge.enums.CustomerRechargeCardStatus.UNPAID;
@@ -45,6 +42,7 @@ public class CustomerRechargeCardServiceImpl implements CustomerRechargeCardServ
 
     private final CustomerRechargeCardMapper customerRechargeCardMapper;
     private final RechargeCardTypeMapper rechargeCardTypeMapper;
+    private final CustomerRechargeCardLogMapper rechargeCardLogMapper;
     private final UserMapper userMapper;
     private final CustomerMapper customerMapper;
     private final CodeGenerator codeGenerator;
@@ -164,6 +162,47 @@ public class CustomerRechargeCardServiceImpl implements CustomerRechargeCardServ
                 .chargebackUserCode(chargebackUser == null ? null : chargebackUser.getCode())
                 .chargebackUserName(chargebackUser == null ? null : chargebackUser.getNickName())
                 .build();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PageResponse<CustomerRechargeCardLogVO> pageRechargeCardLog(String code,
+                                                                       PageCustomerRechargeCardLogRequest pageCommand) {
+        PageResponse<CustomerRechargeCardLog> pageResponse = rechargeCardLogMapper.page(code, pageCommand);
+        return PageResponse.success(this.rechargeCardLogs(pageResponse.getData()),
+                pageResponse.getTotalCount(),
+                pageResponse.getPageSize(),
+                pageResponse.getPageNum());
+    }
+
+    private List<CustomerRechargeCardLogVO> rechargeCardLogs(Collection<CustomerRechargeCardLog> rechargeCardLogs) {
+        if (rechargeCardLogs == null || rechargeCardLogs.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        Set<String> customerCodes = rechargeCardLogs.stream()
+                .map(CustomerRechargeCardLog::getCustomerCode)
+                .collect(Collectors.toSet());
+        Map<String, Customer> customerMap = customerMapper.mapByCodes(customerCodes);
+        return rechargeCardLogs.stream()
+                .map(e -> {
+                    String customerCode = e.getCustomerCode();
+                    Customer customer = customerMap.get(customerCode);
+                    return CustomerRechargeCardLogVO.builder()
+                            .id(e.getId())
+                            .rechargeCardCode(e.getRechargeCardCode())
+                            .customerCode(customer.getCode())
+                            .customerName(customer.getName())
+                            .logType(e.getLogType())
+                            .sourceBusinessCode(e.getSourceBusinessCode())
+                            .createTime(e.getCreateTime())
+                            .amount(e.getAmount())
+                            .operator(e.getOperator())
+                            .operatorCode(e.getOperatorCode())
+                            .remark(e.getRemark())
+                            .build();
+                })
+                .collect(Collectors.toList());
     }
 
 }

@@ -2,6 +2,7 @@ package com.tyrael.kharazim.web.controller.recharge;
 
 import com.tyrael.kharazim.application.recharge.vo.CustomerRechargeCardPageRequest;
 import com.tyrael.kharazim.application.recharge.vo.CustomerRechargeRequest;
+import com.tyrael.kharazim.application.recharge.vo.PageCustomerRechargeCardLogRequest;
 import com.tyrael.kharazim.web.controller.BaseControllerTest;
 import org.junit.jupiter.api.Test;
 
@@ -41,6 +42,13 @@ class CustomerRechargeCardControllerTest extends BaseControllerTest<CustomerRech
     void listCustomerEffective() {
         String customerCode = "CU0000000002";
         super.performWhenCall(mockController.listCustomerEffective(customerCode));
+    }
+
+    @Test
+    void pageRechargeCardLog() {
+        String rechargeCardCode = "CRC20240201000001";
+        PageCustomerRechargeCardLogRequest pageCommand = new PageCustomerRechargeCardLogRequest();
+        super.performWhenCall(mockController.pageRechargeCardLog(rechargeCardCode, pageCommand));
     }
 
 }

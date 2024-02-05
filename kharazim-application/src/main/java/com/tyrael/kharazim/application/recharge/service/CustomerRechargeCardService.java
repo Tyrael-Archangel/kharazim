@@ -1,8 +1,6 @@
 package com.tyrael.kharazim.application.recharge.service;
 
-import com.tyrael.kharazim.application.recharge.vo.CustomerRechargeCardPageRequest;
-import com.tyrael.kharazim.application.recharge.vo.CustomerRechargeCardVO;
-import com.tyrael.kharazim.application.recharge.vo.CustomerRechargeRequest;
+import com.tyrael.kharazim.application.recharge.vo.*;
 import com.tyrael.kharazim.common.dto.PageResponse;
 
 import java.util.List;
@@ -35,5 +33,15 @@ public interface CustomerRechargeCardService {
      * @return 会员有效的储值单
      */
     List<CustomerRechargeCardVO> listCustomerEffective(String customerCode);
+
+    /**
+     * 储值单分页日志记录
+     *
+     * @param code        储值单号
+     * @param pageCommand 分页条件
+     * @return 储值单分页日志记录
+     */
+    PageResponse<CustomerRechargeCardLogVO> pageRechargeCardLog(String code,
+                                                                PageCustomerRechargeCardLogRequest pageCommand);
 
 }
