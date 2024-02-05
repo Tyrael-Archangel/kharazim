@@ -1,11 +1,13 @@
 package com.tyrael.kharazim.application.recharge.mapper;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.tyrael.kharazim.application.base.LambdaQueryWrapperX;
 import com.tyrael.kharazim.application.recharge.domain.CustomerRechargeCard;
+import com.tyrael.kharazim.application.recharge.enums.CustomerRechargeCardStatus;
 import com.tyrael.kharazim.application.recharge.vo.CustomerRechargeCardPageRequest;
 import com.tyrael.kharazim.common.dto.PageResponse;
 import org.apache.ibatis.annotations.Mapper;
@@ -19,6 +21,18 @@ import java.util.stream.Collectors;
  */
 @Mapper
 public interface CustomerRechargeCardMapper extends BaseMapper<CustomerRechargeCard> {
+
+    /**
+     * find by code
+     *
+     * @param code 储值单编码
+     * @return {@link CustomerRechargeCard}
+     */
+    default CustomerRechargeCard findByCode(String code) {
+        LambdaQueryWrapper<CustomerRechargeCard> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.eq(CustomerRechargeCard::getCode, code);
+        return selectOne(queryWrapper);
+    }
 
     /**
      * page
@@ -67,4 +81,23 @@ public interface CustomerRechargeCardMapper extends BaseMapper<CustomerRechargeC
         queryWrapper.eq(CustomerRechargeCard::getCustomerCode, customerCode);
         return selectList(queryWrapper);
     }
+
+    /**
+     * 标记为已收款
+     *
+     * @param customerRechargeCard entity
+     * @return updatedRows
+     */
+    default int markPaid(CustomerRechargeCard customerRechargeCard) {
+        LambdaUpdateWrapper<CustomerRechargeCard> updateWrapper = Wrappers.lambdaUpdate();
+        updateWrapper.eq(CustomerRechargeCard::getId, customerRechargeCard.getId())
+                .eq(CustomerRechargeCard::getStatus, CustomerRechargeCardStatus.UNPAID);
+
+        updateWrapper.set(CustomerRechargeCard::getStatus, customerRechargeCard.getStatus())
+                .set(CustomerRechargeCard::getUpdaterCode, customerRechargeCard.getUpdaterCode())
+                .set(CustomerRechargeCard::getUpdater, customerRechargeCard.getUpdater())
+                .set(CustomerRechargeCard::getUpdateTime, customerRechargeCard.getUpdateTime());
+        return this.update(null, updateWrapper);
+    }
+
 }

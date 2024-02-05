@@ -1,5 +1,6 @@
 package com.tyrael.kharazim.application.recharge.service;
 
+import com.tyrael.kharazim.application.base.auth.AuthUser;
 import com.tyrael.kharazim.application.recharge.vo.*;
 import com.tyrael.kharazim.common.dto.PageResponse;
 
@@ -17,6 +18,14 @@ public interface CustomerRechargeCardService {
      * @param rechargeRequest {@link CustomerRechargeRequest}
      */
     void recharge(CustomerRechargeRequest rechargeRequest);
+
+    /**
+     * 更新储值单为已收款
+     *
+     * @param code        储值单号
+     * @param currentUser 操作人
+     */
+    void markPaid(String code, AuthUser currentUser);
 
     /**
      * 会员储值单分页

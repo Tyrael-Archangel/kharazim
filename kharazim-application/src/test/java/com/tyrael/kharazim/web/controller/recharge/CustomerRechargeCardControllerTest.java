@@ -33,6 +33,12 @@ class CustomerRechargeCardControllerTest extends BaseControllerTest<CustomerRech
     }
 
     @Test
+    void markPaid() {
+        String code = "CRC20240201000001";
+        super.performWhenCall(mockController.markPaid(code, super.mockAdmin()));
+    }
+
+    @Test
     void rechargeCardPage() {
         CustomerRechargeCardPageRequest pageRequest = new CustomerRechargeCardPageRequest();
         super.performWhenCall(mockController.rechargeCardPage(pageRequest));

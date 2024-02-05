@@ -1,12 +1,18 @@
 package com.tyrael.kharazim.application.recharge.service.impl;
 
 import com.google.common.collect.Sets;
+import com.tyrael.kharazim.application.base.auth.AuthUser;
 import com.tyrael.kharazim.application.config.BusinessCodeConstants;
 import com.tyrael.kharazim.application.customer.domain.Customer;
+import com.tyrael.kharazim.application.customer.domain.CustomerWalletTransaction;
+import com.tyrael.kharazim.application.customer.enums.TransactionSourceEnum;
+import com.tyrael.kharazim.application.customer.enums.TransactionTypeEnum;
 import com.tyrael.kharazim.application.customer.mapper.CustomerMapper;
+import com.tyrael.kharazim.application.customer.mapper.CustomerWalletTransactionMapper;
 import com.tyrael.kharazim.application.recharge.domain.CustomerRechargeCard;
 import com.tyrael.kharazim.application.recharge.domain.CustomerRechargeCardLog;
 import com.tyrael.kharazim.application.recharge.domain.RechargeCardType;
+import com.tyrael.kharazim.application.recharge.enums.CustomerRechargeCardLogType;
 import com.tyrael.kharazim.application.recharge.mapper.CustomerRechargeCardLogMapper;
 import com.tyrael.kharazim.application.recharge.mapper.CustomerRechargeCardMapper;
 import com.tyrael.kharazim.application.recharge.mapper.RechargeCardTypeMapper;
@@ -26,9 +32,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.tyrael.kharazim.application.recharge.enums.CustomerRechargeCardStatus.PAID;
 import static com.tyrael.kharazim.application.recharge.enums.CustomerRechargeCardStatus.UNPAID;
 
 /**
@@ -46,6 +54,7 @@ public class CustomerRechargeCardServiceImpl implements CustomerRechargeCardServ
     private final UserMapper userMapper;
     private final CustomerMapper customerMapper;
     private final CodeGenerator codeGenerator;
+    private final CustomerWalletTransactionMapper customerWalletTransactionMapper;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -84,6 +93,51 @@ public class CustomerRechargeCardServiceImpl implements CustomerRechargeCardServ
         customerRechargeCard.setExpireDate(expireDate);
         customerRechargeCard.setRechargeDate(rechargeRequest.getRechargeDate());
         return customerRechargeCard;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void markPaid(String code, AuthUser currentUser) {
+        CustomerRechargeCard rechargeCard = customerRechargeCardMapper.findByCode(code);
+        DomainNotFoundException.assertFound(rechargeCard, code);
+
+        BusinessException.assertTrue(UNPAID.equals(rechargeCard.getStatus()), "储值单无法标记收款");
+        rechargeCard.setStatus(PAID);
+        rechargeCard.setUpdate(currentUser.getCode(), currentUser.getNickName());
+
+        int updatedRows = customerRechargeCardMapper.markPaid(rechargeCard);
+        BusinessException.assertTrue(updatedRows > 0, "储值单无法标记收款");
+
+        saveRechargeTransaction(rechargeCard, currentUser);
+    }
+
+    private void saveRechargeTransaction(CustomerRechargeCard customerRechargeCard, AuthUser currentUser) {
+
+        CustomerRechargeCardLog rechargeCardLog = new CustomerRechargeCardLog();
+        rechargeCardLog.setRechargeCardCode(customerRechargeCard.getCode());
+        rechargeCardLog.setCustomerCode(customerRechargeCard.getCustomerCode());
+        rechargeCardLog.setLogType(CustomerRechargeCardLogType.RECHARGE);
+        rechargeCardLog.setSourceBusinessCode(null);
+        rechargeCardLog.setCreateTime(LocalDateTime.now());
+        rechargeCardLog.setAmount(customerRechargeCard.getTotalAmount());
+        rechargeCardLog.setOperator(currentUser.getNickName());
+        rechargeCardLog.setOperatorCode(currentUser.getCode());
+        rechargeCardLog.setRemark(null);
+        rechargeCardLogMapper.insert(rechargeCardLog);
+
+        String transactionCode = codeGenerator.dailyTimeNext(BusinessCodeConstants.CUSTOMER_WALLET_TRANSACTION);
+        CustomerWalletTransaction transaction = new CustomerWalletTransaction();
+        transaction.setCode(transactionCode);
+        transaction.setCustomerCode(customerRechargeCard.getCustomerCode());
+        transaction.setType(TransactionTypeEnum.RECHARGE);
+        transaction.setSource(TransactionSourceEnum.CUSTOMER_RECHARGE_CARD);
+        transaction.setSourceBusinessCode(customerRechargeCard.getCode());
+        transaction.setTransactionTime(LocalDateTime.now());
+        transaction.setAmount(customerRechargeCard.getTotalAmount());
+        transaction.setOperator(currentUser.getNickName());
+        transaction.setOperatorCode(currentUser.getCode());
+        transaction.setRemark(null);
+        customerWalletTransactionMapper.insert(transaction);
     }
 
     @Override

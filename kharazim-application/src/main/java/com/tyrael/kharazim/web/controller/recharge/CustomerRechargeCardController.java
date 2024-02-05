@@ -1,5 +1,7 @@
 package com.tyrael.kharazim.web.controller.recharge;
 
+import com.tyrael.kharazim.application.base.auth.AuthUser;
+import com.tyrael.kharazim.application.base.auth.CurrentUser;
 import com.tyrael.kharazim.application.recharge.service.CustomerRechargeCardService;
 import com.tyrael.kharazim.application.recharge.vo.*;
 import com.tyrael.kharazim.common.dto.MultiResponse;
@@ -7,6 +9,7 @@ import com.tyrael.kharazim.common.dto.PageResponse;
 import com.tyrael.kharazim.common.dto.Response;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +32,15 @@ public class CustomerRechargeCardController {
     @Operation(summary = "创建储值单")
     public Response recharge(@RequestBody @Valid CustomerRechargeRequest rechargeRequest) {
         customerRechargeCardService.recharge(rechargeRequest);
+        return Response.success();
+    }
+
+    @PutMapping("/mark-paid/{code}")
+    @Operation(summary = "更新储值单为已收款")
+    public Response markPaid(
+            @PathVariable("code") @Parameter(description = "储值单号", required = true) String code,
+            @Schema(hidden = true) @CurrentUser AuthUser currentUser) {
+        customerRechargeCardService.markPaid(code, currentUser);
         return Response.success();
     }
 
