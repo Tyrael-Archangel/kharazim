@@ -1,10 +1,13 @@
 package com.tyrael.kharazim.web.controller.recharge;
 
+import com.tyrael.kharazim.application.recharge.vo.CustomerRechargeCardChargebackRequest;
 import com.tyrael.kharazim.application.recharge.vo.CustomerRechargeCardPageRequest;
 import com.tyrael.kharazim.application.recharge.vo.CustomerRechargeRequest;
 import com.tyrael.kharazim.application.recharge.vo.PageCustomerRechargeCardLogRequest;
 import com.tyrael.kharazim.web.controller.BaseControllerTest;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -36,6 +39,17 @@ class CustomerRechargeCardControllerTest extends BaseControllerTest<CustomerRech
     void markPaid() {
         String code = "CRC20240201000001";
         super.performWhenCall(mockController.markPaid(code, super.mockAdmin()));
+    }
+
+    @Test
+    @Rollback
+    @Transactional(rollbackFor = Exception.class)
+    void chargeback() {
+        CustomerRechargeCardChargebackRequest chargebackRequest = new CustomerRechargeCardChargebackRequest();
+        chargebackRequest.setRechargeCardCode("CRC20240201000001");
+        chargebackRequest.setChargebackUserCode("U000002");
+        chargebackRequest.setChargebackAmount(BigDecimal.valueOf(100));
+        super.performWhenCall(mockController.chargeback(chargebackRequest, super.mockAdmin()));
     }
 
     @Test

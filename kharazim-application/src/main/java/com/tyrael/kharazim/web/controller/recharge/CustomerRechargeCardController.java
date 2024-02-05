@@ -44,6 +44,14 @@ public class CustomerRechargeCardController {
         return Response.success();
     }
 
+    @PostMapping("/chargeback")
+    @Operation(summary = "退卡")
+    public Response chargeback(@RequestBody @Valid CustomerRechargeCardChargebackRequest chargebackRequest,
+                               @Schema(hidden = true) @CurrentUser AuthUser currentUser) {
+        customerRechargeCardService.chargeback(chargebackRequest, currentUser);
+        return Response.success();
+    }
+
     @GetMapping("/page")
     @Operation(summary = "会员储值单分页")
     public PageResponse<CustomerRechargeCardVO> rechargeCardPage(

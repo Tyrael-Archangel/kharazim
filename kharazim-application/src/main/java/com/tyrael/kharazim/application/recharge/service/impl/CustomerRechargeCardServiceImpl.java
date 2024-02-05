@@ -36,8 +36,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.tyrael.kharazim.application.recharge.enums.CustomerRechargeCardStatus.PAID;
-import static com.tyrael.kharazim.application.recharge.enums.CustomerRechargeCardStatus.UNPAID;
+import static com.tyrael.kharazim.application.recharge.enums.CustomerRechargeCardStatus.*;
 
 /**
  * @author Tyrael Archangel
@@ -138,6 +137,28 @@ public class CustomerRechargeCardServiceImpl implements CustomerRechargeCardServ
         transaction.setOperatorCode(currentUser.getCode());
         transaction.setRemark(null);
         customerWalletTransactionMapper.insert(transaction);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void chargeback(CustomerRechargeCardChargebackRequest chargebackRequest, AuthUser currentUser) {
+        String rechargeCardCode = chargebackRequest.getRechargeCardCode();
+        CustomerRechargeCard rechargeCard = customerRechargeCardMapper.findByCode(rechargeCardCode);
+        DomainNotFoundException.assertFound(rechargeCard, "储值单号: " + rechargeCardCode);
+
+        BusinessException.assertTrue(rechargeCard.effective(), "储值单" + rechargeCardCode + "无法退卡");
+        BigDecimal chargebackAmount = chargebackRequest.getChargebackAmount();
+        BusinessException.assertTrue(
+                rechargeCard.getBalanceAmount().compareTo(chargebackAmount) >= 0,
+                "退卡金额超出剩余金额");
+
+        rechargeCard.setStatus(WAIT_REFUND);
+        rechargeCard.setChargebackAmount(chargebackAmount);
+        rechargeCard.setChargebackUserCode(chargebackRequest.getChargebackUserCode());
+        rechargeCard.setUpdate(currentUser.getCode(), currentUser.getNickName());
+
+        int updatedRows = customerRechargeCardMapper.chargeback(rechargeCard);
+        BusinessException.assertTrue(updatedRows > 0, "储值单" + rechargeCardCode + "退卡失败");
     }
 
     @Override

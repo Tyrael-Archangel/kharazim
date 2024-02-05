@@ -100,4 +100,24 @@ public interface CustomerRechargeCardMapper extends BaseMapper<CustomerRechargeC
         return this.update(null, updateWrapper);
     }
 
+    /**
+     * 保存退卡
+     *
+     * @param rechargeCard entity
+     * @return updatedRows
+     */
+    default int chargeback(CustomerRechargeCard rechargeCard) {
+        LambdaUpdateWrapper<CustomerRechargeCard> updateWrapper = Wrappers.lambdaUpdate();
+        updateWrapper.eq(CustomerRechargeCard::getId, rechargeCard.getId())
+                .eq(CustomerRechargeCard::getStatus, CustomerRechargeCardStatus.PAID);
+
+        updateWrapper.set(CustomerRechargeCard::getStatus, rechargeCard.getStatus())
+                .set(CustomerRechargeCard::getChargebackAmount, rechargeCard.getChargebackAmount())
+                .set(CustomerRechargeCard::getChargebackUserCode, rechargeCard.getChargebackUserCode())
+                .set(CustomerRechargeCard::getUpdaterCode, rechargeCard.getUpdaterCode())
+                .set(CustomerRechargeCard::getUpdater, rechargeCard.getUpdater())
+                .set(CustomerRechargeCard::getUpdateTime, rechargeCard.getUpdateTime());
+        return this.update(null, updateWrapper);
+    }
+
 }

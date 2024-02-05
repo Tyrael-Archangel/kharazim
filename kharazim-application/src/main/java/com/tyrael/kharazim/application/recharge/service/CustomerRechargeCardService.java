@@ -28,6 +28,14 @@ public interface CustomerRechargeCardService {
     void markPaid(String code, AuthUser currentUser);
 
     /**
+     * 退卡
+     *
+     * @param chargebackRequest {@link CustomerRechargeCardChargebackRequest}
+     * @param currentUser       操作人
+     */
+    void chargeback(CustomerRechargeCardChargebackRequest chargebackRequest, AuthUser currentUser);
+
+    /**
      * 会员储值单分页
      *
      * @param pageRequest {@link CustomerRechargeCardPageRequest}
