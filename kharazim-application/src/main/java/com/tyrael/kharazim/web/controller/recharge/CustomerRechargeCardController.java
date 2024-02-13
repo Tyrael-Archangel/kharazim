@@ -74,4 +74,13 @@ public class CustomerRechargeCardController {
         return customerRechargeCardService.pageRechargeCardLog(code, pageCommand);
     }
 
+    @PutMapping("/mark-refunded/{code}")
+    @Operation(summary = "更新储值单为已退款")
+    public Response markRefunded(
+            @PathVariable("code") @Parameter(description = "储值单号", required = true) String code,
+            @Schema(hidden = true) @CurrentUser AuthUser currentUser) {
+        customerRechargeCardService.markRefunded(code, currentUser);
+        return Response.success();
+    }
+
 }

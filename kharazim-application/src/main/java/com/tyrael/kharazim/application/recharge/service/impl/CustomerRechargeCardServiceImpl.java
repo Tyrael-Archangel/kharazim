@@ -280,4 +280,49 @@ public class CustomerRechargeCardServiceImpl implements CustomerRechargeCardServ
                 .collect(Collectors.toList());
     }
 
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void markRefunded(String code, AuthUser currentUser) {
+        CustomerRechargeCard rechargeCard = customerRechargeCardMapper.findByCode(code);
+        DomainNotFoundException.assertFound(rechargeCard, code);
+
+        BusinessException.assertTrue(WAIT_REFUND.equals(rechargeCard.getStatus()), "储值单无法标记退款");
+        rechargeCard.setStatus(REFUNDED);
+        rechargeCard.setUpdate(currentUser.getCode(), currentUser.getNickName());
+
+        int updatedRows = customerRechargeCardMapper.markRefunded(rechargeCard);
+        BusinessException.assertTrue(updatedRows > 0, "储值单无法标记退款");
+
+        saveRefundTransaction(rechargeCard, currentUser);
+    }
+
+    private void saveRefundTransaction(CustomerRechargeCard customerRechargeCard, AuthUser currentUser) {
+
+        CustomerRechargeCardLog rechargeCardLog = new CustomerRechargeCardLog();
+        rechargeCardLog.setRechargeCardCode(customerRechargeCard.getCode());
+        rechargeCardLog.setCustomerCode(customerRechargeCard.getCustomerCode());
+        rechargeCardLog.setLogType(CustomerRechargeCardLogType.REFUND);
+        rechargeCardLog.setSourceBusinessCode(null);
+        rechargeCardLog.setCreateTime(LocalDateTime.now());
+        rechargeCardLog.setAmount(customerRechargeCard.getChargebackAmount());
+        rechargeCardLog.setOperator(currentUser.getNickName());
+        rechargeCardLog.setOperatorCode(currentUser.getCode());
+        rechargeCardLog.setRemark(null);
+        rechargeCardLogMapper.insert(rechargeCardLog);
+
+        String transactionCode = codeGenerator.dailyTimeNext(BusinessCodeConstants.CUSTOMER_WALLET_TRANSACTION);
+        CustomerWalletTransaction transaction = new CustomerWalletTransaction();
+        transaction.setCode(transactionCode);
+        transaction.setCustomerCode(customerRechargeCard.getCustomerCode());
+        transaction.setType(TransactionTypeEnum.REFUND);
+        transaction.setSource(TransactionSourceEnum.CUSTOMER_RECHARGE_CARD);
+        transaction.setSourceBusinessCode(customerRechargeCard.getCode());
+        transaction.setTransactionTime(LocalDateTime.now());
+        transaction.setAmount(customerRechargeCard.getChargebackAmount());
+        transaction.setOperator(currentUser.getNickName());
+        transaction.setOperatorCode(currentUser.getCode());
+        transaction.setRemark(null);
+        customerWalletTransactionMapper.insert(transaction);
+    }
+
 }

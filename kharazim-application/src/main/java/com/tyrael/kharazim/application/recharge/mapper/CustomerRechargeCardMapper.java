@@ -120,4 +120,22 @@ public interface CustomerRechargeCardMapper extends BaseMapper<CustomerRechargeC
         return this.update(null, updateWrapper);
     }
 
+    /**
+     * 标记为已退款
+     *
+     * @param customerRechargeCard entity
+     * @return updatedRows
+     */
+    default int markRefunded(CustomerRechargeCard customerRechargeCard) {
+        LambdaUpdateWrapper<CustomerRechargeCard> updateWrapper = Wrappers.lambdaUpdate();
+        updateWrapper.eq(CustomerRechargeCard::getId, customerRechargeCard.getId())
+                .eq(CustomerRechargeCard::getStatus, CustomerRechargeCardStatus.WAIT_REFUND);
+
+        updateWrapper.set(CustomerRechargeCard::getStatus, customerRechargeCard.getStatus())
+                .set(CustomerRechargeCard::getUpdaterCode, customerRechargeCard.getUpdaterCode())
+                .set(CustomerRechargeCard::getUpdater, customerRechargeCard.getUpdater())
+                .set(CustomerRechargeCard::getUpdateTime, customerRechargeCard.getUpdateTime());
+        return this.update(null, updateWrapper);
+    }
+
 }

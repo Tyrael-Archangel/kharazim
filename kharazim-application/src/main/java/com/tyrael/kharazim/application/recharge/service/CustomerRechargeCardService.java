@@ -61,4 +61,12 @@ public interface CustomerRechargeCardService {
     PageResponse<CustomerRechargeCardLogVO> pageRechargeCardLog(String code,
                                                                 PageCustomerRechargeCardLogRequest pageCommand);
 
+    /**
+     * 更新储值单为已退款
+     *
+     * @param code        储值单号
+     * @param currentUser 操作人
+     */
+    void markRefunded(String code, AuthUser currentUser);
+
 }
