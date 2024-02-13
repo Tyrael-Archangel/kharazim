@@ -71,4 +71,10 @@ class CustomerRechargeCardControllerTest extends BaseControllerTest<CustomerRech
         super.performWhenCall(mockController.pageRechargeCardLog(rechargeCardCode, pageCommand));
     }
 
+    @Test
+    void markRefunded() {
+        String code = "CRC20240201000001";
+        super.performWhenCall(mockController.markRefunded(code, super.mockAdmin()));
+    }
+
 }
