@@ -325,4 +325,53 @@ public class CustomerRechargeCardServiceImpl implements CustomerRechargeCardServ
         customerWalletTransactionMapper.insert(transaction);
     }
 
+    @Override
+    public CustomerBalanceOverviewVO customerBalanceOverview(String customerCode) {
+        Customer customer = customerMapper.exactlyFindByCode(customerCode);
+
+        List<CustomerRechargeCard> effectiveCards = customerRechargeCardMapper.listEffectiveCards(customerCode);
+        BigDecimal totalBalanceAmount = effectiveCards.stream()
+                .map(CustomerRechargeCard::getBalanceAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        Map<LocalDate, BigDecimal> expireDateAmounts = effectiveCards.stream()
+                .filter(e -> !e.neverExpire())
+                .collect(Collectors.groupingBy(
+                        CustomerRechargeCard::getExpireDate,
+                        Collectors.reducing(BigDecimal.ZERO, CustomerRechargeCard::getBalanceAmount, BigDecimal::add)));
+        Map.Entry<LocalDate, BigDecimal> latestExpireDateAndAmount = expireDateAmounts.entrySet()
+                .stream()
+                .min(Map.Entry.comparingByKey())
+                .orElse(null);
+
+        BigDecimal accumulatedRechargeAmount = customerAccumulatedRechargeAmount(customerCode);
+        BigDecimal accumulatedConsumedAmount = customerAccumulatedConsumedAmount(customerCode);
+
+        return CustomerBalanceOverviewVO.builder()
+                .customerCode(customer.getCode())
+                .customerName(customer.getName())
+                .totalBalanceAmount(totalBalanceAmount)
+                .accumulatedRechargeAmount(accumulatedRechargeAmount)
+                .accumulatedConsumedAmount(accumulatedConsumedAmount)
+                .latestExpireAmount(latestExpireDateAndAmount == null ? BigDecimal.ZERO : latestExpireDateAndAmount.getValue())
+                .expireDate(latestExpireDateAndAmount == null ? null : latestExpireDateAndAmount.getKey())
+                .build();
+    }
+
+    private BigDecimal customerAccumulatedRechargeAmount(String customerCode) {
+        List<CustomerWalletTransaction> customerWalletTransactions = customerWalletTransactionMapper.listByType(
+                customerCode, TransactionTypeEnum.RECHARGE);
+        return customerWalletTransactions.stream()
+                .map(CustomerWalletTransaction::getAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    private BigDecimal customerAccumulatedConsumedAmount(String customerCode) {
+        List<CustomerWalletTransaction> customerWalletTransactions = customerWalletTransactionMapper.listByType(
+                customerCode, TransactionTypeEnum.CONSUME);
+        return customerWalletTransactions.stream()
+                .map(CustomerWalletTransaction::getAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
 }

@@ -116,4 +116,11 @@ public class CustomerRechargeCard extends BaseDO {
         }
     }
 
+    /**
+     * 是否永不过期
+     */
+    public boolean neverExpire() {
+        return Boolean.TRUE.equals(neverExpire);
+    }
+
 }

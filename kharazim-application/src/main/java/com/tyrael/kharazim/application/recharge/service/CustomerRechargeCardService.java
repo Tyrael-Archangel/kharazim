@@ -69,4 +69,12 @@ public interface CustomerRechargeCardService {
      */
     void markRefunded(String code, AuthUser currentUser);
 
+    /**
+     * 会员账户金额总览
+     *
+     * @param customerCode 会员编码
+     * @return 会员账户金额总览
+     */
+    CustomerBalanceOverviewVO customerBalanceOverview(String customerCode);
+
 }

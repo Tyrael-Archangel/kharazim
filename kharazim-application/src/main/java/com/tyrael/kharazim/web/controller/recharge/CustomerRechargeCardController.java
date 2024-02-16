@@ -4,6 +4,7 @@ import com.tyrael.kharazim.application.base.auth.AuthUser;
 import com.tyrael.kharazim.application.base.auth.CurrentUser;
 import com.tyrael.kharazim.application.recharge.service.CustomerRechargeCardService;
 import com.tyrael.kharazim.application.recharge.vo.*;
+import com.tyrael.kharazim.common.dto.DataResponse;
 import com.tyrael.kharazim.common.dto.MultiResponse;
 import com.tyrael.kharazim.common.dto.PageResponse;
 import com.tyrael.kharazim.common.dto.Response;
@@ -81,6 +82,13 @@ public class CustomerRechargeCardController {
             @Schema(hidden = true) @CurrentUser AuthUser currentUser) {
         customerRechargeCardService.markRefunded(code, currentUser);
         return Response.success();
+    }
+
+    @GetMapping("/customer/balance-overview/{customerCode}")
+    @Operation(summary = "会员账户金额总览", description = "会员账户金额总览")
+    public DataResponse<CustomerBalanceOverviewVO> balanceOverview(
+            @PathVariable("customerCode") @Parameter(description = "会员编码") String customerCode) {
+        return DataResponse.ok(customerRechargeCardService.customerBalanceOverview(customerCode));
     }
 
 }
