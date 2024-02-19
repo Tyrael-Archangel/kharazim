@@ -326,6 +326,7 @@ public class CustomerRechargeCardServiceImpl implements CustomerRechargeCardServ
     }
 
     @Override
+    @Transactional(readOnly = true)
     public CustomerBalanceOverviewVO customerBalanceOverview(String customerCode) {
         Customer customer = customerMapper.exactlyFindByCode(customerCode);
 
