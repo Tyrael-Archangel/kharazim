@@ -48,16 +48,16 @@ public class TreeNodeToStringDemo {
             return builder.toString();
         }
 
-        private void append(Node treeNode, StringBuilder builder, int deep) {
-            if (treeNode == null) {
+        private void append(Node node, StringBuilder builder, int deep) {
+            if (node == null) {
                 return;
             }
             if (deep > 0) {
                 builder.append("    ".repeat(deep - 1));
                 builder.append("|...");
             }
-            builder.append(treeNode.val);
-            List<Node> children = treeNode.children;
+            builder.append(node.val);
+            List<Node> children = node.children;
             if (children != null) {
                 for (Node child : children) {
                     builder.append(System.lineSeparator());
