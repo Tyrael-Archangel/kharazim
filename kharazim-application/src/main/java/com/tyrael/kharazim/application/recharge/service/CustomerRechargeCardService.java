@@ -77,4 +77,12 @@ public interface CustomerRechargeCardService {
      */
     CustomerBalanceOverviewVO customerBalanceOverview(String customerCode);
 
+    /**
+     * 会员储值卡项剩余金额统计
+     *
+     * @param customerCode 会员编码
+     * @return 会员储值卡项剩余金额统计
+     */
+    List<CustomerRechargeCardTypeBalanceVO> customerRechargeCardTypeBalance(String customerCode);
+
 }

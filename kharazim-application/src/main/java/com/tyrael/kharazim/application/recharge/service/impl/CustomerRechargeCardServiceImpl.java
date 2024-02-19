@@ -1,5 +1,6 @@
 package com.tyrael.kharazim.application.recharge.service.impl;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.tyrael.kharazim.application.base.auth.AuthUser;
 import com.tyrael.kharazim.application.config.BusinessCodeConstants;
@@ -373,6 +374,33 @@ public class CustomerRechargeCardServiceImpl implements CustomerRechargeCardServ
         return customerWalletTransactions.stream()
                 .map(CustomerWalletTransaction::getAmount)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<CustomerRechargeCardTypeBalanceVO> customerRechargeCardTypeBalance(String customerCode) {
+        Customer customer = customerMapper.exactlyFindByCode(customerCode);
+
+        List<CustomerRechargeCard> effectiveCards = customerRechargeCardMapper.listEffectiveCards(customerCode);
+        Map<String, BigDecimal> cardTypeToBalanceMap = effectiveCards.stream()
+                .collect(Collectors.groupingBy(CustomerRechargeCard::getCardTypeCode,
+                        Collectors.reducing(BigDecimal.ZERO, CustomerRechargeCard::getBalanceAmount, BigDecimal::add)));
+
+        Map<String, RechargeCardType> rechargeCardTypeMap = rechargeCardTypeMapper.mapByCodes(cardTypeToBalanceMap.keySet());
+
+        List<CustomerRechargeCardTypeBalanceVO> result = Lists.newArrayList();
+        cardTypeToBalanceMap.forEach((cardTypeCode, balanceAmount) -> {
+            RechargeCardType rechargeCardType = rechargeCardTypeMap.get(cardTypeCode);
+            CustomerRechargeCardTypeBalanceVO rechargeCardBalance = CustomerRechargeCardTypeBalanceVO.builder()
+                    .customerCode(customerCode)
+                    .customerName(customer.getName())
+                    .balanceAmount(balanceAmount)
+                    .cardTypeCode(cardTypeCode)
+                    .cardTypeName(rechargeCardType.getName())
+                    .build();
+            result.add(rechargeCardBalance);
+        });
+        return result;
     }
 
 }

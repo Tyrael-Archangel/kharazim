@@ -91,4 +91,11 @@ public class CustomerRechargeCardController {
         return DataResponse.ok(customerRechargeCardService.customerBalanceOverview(customerCode));
     }
 
+    @GetMapping("/customer/card-type-balance/{customerCode}")
+    @Operation(summary = "会员储值卡项剩余金额统计")
+    public MultiResponse<CustomerRechargeCardTypeBalanceVO> rechargeCardBalance(
+            @PathVariable("customerCode") @Parameter(description = "会员编码") String customerCode) {
+        return MultiResponse.success(customerRechargeCardService.customerRechargeCardTypeBalance(customerCode));
+    }
+
 }
