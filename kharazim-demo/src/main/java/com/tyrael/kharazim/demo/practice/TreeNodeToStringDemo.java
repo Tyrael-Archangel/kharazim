@@ -22,6 +22,21 @@ public class TreeNodeToStringDemo {
         node5.addChild(9).addChild(13);
         node5.addChild(10);
         System.out.println(root);
+
+        System.out.println("================");
+
+        List<Integer> postorder = postorder(root, new ArrayList<>());
+        System.out.println(postorder);
+    }
+
+    private static List<Integer> postorder(Node node, List<Integer> values) {
+        if (node.children != null) {
+            for (Node child : node.children) {
+                postorder(child, values);
+            }
+        }
+        values.add(node.val);
+        return values;
     }
 
     private static class Node {
