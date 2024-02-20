@@ -1,18 +1,18 @@
 package com.tyrael.kharazim.application.product.service.impl;
 
+import com.tyrael.kharazim.application.base.auth.AuthUser;
 import com.tyrael.kharazim.application.config.BusinessCodeConstants;
 import com.tyrael.kharazim.application.product.domain.ProductUnitDO;
 import com.tyrael.kharazim.application.product.mapper.ProductUnitMapper;
 import com.tyrael.kharazim.application.product.service.ProductUnitService;
-import com.tyrael.kharazim.application.product.vo.AddProductUnitRequest;
-import com.tyrael.kharazim.application.product.vo.ListProductUnitRequest;
-import com.tyrael.kharazim.application.product.vo.PageProductUnitRequest;
-import com.tyrael.kharazim.application.product.vo.ProductUnitVO;
+import com.tyrael.kharazim.application.product.vo.*;
 import com.tyrael.kharazim.application.system.service.CodeGenerator;
 import com.tyrael.kharazim.common.dto.PageResponse;
 import com.tyrael.kharazim.common.exception.BusinessException;
+import com.tyrael.kharazim.common.exception.DomainNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -77,6 +77,24 @@ public class ProductUnitServiceImpl implements ProductUnitService {
         }
 
         return unit.getCode();
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void modify(ModifyProductUnitRequest modifyUnitRequest, AuthUser currentUser) {
+        String unitCode = modifyUnitRequest.getCode();
+        ProductUnitDO unit = productUnitMapper.findByCode(unitCode);
+        DomainNotFoundException.assertFound(unit, unitCode);
+
+        if (StringUtils.equals(unit.getEnglishName(), modifyUnitRequest.getEnglishName())) {
+            // nothing changed
+            return;
+        }
+
+        unit.setEnglishName(modifyUnitRequest.getEnglishName());
+        unit.setUpdate(currentUser.getCode(), currentUser.getNickName());
+
+        productUnitMapper.updateById(unit);
     }
 
 }

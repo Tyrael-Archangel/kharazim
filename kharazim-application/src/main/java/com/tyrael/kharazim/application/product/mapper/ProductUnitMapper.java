@@ -2,6 +2,7 @@ package com.tyrael.kharazim.application.product.mapper;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.tyrael.kharazim.application.base.LambdaQueryWrapperX;
 import com.tyrael.kharazim.application.product.domain.ProductUnitDO;
@@ -60,6 +61,19 @@ public interface ProductUnitMapper extends BaseMapper<ProductUnitDO> {
         }
         queryWrapper.orderByAsc(ProductUnitDO::getCode);
         return selectList(queryWrapper);
+    }
+
+
+    /**
+     * find by code
+     *
+     * @param unitCode 商品单位编码
+     * @return ProductUnitDO
+     */
+    default ProductUnitDO findByCode(String unitCode) {
+        LambdaQueryWrapper<ProductUnitDO> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.eq(ProductUnitDO::getCode, unitCode);
+        return selectOne(queryWrapper);
     }
 
 }

@@ -1,9 +1,7 @@
 package com.tyrael.kharazim.application.product.service;
 
-import com.tyrael.kharazim.application.product.vo.AddProductUnitRequest;
-import com.tyrael.kharazim.application.product.vo.ListProductUnitRequest;
-import com.tyrael.kharazim.application.product.vo.PageProductUnitRequest;
-import com.tyrael.kharazim.application.product.vo.ProductUnitVO;
+import com.tyrael.kharazim.application.base.auth.AuthUser;
+import com.tyrael.kharazim.application.product.vo.*;
 import com.tyrael.kharazim.common.dto.PageResponse;
 
 import java.util.List;
@@ -37,5 +35,13 @@ public interface ProductUnitService {
      * @return 单位编码
      */
     String add(AddProductUnitRequest addUnitRequest);
+
+    /**
+     * 修改商品单位
+     *
+     * @param modifyUnitRequest {@link ModifyProductUnitRequest}
+     * @param currentUser       操作人
+     */
+    void modify(ModifyProductUnitRequest modifyUnitRequest, AuthUser currentUser);
 
 }

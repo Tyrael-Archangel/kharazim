@@ -2,6 +2,7 @@ package com.tyrael.kharazim.web.controller.product;
 
 import com.tyrael.kharazim.application.product.vo.AddProductUnitRequest;
 import com.tyrael.kharazim.application.product.vo.ListProductUnitRequest;
+import com.tyrael.kharazim.application.product.vo.ModifyProductUnitRequest;
 import com.tyrael.kharazim.application.product.vo.PageProductUnitRequest;
 import com.tyrael.kharazim.common.dto.Pair;
 import com.tyrael.kharazim.common.dto.Pairs;
@@ -55,6 +56,14 @@ class ProductUnitControllerTest extends BaseControllerTest<ProductUnitController
             addUnitRequest.setEnglishName(unit.right());
             super.performWhenCall(mockController.add(addUnitRequest));
         }
+    }
+
+    @Test
+    void modify() {
+        ModifyProductUnitRequest modifyUnitRequest = new ModifyProductUnitRequest();
+        modifyUnitRequest.setCode("UT0001");
+        modifyUnitRequest.setEnglishName("gram");
+        super.performWhenCall(mockController.modify(modifyUnitRequest, super.mockAdmin()));
     }
 
 }
