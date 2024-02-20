@@ -1,15 +1,21 @@
 package com.tyrael.kharazim.application.product.service.impl;
 
+import com.tyrael.kharazim.application.config.BusinessCodeConstants;
 import com.tyrael.kharazim.application.product.domain.ProductUnitDO;
 import com.tyrael.kharazim.application.product.mapper.ProductUnitMapper;
 import com.tyrael.kharazim.application.product.service.ProductUnitService;
+import com.tyrael.kharazim.application.product.vo.AddProductUnitRequest;
 import com.tyrael.kharazim.application.product.vo.ListProductUnitRequest;
 import com.tyrael.kharazim.application.product.vo.PageProductUnitRequest;
 import com.tyrael.kharazim.application.product.vo.ProductUnitVO;
+import com.tyrael.kharazim.application.system.service.CodeGenerator;
 import com.tyrael.kharazim.common.dto.PageResponse;
+import com.tyrael.kharazim.common.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,6 +30,7 @@ import java.util.stream.Collectors;
 public class ProductUnitServiceImpl implements ProductUnitService {
 
     private final ProductUnitMapper productUnitMapper;
+    private final CodeGenerator codeGenerator;
 
     @Override
     public PageResponse<ProductUnitVO> page(PageProductUnitRequest pageRequest) {
@@ -52,6 +59,24 @@ public class ProductUnitServiceImpl implements ProductUnitService {
                 .name(unitDO.getName())
                 .englishName(unitDO.getEnglishName())
                 .build();
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public String add(AddProductUnitRequest addUnitRequest) {
+
+        ProductUnitDO unit = new ProductUnitDO();
+        unit.setCode(codeGenerator.next(BusinessCodeConstants.PRODUCT_UNIT));
+        unit.setName(addUnitRequest.getName());
+        unit.setEnglishName(addUnitRequest.getEnglishName());
+
+        try {
+            productUnitMapper.insert(unit);
+        } catch (DuplicateKeyException e) {
+            throw new BusinessException("商品单位已存在", e);
+        }
+
+        return unit.getCode();
     }
 
 }
