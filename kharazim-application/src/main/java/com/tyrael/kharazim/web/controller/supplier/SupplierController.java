@@ -1,16 +1,17 @@
 package com.tyrael.kharazim.web.controller.supplier;
 
 import com.tyrael.kharazim.application.supplier.service.SupplierService;
+import com.tyrael.kharazim.application.supplier.vo.AddSupplierRequest;
 import com.tyrael.kharazim.application.supplier.vo.PageSupplierRequest;
 import com.tyrael.kharazim.application.supplier.vo.SupplierVO;
+import com.tyrael.kharazim.common.dto.DataResponse;
 import com.tyrael.kharazim.common.dto.PageResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author Tyrael Archangel
@@ -28,6 +29,12 @@ public class SupplierController {
     @Operation(summary = "供应商分页查询")
     public PageResponse<SupplierVO> page(@ParameterObject PageSupplierRequest pageRequest) {
         return supplierService.page(pageRequest);
+    }
+
+    @PostMapping("/add")
+    @Operation(summary = "新建供应商", description = "新建供应商，返回供应商编码")
+    public DataResponse<String> add(@RequestBody @Valid AddSupplierRequest addSupplierRequest) {
+        return DataResponse.ok(supplierService.add(addSupplierRequest));
     }
 
 }

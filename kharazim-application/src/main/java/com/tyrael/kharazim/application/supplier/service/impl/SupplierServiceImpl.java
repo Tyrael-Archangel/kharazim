@@ -1,14 +1,20 @@
 package com.tyrael.kharazim.application.supplier.service.impl;
 
+import com.tyrael.kharazim.application.config.BusinessCodeConstants;
 import com.tyrael.kharazim.application.supplier.domain.SupplierDO;
 import com.tyrael.kharazim.application.supplier.mapper.SupplierMapper;
 import com.tyrael.kharazim.application.supplier.service.SupplierService;
+import com.tyrael.kharazim.application.supplier.vo.AddSupplierRequest;
 import com.tyrael.kharazim.application.supplier.vo.PageSupplierRequest;
 import com.tyrael.kharazim.application.supplier.vo.SupplierVO;
+import com.tyrael.kharazim.application.system.service.CodeGenerator;
 import com.tyrael.kharazim.common.dto.PageResponse;
+import com.tyrael.kharazim.common.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,6 +29,7 @@ import java.util.stream.Collectors;
 public class SupplierServiceImpl implements SupplierService {
 
     private final SupplierMapper supplierMapper;
+    private final CodeGenerator codeGenerator;
 
     @Override
     public PageResponse<SupplierVO> page(PageSupplierRequest pageRequest) {
@@ -43,6 +50,23 @@ public class SupplierServiceImpl implements SupplierService {
                 .name(supplier.getName())
                 .remark(supplier.getRemark())
                 .build();
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public String add(AddSupplierRequest addSupplierRequest) {
+        SupplierDO supplier = new SupplierDO();
+        supplier.setCode(codeGenerator.next(BusinessCodeConstants.SUPPLIER));
+        supplier.setName(addSupplierRequest.getName());
+        supplier.setRemark(addSupplierRequest.getRemark());
+
+        try {
+            supplierMapper.insert(supplier);
+        } catch (DuplicateKeyException e) {
+            throw new BusinessException("供应商已存在", e);
+        }
+
+        return supplier.getCode();
     }
 
 }

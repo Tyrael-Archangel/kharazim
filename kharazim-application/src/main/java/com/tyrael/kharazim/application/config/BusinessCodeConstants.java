@@ -7,6 +7,7 @@ import lombok.Getter;
  * @since 2023/12/26
  */
 @Getter
+@SuppressWarnings("unused")
 public enum BusinessCodeConstants {
 
     // --- TEST
@@ -31,8 +32,7 @@ public enum BusinessCodeConstants {
     PRODUCT_UNIT("商品单位编码", 4, "UT"),
     EMR("电子病例", 4, "EMR"),
     PRESCRIPTION("处方", 4, "RX"),
-
-    ;
+    SUPPLIER("供应商", "SU");
 
     private static final int DEFAULT_BIT = 6;
 
