@@ -1,6 +1,7 @@
 package com.tyrael.kharazim.web.controller.supplier;
 
 import com.tyrael.kharazim.application.supplier.vo.AddSupplierRequest;
+import com.tyrael.kharazim.application.supplier.vo.ListSupplierRequest;
 import com.tyrael.kharazim.application.supplier.vo.PageSupplierRequest;
 import com.tyrael.kharazim.web.controller.BaseControllerTest;
 import org.junit.jupiter.api.Test;
@@ -19,6 +20,12 @@ class SupplierControllerTest extends BaseControllerTest<SupplierController> {
     void page() {
         PageSupplierRequest pageRequest = new PageSupplierRequest();
         super.performWhenCall(mockController.page(pageRequest));
+    }
+
+    @Test
+    void list() {
+        ListSupplierRequest listRequest = new ListSupplierRequest();
+        super.performWhenCall(mockController.list(listRequest));
     }
 
     @Test

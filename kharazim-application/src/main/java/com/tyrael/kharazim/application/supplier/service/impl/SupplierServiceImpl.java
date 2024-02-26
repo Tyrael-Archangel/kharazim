@@ -5,6 +5,7 @@ import com.tyrael.kharazim.application.supplier.domain.SupplierDO;
 import com.tyrael.kharazim.application.supplier.mapper.SupplierMapper;
 import com.tyrael.kharazim.application.supplier.service.SupplierService;
 import com.tyrael.kharazim.application.supplier.vo.AddSupplierRequest;
+import com.tyrael.kharazim.application.supplier.vo.ListSupplierRequest;
 import com.tyrael.kharazim.application.supplier.vo.PageSupplierRequest;
 import com.tyrael.kharazim.application.supplier.vo.SupplierVO;
 import com.tyrael.kharazim.application.system.service.CodeGenerator;
@@ -42,6 +43,14 @@ public class SupplierServiceImpl implements SupplierService {
                 pageData.getTotalCount(),
                 pageData.getPageSize(),
                 pageData.getPageNum());
+    }
+
+    @Override
+    public List<SupplierVO> list(ListSupplierRequest listRequest) {
+        List<SupplierDO> suppliers = supplierMapper.list(listRequest);
+        return suppliers.stream()
+                .map(this::supplierVO)
+                .collect(Collectors.toList());
     }
 
     private SupplierVO supplierVO(SupplierDO supplier) {

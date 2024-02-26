@@ -2,9 +2,11 @@ package com.tyrael.kharazim.web.controller.supplier;
 
 import com.tyrael.kharazim.application.supplier.service.SupplierService;
 import com.tyrael.kharazim.application.supplier.vo.AddSupplierRequest;
+import com.tyrael.kharazim.application.supplier.vo.ListSupplierRequest;
 import com.tyrael.kharazim.application.supplier.vo.PageSupplierRequest;
 import com.tyrael.kharazim.application.supplier.vo.SupplierVO;
 import com.tyrael.kharazim.common.dto.DataResponse;
+import com.tyrael.kharazim.common.dto.MultiResponse;
 import com.tyrael.kharazim.common.dto.PageResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -29,6 +31,12 @@ public class SupplierController {
     @Operation(summary = "供应商分页查询")
     public PageResponse<SupplierVO> page(@ParameterObject PageSupplierRequest pageRequest) {
         return supplierService.page(pageRequest);
+    }
+
+    @GetMapping("/list")
+    @Operation(summary = "供应商列表数据", description = "供应商列表数据，不分页，返回所有符合条件的数据")
+    public MultiResponse<SupplierVO> list(@ParameterObject ListSupplierRequest listRequest) {
+        return MultiResponse.success(supplierService.list(listRequest));
     }
 
     @PostMapping("/add")

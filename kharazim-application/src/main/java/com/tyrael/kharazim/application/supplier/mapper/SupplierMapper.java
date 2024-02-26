@@ -4,9 +4,12 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.tyrael.kharazim.application.base.LambdaQueryWrapperX;
 import com.tyrael.kharazim.application.supplier.domain.SupplierDO;
+import com.tyrael.kharazim.application.supplier.vo.ListSupplierRequest;
 import com.tyrael.kharazim.application.supplier.vo.PageSupplierRequest;
 import com.tyrael.kharazim.common.dto.PageResponse;
 import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
 
 
 /**
@@ -32,6 +35,19 @@ public interface SupplierMapper extends BaseMapper<SupplierDO> {
                 pageResponse.getTotal(),
                 pageRequest.getPageSize(),
                 pageRequest.getPageNum());
+    }
+
+    /**
+     * 供应商列表查询
+     *
+     * @param listRequest {@link ListSupplierRequest}
+     * @return 供应商列表数据
+     */
+    default List<SupplierDO> list(ListSupplierRequest listRequest) {
+        LambdaQueryWrapperX<SupplierDO> queryWrapper = new LambdaQueryWrapperX<>();
+        queryWrapper.likeIfPresent(SupplierDO::getName, listRequest.getName());
+        queryWrapper.orderByAsc(SupplierDO::getCode);
+        return selectList(queryWrapper);
     }
 
 }
