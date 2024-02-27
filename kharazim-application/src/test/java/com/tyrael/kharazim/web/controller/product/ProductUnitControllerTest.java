@@ -1,9 +1,9 @@
 package com.tyrael.kharazim.web.controller.product;
 
-import com.tyrael.kharazim.application.product.vo.AddProductUnitRequest;
-import com.tyrael.kharazim.application.product.vo.ListProductUnitRequest;
-import com.tyrael.kharazim.application.product.vo.ModifyProductUnitRequest;
-import com.tyrael.kharazim.application.product.vo.PageProductUnitRequest;
+import com.tyrael.kharazim.application.product.vo.unit.AddProductUnitRequest;
+import com.tyrael.kharazim.application.product.vo.unit.ListProductUnitRequest;
+import com.tyrael.kharazim.application.product.vo.unit.ModifyProductUnitRequest;
+import com.tyrael.kharazim.application.product.vo.unit.PageProductUnitRequest;
 import com.tyrael.kharazim.common.dto.Pair;
 import com.tyrael.kharazim.common.dto.Pairs;
 import com.tyrael.kharazim.web.controller.BaseControllerTest;

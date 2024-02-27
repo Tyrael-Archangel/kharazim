@@ -1,4 +1,4 @@
-package com.tyrael.kharazim.application.product.vo;
+package com.tyrael.kharazim.application.product.vo.unit;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
