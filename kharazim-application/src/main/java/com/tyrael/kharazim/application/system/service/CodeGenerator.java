@@ -18,6 +18,15 @@ public interface CodeGenerator {
     String next(BusinessCodeConstants businessCode);
 
     /**
+     * 获取指定位数的编码
+     *
+     * @param tag tag
+     * @param bit 位数
+     * @return 编码
+     */
+    String next(String tag, int bit);
+
+    /**
      * 按日期获取
      *
      * @param businessCode 业务编码定义

@@ -32,7 +32,8 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
         return prefix == null ? next : (prefix.trim() + next);
     }
 
-    private String next(String tag, int bit) {
+    @Override
+    public String next(String tag, int bit) {
         long nextValue = increment(tag);
         return format(nextValue, bit);
     }

@@ -32,7 +32,8 @@ public enum BusinessCodeConstants {
     PRODUCT_UNIT("商品单位编码", 4, "UT"),
     EMR("电子病例", 4, "EMR"),
     PRESCRIPTION("处方", 4, "RX"),
-    SUPPLIER("供应商", "SU");
+    SUPPLIER("供应商", "SU"),
+    PRODUCT_CATEGORY("商品单位", 3, "PC");
 
     private static final int DEFAULT_BIT = 6;
 

@@ -1,14 +1,15 @@
 package com.tyrael.kharazim.web.controller.product;
 
 import com.tyrael.kharazim.application.product.service.ProductCategoryService;
+import com.tyrael.kharazim.application.product.vo.category.AddProductCategoryRequest;
 import com.tyrael.kharazim.application.product.vo.category.ProductCategoryTreeNodeDTO;
+import com.tyrael.kharazim.common.dto.DataResponse;
 import com.tyrael.kharazim.common.dto.MultiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author Tyrael Archangel
@@ -26,6 +27,12 @@ public class ProductCategoryController {
     @Operation(summary = "商品分类树数据")
     public MultiResponse<ProductCategoryTreeNodeDTO> categoryTree() {
         return MultiResponse.success(productCategoryService.tree());
+    }
+
+    @PostMapping("/add")
+    @Operation(summary = "新建商品分类")
+    public DataResponse<String> add(@RequestBody @Valid AddProductCategoryRequest addRequest) {
+        return DataResponse.ok(productCategoryService.add(addRequest));
     }
 
 }
