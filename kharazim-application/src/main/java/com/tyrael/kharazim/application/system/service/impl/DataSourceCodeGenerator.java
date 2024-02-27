@@ -58,26 +58,19 @@ public class DataSourceCodeGenerator extends AbstractCodeGenerator {
     }
 
     private TagCache loadCache(String tag) {
-
-        TagCache cache = tagCacheMap.get(tag);
-        if (cache != null) {
+        synchronized (tag.intern()) {
+            TagCache cache = tagCacheMap.get(tag);
+            if (cache == null) {
+                TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
+                transactionTemplate.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
+                cache = transactionTemplate.execute(status -> loadCacheAndIncreaseStep(tag));
+                tagCacheMap.put(tag, cache);
+            }
+            if (cache == null) {
+                throw new ShouldNotHappenException("load cache error.");
+            }
             return cache;
         }
-        synchronized (tagCacheMap) {
-            // double check
-            cache = tagCacheMap.get(tag);
-            if (cache != null) {
-                return cache;
-            }
-            TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
-            transactionTemplate.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
-            cache = transactionTemplate.execute(status -> loadCacheAndIncreaseStep(tag));
-            tagCacheMap.put(tag, cache);
-        }
-        if (cache == null) {
-            throw new ShouldNotHappenException("load cache error.");
-        }
-        return cache;
     }
 
     private TagCache loadCacheAndIncreaseStep(String tag) {
