@@ -6,7 +6,6 @@ import com.google.common.collect.Sets;
 import com.tyrael.kharazim.application.system.domain.Menu;
 import com.tyrael.kharazim.application.system.dto.menu.MenuRouteDTO;
 import com.tyrael.kharazim.application.system.dto.menu.MenuTreeNodeDTO;
-import com.tyrael.kharazim.application.system.dto.menu.QueryMenuRequest;
 import com.tyrael.kharazim.application.system.dto.menu.SaveMenuRequest;
 import com.tyrael.kharazim.application.system.enums.MenuTypeEnum;
 import com.tyrael.kharazim.application.system.mapper.MenuMapper;
@@ -45,8 +44,8 @@ public class MenuServiceImpl implements MenuService {
     private final RoleMapper roleMapper;
 
     @Override
-    public List<MenuTreeNodeDTO> menuTree(QueryMenuRequest queryMenuRequest) {
-        List<Menu> menus = menuMapper.list(queryMenuRequest);
+    public List<MenuTreeNodeDTO> menuTree() {
+        List<Menu> menus = menuMapper.listAll();
         List<MenuTreeNodeDTO> menuTreeNodes = menus.stream()
                 .map(e -> {
                     MenuTreeNodeDTO menuTreeNodeDTO = new MenuTreeNodeDTO();

@@ -2,7 +2,6 @@ package com.tyrael.kharazim.application.system.service;
 
 import com.tyrael.kharazim.application.system.dto.menu.MenuRouteDTO;
 import com.tyrael.kharazim.application.system.dto.menu.MenuTreeNodeDTO;
-import com.tyrael.kharazim.application.system.dto.menu.QueryMenuRequest;
 import com.tyrael.kharazim.application.system.dto.menu.SaveMenuRequest;
 
 import java.util.List;
@@ -16,10 +15,9 @@ public interface MenuService {
     /**
      * 菜单树
      *
-     * @param queryMenuRequest QueryMenuRequest
      * @return 菜单树
      */
-    List<MenuTreeNodeDTO> menuTree(QueryMenuRequest queryMenuRequest);
+    List<MenuTreeNodeDTO> menuTree();
 
     /**
      * 路由列表
