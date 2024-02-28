@@ -2,6 +2,7 @@ package com.tyrael.kharazim.web.controller.product;
 
 import com.tyrael.kharazim.application.product.service.ProductCategoryService;
 import com.tyrael.kharazim.application.product.vo.category.AddProductCategoryRequest;
+import com.tyrael.kharazim.common.dto.DataResponse;
 import com.tyrael.kharazim.web.controller.BaseControllerTest;
 import lombok.Data;
 import org.junit.jupiter.api.Test;
@@ -20,6 +21,9 @@ class ProductCategoryControllerTest extends BaseControllerTest<ProductCategoryCo
 
     @Autowired
     private ProductCategoryService productCategoryService;
+
+    @Autowired
+    private ProductCategoryController productCategoryController;
 
     ProductCategoryControllerTest() {
         super(ProductCategoryController.class);
@@ -76,8 +80,8 @@ class ProductCategoryControllerTest extends BaseControllerTest<ProductCategoryCo
             addRequest.setParentId(parentId);
             addRequest.setName(name);
             addRequest.setRemark("--" + name + "--");
-            String code = productCategoryService.add(addRequest);
-            category.setCode(code);
+            DataResponse<String> response = productCategoryController.add(addRequest);
+            category.setCode(response.getData());
         }
 
         for (PrivateCategory child : category.getChildren()) {
