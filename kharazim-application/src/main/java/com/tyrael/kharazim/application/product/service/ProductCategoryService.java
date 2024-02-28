@@ -1,5 +1,6 @@
 package com.tyrael.kharazim.application.product.service;
 
+import com.tyrael.kharazim.application.product.domain.ProductCategoryDO;
 import com.tyrael.kharazim.application.product.vo.category.AddProductCategoryRequest;
 import com.tyrael.kharazim.application.product.vo.category.ProductCategoryTreeNodeDTO;
 
@@ -25,5 +26,13 @@ public interface ProductCategoryService {
      * @return 分类编码
      */
     String add(AddProductCategoryRequest addRequest);
+
+    /**
+     * get by code
+     *
+     * @param code 商品分类编码
+     * @return 商品分类
+     */
+    ProductCategoryDO getByCode(String code);
 
 }

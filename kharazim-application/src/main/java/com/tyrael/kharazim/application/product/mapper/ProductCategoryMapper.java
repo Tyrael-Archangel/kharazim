@@ -26,4 +26,16 @@ public interface ProductCategoryMapper extends BaseMapper<ProductCategoryDO> {
         return selectList(queryWrapper);
     }
 
+    /**
+     * find by code
+     *
+     * @param code 商品编码
+     * @return ProductCategoryDO
+     */
+    default ProductCategoryDO findByCode(String code) {
+        LambdaQueryWrapper<ProductCategoryDO> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.eq(ProductCategoryDO::getCode, code);
+        return selectOne(queryWrapper);
+    }
+
 }

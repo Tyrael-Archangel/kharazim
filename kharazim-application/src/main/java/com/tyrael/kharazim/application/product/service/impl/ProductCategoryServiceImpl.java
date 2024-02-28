@@ -69,4 +69,9 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
         return code;
     }
 
+    @Override
+    public ProductCategoryDO getByCode(String code) {
+        return productCategoryMapper.findByCode(code);
+    }
+
 }
