@@ -22,6 +22,9 @@ public class MenuTreeNodeDTO extends TreeNode<MenuTreeNodeDTO, Long> {
     @Schema(description = "菜单名称")
     private String name;
 
+    @Schema(description = "菜单全路径名称")
+    private String fullPathName;
+
     @Schema(description = "图标")
     private String icon;
 

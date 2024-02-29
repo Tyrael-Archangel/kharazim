@@ -65,7 +65,28 @@ public class MenuServiceImpl implements MenuService {
                     return menuTreeNodeDTO;
                 })
                 .toList();
-        return TreeNode.build(menuTreeNodes);
+        List<MenuTreeNodeDTO> menuTree = TreeNode.build(menuTreeNodes);
+        this.setFullPathName(menuTree, null);
+        return menuTree;
+    }
+
+    private void setFullPathName(Collection<MenuTreeNodeDTO> tree,
+                                 MenuTreeNodeDTO parent) {
+        if (tree == null || tree.isEmpty()) {
+            return;
+        }
+        String parentFullPathName = Optional.ofNullable(parent)
+                .map(MenuTreeNodeDTO::getFullPathName)
+                .map(String::trim)
+                .orElse("");
+        for (MenuTreeNodeDTO dto : tree) {
+            if (parentFullPathName.isEmpty()) {
+                dto.setFullPathName(dto.getName());
+            } else {
+                dto.setFullPathName(parentFullPathName + " / " + dto.getName());
+            }
+            setFullPathName(dto.getChildren(), dto);
+        }
     }
 
     @Override
