@@ -24,6 +24,9 @@ public class ProductCategoryTreeNodeDTO extends TreeNode<ProductCategoryTreeNode
     @Schema(description = "备注")
     private String remark;
 
+    @Schema(description = "全路径名称")
+    private String fullPathName;
+
     @Override
     public String toString() {
         return new StringJoiner(", ", ProductCategoryTreeNodeDTO.class.getSimpleName() + "[", "]")

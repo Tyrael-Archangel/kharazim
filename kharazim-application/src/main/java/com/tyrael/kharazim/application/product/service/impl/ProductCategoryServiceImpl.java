@@ -13,7 +13,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -41,7 +43,28 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
                     return dto;
                 })
                 .collect(Collectors.toList());
-        return TreeNode.build(productCategoryTreeNodes);
+        List<ProductCategoryTreeNodeDTO> tree = TreeNode.build(productCategoryTreeNodes);
+        this.setFullPathName(tree, null);
+        return tree;
+    }
+
+    private void setFullPathName(Collection<ProductCategoryTreeNodeDTO> tree,
+                                 ProductCategoryTreeNodeDTO parent) {
+        if (tree == null || tree.isEmpty()) {
+            return;
+        }
+        String parentFullPathName = Optional.ofNullable(parent)
+                .map(ProductCategoryTreeNodeDTO::getFullPathName)
+                .map(String::trim)
+                .orElse("");
+        for (ProductCategoryTreeNodeDTO dto : tree) {
+            if (parentFullPathName.isEmpty()) {
+                dto.setFullPathName(dto.getName());
+            } else {
+                dto.setFullPathName(parentFullPathName + "/" + dto.getName());
+            }
+            setFullPathName(dto.getChildren(), dto);
+        }
     }
 
     @Override
