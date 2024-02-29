@@ -2,6 +2,7 @@ package com.tyrael.kharazim.application.system.dto.menu;
 
 import com.tyrael.kharazim.application.system.enums.MenuTypeEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
@@ -42,6 +43,7 @@ public class SaveMenuRequest {
     private String redirect;
 
     @Schema(description = MenuTypeEnum.DESC)
+    @NotNull(message = "请指定菜单类型")
     private MenuTypeEnum type;
 
     @Schema(description = "权限标识码", maxLength = 64)

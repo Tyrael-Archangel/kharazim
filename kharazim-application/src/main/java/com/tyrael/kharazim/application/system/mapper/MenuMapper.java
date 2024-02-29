@@ -26,4 +26,17 @@ public interface MenuMapper extends BaseMapper<Menu> {
         return selectList(queryWrapper);
     }
 
+    /**
+     * select max sort
+     *
+     * @return max sort
+     */
+    default Integer selectMaxSort() {
+        LambdaQueryWrapper<Menu> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.orderByDesc(Menu::getSort);
+        queryWrapper.last(" limit 1 ");
+        Menu maxSortMenu = selectOne(queryWrapper);
+        return maxSortMenu == null ? null : maxSortMenu.getSort();
+    }
+
 }

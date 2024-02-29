@@ -45,9 +45,9 @@ public interface MenuService {
     /**
      * 删除菜单
      *
-     * @param ids 菜单ID
+     * @param id 菜单ID
      */
-    void delete(List<Long> ids);
+    void delete(Long id);
 
     /**
      * 禁用菜单

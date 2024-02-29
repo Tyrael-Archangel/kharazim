@@ -14,9 +14,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.stream.Stream;
-
 /**
  * @author Tyrael Archangel
  * @since 2024/1/3
@@ -55,13 +52,10 @@ public class MenuController {
         return Response.success();
     }
 
-    @DeleteMapping("/{ids}")
-    @Operation(summary = "删除菜单（多个以英文逗号分割）")
-    public Response delete(@PathVariable("ids") String ids) {
-        List<Long> idValues = Stream.of(ids.split(","))
-                .map(Long::parseLong)
-                .toList();
-        menuService.delete(idValues);
+    @DeleteMapping("/{id}")
+    @Operation(summary = "删除菜单")
+    public Response delete(@Parameter(description = "菜单ID", required = true) @PathVariable("id") Long id) {
+        menuService.delete(id);
         return Response.success();
     }
 

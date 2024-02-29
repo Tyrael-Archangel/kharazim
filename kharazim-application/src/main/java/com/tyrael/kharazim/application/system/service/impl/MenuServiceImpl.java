@@ -23,7 +23,6 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -167,6 +166,11 @@ public class MenuServiceImpl implements MenuService {
     @Transactional(rollbackFor = Exception.class)
     @CacheEvict(cacheNames = {MENU_RESOURCES, MENU_OPTIONS_TREE, MENU_ROUTES}, allEntries = true)
     public Long add(SaveMenuRequest addMenuRequest) {
+
+        if (addMenuRequest.getSort() == null) {
+            addMenuRequest.setSort(menuMapper.selectMaxSort());
+        }
+
         Menu menu = createMenu(addMenuRequest);
         try {
             menuMapper.insert(menu);
@@ -198,10 +202,8 @@ public class MenuServiceImpl implements MenuService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     @CacheEvict(cacheNames = {MENU_RESOURCES, MENU_OPTIONS_TREE, MENU_ROUTES}, allEntries = true)
-    public void delete(List<Long> ids) {
-        if (!CollectionUtils.isEmpty(ids)) {
-            menuMapper.deleteBatchIds(ids);
-        }
+    public void delete(Long id) {
+        menuMapper.deleteById(id);
     }
 
     private Menu createMenu(SaveMenuRequest addMenuRequest) {
