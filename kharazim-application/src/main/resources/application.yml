@@ -13,6 +13,10 @@ spring:
     username: ${MYSQL_USER:root}
     password: ${MYSQL_PASSWORD:123456}
 
+mybatis-plus:
+  global-config:
+    banner: false
+
 logging:
   level:
     root: info
