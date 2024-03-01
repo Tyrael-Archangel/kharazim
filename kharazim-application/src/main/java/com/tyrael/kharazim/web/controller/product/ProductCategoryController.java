@@ -1,11 +1,16 @@
 package com.tyrael.kharazim.web.controller.product;
 
+import com.tyrael.kharazim.application.base.auth.AuthUser;
+import com.tyrael.kharazim.application.base.auth.CurrentUser;
 import com.tyrael.kharazim.application.product.service.ProductCategoryService;
 import com.tyrael.kharazim.application.product.vo.category.AddProductCategoryRequest;
+import com.tyrael.kharazim.application.product.vo.category.ModifyProductCategoryRequest;
 import com.tyrael.kharazim.application.product.vo.category.ProductCategoryTreeNodeDTO;
 import com.tyrael.kharazim.common.dto.DataResponse;
 import com.tyrael.kharazim.common.dto.MultiResponse;
+import com.tyrael.kharazim.common.dto.Response;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +38,14 @@ public class ProductCategoryController {
     @Operation(summary = "新建商品分类")
     public DataResponse<String> add(@RequestBody @Valid AddProductCategoryRequest addRequest) {
         return DataResponse.ok(productCategoryService.add(addRequest));
+    }
+
+    @PostMapping("/modify")
+    @Operation(summary = "修改商品分类")
+    public Response modify(@RequestBody @Valid ModifyProductCategoryRequest modifyRequest,
+                           @Schema(hidden = true) @CurrentUser AuthUser currentUser) {
+        productCategoryService.modify(modifyRequest, currentUser);
+        return Response.success();
     }
 
 }

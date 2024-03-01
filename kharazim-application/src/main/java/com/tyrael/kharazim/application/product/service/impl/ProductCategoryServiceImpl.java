@@ -1,10 +1,12 @@
 package com.tyrael.kharazim.application.product.service.impl;
 
+import com.tyrael.kharazim.application.base.auth.AuthUser;
 import com.tyrael.kharazim.application.config.BusinessCodeConstants;
 import com.tyrael.kharazim.application.product.domain.ProductCategoryDO;
 import com.tyrael.kharazim.application.product.mapper.ProductCategoryMapper;
 import com.tyrael.kharazim.application.product.service.ProductCategoryService;
 import com.tyrael.kharazim.application.product.vo.category.AddProductCategoryRequest;
+import com.tyrael.kharazim.application.product.vo.category.ModifyProductCategoryRequest;
 import com.tyrael.kharazim.application.product.vo.category.ProductCategoryTreeNodeDTO;
 import com.tyrael.kharazim.application.system.service.CodeGenerator;
 import com.tyrael.kharazim.common.dto.TreeNode;
@@ -95,6 +97,19 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
     @Override
     public ProductCategoryDO getByCode(String code) {
         return productCategoryMapper.findByCode(code);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void modify(ModifyProductCategoryRequest modifyRequest, AuthUser currentUser) {
+        String code = modifyRequest.getCode();
+        ProductCategoryDO productCategory = productCategoryMapper.findByCode(code);
+        DomainNotFoundException.assertFound(productCategory, code);
+
+        productCategory.setName(modifyRequest.getName());
+        productCategory.setName(modifyRequest.getName());
+
+        productCategoryMapper.updateById(productCategory);
     }
 
 }
