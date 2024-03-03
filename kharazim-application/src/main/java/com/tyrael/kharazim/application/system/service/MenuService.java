@@ -1,6 +1,5 @@
 package com.tyrael.kharazim.application.system.service;
 
-import com.tyrael.kharazim.application.system.dto.menu.MenuRouteDTO;
 import com.tyrael.kharazim.application.system.dto.menu.MenuTreeNodeDTO;
 import com.tyrael.kharazim.application.system.dto.menu.SaveMenuRequest;
 
@@ -18,13 +17,6 @@ public interface MenuService {
      * @return 菜单树
      */
     List<MenuTreeNodeDTO> menuTree();
-
-    /**
-     * 路由列表
-     *
-     * @return 路由列表
-     */
-    List<MenuRouteDTO> menuRoutes();
 
     /**
      * 新增菜单

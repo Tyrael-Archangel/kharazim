@@ -1,6 +1,5 @@
 package com.tyrael.kharazim.web.controller.system;
 
-import com.tyrael.kharazim.application.system.dto.menu.MenuRouteDTO;
 import com.tyrael.kharazim.application.system.dto.menu.MenuTreeNodeDTO;
 import com.tyrael.kharazim.application.system.dto.menu.SaveMenuRequest;
 import com.tyrael.kharazim.application.system.service.MenuService;
@@ -30,12 +29,6 @@ public class MenuController {
     @Operation(summary = "菜单树")
     public MultiResponse<MenuTreeNodeDTO> menuTree() {
         return MultiResponse.success(menuService.menuTree());
-    }
-
-    @Operation(summary = "路由列表")
-    @GetMapping("/menu-routes")
-    public MultiResponse<MenuRouteDTO> menuRoutes() {
-        return MultiResponse.success(menuService.menuRoutes());
     }
 
     @Operation(summary = "新增菜单")
