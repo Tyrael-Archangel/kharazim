@@ -1,7 +1,7 @@
 package com.tyrael.kharazim.application.product.service;
 
 import com.tyrael.kharazim.application.base.auth.AuthUser;
-import com.tyrael.kharazim.application.product.domain.ProductCategoryDO;
+import com.tyrael.kharazim.application.product.domain.ProductCategory;
 import com.tyrael.kharazim.application.product.vo.category.AddProductCategoryRequest;
 import com.tyrael.kharazim.application.product.vo.category.ModifyProductCategoryRequest;
 import com.tyrael.kharazim.application.product.vo.category.ProductCategoryTreeNodeDTO;
@@ -35,7 +35,7 @@ public interface ProductCategoryService {
      * @param code 商品分类编码
      * @return 商品分类
      */
-    ProductCategoryDO getByCode(String code);
+    ProductCategory getByCode(String code);
 
     /**
      * 修改商品分类

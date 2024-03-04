@@ -1,7 +1,9 @@
 package com.tyrael.kharazim.application.product.service;
 
 import com.tyrael.kharazim.application.product.vo.spu.AddProductSpuRequest;
+import com.tyrael.kharazim.application.product.vo.spu.PageProductSpuRequest;
 import com.tyrael.kharazim.application.product.vo.spu.ProductSpuVO;
+import com.tyrael.kharazim.common.dto.PageResponse;
 
 /**
  * @author Tyrael Archangel
@@ -24,5 +26,13 @@ public interface ProductSpuService {
      * @return spu编码
      */
     String create(AddProductSpuRequest addRequest);
+
+    /**
+     * SPU分页
+     *
+     * @param pageRequest {@link PageProductSpuRequest}
+     * @return SPU分页数据
+     */
+    PageResponse<ProductSpuVO> page(PageProductSpuRequest pageRequest);
 
 }

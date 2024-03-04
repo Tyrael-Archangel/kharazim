@@ -3,13 +3,13 @@ package com.tyrael.kharazim.application.product.service.impl;
 import com.tyrael.kharazim.application.config.BusinessCodeConstants;
 import com.tyrael.kharazim.application.product.converter.ProductSpuConverter;
 import com.tyrael.kharazim.application.product.domain.ProductSpu;
-import com.tyrael.kharazim.application.product.mapper.ProductCategoryMapper;
 import com.tyrael.kharazim.application.product.mapper.ProductSpuMapper;
 import com.tyrael.kharazim.application.product.service.ProductSpuService;
 import com.tyrael.kharazim.application.product.vo.spu.AddProductSpuRequest;
+import com.tyrael.kharazim.application.product.vo.spu.PageProductSpuRequest;
 import com.tyrael.kharazim.application.product.vo.spu.ProductSpuVO;
-import com.tyrael.kharazim.application.supplier.mapper.SupplierMapper;
 import com.tyrael.kharazim.application.system.service.CodeGenerator;
+import com.tyrael.kharazim.common.dto.PageResponse;
 import com.tyrael.kharazim.common.exception.DomainNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,8 +29,6 @@ public class ProductSpuServiceImpl implements ProductSpuService {
     private static final String SPU_CODE_PREFIX = "SP";
 
     private final ProductSpuMapper productSpuMapper;
-    private final SupplierMapper supplierMapper;
-    private final ProductCategoryMapper productCategoryMapper;
     private final ProductSpuConverter productSpuConverter;
     private final CodeGenerator codeGenerator;
 
@@ -40,10 +38,7 @@ public class ProductSpuServiceImpl implements ProductSpuService {
         ProductSpu spu = productSpuMapper.getByCode(code);
         DomainNotFoundException.assertFound(spu, code);
 
-        return productSpuConverter.spuVO(
-                spu,
-                productCategoryMapper.findByCode(spu.getCategoryCode()),
-                supplierMapper.findByCode(spu.getSupplierCode()));
+        return productSpuConverter.spuVO(spu);
     }
 
     @Override
@@ -68,6 +63,16 @@ public class ProductSpuServiceImpl implements ProductSpuService {
         return SPU_CODE_PREFIX
                 + formatter.format(LocalDate.now())
                 + codeGenerator.next(BusinessCodeConstants.SPU);
+    }
+
+    @Override
+    public PageResponse<ProductSpuVO> page(PageProductSpuRequest pageRequest) {
+        PageResponse<ProductSpu> spuPage = productSpuMapper.page(pageRequest);
+        return PageResponse.success(
+                productSpuConverter.spuVOs(spuPage.getData()),
+                spuPage.getTotalCount(),
+                spuPage.getPageSize(),
+                spuPage.getPageNum());
     }
 
 }

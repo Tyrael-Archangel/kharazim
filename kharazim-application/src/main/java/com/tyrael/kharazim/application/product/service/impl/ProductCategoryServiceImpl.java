@@ -2,7 +2,7 @@ package com.tyrael.kharazim.application.product.service.impl;
 
 import com.tyrael.kharazim.application.base.auth.AuthUser;
 import com.tyrael.kharazim.application.config.BusinessCodeConstants;
-import com.tyrael.kharazim.application.product.domain.ProductCategoryDO;
+import com.tyrael.kharazim.application.product.domain.ProductCategory;
 import com.tyrael.kharazim.application.product.mapper.ProductCategoryMapper;
 import com.tyrael.kharazim.application.product.service.ProductCategoryService;
 import com.tyrael.kharazim.application.product.vo.category.AddProductCategoryRequest;
@@ -33,7 +33,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
 
     @Override
     public List<ProductCategoryTreeNodeDTO> tree() {
-        List<ProductCategoryDO> productCategories = productCategoryMapper.listAll();
+        List<ProductCategory> productCategories = productCategoryMapper.listAll();
         List<ProductCategoryTreeNodeDTO> productCategoryTreeNodes = productCategories.stream()
                 .map(pc -> {
                     ProductCategoryTreeNodeDTO dto = new ProductCategoryTreeNodeDTO();
@@ -75,7 +75,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
         Long parentId = addRequest.getParentId();
         String code;
         if (parentId != null) {
-            ProductCategoryDO parent = productCategoryMapper.selectById(parentId);
+            ProductCategory parent = productCategoryMapper.selectById(parentId);
             DomainNotFoundException.assertFound(parent, parentId);
             String parentCode = parent.getCode();
             code = parentCode + codeGenerator.next(parentCode, BusinessCodeConstants.PRODUCT_CATEGORY.getBit());
@@ -83,7 +83,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
             code = codeGenerator.next(BusinessCodeConstants.PRODUCT_CATEGORY);
         }
 
-        ProductCategoryDO productCategory = new ProductCategoryDO();
+        ProductCategory productCategory = new ProductCategory();
         productCategory.setParentId(parentId);
         productCategory.setCode(code);
         productCategory.setName(addRequest.getName());
@@ -95,7 +95,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
     }
 
     @Override
-    public ProductCategoryDO getByCode(String code) {
+    public ProductCategory getByCode(String code) {
         return productCategoryMapper.findByCode(code);
     }
 
@@ -103,7 +103,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
     @Transactional(rollbackFor = Exception.class)
     public void modify(ModifyProductCategoryRequest modifyRequest, AuthUser currentUser) {
         String code = modifyRequest.getCode();
-        ProductCategoryDO productCategory = productCategoryMapper.findByCode(code);
+        ProductCategory productCategory = productCategoryMapper.findByCode(code);
         DomainNotFoundException.assertFound(productCategory, code);
 
         productCategory.setName(modifyRequest.getName());

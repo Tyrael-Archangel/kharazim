@@ -12,7 +12,7 @@ import lombok.Data;
  */
 @Data
 @TableName(value = "product_category", autoResultMap = true)
-public class ProductCategoryDO extends BaseDO {
+public class ProductCategory extends BaseDO {
 
     @TableId(type = IdType.AUTO)
     private Long id;

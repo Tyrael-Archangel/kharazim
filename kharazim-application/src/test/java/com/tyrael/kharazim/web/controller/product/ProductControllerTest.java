@@ -3,6 +3,7 @@ package com.tyrael.kharazim.web.controller.product;
 import com.tyrael.kharazim.application.product.service.ProductCategoryService;
 import com.tyrael.kharazim.application.product.vo.category.ProductCategoryTreeNodeDTO;
 import com.tyrael.kharazim.application.product.vo.spu.AddProductSpuRequest;
+import com.tyrael.kharazim.application.product.vo.spu.PageProductSpuRequest;
 import com.tyrael.kharazim.application.supplier.service.SupplierService;
 import com.tyrael.kharazim.application.supplier.vo.ListSupplierRequest;
 import com.tyrael.kharazim.application.supplier.vo.SupplierVO;
@@ -57,6 +58,12 @@ class ProductControllerTest extends BaseControllerTest<ProductController> {
         addRequest.setDefaultImage("");
         addRequest.setDescription("新增测试spu");
         super.performWhenCall(mockController.create(addRequest));
+    }
+
+    @Test
+    void page() {
+        PageProductSpuRequest pageRequest = new PageProductSpuRequest();
+        super.performWhenCall(mockController.page(pageRequest));
     }
 
 }

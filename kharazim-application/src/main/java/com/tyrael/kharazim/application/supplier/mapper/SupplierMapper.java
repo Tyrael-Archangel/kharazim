@@ -10,8 +10,13 @@ import com.tyrael.kharazim.application.supplier.vo.ListSupplierRequest;
 import com.tyrael.kharazim.application.supplier.vo.PageSupplierRequest;
 import com.tyrael.kharazim.common.dto.PageResponse;
 import org.apache.ibatis.annotations.Mapper;
+import org.springframework.util.CollectionUtils;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 
 /**
@@ -64,4 +69,30 @@ public interface SupplierMapper extends BaseMapper<SupplierDO> {
         return selectList(queryWrapper);
     }
 
+    /**
+     * list by code
+     *
+     * @param codes codes
+     * @return Suppliers
+     */
+    default List<SupplierDO> listByCodes(Collection<String> codes) {
+        if (CollectionUtils.isEmpty(codes)) {
+            return Collections.emptyList();
+        }
+        LambdaQueryWrapper<SupplierDO> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.in(SupplierDO::getCode, codes);
+        return selectList(queryWrapper);
+    }
+
+    /**
+     * map by codes
+     *
+     * @param codes codes
+     * @return code -> SupplierDO
+     */
+    default Map<String, SupplierDO> mapByCodes(Collection<String> codes) {
+        List<SupplierDO> suppliers = this.listByCodes(codes);
+        return suppliers.stream()
+                .collect(Collectors.toMap(SupplierDO::getCode, e -> e));
+    }
 }
