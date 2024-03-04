@@ -1,6 +1,8 @@
 package com.tyrael.kharazim.application.supplier.mapper;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.tyrael.kharazim.application.base.LambdaQueryWrapperX;
 import com.tyrael.kharazim.application.supplier.domain.SupplierDO;
@@ -18,6 +20,18 @@ import java.util.List;
  */
 @Mapper
 public interface SupplierMapper extends BaseMapper<SupplierDO> {
+
+    /**
+     * find by code
+     *
+     * @param code code
+     * @return SupplierDO
+     */
+    default SupplierDO findByCode(String code) {
+        LambdaQueryWrapper<SupplierDO> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.eq(SupplierDO::getCode, code);
+        return selectOne(queryWrapper);
+    }
 
     /**
      * 供应商分页查询
