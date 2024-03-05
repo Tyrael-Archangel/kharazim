@@ -19,7 +19,7 @@ import java.util.List;
  * @author Tyrael Archangel
  * @since 2024/3/4
  */
-class ProductControllerTest extends BaseControllerTest<ProductController> {
+class ProductSpuControllerTest extends BaseControllerTest<ProductSpuController> {
 
     @Autowired
     private ProductCategoryService productCategoryService;
@@ -27,8 +27,8 @@ class ProductControllerTest extends BaseControllerTest<ProductController> {
     @Autowired
     private SupplierService supplierService;
 
-    ProductControllerTest() {
-        super(ProductController.class);
+    ProductSpuControllerTest() {
+        super(ProductSpuController.class);
     }
 
     @Test

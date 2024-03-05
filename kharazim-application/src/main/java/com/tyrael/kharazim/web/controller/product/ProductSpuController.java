@@ -18,10 +18,10 @@ import org.springframework.web.bind.annotation.*;
  * @since 2024/3/1
  */
 @RestController
-@RequestMapping("/product")
+@RequestMapping("/product/spu")
 @RequiredArgsConstructor
 @Tag(name = "商品")
-public class ProductController {
+public class ProductSpuController {
 
     private final ProductSpuService productSpuService;
 
