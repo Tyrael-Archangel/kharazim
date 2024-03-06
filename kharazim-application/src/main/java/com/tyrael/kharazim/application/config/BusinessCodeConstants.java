@@ -34,7 +34,7 @@ public enum BusinessCodeConstants {
     PRESCRIPTION("处方", 4, "RX"),
     SUPPLIER("供应商", "SU"),
     PRODUCT_CATEGORY("商品单位", 3, "PC"),
-    SPU("SPU", 6);
+    SKU("SKU", 6);
 
     private static final int DEFAULT_BIT = 6;
 

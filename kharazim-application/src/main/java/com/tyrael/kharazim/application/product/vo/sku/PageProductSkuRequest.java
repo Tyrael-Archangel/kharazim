@@ -1,4 +1,4 @@
-package com.tyrael.kharazim.application.product.vo.spu;
+package com.tyrael.kharazim.application.product.vo.sku;
 
 import com.tyrael.kharazim.common.dto.PageCommand;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -9,9 +9,9 @@ import lombok.Data;
  * @since 2024/3/4
  */
 @Data
-public class PageProductSpuRequest extends PageCommand {
+public class PageProductSkuRequest extends PageCommand {
 
-    @Schema(description = "SPU名称")
+    @Schema(description = "SKU名称")
     private String name;
 
     @Schema(description = "商品分类编码")

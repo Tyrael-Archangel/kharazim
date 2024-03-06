@@ -1,4 +1,4 @@
-package com.tyrael.kharazim.application.product.vo.spu;
+package com.tyrael.kharazim.application.product.vo.sku;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -8,12 +8,12 @@ import lombok.Data;
  * @since 2024/3/4
  */
 @Data
-public class ProductSpuVO {
+public class ProductSkuVO {
 
-    @Schema(description = "SPU编码")
+    @Schema(description = "SKU编码")
     private String code;
 
-    @Schema(description = "SPU名称")
+    @Schema(description = "SKU名称")
     private String name;
 
     @Schema(description = "商品分类编码")

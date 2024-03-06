@@ -2,8 +2,8 @@ package com.tyrael.kharazim.web.controller.product;
 
 import com.tyrael.kharazim.application.product.service.ProductCategoryService;
 import com.tyrael.kharazim.application.product.vo.category.ProductCategoryTreeNodeDTO;
-import com.tyrael.kharazim.application.product.vo.spu.AddProductSpuRequest;
-import com.tyrael.kharazim.application.product.vo.spu.PageProductSpuRequest;
+import com.tyrael.kharazim.application.product.vo.sku.AddProductRequest;
+import com.tyrael.kharazim.application.product.vo.sku.PageProductSkuRequest;
 import com.tyrael.kharazim.application.supplier.service.SupplierService;
 import com.tyrael.kharazim.application.supplier.vo.ListSupplierRequest;
 import com.tyrael.kharazim.application.supplier.vo.SupplierVO;
@@ -19,7 +19,7 @@ import java.util.List;
  * @author Tyrael Archangel
  * @since 2024/3/4
  */
-class ProductSpuControllerTest extends BaseControllerTest<ProductSpuController> {
+class ProductSkuControllerTest extends BaseControllerTest<ProductSkuController> {
 
     @Autowired
     private ProductCategoryService productCategoryService;
@@ -27,13 +27,13 @@ class ProductSpuControllerTest extends BaseControllerTest<ProductSpuController> 
     @Autowired
     private SupplierService supplierService;
 
-    ProductSpuControllerTest() {
-        super(ProductSpuController.class);
+    ProductSkuControllerTest() {
+        super(ProductSkuController.class);
     }
 
     @Test
     void getByCode() {
-        String code = "SP240304000001";
+        String code = "P240306000001";
         super.performWhenCall(mockController.getByCode(code));
     }
 
@@ -51,18 +51,18 @@ class ProductSpuControllerTest extends BaseControllerTest<ProductSpuController> 
         SupplierVO supplier = CollectionUtils.random(suppliers);
         ShouldNotHappenException.assertNull(supplier);
 
-        AddProductSpuRequest addRequest = new AddProductSpuRequest();
-        addRequest.setName("测试SPU");
+        AddProductRequest addRequest = new AddProductRequest();
+        addRequest.setName("测试商品");
         addRequest.setCategoryCode(category.getCode());
         addRequest.setSupplierCode(supplier.getCode());
         addRequest.setDefaultImage("");
-        addRequest.setDescription("新增测试spu");
+        addRequest.setDescription("新增测试商品");
         super.performWhenCall(mockController.create(addRequest));
     }
 
     @Test
     void page() {
-        PageProductSpuRequest pageRequest = new PageProductSpuRequest();
+        PageProductSkuRequest pageRequest = new PageProductSkuRequest();
         super.performWhenCall(mockController.page(pageRequest));
     }
 

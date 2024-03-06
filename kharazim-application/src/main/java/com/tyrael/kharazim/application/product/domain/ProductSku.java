@@ -10,18 +10,18 @@ import lombok.Data;
  * @since 2024/3/1
  */
 @Data
-public class ProductSpu extends BaseDO {
+public class ProductSku extends BaseDO {
 
     @TableId(type = IdType.AUTO)
     private Long id;
 
     /**
-     * spu编码
+     * sku编码
      */
     private String code;
 
     /**
-     * spu名称
+     * sku名称
      */
     private String name;
 

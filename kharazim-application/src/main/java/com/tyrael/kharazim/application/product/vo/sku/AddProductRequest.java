@@ -1,4 +1,4 @@
-package com.tyrael.kharazim.application.product.vo.spu;
+package com.tyrael.kharazim.application.product.vo.sku;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
@@ -9,10 +9,10 @@ import lombok.Data;
  * @since 2024/3/4
  */
 @Data
-public class AddProductSpuRequest {
+public class AddProductRequest {
 
-    @Schema(description = "SPU名称", requiredMode = Schema.RequiredMode.REQUIRED)
-    @NotBlank(message = "SPU名称不能为空")
+    @Schema(description = "商品名称", requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotBlank(message = "商品名称不能为空")
     private String name;
 
     @Schema(description = "商品分类编码", requiredMode = Schema.RequiredMode.REQUIRED)
