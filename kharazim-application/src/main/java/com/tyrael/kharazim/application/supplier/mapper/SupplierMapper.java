@@ -9,6 +9,7 @@ import com.tyrael.kharazim.application.supplier.domain.SupplierDO;
 import com.tyrael.kharazim.application.supplier.vo.ListSupplierRequest;
 import com.tyrael.kharazim.application.supplier.vo.PageSupplierRequest;
 import com.tyrael.kharazim.common.dto.PageResponse;
+import com.tyrael.kharazim.common.exception.DomainNotFoundException;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.util.CollectionUtils;
 
@@ -95,4 +96,19 @@ public interface SupplierMapper extends BaseMapper<SupplierDO> {
         return suppliers.stream()
                 .collect(Collectors.toMap(SupplierDO::getCode, e -> e));
     }
+
+
+    /**
+     * 验证供应商存在
+     *
+     * @param code 供应商编码
+     */
+    default void ensureSupplierExist(String code) {
+        LambdaQueryWrapper<SupplierDO> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.eq(SupplierDO::getCode, code);
+        if (!this.exists(queryWrapper)) {
+            throw new DomainNotFoundException("supplier code: " + code);
+        }
+    }
+
 }

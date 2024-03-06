@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.tyrael.kharazim.application.product.domain.ProductCategory;
+import com.tyrael.kharazim.common.exception.DomainNotFoundException;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.util.CollectionUtils;
 
@@ -68,6 +69,19 @@ public interface ProductCategoryMapper extends BaseMapper<ProductCategory> {
         List<ProductCategory> productCategories = this.listByCodes(codes);
         return productCategories.stream()
                 .collect(Collectors.toMap(ProductCategory::getCode, e -> e));
+    }
+
+    /**
+     * 验证分类存在
+     *
+     * @param code 分类编码
+     */
+    default void ensureCategoryExist(String code) {
+        LambdaQueryWrapper<ProductCategory> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.eq(ProductCategory::getCode, code);
+        if (!this.exists(queryWrapper)) {
+            throw new DomainNotFoundException("categoryCode: " + code);
+        }
     }
 
 }

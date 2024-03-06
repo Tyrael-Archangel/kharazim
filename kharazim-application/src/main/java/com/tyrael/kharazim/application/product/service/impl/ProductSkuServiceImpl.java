@@ -3,11 +3,13 @@ package com.tyrael.kharazim.application.product.service.impl;
 import com.tyrael.kharazim.application.config.BusinessCodeConstants;
 import com.tyrael.kharazim.application.product.converter.ProductSkuConverter;
 import com.tyrael.kharazim.application.product.domain.ProductSku;
+import com.tyrael.kharazim.application.product.mapper.ProductCategoryMapper;
 import com.tyrael.kharazim.application.product.mapper.ProductSkuMapper;
 import com.tyrael.kharazim.application.product.service.ProductSkuService;
 import com.tyrael.kharazim.application.product.vo.sku.AddProductRequest;
 import com.tyrael.kharazim.application.product.vo.sku.PageProductSkuRequest;
 import com.tyrael.kharazim.application.product.vo.sku.ProductSkuVO;
+import com.tyrael.kharazim.application.supplier.mapper.SupplierMapper;
 import com.tyrael.kharazim.application.system.service.CodeGenerator;
 import com.tyrael.kharazim.common.dto.PageResponse;
 import com.tyrael.kharazim.common.exception.DomainNotFoundException;
@@ -30,6 +32,8 @@ public class ProductSkuServiceImpl implements ProductSkuService {
 
     private final ProductSkuMapper productSkuMapper;
     private final ProductSkuConverter productSkuConverter;
+    private final ProductCategoryMapper productCategoryMapper;
+    private final SupplierMapper supplierMapper;
     private final CodeGenerator codeGenerator;
 
     @Override
@@ -45,11 +49,16 @@ public class ProductSkuServiceImpl implements ProductSkuService {
     @Transactional(rollbackFor = Exception.class)
     public String create(AddProductRequest addRequest) {
 
+        String categoryCode = addRequest.getCategoryCode();
+        String supplierCode = addRequest.getSupplierCode();
+        productCategoryMapper.ensureCategoryExist(categoryCode);
+        supplierMapper.ensureSupplierExist(supplierCode);
+
         ProductSku sku = new ProductSku();
         sku.setCode(this.generateSkuCode());
         sku.setName(addRequest.getName());
-        sku.setCategoryCode(addRequest.getCategoryCode());
-        sku.setSupplierCode(addRequest.getSupplierCode());
+        sku.setCategoryCode(categoryCode);
+        sku.setSupplierCode(supplierCode);
         sku.setDefaultImage(addRequest.getDefaultImage());
         sku.setDescription(addRequest.getDescription());
 
