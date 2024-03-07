@@ -4,6 +4,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * @author Tyrael Archangel
  * @since 2024/3/4
@@ -28,5 +30,16 @@ public class AddProductRequest {
 
     @Schema(description = "描述信息")
     private String description;
+
+    @Schema(description = "属性")
+    private List<Attribute> attributes;
+
+    @Data
+    public static class Attribute {
+        @Schema(description = "属性名")
+        private String name;
+        @Schema(description = "属性值")
+        private String value;
+    }
 
 }
