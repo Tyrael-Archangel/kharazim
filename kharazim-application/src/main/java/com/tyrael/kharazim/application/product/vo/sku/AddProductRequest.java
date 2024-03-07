@@ -36,8 +36,10 @@ public class AddProductRequest {
 
     @Data
     public static class Attribute {
+
         @Schema(description = "属性名")
         private String name;
+
         @Schema(description = "属性值")
         private String value;
     }
