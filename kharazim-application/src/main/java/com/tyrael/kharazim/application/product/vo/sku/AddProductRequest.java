@@ -25,23 +25,20 @@ public class AddProductRequest {
     @NotBlank(message = "请指定供应商")
     private String supplierCode;
 
+    @Schema(description = "单位编码", requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotBlank(message = "请指定单位")
+    private String unitCode;
+
     @Schema(description = "默认图片")
     private String defaultImage;
+
+    @Schema(description = "图片")
+    private List<String> images;
 
     @Schema(description = "描述信息")
     private String description;
 
     @Schema(description = "属性")
     private List<Attribute> attributes;
-
-    @Data
-    public static class Attribute {
-
-        @Schema(description = "属性名")
-        private String name;
-
-        @Schema(description = "属性值")
-        private String value;
-    }
 
 }

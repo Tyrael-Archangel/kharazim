@@ -5,6 +5,7 @@ import com.tyrael.kharazim.application.product.converter.ProductSkuConverter;
 import com.tyrael.kharazim.application.product.domain.ProductSku;
 import com.tyrael.kharazim.application.product.mapper.ProductCategoryMapper;
 import com.tyrael.kharazim.application.product.mapper.ProductSkuMapper;
+import com.tyrael.kharazim.application.product.mapper.ProductUnitMapper;
 import com.tyrael.kharazim.application.product.service.ProductSkuService;
 import com.tyrael.kharazim.application.product.vo.sku.AddProductRequest;
 import com.tyrael.kharazim.application.product.vo.sku.PageProductSkuRequest;
@@ -31,9 +32,10 @@ public class ProductSkuServiceImpl implements ProductSkuService {
     private static final String SKU_CODE_PREFIX = "P";
 
     private final ProductSkuMapper productSkuMapper;
-    private final ProductSkuConverter productSkuConverter;
     private final ProductCategoryMapper productCategoryMapper;
     private final SupplierMapper supplierMapper;
+    private final ProductUnitMapper productUnitMapper;
+    private final ProductSkuConverter productSkuConverter;
     private final CodeGenerator codeGenerator;
 
     @Override
@@ -51,16 +53,21 @@ public class ProductSkuServiceImpl implements ProductSkuService {
 
         String categoryCode = addRequest.getCategoryCode();
         String supplierCode = addRequest.getSupplierCode();
+        String unitCode = addRequest.getUnitCode();
         productCategoryMapper.ensureCategoryExist(categoryCode);
         supplierMapper.ensureSupplierExist(supplierCode);
+        productUnitMapper.ensureUnitExist(unitCode);
 
         ProductSku sku = new ProductSku();
         sku.setCode(this.generateSkuCode());
         sku.setName(addRequest.getName());
         sku.setCategoryCode(categoryCode);
         sku.setSupplierCode(supplierCode);
+        sku.setUnitCode(unitCode);
         sku.setDefaultImage(addRequest.getDefaultImage());
+        sku.setImages(addRequest.getImages());
         sku.setDescription(addRequest.getDescription());
+        sku.setAttributes(addRequest.getAttributes());
 
         productSkuMapper.insert(sku);
         return sku.getCode();

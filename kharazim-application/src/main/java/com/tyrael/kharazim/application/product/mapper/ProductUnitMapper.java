@@ -9,6 +9,7 @@ import com.tyrael.kharazim.application.product.domain.ProductUnitDO;
 import com.tyrael.kharazim.application.product.vo.unit.ListProductUnitRequest;
 import com.tyrael.kharazim.application.product.vo.unit.PageProductUnitRequest;
 import com.tyrael.kharazim.common.dto.PageResponse;
+import com.tyrael.kharazim.common.exception.DomainNotFoundException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -76,4 +77,16 @@ public interface ProductUnitMapper extends BaseMapper<ProductUnitDO> {
         return selectOne(queryWrapper);
     }
 
+    /**
+     * 验证单位存在
+     *
+     * @param code 单位编码
+     */
+    default void ensureUnitExist(String code) {
+        LambdaQueryWrapper<ProductUnitDO> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.eq(ProductUnitDO::getCode, code);
+        if (!this.exists(queryWrapper)) {
+            throw new DomainNotFoundException("supplier code: " + code);
+        }
+    }
 }
