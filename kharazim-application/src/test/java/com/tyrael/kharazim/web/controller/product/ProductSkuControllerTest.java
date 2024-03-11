@@ -1,9 +1,13 @@
 package com.tyrael.kharazim.web.controller.product;
 
 import com.tyrael.kharazim.application.product.service.ProductCategoryService;
+import com.tyrael.kharazim.application.product.service.ProductUnitService;
 import com.tyrael.kharazim.application.product.vo.category.ProductCategoryTreeNodeDTO;
 import com.tyrael.kharazim.application.product.vo.sku.AddProductRequest;
+import com.tyrael.kharazim.application.product.vo.sku.Attribute;
 import com.tyrael.kharazim.application.product.vo.sku.PageProductSkuRequest;
+import com.tyrael.kharazim.application.product.vo.unit.ListProductUnitRequest;
+import com.tyrael.kharazim.application.product.vo.unit.ProductUnitVO;
 import com.tyrael.kharazim.application.supplier.service.SupplierService;
 import com.tyrael.kharazim.application.supplier.vo.ListSupplierRequest;
 import com.tyrael.kharazim.application.supplier.vo.SupplierVO;
@@ -27,13 +31,16 @@ class ProductSkuControllerTest extends BaseControllerTest<ProductSkuController> 
     @Autowired
     private SupplierService supplierService;
 
+    @Autowired
+    private ProductUnitService productUnitService;
+
     ProductSkuControllerTest() {
         super(ProductSkuController.class);
     }
 
     @Test
     void getByCode() {
-        String code = "P240306000001";
+        String code = "P240311000001";
         super.performWhenCall(mockController.getByCode(code));
     }
 
@@ -51,12 +58,20 @@ class ProductSkuControllerTest extends BaseControllerTest<ProductSkuController> 
         SupplierVO supplier = CollectionUtils.random(suppliers);
         ShouldNotHappenException.assertNull(supplier);
 
+        List<ProductUnitVO> productUnits = productUnitService.list(new ListProductUnitRequest());
+        ProductUnitVO productUnit = CollectionUtils.random(productUnits);
+        ShouldNotHappenException.assertNull(productUnit);
+
         AddProductRequest addRequest = new AddProductRequest();
         addRequest.setName("测试商品");
         addRequest.setCategoryCode(category.getCode());
         addRequest.setSupplierCode(supplier.getCode());
         addRequest.setDefaultImage("");
+        addRequest.setUnitCode(productUnit.getCode());
         addRequest.setDescription("新增测试商品");
+        addRequest.setAttributes(List.of(
+                new Attribute("颜色", "白色"),
+                new Attribute("重量", "500克")));
         super.performWhenCall(mockController.create(addRequest));
     }
 

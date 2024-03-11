@@ -1,8 +1,12 @@
 package com.tyrael.kharazim.application.product.domain;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.tyrael.kharazim.application.base.BaseDO;
+import com.tyrael.kharazim.application.product.typehandler.ListAttributeTypeHandler;
+import com.tyrael.kharazim.application.product.typehandler.ListStringTypeHandler;
 import com.tyrael.kharazim.application.product.vo.sku.Attribute;
 import lombok.Data;
 
@@ -13,6 +17,7 @@ import java.util.List;
  * @since 2024/3/1
  */
 @Data
+@TableName(autoResultMap = true)
 public class ProductSku extends BaseDO {
 
     @TableId(type = IdType.AUTO)
@@ -51,6 +56,7 @@ public class ProductSku extends BaseDO {
     /**
      * 图片
      */
+    @TableField(typeHandler = ListStringTypeHandler.class)
     private List<String> images;
 
     /**
@@ -61,6 +67,7 @@ public class ProductSku extends BaseDO {
     /**
      * 属性信息
      */
+    @TableField(typeHandler = ListAttributeTypeHandler.class)
     private List<Attribute> attributes;
 
 }

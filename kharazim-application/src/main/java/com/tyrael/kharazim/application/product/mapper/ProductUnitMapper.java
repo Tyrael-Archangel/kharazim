@@ -12,8 +12,13 @@ import com.tyrael.kharazim.common.dto.PageResponse;
 import com.tyrael.kharazim.common.exception.DomainNotFoundException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.annotations.Mapper;
+import org.springframework.util.CollectionUtils;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author Tyrael Archangel
@@ -89,4 +94,32 @@ public interface ProductUnitMapper extends BaseMapper<ProductUnitDO> {
             throw new DomainNotFoundException("supplier code: " + code);
         }
     }
+
+    /**
+     * list by code
+     *
+     * @param codes codes
+     * @return ProductUnits
+     */
+    default List<ProductUnitDO> listByCodes(Collection<String> codes) {
+        if (CollectionUtils.isEmpty(codes)) {
+            return Collections.emptyList();
+        }
+        LambdaQueryWrapper<ProductUnitDO> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.in(ProductUnitDO::getCode, codes);
+        return selectList(queryWrapper);
+    }
+
+    /**
+     * map by codes
+     *
+     * @param codes codes
+     * @return code -> ProductUnitDO
+     */
+    default Map<String, ProductUnitDO> mapByCodes(Collection<String> codes) {
+        List<ProductUnitDO> units = this.listByCodes(codes);
+        return units.stream()
+                .collect(Collectors.toMap(ProductUnitDO::getCode, e -> e));
+    }
+
 }

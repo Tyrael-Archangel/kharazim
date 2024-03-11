@@ -3,6 +3,8 @@ package com.tyrael.kharazim.application.product.vo.sku;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * @author Tyrael Archangel
  * @since 2024/3/4
@@ -28,10 +30,22 @@ public class ProductSkuVO {
     @Schema(description = "供应商名称")
     private String supplierName;
 
+    @Schema(description = "单位编码")
+    private String unitCode;
+
+    @Schema(description = "单位名称")
+    private String unitName;
+
     @Schema(description = "默认图片")
     private String defaultImage;
 
+    @Schema(description = "图片")
+    private List<String> images;
+
     @Schema(description = "描述信息")
     private String description;
+
+    @Schema(description = "属性")
+    private List<Attribute> attributes;
 
 }
