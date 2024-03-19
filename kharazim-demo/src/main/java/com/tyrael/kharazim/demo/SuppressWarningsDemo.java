@@ -28,5 +28,6 @@ public class SuppressWarningsDemo {
     // unchecked	               |    抑制没有进行类型检查操作的警告
     // unqualified-field-access	   |    抑制没有权限访问的域的警告
     // unused	                   |    抑制没被使用过的代码的警告
+    // Duplicates	               |    抑制代码重复警告
 
 }
