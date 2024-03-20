@@ -118,10 +118,6 @@ public class Knife4jConfig {
             return authService.safetyLogin(loginRequest, request);
         }
 
-        @Override
-        public void destroy() {
-            this.urlFilters = null;
-        }
     }
 
 }
