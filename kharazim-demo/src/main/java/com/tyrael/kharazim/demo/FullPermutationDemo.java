@@ -13,13 +13,13 @@ import java.util.stream.Collectors;
 public class FullPermutationDemo {
 
     public static void main(String[] args) {
-        List<String> elements = List.of("A", "B", "C", "D", "E", "F");
+        List<String> elements = List.of("A", "A", "A", "C", "D", "E", "F");
         List<List<String>> fullPermutation = getFullPermutation(elements);
         System.out.println(fullPermutation.size());
         fullPermutation.forEach(System.out::println);
     }
 
-    private static <T> List<List<T>> getFullPermutation(List<T> elements) {
+    public static <T> List<List<T>> getFullPermutation(List<T> elements) {
 
         LinkedHashSet<Element<T>> elementSet = new LinkedHashSet<>();
         int i = 0;
@@ -42,11 +42,15 @@ public class FullPermutationDemo {
             results.add(result);
             return;
         }
+        LinkedHashSet<T> currentLevelUsed = new LinkedHashSet<>();
         for (Element<T> element : elements) {
             if (!usedElements.contains(element)) {
-                usedElements.add(element);
-                execute(results, elements, usedElements);
-                usedElements.remove(element);
+                if (!currentLevelUsed.contains(element.t)) {
+                    usedElements.add(element);
+                    execute(results, elements, usedElements);
+                    usedElements.remove(element);
+                }
+                currentLevelUsed.add(element.t);
             }
         }
     }
