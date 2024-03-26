@@ -21,6 +21,11 @@ public class SkuPublish extends BaseDO {
     private Long id;
 
     /**
+     * 商品发布序列号
+     */
+    private String code;
+
+    /**
      * sku编码
      */
     private String skuCode;

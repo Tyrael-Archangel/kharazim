@@ -12,8 +12,13 @@ import com.tyrael.kharazim.common.dto.PageResponse;
 import com.tyrael.kharazim.common.exception.DomainNotFoundException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.annotations.Mapper;
+import org.springframework.util.CollectionUtils;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author Tyrael Archangel
@@ -84,6 +89,35 @@ public interface ClinicMapper extends BaseMapper<Clinic> {
         queryWrapper.likeIfPresent(Clinic::getName, StringUtils.trim(request.getName()));
         queryWrapper.eqIfPresent(Clinic::getStatus, request.getStatus());
         return selectList(queryWrapper);
+    }
+
+    /**
+     * list by code
+     *
+     * @param codes codes
+     * @return Clinics
+     */
+    default List<Clinic> listByCodes(Collection<String> codes) {
+        if (CollectionUtils.isEmpty(codes)) {
+            return Collections.emptyList();
+        }
+
+        LambdaQueryWrapper<Clinic> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.in(Clinic::getCode, codes);
+
+        return selectList(queryWrapper);
+    }
+
+    /**
+     * map by codes
+     *
+     * @param codes codes
+     * @return Map<code, Clinic>
+     */
+    default Map<String, Clinic> mapByCodes(Collection<String> codes) {
+        List<Clinic> clinics = listByCodes(codes);
+        return clinics.stream()
+                .collect(Collectors.toMap(Clinic::getCode, e -> e));
     }
 
 }

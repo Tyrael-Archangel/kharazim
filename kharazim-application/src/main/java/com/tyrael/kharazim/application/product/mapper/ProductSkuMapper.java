@@ -10,6 +10,12 @@ import com.tyrael.kharazim.application.product.vo.sku.PageProductSkuRequest;
 import com.tyrael.kharazim.common.dto.PageResponse;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 /**
  * @author Tyrael Archangel
  * @since 2024/3/4
@@ -27,6 +33,33 @@ public interface ProductSkuMapper extends BaseMapper<ProductSku> {
         LambdaQueryWrapper<ProductSku> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper.eq(ProductSku::getCode, code);
         return selectOne(queryWrapper);
+    }
+
+    /**
+     * list by codes
+     *
+     * @param codes sku编码
+     * @return SKU
+     */
+    default List<ProductSku> listByCodes(Collection<String> codes) {
+        if (codes == null || codes.isEmpty()) {
+            return new ArrayList<>();
+        }
+        LambdaQueryWrapper<ProductSku> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.in(ProductSku::getCode, codes);
+        return selectList(queryWrapper);
+    }
+
+    /**
+     * map by codes
+     *
+     * @param codes codes
+     * @return Map<code, ProductSku>
+     */
+    default Map<String, ProductSku> mapByCodes(Collection<String> codes) {
+        List<ProductSku> productSkus = listByCodes(codes);
+        return productSkus.stream()
+                .collect(Collectors.toMap(ProductSku::getCode, e -> e));
     }
 
     /**
