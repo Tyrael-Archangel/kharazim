@@ -27,10 +27,10 @@ public class SkuPublishController {
 
     private final SkuPublishService skuPublishService;
 
-    @GetMapping("/page-effect")
-    @Operation(summary = "生效的商品发布数据分页")
-    public PageResponse<SkuPublishVO> pageEffect(@ParameterObject PageSkuPublishRequest pageRequest) {
-        return skuPublishService.pageEffect(pageRequest);
+    @GetMapping("/page")
+    @Operation(summary = "商品发布数据分页")
+    public PageResponse<SkuPublishVO> page(@ParameterObject PageSkuPublishRequest pageRequest) {
+        return skuPublishService.page(pageRequest);
     }
 
     @PostMapping("/do-publish")

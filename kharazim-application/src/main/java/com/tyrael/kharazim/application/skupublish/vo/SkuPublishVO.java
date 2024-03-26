@@ -16,6 +16,9 @@ public class SkuPublishVO {
     @Schema(description = "商品发布序列号")
     private String code;
 
+    @Schema(description = "是否已取消")
+    private Boolean canceled;
+
     @Schema(description = "SKU编码")
     private String skuCode;
 

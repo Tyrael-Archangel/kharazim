@@ -12,12 +12,12 @@ import com.tyrael.kharazim.common.dto.PageResponse;
 public interface SkuPublishService {
 
     /**
-     * 生效的商品发布数据分页
+     * 商品发布数据分页
      *
      * @param pageRequest {@link PageSkuPublishRequest}
-     * @return 生效的商品发布数据分页
+     * @return 商品发布数据分页
      */
-    PageResponse<SkuPublishVO> pageEffect(PageSkuPublishRequest pageRequest);
+    PageResponse<SkuPublishVO> page(PageSkuPublishRequest pageRequest);
 
     /**
      * 发布商品

@@ -26,6 +26,11 @@ public class SkuPublish extends BaseDO {
     private String code;
 
     /**
+     * 是否已取消
+     */
+    private Boolean canceled;
+
+    /**
      * sku编码
      */
     private String skuCode;
@@ -36,7 +41,7 @@ public class SkuPublish extends BaseDO {
     private String clinicCode;
 
     /**
-     * 单价
+     * 单价（元）
      */
     private BigDecimal price;
 

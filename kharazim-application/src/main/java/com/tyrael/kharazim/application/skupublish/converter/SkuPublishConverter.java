@@ -86,6 +86,7 @@ public class SkuPublishConverter {
                                      Clinic clinic) {
         SkuPublishVO skuPublishVO = new SkuPublishVO();
         skuPublishVO.setCode(skuPublish.getCode());
+        skuPublishVO.setCanceled(skuPublish.getCanceled());
         skuPublishVO.setSkuCode(productSku.getCode());
         skuPublishVO.setSkuName(productSku.getName());
         skuPublishVO.setClinicCode(clinic.getCode());
