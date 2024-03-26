@@ -1,5 +1,6 @@
 package com.tyrael.kharazim.application.skupublish.service.impl;
 
+import com.tyrael.kharazim.application.base.auth.AuthUser;
 import com.tyrael.kharazim.application.clinic.mapper.ClinicMapper;
 import com.tyrael.kharazim.application.config.BusinessCodeConstants;
 import com.tyrael.kharazim.application.product.domain.ProductSku;
@@ -80,7 +81,7 @@ public class SkuPublishServiceImpl implements SkuPublishService {
     }
 
     @Override
-    public void cancelPublish(String code) {
+    public void cancelPublish(String code, AuthUser currentUser) {
         SkuPublish skuPublish = skuPublishMapper.findByCode(code);
         DomainNotFoundException.assertFound(skuPublish, code);
 
@@ -88,6 +89,8 @@ public class SkuPublishServiceImpl implements SkuPublishService {
             return;
         }
         skuPublish.setCanceled(Boolean.TRUE);
+        skuPublish.setUpdate(currentUser.getCode(), currentUser.getNickName());
+
         skuPublishMapper.updateById(skuPublish);
     }
 

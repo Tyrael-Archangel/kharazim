@@ -1,5 +1,7 @@
 package com.tyrael.kharazim.web.controller.product;
 
+import com.tyrael.kharazim.application.base.auth.AuthUser;
+import com.tyrael.kharazim.application.base.auth.CurrentUser;
 import com.tyrael.kharazim.application.skupublish.service.SkuPublishService;
 import com.tyrael.kharazim.application.skupublish.vo.PageSkuPublishRequest;
 import com.tyrael.kharazim.application.skupublish.vo.PublishSkuRequest;
@@ -41,8 +43,9 @@ public class SkuPublishController {
 
     @PostMapping("/cancel-publish/{code}")
     @Operation(summary = "取消发布商品")
-    public Response cancelPublish(@Schema(description = "商品发布序列号") @PathVariable String code) {
-        skuPublishService.cancelPublish(code);
+    public Response cancelPublish(@Schema(description = "商品发布序列号") @PathVariable String code,
+                                  @Schema(hidden = true) @CurrentUser AuthUser currentUser) {
+        skuPublishService.cancelPublish(code, currentUser);
         return Response.success();
     }
 

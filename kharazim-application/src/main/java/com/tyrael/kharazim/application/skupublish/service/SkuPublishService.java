@@ -1,5 +1,6 @@
 package com.tyrael.kharazim.application.skupublish.service;
 
+import com.tyrael.kharazim.application.base.auth.AuthUser;
 import com.tyrael.kharazim.application.skupublish.vo.PageSkuPublishRequest;
 import com.tyrael.kharazim.application.skupublish.vo.PublishSkuRequest;
 import com.tyrael.kharazim.application.skupublish.vo.SkuPublishVO;
@@ -30,8 +31,9 @@ public interface SkuPublishService {
     /**
      * 取消发布
      *
-     * @param code 商品发布序列号
+     * @param code        商品发布序列号
+     * @param currentUser 操作人
      */
-    void cancelPublish(String code);
+    void cancelPublish(String code, AuthUser currentUser);
 
 }

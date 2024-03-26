@@ -27,7 +27,6 @@ class ClinicControllerTest extends BaseControllerTest<ClinicController> {
     void list() {
         ListClinicRequest listRequest = new ListClinicRequest();
         super.performWhenCall(mockController.list(listRequest));
-        super.performWhenCall(mockController.list(listRequest));
     }
 
     @Test
