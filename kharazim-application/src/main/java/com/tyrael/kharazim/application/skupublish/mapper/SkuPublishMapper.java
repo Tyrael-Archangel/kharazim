@@ -12,6 +12,9 @@ import com.tyrael.kharazim.common.dto.PageResponse;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * @author Tyrael Archangel
@@ -85,6 +88,18 @@ public interface SkuPublishMapper extends BaseMapper<SkuPublish> {
         updateWrapper.set(SkuPublish::getUpdaterCode, skuPublish.getUpdaterCode());
         updateWrapper.set(SkuPublish::getUpdateTime, skuPublish.getUpdateTime());
         this.update(null, updateWrapper);
+    }
+
+    /**
+     * 查询诊所有效的商品发布信息
+     *
+     * @param clinicCode 诊所编码
+     * @param skuCodes   SKU编码
+     * @return 诊所有效的商品发布信息
+     */
+    default List<SkuPublish> listClinicEffective(String clinicCode, Collection<String> skuCodes) {
+        // TODO @Tyrael Archangel
+        return new ArrayList<>();
     }
 
 }

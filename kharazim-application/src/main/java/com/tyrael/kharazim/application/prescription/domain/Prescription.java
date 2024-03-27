@@ -1,6 +1,8 @@
 package com.tyrael.kharazim.application.prescription.domain;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.tyrael.kharazim.application.base.BaseDO;
 import lombok.Data;
 
@@ -15,6 +17,9 @@ import java.util.List;
  */
 @Data
 public class Prescription extends BaseDO {
+
+    @TableId(type = IdType.AUTO)
+    private Long id;
 
     /**
      * 处方编码
