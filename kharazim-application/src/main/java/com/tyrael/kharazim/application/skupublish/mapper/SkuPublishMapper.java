@@ -1,6 +1,7 @@
 package com.tyrael.kharazim.application.skupublish.mapper;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -69,6 +70,21 @@ public interface SkuPublishMapper extends BaseMapper<SkuPublish> {
         LambdaQueryWrapper<SkuPublish> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper.eq(SkuPublish::getCode, code);
         return selectOne(queryWrapper);
+    }
+
+    /**
+     * 保存取消发布
+     *
+     * @param skuPublish SkuPublish
+     */
+    default void saveCanceled(SkuPublish skuPublish) {
+        LambdaUpdateWrapper<SkuPublish> updateWrapper = Wrappers.lambdaUpdate();
+        updateWrapper.eq(SkuPublish::getId, skuPublish.getId());
+        updateWrapper.set(SkuPublish::getCanceled, skuPublish.getCanceled());
+        updateWrapper.set(SkuPublish::getUpdater, skuPublish.getUpdater());
+        updateWrapper.set(SkuPublish::getUpdaterCode, skuPublish.getUpdaterCode());
+        updateWrapper.set(SkuPublish::getUpdateTime, skuPublish.getUpdateTime());
+        this.update(null, updateWrapper);
     }
 
 }

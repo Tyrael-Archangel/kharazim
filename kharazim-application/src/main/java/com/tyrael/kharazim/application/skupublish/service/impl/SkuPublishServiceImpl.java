@@ -81,6 +81,7 @@ public class SkuPublishServiceImpl implements SkuPublishService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void cancelPublish(String code, AuthUser currentUser) {
         SkuPublish skuPublish = skuPublishMapper.findByCode(code);
         DomainNotFoundException.assertFound(skuPublish, code);
@@ -91,7 +92,7 @@ public class SkuPublishServiceImpl implements SkuPublishService {
         skuPublish.setCanceled(Boolean.TRUE);
         skuPublish.setUpdate(currentUser.getCode(), currentUser.getNickName());
 
-        skuPublishMapper.updateById(skuPublish);
+        skuPublishMapper.saveCanceled(skuPublish);
     }
 
 }
