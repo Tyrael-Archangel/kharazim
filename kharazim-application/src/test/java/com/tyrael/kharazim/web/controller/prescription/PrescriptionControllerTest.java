@@ -3,6 +3,7 @@ package com.tyrael.kharazim.web.controller.prescription;
 import com.google.common.collect.Lists;
 import com.tyrael.kharazim.application.prescription.vo.CreatePrescriptionRequest;
 import com.tyrael.kharazim.application.prescription.vo.PagePrescriptionRequest;
+import com.tyrael.kharazim.mock.MockRandomPoetry;
 import com.tyrael.kharazim.web.controller.BaseControllerTest;
 import org.junit.jupiter.api.Test;
 
@@ -35,10 +36,10 @@ class PrescriptionControllerTest extends BaseControllerTest<PrescriptionControll
         CreatePrescriptionRequest request = new CreatePrescriptionRequest();
         request.setCustomerCode("CU0000000002");
         request.setClinicCode("CL000001");
-        request.setRemark("处方备注，先天下之忧而忧");
+        request.setRemark(MockRandomPoetry.random());
 
         List<CreatePrescriptionRequest.Product> products = Lists.newArrayList(
-                new CreatePrescriptionRequest.Product("P240311000001", 3));
+                new CreatePrescriptionRequest.Product("P240311000001", 5));
         request.setProducts(products);
 
         super.performWhenCall(mockController.create(request));
