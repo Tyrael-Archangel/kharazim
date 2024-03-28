@@ -5,10 +5,15 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import com.tyrael.kharazim.application.base.LambdaQueryWrapperX;
+import com.tyrael.kharazim.application.product.domain.ProductSku;
+import com.tyrael.kharazim.application.product.mapper.ProductSkuMapper;
 import com.tyrael.kharazim.application.skupublish.domain.SkuPublish;
 import com.tyrael.kharazim.application.skupublish.vo.PageSkuPublishRequest;
 import com.tyrael.kharazim.common.dto.PageResponse;
+import com.tyrael.kharazim.common.util.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.time.LocalDateTime;
@@ -30,9 +35,29 @@ public interface SkuPublishMapper extends BaseMapper<SkuPublish> {
      * @return 商品发布数据分页
      */
     default PageResponse<SkuPublish> page(PageSkuPublishRequest pageRequest) {
+
+        ProductSkuMapper productSkuMapper = (ProductSkuMapper) SqlHelper.getMapper(
+                ProductSku.class, SqlHelper.sqlSession(ProductSku.class));
+        List<String> skuCodes = productSkuMapper.filterCodesByName(pageRequest.getSkuName());
+
         LambdaQueryWrapperX<SkuPublish> queryWrapper = new LambdaQueryWrapperX<>();
-        queryWrapper.eqIfHasText(SkuPublish::getSkuCode, pageRequest.getSkuCode());
-        queryWrapper.eqIfHasText(SkuPublish::getClinicCode, pageRequest.getClinicCode());
+        queryWrapper.inIfPresent(SkuPublish::getSkuCode, skuCodes)
+                .eqIfHasText(SkuPublish::getClinicCode, pageRequest.getClinicCode());
+        Boolean effect = pageRequest.getEffect();
+        if (effect != null) {
+            LocalDateTime now = LocalDateTime.now();
+            if (effect) {
+                queryWrapper.eq(SkuPublish::getCanceled, Boolean.FALSE);
+                queryWrapper.le(SkuPublish::getEffectBegin, now);
+                queryWrapper.ge(SkuPublish::getEffectEnd, now);
+            } else {
+                queryWrapper.and(q -> q.eq(SkuPublish::getCanceled, Boolean.TRUE)
+                        .or()
+                        .ge(SkuPublish::getEffectBegin, now)
+                        .or()
+                        .le(SkuPublish::getEffectEnd, now));
+            }
+        }
 
         Page<SkuPublish> page = new Page<>(pageRequest.getPageNum(), pageRequest.getPageSize());
         Page<SkuPublish> pageData = selectPage(page, queryWrapper);
@@ -98,8 +123,18 @@ public interface SkuPublishMapper extends BaseMapper<SkuPublish> {
      * @return 诊所有效的商品发布信息
      */
     default List<SkuPublish> listClinicEffective(String clinicCode, Collection<String> skuCodes) {
-        // TODO @Tyrael Archangel
-        return new ArrayList<>();
+        if (StringUtils.isBlank(clinicCode) || CollectionUtils.isEmpty(skuCodes)) {
+            return new ArrayList<>();
+        }
+        LambdaQueryWrapper<SkuPublish> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.eq(SkuPublish::getCanceled, Boolean.FALSE);
+        queryWrapper.eq(SkuPublish::getClinicCode, clinicCode);
+        queryWrapper.in(SkuPublish::getSkuCode, skuCodes);
+        LocalDateTime now = LocalDateTime.now();
+        queryWrapper.le(SkuPublish::getEffectBegin, now);
+        queryWrapper.ge(SkuPublish::getEffectEnd, now);
+
+        return selectList(queryWrapper);
     }
 
 }

@@ -24,7 +24,7 @@ public class PrescriptionProduct {
     private String prescriptionCode;
 
     /**
-     * sku编码
+     * SKU编码
      */
     private String skuCode;
 

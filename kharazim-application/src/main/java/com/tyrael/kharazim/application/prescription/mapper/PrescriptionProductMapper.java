@@ -9,6 +9,7 @@ import org.apache.ibatis.annotations.Mapper;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -28,7 +29,17 @@ public interface PrescriptionProductMapper extends BaseMapper<PrescriptionProduc
     }
 
     /**
-     * list by codes
+     * list by  prescriptionCode
+     *
+     * @param prescriptionCode 处方编码
+     * @return PrescriptionProducts
+     */
+    default List<PrescriptionProduct> listByPrescriptionCode(String prescriptionCode) {
+        return listByPrescriptionCodes(Collections.singleton(prescriptionCode));
+    }
+
+    /**
+     * list by prescriptionCodes
      *
      * @param prescriptionCodes 处方编码
      * @return PrescriptionProducts

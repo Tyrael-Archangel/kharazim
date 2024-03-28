@@ -8,12 +8,10 @@ import com.tyrael.kharazim.application.base.LambdaQueryWrapperX;
 import com.tyrael.kharazim.application.product.domain.ProductSku;
 import com.tyrael.kharazim.application.product.vo.sku.PageProductSkuRequest;
 import com.tyrael.kharazim.common.dto.PageResponse;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.annotations.Mapper;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -60,6 +58,25 @@ public interface ProductSkuMapper extends BaseMapper<ProductSku> {
         List<ProductSku> productSkus = listByCodes(codes);
         return productSkus.stream()
                 .collect(Collectors.toMap(ProductSku::getCode, e -> e));
+    }
+
+    /**
+     * filter codes by name
+     *
+     * @param name SKU name
+     * @return skuCodes
+     */
+    default List<String> filterCodesByName(String name) {
+        if (StringUtils.isBlank(name)) {
+            return Collections.emptyList();
+        }
+        LambdaQueryWrapper<ProductSku> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.like(ProductSku::getName, name);
+        queryWrapper.select(ProductSku::getCode);
+        List<ProductSku> productSkus = selectList(queryWrapper);
+        return productSkus.stream()
+                .map(ProductSku::getCode)
+                .collect(Collectors.toList());
     }
 
     /**

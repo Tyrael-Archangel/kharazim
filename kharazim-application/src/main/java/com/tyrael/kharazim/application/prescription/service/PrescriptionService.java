@@ -20,6 +20,14 @@ public interface PrescriptionService {
     String create(CreatePrescriptionRequest request);
 
     /**
+     * 处方详情
+     *
+     * @param code 处方编码
+     * @return 处方详情
+     */
+    PrescriptionVO detail(String code);
+
+    /**
      * 分页查询
      *
      * @param pageRequest {@link PagePrescriptionRequest}

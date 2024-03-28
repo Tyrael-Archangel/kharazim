@@ -37,7 +37,7 @@ public class Prescription extends BaseDO {
     private String clinicCode;
 
     /**
-     * 总金额
+     * 总金额（元）
      */
     private BigDecimal totalAmount;
 

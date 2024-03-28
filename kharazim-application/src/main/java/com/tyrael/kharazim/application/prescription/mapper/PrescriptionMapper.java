@@ -1,6 +1,8 @@
 package com.tyrael.kharazim.application.prescription.mapper;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.tyrael.kharazim.application.base.LambdaQueryWrapperX;
 import com.tyrael.kharazim.application.prescription.domain.Prescription;
@@ -15,6 +17,18 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface PrescriptionMapper extends BaseMapper<Prescription> {
+
+    /**
+     * find by code
+     *
+     * @param code 处方编码
+     * @return Prescription
+     */
+    default Prescription findByCode(String code) {
+        LambdaQueryWrapper<Prescription> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.eq(Prescription::getCode, code);
+        return selectOne(queryWrapper);
+    }
 
     /**
      * 处方分页查询

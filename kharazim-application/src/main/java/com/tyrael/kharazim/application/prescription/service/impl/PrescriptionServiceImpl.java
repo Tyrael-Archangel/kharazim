@@ -120,6 +120,16 @@ public class PrescriptionServiceImpl implements PrescriptionService {
     }
 
     @Override
+    public PrescriptionVO detail(String code) {
+        Prescription prescription = prescriptionMapper.findByCode(code);
+        DomainNotFoundException.assertFound(prescription, code);
+
+        List<PrescriptionProduct> prescriptionProducts = prescriptionProductMapper.listByPrescriptionCode(code);
+        return prescriptionConverter.prescriptionVO(prescription, prescriptionProducts);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public PageResponse<PrescriptionVO> page(PagePrescriptionRequest pageRequest) {
 
         PageResponse<Prescription> pageData = prescriptionMapper.page(pageRequest);

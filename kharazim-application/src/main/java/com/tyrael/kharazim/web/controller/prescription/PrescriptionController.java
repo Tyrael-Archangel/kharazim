@@ -7,14 +7,12 @@ import com.tyrael.kharazim.application.prescription.vo.PrescriptionVO;
 import com.tyrael.kharazim.common.dto.DataResponse;
 import com.tyrael.kharazim.common.dto.PageResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author Tyrael Archangel
@@ -32,6 +30,12 @@ public class PrescriptionController {
     @Operation(summary = "处方分页")
     public PageResponse<PrescriptionVO> page(@ParameterObject PagePrescriptionRequest pageRequest) {
         return prescriptionService.page(pageRequest);
+    }
+
+    @GetMapping("/detail/{code}")
+    @Operation(summary = "处方详情")
+    public DataResponse<PrescriptionVO> detail(@Schema(description = "处方编码") @PathVariable String code) {
+        return DataResponse.ok(prescriptionService.detail(code));
     }
 
     @GetMapping("/create")

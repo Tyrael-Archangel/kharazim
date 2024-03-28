@@ -11,8 +11,11 @@ import lombok.Data;
 @Data
 public class PageSkuPublishRequest extends PageCommand {
 
-    @Schema(description = "SKU编码")
-    private String skuCode;
+    @Schema(description = "是否为生效中")
+    private Boolean effect;
+
+    @Schema(description = "商品名称")
+    private String skuName;
 
     @Schema(description = "诊所编码")
     private String clinicCode;
