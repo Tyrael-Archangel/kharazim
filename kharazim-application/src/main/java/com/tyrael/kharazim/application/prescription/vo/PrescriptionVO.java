@@ -83,6 +83,8 @@ public class PrescriptionVO {
         @Schema(description = "单价（元）")
         private BigDecimal price;
 
+        @Schema(description = "商品项金额（元）")
+        private BigDecimal amount;
     }
 
 }

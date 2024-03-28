@@ -19,6 +19,11 @@ public class PrescriptionProduct {
     private Long id;
 
     /**
+     * 处方编码
+     */
+    private String prescriptionCode;
+
+    /**
      * sku编码
      */
     private String skuCode;
@@ -32,5 +37,10 @@ public class PrescriptionProduct {
      * 单价（元）
      */
     private BigDecimal price;
+
+    /**
+     * 商品项金额（元）
+     */
+    private BigDecimal amount;
 
 }
