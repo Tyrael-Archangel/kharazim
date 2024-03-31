@@ -32,7 +32,7 @@ class RoleControllerTest extends BaseControllerTest<RoleController> {
 
     @Test
     void add() {
-        List<String> roles = List.of("坦克", "斗士", "近刺", "远刺", "辅助", "支援者");
+        List<String> roles = List.of("坦克", "斗士", "近刺", "远刺", "治疗者", "支援者");
         int i = 1;
         for (String role : roles) {
             SaveRoleRequest addRoleRequest = new SaveRoleRequest();
