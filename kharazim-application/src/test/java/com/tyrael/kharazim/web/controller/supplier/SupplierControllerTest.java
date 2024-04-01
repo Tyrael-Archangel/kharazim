@@ -3,6 +3,8 @@ package com.tyrael.kharazim.web.controller.supplier;
 import com.tyrael.kharazim.application.supplier.vo.AddSupplierRequest;
 import com.tyrael.kharazim.application.supplier.vo.ListSupplierRequest;
 import com.tyrael.kharazim.application.supplier.vo.PageSupplierRequest;
+import com.tyrael.kharazim.common.dto.Pair;
+import com.tyrael.kharazim.common.dto.Pairs;
 import com.tyrael.kharazim.web.controller.BaseControllerTest;
 import org.junit.jupiter.api.Test;
 
@@ -30,10 +32,19 @@ class SupplierControllerTest extends BaseControllerTest<SupplierController> {
 
     @Test
     void add() {
-        AddSupplierRequest addSupplierRequest = new AddSupplierRequest();
-        addSupplierRequest.setName("莫拉莉斯中尉医疗");
-        addSupplierRequest.setRemark("星际争霸医疗兵");
-        super.performWhenCall(mockController.add(addSupplierRequest));
+        Pairs<String, String> suppliers = new Pairs<String, String>()
+                .append("魔兽争霸", "Warcraft")
+                .append("星际争霸", "StarCraft")
+                .append("暗黑破坏神", "Diablo")
+                .append("守望先锋", "Overwatch")
+                .append("时空枢纽", "Nexus");
+
+        for (Pair<String, String> supplier : suppliers) {
+            AddSupplierRequest addSupplierRequest = new AddSupplierRequest();
+            addSupplierRequest.setName(supplier.left());
+            addSupplierRequest.setRemark(supplier.right());
+            super.performWhenCall(mockController.add(addSupplierRequest));
+        }
     }
 
 }
