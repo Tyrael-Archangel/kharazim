@@ -51,6 +51,9 @@ public class PrescriptionServiceImpl implements PrescriptionService {
     public String create(CreatePrescriptionRequest request) {
         Prescription prescription = buildPrescription(request);
         this.save(prescription);
+
+        // TODO @Tyrael Archangel 创建结算单
+
         return prescription.getCode();
     }
 
