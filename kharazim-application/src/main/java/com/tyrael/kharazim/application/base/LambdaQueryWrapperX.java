@@ -11,6 +11,7 @@ import java.util.Collection;
 /**
  * 拓展 MyBatis Plus QueryWrapper 类
  */
+@SuppressWarnings("all")
 public class LambdaQueryWrapperX<T> extends LambdaQueryWrapper<T> {
 
     public LambdaQueryWrapperX<T> likeIfPresent(SFunction<T, ?> column, String val) {

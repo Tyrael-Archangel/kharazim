@@ -15,6 +15,7 @@ import com.tyrael.kharazim.application.prescription.vo.PagePrescriptionRequest;
 import com.tyrael.kharazim.application.prescription.vo.PrescriptionVO;
 import com.tyrael.kharazim.application.product.domain.ProductSku;
 import com.tyrael.kharazim.application.product.mapper.ProductSkuMapper;
+import com.tyrael.kharazim.application.settlement.event.CreateSettlementOrderEvent;
 import com.tyrael.kharazim.application.skupublish.domain.SkuPublish;
 import com.tyrael.kharazim.application.skupublish.mapper.SkuPublishMapper;
 import com.tyrael.kharazim.application.system.service.CodeGenerator;
@@ -22,6 +23,7 @@ import com.tyrael.kharazim.common.dto.PageResponse;
 import com.tyrael.kharazim.common.exception.BusinessException;
 import com.tyrael.kharazim.common.exception.DomainNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,6 +47,7 @@ public class PrescriptionServiceImpl implements PrescriptionService {
     private final ProductSkuMapper productSkuMapper;
     private final SkuPublishMapper skuPublishMapper;
     private final PrescriptionConverter prescriptionConverter;
+    private final ApplicationEventPublisher publisher;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -52,7 +55,8 @@ public class PrescriptionServiceImpl implements PrescriptionService {
         Prescription prescription = buildPrescription(request);
         this.save(prescription);
 
-        // TODO @Tyrael Archangel 创建结算单
+        // 创建结算单
+        publisher.publishEvent(new CreateSettlementOrderEvent(this, prescription));
 
         return prescription.getCode();
     }
