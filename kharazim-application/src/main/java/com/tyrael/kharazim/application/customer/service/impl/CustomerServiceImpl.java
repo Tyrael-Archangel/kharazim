@@ -15,6 +15,7 @@ import com.tyrael.kharazim.application.system.service.CodeGenerator;
 import com.tyrael.kharazim.application.system.service.DictService;
 import com.tyrael.kharazim.application.user.domain.User;
 import com.tyrael.kharazim.application.user.mapper.UserMapper;
+import com.tyrael.kharazim.common.dto.PageResponse;
 import com.tyrael.kharazim.common.exception.BusinessException;
 import com.tyrael.kharazim.common.exception.DomainNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -56,6 +57,13 @@ public class CustomerServiceImpl implements CustomerService {
     public CustomerBaseVO findByCode(String code) {
         Customer customer = customerMapper.exactlyFindByCode(code);
         return customerConverter.customerBaseVO(customer);
+    }
+
+    @Override
+    public PageResponse<CustomerBaseVO> page(PageCustomerRequest pageRequest) {
+        PageResponse<Customer> pageData = customerMapper.page(pageRequest);
+        return PageResponse.success(customerConverter.customerBaseVOs(pageData.getData()),
+                pageData.getTotalCount(), pageRequest.getPageSize(), pageRequest.getPageNum());
     }
 
     @Override

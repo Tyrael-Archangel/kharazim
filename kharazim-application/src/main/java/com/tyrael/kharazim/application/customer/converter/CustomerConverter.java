@@ -6,8 +6,10 @@ import com.tyrael.kharazim.application.customer.vo.customer.*;
 import com.tyrael.kharazim.application.system.service.DictService;
 import com.tyrael.kharazim.application.user.domain.User;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Tyrael Archangel
@@ -20,30 +22,47 @@ public class CustomerConverter {
     private final DictService dictService;
 
     /**
+     * Customers -> CustomerBaseVOs
+     */
+    public List<CustomerBaseVO> customerBaseVOs(Collection<Customer> customers) {
+        if (customers == null || customers.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        Map<String, String> sourceChannelValueToName = dictService.dictItemMap(
+                DictCodeConstants.CUSTOMER_SOURCE_CHANNEL);
+
+        return customers.stream()
+                .map(customer -> {
+                    String sourceChannelDict = customer.getSourceChannelDict();
+                    String sourceChannel = sourceChannelValueToName.get(sourceChannelDict);
+                    return CustomerBaseVO.builder()
+                            .code(customer.getCode())
+                            .name(customer.getName())
+                            .gender(customer.getGender())
+                            .birthYear(customer.getBirthYear())
+                            .birthMonth(customer.getBirthMonth())
+                            .birthDayOfMonth(customer.getBirthDayOfMonth())
+                            .phone(customer.getPhone())
+                            .phoneVerified(customer.getPhoneVerified())
+                            .certificateType(customer.getCertificateType())
+                            .certificateCode(customer.getCertificateCode())
+                            .wechatCode(customer.getWechatCode())
+                            .wechatName(customer.getWechatName())
+                            .remark(customer.getRemark())
+                            .sourceChannelDictValue(sourceChannelDict)
+                            .sourceChannel(sourceChannel)
+                            .build();
+                })
+                .collect(Collectors.toList());
+    }
+
+    /**
      * Customer -> CustomerBaseVO
      */
     public CustomerBaseVO customerBaseVO(Customer customer) {
-        String sourceChannelDict = customer.getSourceChannelDict();
-        String sourceChannel = StringUtils.isNotBlank(sourceChannelDict)
-                ? dictService.findItemName(DictCodeConstants.CUSTOMER_SOURCE_CHANNEL, sourceChannelDict)
-                : null;
-        return CustomerBaseVO.builder()
-                .code(customer.getCode())
-                .name(customer.getName())
-                .gender(customer.getGender())
-                .birthYear(customer.getBirthYear())
-                .birthMonth(customer.getBirthMonth())
-                .birthDayOfMonth(customer.getBirthDayOfMonth())
-                .phone(customer.getPhone())
-                .phoneVerified(customer.getPhoneVerified())
-                .certificateType(customer.getCertificateType())
-                .certificateCode(customer.getCertificateCode())
-                .wechatCode(customer.getWechatCode())
-                .wechatName(customer.getWechatName())
-                .remark(customer.getRemark())
-                .sourceChannelDictValue(sourceChannelDict)
-                .sourceChannel(sourceChannel)
-                .build();
+        return this.customerBaseVOs(Collections.singleton(customer))
+                .iterator().next();
     }
 
     /**

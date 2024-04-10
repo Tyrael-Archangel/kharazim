@@ -4,9 +4,7 @@ import com.tyrael.kharazim.application.base.auth.AuthUser;
 import com.tyrael.kharazim.application.base.auth.CurrentUser;
 import com.tyrael.kharazim.application.customer.service.CustomerService;
 import com.tyrael.kharazim.application.customer.vo.customer.*;
-import com.tyrael.kharazim.common.dto.DataResponse;
-import com.tyrael.kharazim.common.dto.MultiResponse;
-import com.tyrael.kharazim.common.dto.Response;
+import com.tyrael.kharazim.common.dto.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -33,6 +31,12 @@ public class CustomerController {
     public DataResponse<CustomerBaseVO> findByCode(
             @PathVariable("code") @Parameter(description = "会员编码", required = true) String code) {
         return DataResponse.ok(customerService.findByCode(code));
+    }
+
+    @GetMapping("/page")
+    @Operation(summary = "会员分页")
+    public PageResponse<CustomerBaseVO> page(@ParameterObject PageCustomerRequest pageRequest) {
+        return customerService.page(pageRequest);
     }
 
     @PostMapping

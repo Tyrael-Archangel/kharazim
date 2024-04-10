@@ -3,8 +3,12 @@ package com.tyrael.kharazim.application.customer.mapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.tyrael.kharazim.application.base.LambdaQueryWrapperX;
 import com.tyrael.kharazim.application.customer.domain.Customer;
 import com.tyrael.kharazim.application.customer.vo.customer.ListCustomerRequest;
+import com.tyrael.kharazim.application.customer.vo.customer.PageCustomerRequest;
+import com.tyrael.kharazim.common.dto.PageResponse;
 import com.tyrael.kharazim.common.exception.DomainNotFoundException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.annotations.Mapper;
@@ -59,6 +63,21 @@ public interface CustomerMapper extends BaseMapper<Customer> {
         if (!this.exists(queryWrapper)) {
             throw new DomainNotFoundException("customerCode: " + code);
         }
+    }
+
+    /**
+     * page
+     *
+     * @param pageRequest {@link PageCustomerRequest}
+     * @return Customers
+     */
+    default PageResponse<Customer> page(PageCustomerRequest pageRequest) {
+        LambdaQueryWrapperX<Customer> queryWrapper = new LambdaQueryWrapperX<>();
+        queryWrapper.likeIfPresent(Customer::getName, pageRequest.getName());
+        queryWrapper.orderByAsc(Customer::getCode);
+        Page<Customer> pageData = selectPage(new Page<>(pageRequest.getPageNum(), pageRequest.getPageSize()), queryWrapper);
+        return PageResponse.success(pageData.getRecords(),
+                pageData.getTotal(), pageRequest.getPageSize(), pageRequest.getPageNum());
     }
 
     /**

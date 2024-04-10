@@ -2,6 +2,7 @@ package com.tyrael.kharazim.application.customer.service;
 
 import com.tyrael.kharazim.application.base.auth.AuthUser;
 import com.tyrael.kharazim.application.customer.vo.customer.*;
+import com.tyrael.kharazim.common.dto.PageResponse;
 
 import java.util.List;
 
@@ -18,6 +19,14 @@ public interface CustomerService {
      * @return 会员基本信息
      */
     CustomerBaseVO findByCode(String code);
+
+    /**
+     * 会员分页
+     *
+     * @param pageRequest {@link PageCustomerRequest}
+     * @return 会员分页数据
+     */
+    PageResponse<CustomerBaseVO> page(PageCustomerRequest pageRequest);
 
     /**
      * 新增会员

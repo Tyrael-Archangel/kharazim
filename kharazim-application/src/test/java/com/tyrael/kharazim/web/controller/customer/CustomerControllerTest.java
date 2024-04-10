@@ -49,6 +49,12 @@ class CustomerControllerTest extends BaseControllerTest<CustomerController> {
     }
 
     @Test
+    void page() {
+        PageCustomerRequest pageRequest = new PageCustomerRequest();
+        super.performWhenCall(mockController.page(pageRequest));
+    }
+
+    @Test
     void add() {
 
         List<AddressTreeNodeDTO> addressTree = addressQueryService.fullTree();
