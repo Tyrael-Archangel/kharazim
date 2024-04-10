@@ -6,6 +6,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 /**
  * @author Tyrael Archangel
  * @since 2024/1/8
@@ -53,5 +55,8 @@ public class CustomerBaseVO {
 
     @Schema(description = "会员来源渠道")
     private String sourceChannel;
+
+    @Schema(description = "创建时间")
+    private LocalDateTime createTime;
 
 }

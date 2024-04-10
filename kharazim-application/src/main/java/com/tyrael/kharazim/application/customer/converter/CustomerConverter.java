@@ -52,6 +52,7 @@ public class CustomerConverter {
                             .remark(customer.getRemark())
                             .sourceChannelDictValue(sourceChannelDict)
                             .sourceChannel(sourceChannel)
+                            .createTime(customer.getCreateTime())
                             .build();
                 })
                 .collect(Collectors.toList());
