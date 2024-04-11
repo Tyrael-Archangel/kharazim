@@ -2,6 +2,7 @@ package com.tyrael.kharazim.web.controller.customer;
 
 import com.google.common.collect.Sets;
 import com.tyrael.kharazim.application.config.DictCodeConstants;
+import com.tyrael.kharazim.application.customer.service.CustomerService;
 import com.tyrael.kharazim.application.customer.vo.customer.*;
 import com.tyrael.kharazim.application.system.dto.address.AddressTreeNodeDTO;
 import com.tyrael.kharazim.application.system.dto.dict.SaveDictItemRequest;
@@ -37,6 +38,9 @@ class CustomerControllerTest extends BaseControllerTest<CustomerController> {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private CustomerService customerService;
 
     CustomerControllerTest() {
         super(CustomerController.class);
@@ -426,17 +430,25 @@ class CustomerControllerTest extends BaseControllerTest<CustomerController> {
         }
 
         List<String> customerTags = new ArrayList<>(customerTagDictItems);
-        Set<String> tagDictValues = Sets.newHashSet();
-        for (int i = 0; i < 8; i++) {
-            String customerTag = customerTags.get(random.nextInt(customerTags.size()));
-            tagDictValues.add(customerTag);
+
+        List<CustomerSimpleVO> customers = customerService.listSimpleInfo(new ListCustomerRequest());
+        for (CustomerSimpleVO customer : customers) {
+
+            int tagCount = random.nextInt(customerTags.size());
+            if (tagCount > 0) {
+                Set<String> tagDictValues = Sets.newLinkedHashSet();
+                for (int i = 0; i < tagCount; i++) {
+                    String customerTag = CollectionUtils.random(customerTags);
+                    tagDictValues.add(customerTag);
+                }
+                AddCustomerTagRequest addCustomerTagRequest = new AddCustomerTagRequest();
+                addCustomerTagRequest.setCustomerCode(customer.getCode());
+                addCustomerTagRequest.setTagDictValues(tagDictValues);
+
+                super.performWhenCall(mockController.addCustomerTag(addCustomerTagRequest, super.mockAdmin()));
+            }
         }
 
-        String customerCode = "CU0000000001";
-        AddCustomerTagRequest addCustomerTagRequest = new AddCustomerTagRequest();
-        addCustomerTagRequest.setCustomerCode(customerCode);
-        addCustomerTagRequest.setTagDictValues(tagDictValues);
-        super.performWhenCall(mockController.addCustomerTag(addCustomerTagRequest, super.mockAdmin()));
     }
 
     private Set<String> addCustomerTagDict() {
