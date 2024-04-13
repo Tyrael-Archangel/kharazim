@@ -35,7 +35,9 @@ public enum BusinessCodeConstants {
     SUPPLIER("供应商", "SU"),
     PRODUCT_CATEGORY("商品单位", 3, "PC"),
     SKU("SKU", 6),
-    SKU_PUBLISH("商品发布", 5, "SPB");
+    SKU_PUBLISH("商品发布", 5, "SPB"),
+    FILE("文件", 10, "F"),
+    FILE_DIR("文件目录", 5, "dir");
 
     private static final int DEFAULT_BIT = 6;
 
