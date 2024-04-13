@@ -12,6 +12,9 @@ spring:
     url: jdbc:mysql://${MYSQL_SERVER:localhost}:${MYSQL_PORT:3306}/kharazim?useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&useAffectedRows=true
     username: ${MYSQL_USER:root}
     password: ${MYSQL_PASSWORD:123456}
+  servlet:
+    multipart:
+      max-file-size: 10MB
 
 mybatis-plus:
   global-config:
