@@ -193,9 +193,15 @@ class CustomerControllerTest extends BaseControllerTest<CustomerController> {
             request.setCountyCode(county == null ? null : county.getCode());
             request.setCountyName(county == null ? null : county.getName());
 
-            request.setDetailAddress(CollectionUtils.random(mockCommunityNames) + "小区"
-                    + (random.nextInt(1) + 20) + "栋"
-                    + (random.nextInt(1) + 16) + "单元");
+
+            String detailAddress = CollectionUtils.random(mockCommunityNames) + "小区"
+                    + (random.nextInt(20) + 1) + "栋"
+                    + (random.nextInt(16) + 1) + "单元";
+            if (random.nextInt(100) > 40) {
+                detailAddress += ((random.nextInt((random.nextInt(32) + 1)) + 1)
+                        + "0" + (random.nextInt(random.nextInt(9) + 1) + 1));
+            }
+            request.setDetailAddress(detailAddress);
             request.setDefaultAddress(false);
 
             mockAddresses.add(request);
