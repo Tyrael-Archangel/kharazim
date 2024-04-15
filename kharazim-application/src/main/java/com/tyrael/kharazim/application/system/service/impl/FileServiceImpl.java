@@ -1,6 +1,7 @@
 package com.tyrael.kharazim.application.system.service.impl;
 
 import com.tyrael.kharazim.application.base.auth.AuthUser;
+import com.tyrael.kharazim.application.base.auth.CurrentUserHolder;
 import com.tyrael.kharazim.application.config.BusinessCodeConstants;
 import com.tyrael.kharazim.application.config.FileConfig;
 import com.tyrael.kharazim.application.system.domain.FileDO;
@@ -9,6 +10,7 @@ import com.tyrael.kharazim.application.system.mapper.FileMapper;
 import com.tyrael.kharazim.application.system.service.CodeGenerator;
 import com.tyrael.kharazim.application.system.service.FileService;
 import com.tyrael.kharazim.common.exception.DomainNotFoundException;
+import com.tyrael.kharazim.web.config.SystemGlobalConfig;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -174,6 +176,13 @@ public class FileServiceImpl implements FileService {
 
             fileInputStream.transferTo(httpServletResponse.getOutputStream());
         }
+    }
+
+    @Override
+    public String getUrl(String fileId) {
+        // TODO @Tyrael Archangel
+        return "http://localhost:9408/kharazim-api/system/file/" + fileId +
+                "?" + SystemGlobalConfig.TOKEN_HEADER + "=" + CurrentUserHolder.getCurrentUserToken();
     }
 
 }

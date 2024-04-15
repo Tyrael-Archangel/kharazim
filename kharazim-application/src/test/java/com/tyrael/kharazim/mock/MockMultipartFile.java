@@ -2,6 +2,7 @@ package com.tyrael.kharazim.mock;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 
 /**
@@ -11,7 +12,11 @@ import java.nio.file.Files;
 public class MockMultipartFile extends org.springframework.mock.web.MockMultipartFile {
 
     public MockMultipartFile(File file) throws IOException {
-        super(file.getName(), Files.newInputStream(file.toPath()));
+        this(file.getName(), Files.newInputStream(file.toPath()));
+    }
+
+    public MockMultipartFile(String name, InputStream contentStream) throws IOException {
+        super(name, contentStream);
     }
 
 }

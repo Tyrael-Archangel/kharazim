@@ -46,4 +46,11 @@ public class FileController {
         fileService.download(fileId, httpServletResponse);
     }
 
+    @GetMapping("/url/{fileId}")
+    @Operation(summary = "获取文件的临时访问URL", description = "获取文件的临时访问URL，10秒内有效")
+    public DataResponse<String> getUrl(
+            @PathVariable("fileId") @Parameter(description = "文件ID", required = true) String fileId) {
+        return DataResponse.ok(fileService.getUrl(fileId));
+    }
+
 }

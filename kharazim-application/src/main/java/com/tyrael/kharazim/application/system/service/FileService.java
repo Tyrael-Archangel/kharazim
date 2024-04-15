@@ -31,4 +31,12 @@ public interface FileService {
      */
     void download(String fileId, HttpServletResponse httpServletResponse) throws IOException;
 
+    /**
+     * 获取文件链接地址
+     *
+     * @param fileId 文件ID
+     * @return 文件链接地址
+     */
+    String getUrl(String fileId);
+
 }

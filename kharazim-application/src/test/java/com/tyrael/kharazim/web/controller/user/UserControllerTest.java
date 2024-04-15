@@ -1,6 +1,8 @@
 package com.tyrael.kharazim.web.controller.user;
 
 import com.tyrael.kharazim.application.base.auth.AuthUser;
+import com.tyrael.kharazim.application.system.dto.file.UploadFileVO;
+import com.tyrael.kharazim.application.system.service.FileService;
 import com.tyrael.kharazim.application.user.domain.Role;
 import com.tyrael.kharazim.application.user.dto.user.request.AddUserRequest;
 import com.tyrael.kharazim.application.user.dto.user.request.ChangePasswordRequest;
@@ -10,11 +12,21 @@ import com.tyrael.kharazim.application.user.enums.EnableStatusEnum;
 import com.tyrael.kharazim.application.user.enums.UserCertificateTypeEnum;
 import com.tyrael.kharazim.application.user.enums.UserGenderEnum;
 import com.tyrael.kharazim.application.user.mapper.RoleMapper;
+import com.tyrael.kharazim.common.dto.Pair;
+import com.tyrael.kharazim.common.dto.Pairs;
+import com.tyrael.kharazim.mock.MockMultipartFile;
 import com.tyrael.kharazim.web.controller.BaseControllerTest;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.ByteArrayInputStream;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
@@ -29,10 +41,14 @@ import static com.tyrael.kharazim.application.user.enums.UserGenderEnum.MALE;
  * @author Tyrael Archangel
  * @since 2023/12/27
  */
+@Slf4j
 class UserControllerTest extends BaseControllerTest<UserController> {
 
     @Autowired
     private RoleMapper roleMapper;
+
+    @Autowired
+    private FileService fileService;
 
     UserControllerTest() {
         super(UserController.class);
@@ -53,13 +69,16 @@ class UserControllerTest extends BaseControllerTest<UserController> {
 
     @Test
     @SuppressWarnings("all")
-    void add() {
+    void add() throws Exception {
 
         List<Role> roles = roleMapper.listAll();
         Map<String, Role> roleMap = roles.stream()
                 .collect(Collectors.toMap(Role::getName, e -> e));
 
         List<Hero> heroes = heroes();
+        Pairs<String, String> heroAvatars = heroAvatars();
+        Map<String, String> heroAvatarMap = heroAvatars.stream()
+                .collect(Collectors.toMap(Pair::left, Pair::right));
 
         for (Hero hero : heroes) {
 
@@ -70,6 +89,16 @@ class UserControllerTest extends BaseControllerTest<UserController> {
             addUserRequest.setNickName(hero.getNickName());
             addUserRequest.setGender(hero.getGender());
             addUserRequest.setPhone("13812341234");
+            String avatarUrl = heroAvatarMap.get(hero.getName());
+            if (StringUtils.isNotBlank(avatarUrl)) {
+                try {
+                    String fileId = uploadAvatar(hero.getName(), avatarUrl);
+                    addUserRequest.setAvatar(fileId);
+                } catch (Exception e) {
+                    log.error("get hero avatar error: " + e.getMessage(), e);
+                }
+            }
+
             addUserRequest.setCertificateType(UserCertificateTypeEnum.ID_CARD);
             addUserRequest.setCertificateCode("510823202308010001");
             addUserRequest.setRoleId(role.getId());
@@ -171,6 +200,116 @@ class UserControllerTest extends BaseControllerTest<UserController> {
                 new Hero("Muradin", "穆拉丁", "坦克", MALE, "2014-03-13", "山丘之王"),
                 new Hero("Stitches", "缝合怪", "坦克", MALE, "2014-01-01", "夜色镇的梦魇"),
                 new Hero("Tyrael", "泰瑞尔", "坦克", MALE, "2014-03-13", "正义天使"));
+    }
+
+    private Pairs<String, String> heroAvatars() {
+        return new Pairs<String, String>()
+                .append("Hogger", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/hogger/circleIcon.png")
+                .append("Mei", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/mei/circleIcon.png")
+                .append("Deathwing", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/deathwing/circleIcon.png")
+                .append("Qhira", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/qhira/circleIcon.png")
+                .append("Anduin", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/anduin/circleIcon.png")
+                .append("Imperius", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/imperius/circleIcon.png")
+                .append("Orphea", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/orphea/circleIcon.png")
+                .append("Mal'Ganis", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/malganis/circleIcon.png")
+                .append("Mephisto", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/mephisto/circleIcon.png")
+                .append("Whitemane", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/whitemane/circleIcon.png")
+                .append("Yrel", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/yrel/circleIcon.png")
+                .append("Deckard", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/deckard/circleIcon.png")
+                .append("Fenix", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/fenix/circleIcon.png")
+                .append("Maiev", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/maiev/circleIcon.png")
+                .append("Blaze", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/blaze/circleIcon.png")
+                .append("Hanzo", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/hanzo/circleIcon.png")
+                .append("Alexstrasza", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/alexstrasza/circleIcon.png")
+                .append("Junkrat", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/junkrat/circleIcon.png")
+                .append("Ana", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/ana/circleIcon.png")
+                .append("Kel'Thuzad", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/kelthuzad/circleIcon.png")
+                .append("Garrosh", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/garrosh/circleIcon.png")
+                .append("Stukov", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/stukov/circleIcon.png")
+                .append("Malthael", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/malthael/circleIcon.png")
+                .append("D.Va", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/dva/circleIcon.png")
+                .append("Genji", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/genji/circleIcon.png")
+                .append("Cassia", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/cassia/circleIcon.png")
+                .append("Probius", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/probius/circleIcon.png")
+                .append("Lúcio", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/lucio/circleIcon.png")
+                .append("Valeera", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/valeera/circleIcon.png")
+                .append("Zul'jin", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/zuljin/circleIcon.png")
+                .append("Ragnaros", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/ragnaros/circleIcon.png")
+                .append("Varian", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/varian/circleIcon.png")
+                .append("Samuro", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/samuro/circleIcon.png")
+                .append("Zarya", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/zarya/circleIcon.png")
+                .append("Alarak", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/alarak/circleIcon.png")
+                .append("Auriel", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/auriel/circleIcon.png")
+                .append("Gul'dan", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/guldan/circleIcon.png")
+                .append("Medivh", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/medivh/circleIcon.png")
+                .append("Chromie", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/chromie/circleIcon.png")
+                .append("Tracer", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/tracer/circleIcon.png")
+                .append("Dehaka", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/dehaka/circleIcon.png")
+                .append("Xul", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/xul/circleIcon.png")
+                .append("Li-Ming", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/li-ming/circleIcon.png")
+                .append("Greymane", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/greymane/circleIcon.png")
+                .append("Lunara", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/lunara/circleIcon.png")
+                .append("Cho", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/cho/circleIcon.png")
+                .append("Gall", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/gall/circleIcon.png")
+                .append("Artanis", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/artanis/circleIcon.png")
+                .append("Lt. Morales", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/lt-morales/circleIcon.png")
+                .append("Rexxar", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/rexxar/circleIcon.png")
+                .append("Kharazim", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/kharazim/circleIcon.png")
+                .append("Leoric", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/leoric/circleIcon.png")
+                .append("The Butcher", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/the-butcher/circleIcon.png")
+                .append("Johanna", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/johanna/circleIcon.png")
+                .append("Kael'thas", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/kaelthas/circleIcon.png")
+                .append("Sylvanas", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/sylvanas/circleIcon.png")
+                .append("The Lost Vikings", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/the-lost-vikings/circleIcon.png")
+                .append("Thrall", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/thrall/circleIcon.png")
+                .append("Jaina", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/jaina/circleIcon.png")
+                .append("Azmodan", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/azmodan/circleIcon.png")
+                .append("Anub'arak", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/anubarak/circleIcon.png")
+                .append("Chen", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/chen/circleIcon.png")
+                .append("Rehgar", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/rehgar/circleIcon.png")
+                .append("Zagara", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/zagara/circleIcon.png")
+                .append("Murky", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/murky/circleIcon.png")
+                .append("Brightwing", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/brightwing/circleIcon.png")
+                .append("Li Li", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/li-li/circleIcon.png")
+                .append("Tychus", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/tychus/circleIcon.png")
+                .append("Abathur", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/abathur/circleIcon.png")
+                .append("Arthas", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/arthas/circleIcon.png")
+                .append("Diablo", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/diablo/circleIcon.png")
+                .append("Illidan", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/illidan/circleIcon.png")
+                .append("Kerrigan", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/kerrigan/circleIcon.png")
+                .append("Malfurion", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/malfurion/circleIcon.png")
+                .append("Muradin", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/muradin/circleIcon.png")
+                .append("Nazeebo", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/nazeebo/circleIcon.png")
+                .append("Nova", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/nova/circleIcon.png")
+                .append("Raynor", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/raynor/circleIcon.png")
+                .append("Sgt. Hammer", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/sgt-hammer/circleIcon.png")
+                .append("Sonya", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/sonya/circleIcon.png")
+                .append("Tyrael", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/tyrael/circleIcon.png")
+                .append("Tyrande", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/tyrande/circleIcon.png")
+                .append("Uther", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/uther/circleIcon.png")
+                .append("Valla", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/valla/circleIcon.png")
+                .append("Zeratul", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/zeratul/circleIcon.png")
+                .append("E.T.C.", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/etc/circleIcon.png")
+                .append("Falstad", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/falstad/circleIcon.png")
+                .append("Gazlowe", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/gazlowe/circleIcon.png")
+                .append("Stitches", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/stitches/circleIcon.png")
+                .append("Tassadar", "https://static.heroesofthestorm.com/gd/6f704aac5aa2f1cfad17ee130347fb3b/heroes/tassadar/circleIcon.png");
+    }
+
+    private String uploadAvatar(String heroName, String url) throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .GET()
+                .build();
+        HttpResponse<byte[]> httpResponse = HttpClient.newHttpClient()
+                .send(request, HttpResponse.BodyHandlers.ofByteArray());
+        byte[] body = httpResponse.body();
+
+        UploadFileVO uploadFileVO = new UploadFileVO();
+        uploadFileVO.setFileName(heroName + ".png");
+        uploadFileVO.setFile(new MockMultipartFile(heroName, new ByteArrayInputStream(body)));
+
+        return fileService.upload(uploadFileVO, super.mockAdmin());
     }
 
     @Test
