@@ -26,6 +26,9 @@ public class CustomerServiceUserVO {
     @Schema(description = "专属客服头像")
     private String serviceUserAvatar;
 
+    @Schema(description = "专属客服头像链接")
+    private String serviceUserAvatarUrl;
+
     @Schema(description = "更新时间")
     private LocalDateTime updateTime;
 

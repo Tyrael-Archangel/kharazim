@@ -2,11 +2,13 @@ package com.tyrael.kharazim.application.user.converter;
 
 import com.google.common.collect.Lists;
 import com.tyrael.kharazim.application.base.auth.AuthUser;
+import com.tyrael.kharazim.application.system.service.FileService;
 import com.tyrael.kharazim.application.user.domain.Role;
 import com.tyrael.kharazim.application.user.domain.User;
 import com.tyrael.kharazim.application.user.dto.user.response.CurrentUserDTO;
 import com.tyrael.kharazim.application.user.dto.user.response.UserDTO;
 import com.tyrael.kharazim.application.user.dto.user.response.UserRoleDTO;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -17,7 +19,10 @@ import java.util.List;
  * @since 2023/12/25
  */
 @Component
+@RequiredArgsConstructor
 public class UserConverter {
+
+    private final FileService fileService;
 
     /**
      * User、UserRoleDTO -> UserDTO
@@ -30,6 +35,7 @@ public class UserConverter {
                 .nickName(user.getNickName())
                 .englishName(user.getEnglishName())
                 .avatar(user.getAvatar())
+                .avatarUrl(fileService.getUrl(user.getAvatar()))
                 .gender(user.getGender())
                 .birthday(user.getBirthday())
                 .phone(user.getPhone())

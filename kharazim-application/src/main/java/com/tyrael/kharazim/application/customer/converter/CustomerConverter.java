@@ -4,6 +4,7 @@ import com.tyrael.kharazim.application.config.DictCodeConstants;
 import com.tyrael.kharazim.application.customer.domain.*;
 import com.tyrael.kharazim.application.customer.vo.customer.*;
 import com.tyrael.kharazim.application.system.service.DictService;
+import com.tyrael.kharazim.application.system.service.FileService;
 import com.tyrael.kharazim.application.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
 public class CustomerConverter {
 
     private final DictService dictService;
+    private final FileService fileService;
 
     /**
      * Customers -> CustomerBaseVOs
@@ -127,6 +129,7 @@ public class CustomerConverter {
                 .serviceUserCode(customerServiceUser.getServiceUserCode())
                 .serviceUserName(user.getNickName())
                 .serviceUserAvatar(user.getAvatar())
+                .serviceUserAvatarUrl(fileService.getUrl(user.getAvatar()))
                 .updateTime(customerServiceUser.getUpdateTime())
                 .build();
     }
@@ -140,6 +143,7 @@ public class CustomerConverter {
                 .salesConsultantCode(customerSalesConsultant.getSalesConsultantCode())
                 .salesConsultantName(user.getNickName())
                 .salesConsultantAvatar(user.getAvatar())
+                .salesConsultantAvatarUrl(fileService.getUrl(user.getAvatar()))
                 .updateTime(customerSalesConsultant.getUpdateTime())
                 .build();
     }

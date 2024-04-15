@@ -2,9 +2,11 @@ package com.tyrael.kharazim.web.controller.system;
 
 import com.tyrael.kharazim.application.base.auth.AuthUser;
 import com.tyrael.kharazim.application.base.auth.CurrentUser;
+import com.tyrael.kharazim.application.system.dto.file.FileUrlVO;
 import com.tyrael.kharazim.application.system.dto.file.UploadFileVO;
 import com.tyrael.kharazim.application.system.service.FileService;
 import com.tyrael.kharazim.common.dto.DataResponse;
+import com.tyrael.kharazim.common.dto.MultiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -15,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author Tyrael Archangel
@@ -51,6 +55,17 @@ public class FileController {
     public DataResponse<String> getUrl(
             @PathVariable("fileId") @Parameter(description = "文件ID", required = true) String fileId) {
         return DataResponse.ok(fileService.getUrl(fileId));
+    }
+
+    @GetMapping("/urls/{fileIds}")
+    @Operation(summary = "批量获取文件的临时访问URL", description = "获取文件的临时访问URL，10秒内有效")
+    public MultiResponse<FileUrlVO> getUrls(
+            @PathVariable("fileIds") @Parameter(description = "文件ID", required = true) String fileIds) {
+        List<String> fileIdList = Arrays.stream(fileIds.trim().split(","))
+                .map(String::trim)
+                .distinct()
+                .toList();
+        return MultiResponse.success(fileService.getUrls(fileIdList));
     }
 
 }

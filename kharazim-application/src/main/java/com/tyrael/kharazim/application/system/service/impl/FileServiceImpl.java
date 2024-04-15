@@ -5,6 +5,7 @@ import com.tyrael.kharazim.application.base.auth.CurrentUserHolder;
 import com.tyrael.kharazim.application.config.BusinessCodeConstants;
 import com.tyrael.kharazim.application.config.FileConfig;
 import com.tyrael.kharazim.application.system.domain.FileDO;
+import com.tyrael.kharazim.application.system.dto.file.FileUrlVO;
 import com.tyrael.kharazim.application.system.dto.file.UploadFileVO;
 import com.tyrael.kharazim.application.system.mapper.FileMapper;
 import com.tyrael.kharazim.application.system.service.CodeGenerator;
@@ -25,6 +26,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.NotDirectoryException;
 import java.time.LocalDateTime;
 import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -180,9 +183,24 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public String getUrl(String fileId) {
+        if (StringUtils.isBlank(fileId)) {
+            return null;
+        }
+
         // TODO @Tyrael Archangel
-        return "http://localhost:9408/kharazim-api/system/file/" + fileId +
-                "?" + SystemGlobalConfig.TOKEN_HEADER + "=" + CurrentUserHolder.getCurrentUserToken();
+        String url = "http://localhost:9408/kharazim-api/system/file/" + fileId;
+        String currentUserToken = CurrentUserHolder.getCurrentUserToken();
+        if (StringUtils.isNotBlank(currentUserToken)) {
+            url += "?" + SystemGlobalConfig.TOKEN_HEADER + "=" + currentUserToken;
+        }
+        return url;
+    }
+
+    @Override
+    public List<FileUrlVO> getUrls(List<String> fileIds) {
+        return fileIds.stream()
+                .map(fileId -> new FileUrlVO(fileId, this.getUrl(fileId)))
+                .collect(Collectors.toList());
     }
 
 }
