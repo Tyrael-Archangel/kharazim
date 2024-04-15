@@ -30,6 +30,8 @@ import java.net.http.HttpResponse;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -75,7 +77,9 @@ class UserControllerTest extends BaseControllerTest<UserController> {
         Map<String, Role> roleMap = roles.stream()
                 .collect(Collectors.toMap(Role::getName, e -> e));
 
-        List<Hero> heroes = heroes();
+        List<Hero> heroes = new ArrayList<>(heroes());
+        Collections.shuffle(heroes);
+
         Pairs<String, String> heroAvatars = heroAvatars();
         Map<String, String> heroAvatarMap = heroAvatars.stream()
                 .collect(Collectors.toMap(Pair::left, Pair::right));
