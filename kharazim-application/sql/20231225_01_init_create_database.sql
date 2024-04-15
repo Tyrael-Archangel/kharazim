@@ -1,1 +1,1 @@
-CREATE DATABASE `kharazim` CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci';
+CREATE DATABASE `kharazim_db` CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci';

@@ -68,7 +68,11 @@ class CustomerControllerTest extends BaseControllerTest<CustomerController> {
                 .stream()
                 .map(UserDTO::getCode)
                 .toList();
-        List<String> companyItems = new ArrayList<>(dictService.findEnabledItems(DictCodeConstants.INSURANCE_COMPANY));
+        Set<String> companyItems = dictService.findEnabledItems(DictCodeConstants.INSURANCE_COMPANY);
+        if (companyItems.isEmpty()) {
+            companyItems = addInsuranceCompanyDict();
+        }
+        List<String> companyItemValues = new ArrayList<>(companyItems);
 
         for (Pair<String, UserGenderEnum> userNameAndGender : mockUsers) {
 
@@ -92,7 +96,7 @@ class CustomerControllerTest extends BaseControllerTest<CustomerController> {
             addCustomerRequest.setServiceUserCode(CollectionUtils.random(serviceUserCodes));
             addCustomerRequest.setSalesConsultantCode(CollectionUtils.random(serviceUserCodes));
             addCustomerRequest.setCustomerAddresses(this.mockAddress(name, phone, addressTree, mockCommunityNames));
-            addCustomerRequest.setCustomerInsurances(this.mockInsurances(companyItems));
+            addCustomerRequest.setCustomerInsurances(this.mockInsurances(companyItemValues));
             super.performWhenCall(mockController.add(addCustomerRequest, super.mockAdmin()));
         }
 
