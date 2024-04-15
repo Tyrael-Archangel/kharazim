@@ -139,6 +139,7 @@ public interface UserMapper extends BaseMapper<User> {
                             .or()
                             .like(User::getPhone, keywords));
         }
+        queryWrapper.orderByAsc(User::getCode);
 
         Page<User> page = new Page<>(pageCommand.getPageNum(), pageCommand.getPageSize());
         Page<User> userPage = selectPage(page, queryWrapper);
