@@ -74,6 +74,7 @@ public class UserConverter {
                 .nickName(user.getNickName())
                 .englishName(user.getEnglishName())
                 .avatar(user.getAvatar())
+                .avatarUrl(fileService.getUrl(user.getAvatar()))
                 .gender(user.getGender())
                 .birthday(user.getBirthday())
                 .phone(user.getPhone())

@@ -3,6 +3,8 @@ package com.tyrael.kharazim.application.user.service.impl;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.tyrael.kharazim.application.base.auth.AuthUser;
+import com.tyrael.kharazim.application.base.auth.CurrentUserHolder;
+import com.tyrael.kharazim.application.config.CacheKeyConstants;
 import com.tyrael.kharazim.application.user.domain.Role;
 import com.tyrael.kharazim.application.user.domain.User;
 import com.tyrael.kharazim.application.user.domain.UserRole;
@@ -20,6 +22,7 @@ import com.tyrael.kharazim.common.exception.TokenInvalidException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -44,6 +47,7 @@ public class AuthServiceImpl implements AuthService {
     private final RoleMapper roleMapper;
     private final PasswordEncoder passwordEncoder;
     private final TokenManager tokenManager;
+    private final CacheManager cacheManager;
 
     @Override
     public String safetyLogin(LoginRequest loginRequest, HttpServletRequest httpServletRequest) throws LoginFailedException {
@@ -77,6 +81,7 @@ public class AuthServiceImpl implements AuthService {
 
         boolean matches = passwordEncoder.matches(requestPassword, userPassword);
         if (matches) {
+            this.clearCurrentUserInfoCache(user.getId());
             return tokenManager.create(user, findUserRole(user));
         } else {
             throw new LoginFailedException("用户名或密码错误");
@@ -129,6 +134,16 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public void logout(String token) {
         tokenManager.remove(token);
+        clearCurrentUserInfoCache(CurrentUserHolder.getCurrentUserId());
+    }
+
+    private void clearCurrentUserInfoCache(Long userId) {
+        if (userId != null) {
+            org.springframework.cache.Cache currentUserInfoCache = cacheManager.getCache(CacheKeyConstants.CURRENT_USER_INFO);
+            if (currentUserInfoCache != null) {
+                currentUserInfoCache.evict(userId);
+            }
+        }
     }
 
     @Override

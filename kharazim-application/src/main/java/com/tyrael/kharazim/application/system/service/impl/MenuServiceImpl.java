@@ -10,7 +10,6 @@ import com.tyrael.kharazim.common.dto.TreeNode;
 import com.tyrael.kharazim.common.exception.BusinessException;
 import com.tyrael.kharazim.common.exception.DomainNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,8 +18,6 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-
-import static com.tyrael.kharazim.application.config.CacheKeyConstants.*;
 
 /**
  * @author Tyrael Archangel
@@ -80,7 +77,6 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    @CacheEvict(cacheNames = {MENU_RESOURCES, MENU_OPTIONS_TREE, MENU_ROUTES}, allEntries = true)
     public Long add(SaveMenuRequest addMenuRequest) {
 
         if (addMenuRequest.getSort() == null) {
@@ -98,7 +94,6 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    @CacheEvict(cacheNames = {MENU_RESOURCES, MENU_OPTIONS_TREE, MENU_ROUTES}, allEntries = true)
     public void modify(Long id, SaveMenuRequest modifyMenuRequest) {
         Menu menu = menuMapper.selectById(id);
         DomainNotFoundException.assertFound(menu, id);
@@ -117,7 +112,6 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    @CacheEvict(cacheNames = {MENU_RESOURCES, MENU_OPTIONS_TREE, MENU_ROUTES}, allEntries = true)
     public void delete(Long id) {
         menuMapper.deleteById(id);
     }
@@ -152,7 +146,6 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    @CacheEvict(cacheNames = {MENU_RESOURCES, MENU_OPTIONS_TREE, MENU_ROUTES}, allEntries = true)
     public void disableVisible(Long id) {
         Menu menu = menuMapper.selectById(id);
         DomainNotFoundException.assertFound(menu, id);
@@ -163,7 +156,6 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    @CacheEvict(cacheNames = {MENU_RESOURCES, MENU_OPTIONS_TREE, MENU_ROUTES}, allEntries = true)
     public void enableVisible(Long id) {
         Menu menu = menuMapper.selectById(id);
         DomainNotFoundException.assertFound(menu, id);

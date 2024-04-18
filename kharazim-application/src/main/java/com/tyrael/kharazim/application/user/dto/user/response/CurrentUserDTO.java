@@ -39,6 +39,9 @@ public class CurrentUserDTO {
     @Schema(description = "用户头像地址")
     private String avatar;
 
+    @Schema(description = "用户头像地址URL")
+    private String avatarUrl;
+
     @Schema(description = "性别")
     private UserGenderEnum gender;
 

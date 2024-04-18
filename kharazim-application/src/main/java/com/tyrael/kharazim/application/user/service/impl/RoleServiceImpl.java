@@ -32,7 +32,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.tyrael.kharazim.application.config.CacheKeyConstants.CURRENT_USER_INFO;
-import static com.tyrael.kharazim.application.config.CacheKeyConstants.MENU_ROUTES;
 
 /**
  * @author Tyrael Archangel
@@ -116,7 +115,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    @CacheEvict(cacheNames = {MENU_ROUTES, CURRENT_USER_INFO}, allEntries = true)
+    @CacheEvict(cacheNames = {CURRENT_USER_INFO}, allEntries = true)
     public void modify(Long id, SaveRoleRequest modifyRoleRequest) {
         Role role = getById(id);
         if (role.isAdmin()) {
@@ -138,14 +137,14 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    @CacheEvict(cacheNames = {MENU_ROUTES, CURRENT_USER_INFO}, allEntries = true)
+    @CacheEvict(cacheNames = {CURRENT_USER_INFO}, allEntries = true)
     public void delete(List<Long> ids) {
         roleMapper.logicDelete(ids);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    @CacheEvict(cacheNames = {MENU_ROUTES, CURRENT_USER_INFO}, allEntries = true)
+    @CacheEvict(cacheNames = {CURRENT_USER_INFO}, allEntries = true)
     public void enable(Long id) {
         Role role = getById(id);
         if (role.isAdmin()) {
@@ -158,7 +157,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    @CacheEvict(cacheNames = {MENU_ROUTES, CURRENT_USER_INFO}, allEntries = true)
+    @CacheEvict(cacheNames = {CURRENT_USER_INFO}, allEntries = true)
     public void disable(Long id) {
         Role role = getById(id);
         if (role.isAdmin()) {
@@ -192,7 +191,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    @CacheEvict(cacheNames = {MENU_ROUTES, CURRENT_USER_INFO}, allEntries = true)
+    @CacheEvict(cacheNames = {CURRENT_USER_INFO}, allEntries = true)
     public void updateRoleMenus(Long id, List<Long> menuIds) {
         Role role = getById(id);
         if (role.isAdmin()) {
