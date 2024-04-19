@@ -106,6 +106,7 @@ class UserControllerTest extends BaseControllerTest<UserController> {
             addUserRequest.setCertificateType(UserCertificateTypeEnum.ID_CARD);
             addUserRequest.setCertificateCode("510823202308010001");
             addUserRequest.setRoleId(role.getId());
+            addUserRequest.setRemark(hero.getRemark());
             addUserRequest.setBirthday(hero.getRelease());
 
             super.performWhenCall(mockController.add(addUserRequest));
