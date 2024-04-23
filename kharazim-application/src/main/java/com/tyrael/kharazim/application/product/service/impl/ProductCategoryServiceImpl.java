@@ -107,7 +107,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
         DomainNotFoundException.assertFound(productCategory, code);
 
         productCategory.setName(modifyRequest.getName());
-        productCategory.setName(modifyRequest.getName());
+        productCategory.setRemark(modifyRequest.getRemark());
 
         productCategoryMapper.updateById(productCategory);
     }
