@@ -61,7 +61,7 @@ public interface ClinicMapper extends BaseMapper<Clinic> {
     default PageResponse<Clinic> page(PageClinicRequest pageRequest) {
 
         LambdaQueryWrapperX<Clinic> queryWrapper = new LambdaQueryWrapperX<>();
-        String name = pageRequest.getName();
+        String name = StringUtils.trim(pageRequest.getName());
         if (StringUtils.isNotBlank(name)) {
             queryWrapper.and(q -> q.like(Clinic::getName, name)
                     .or()
