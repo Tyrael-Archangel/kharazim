@@ -58,6 +58,9 @@ public class SupplierServiceImpl implements SupplierService {
                 .code(supplier.getCode())
                 .name(supplier.getName())
                 .remark(supplier.getRemark())
+                .creator(supplier.getCreator())
+                .creatorCode(supplier.getCreatorCode())
+                .createTime(supplier.getCreateTime())
                 .build();
     }
 
