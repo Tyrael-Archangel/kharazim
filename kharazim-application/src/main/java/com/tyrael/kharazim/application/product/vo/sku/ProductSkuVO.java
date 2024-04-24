@@ -24,6 +24,9 @@ public class ProductSkuVO {
     @Schema(description = "商品分类名称")
     private String categoryName;
 
+    @Schema(description = "商品分类全路径名称")
+    private String categoryFullName;
+
     @Schema(description = "供应商编码")
     private String supplierCode;
 
@@ -39,13 +42,22 @@ public class ProductSkuVO {
     @Schema(description = "默认图片")
     private String defaultImage;
 
+    @Schema(description = "默认图片链接")
+    private String defaultImageUrl;
+
     @Schema(description = "图片")
     private List<String> images;
+
+    @Schema(description = "图片链接")
+    private List<String> imageUrls;
 
     @Schema(description = "描述信息")
     private String description;
 
     @Schema(description = "属性")
     private List<Attribute> attributes;
+
+    @Schema(description = "属性描述")
+    private String attributesDesc;
 
 }

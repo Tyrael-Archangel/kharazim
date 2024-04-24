@@ -8,6 +8,7 @@ import com.tyrael.kharazim.application.base.LambdaQueryWrapperX;
 import com.tyrael.kharazim.application.product.domain.ProductSku;
 import com.tyrael.kharazim.application.product.vo.sku.PageProductSkuRequest;
 import com.tyrael.kharazim.common.dto.PageResponse;
+import com.tyrael.kharazim.common.util.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -87,10 +88,17 @@ public interface ProductSkuMapper extends BaseMapper<ProductSku> {
      */
     default PageResponse<ProductSku> page(PageProductSkuRequest pageRequest) {
         LambdaQueryWrapperX<ProductSku> queryWrapper = new LambdaQueryWrapperX<>();
-        queryWrapper.likeIfPresent(ProductSku::getName, pageRequest.getName())
-                .likeRightIfPresent(ProductSku::getCategoryCode, pageRequest.getCategoryCode())
-                .likeRightIfPresent(ProductSku::getSupplierCode, pageRequest.getSupplierCode())
+        queryWrapper.eqIfHasText(ProductSku::getCode, pageRequest.getCode())
+                .likeIfPresent(ProductSku::getName, pageRequest.getName())
                 .likeIfPresent(ProductSku::getDescription, pageRequest.getDescription());
+        if (CollectionUtils.isNotEmpty(pageRequest.getCategoryCodes())) {
+            queryWrapper.and(q -> {
+                for (String categoryCode : pageRequest.getCategoryCodes()) {
+                    q.or().likeRight(ProductSku::getCategoryCode, categoryCode);
+                }
+            });
+        }
+        queryWrapper.inIfPresent(ProductSku::getSupplierCode, pageRequest.getSupplierCodes());
         queryWrapper.orderByAsc(ProductSku::getCode);
 
         Page<ProductSku> page = new Page<>(pageRequest.getPageNum(), pageRequest.getPageSize());

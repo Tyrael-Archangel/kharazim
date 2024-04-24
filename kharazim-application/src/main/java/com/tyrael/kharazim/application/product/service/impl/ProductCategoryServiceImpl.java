@@ -8,6 +8,7 @@ import com.tyrael.kharazim.application.product.service.ProductCategoryService;
 import com.tyrael.kharazim.application.product.vo.category.AddProductCategoryRequest;
 import com.tyrael.kharazim.application.product.vo.category.ModifyProductCategoryRequest;
 import com.tyrael.kharazim.application.product.vo.category.ProductCategoryTreeNodeDTO;
+import com.tyrael.kharazim.application.product.vo.category.ProductCategoryVO;
 import com.tyrael.kharazim.application.system.service.CodeGenerator;
 import com.tyrael.kharazim.common.dto.TreeNode;
 import com.tyrael.kharazim.common.exception.DomainNotFoundException;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -67,6 +69,36 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
             }
             setFullPathName(dto.getChildren(), dto);
         }
+    }
+
+    @Override
+    public List<ProductCategoryVO> all() {
+        List<ProductCategory> productCategories = productCategoryMapper.listAll();
+        Map<Long, ProductCategory> productCategoryMap = productCategories.stream()
+                .collect(Collectors.toMap(ProductCategory::getId, e -> e));
+
+        return productCategories.stream()
+                .map(pc -> ProductCategoryVO.builder()
+                        .code(pc.getCode())
+                        .name(pc.getName())
+                        .remark(pc.getRemark())
+                        .fullPathName(this.getFullPathName(pc, productCategoryMap))
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    private String getFullPathName(ProductCategory productCategory, Map<Long, ProductCategory> productCategoryMap) {
+        Long parentId = productCategory.getParentId();
+        StringBuilder fullPathName = new StringBuilder(productCategory.getName());
+        while (parentId != null) {
+            ProductCategory parent = productCategoryMap.get(parentId);
+            if (parent == null) {
+                return fullPathName.toString();
+            }
+            fullPathName.insert(0, parent.getName() + "/");
+            parentId = parent.getParentId();
+        }
+        return fullPathName.toString();
     }
 
     @Override

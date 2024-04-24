@@ -6,6 +6,7 @@ import com.tyrael.kharazim.application.product.service.ProductCategoryService;
 import com.tyrael.kharazim.application.product.vo.category.AddProductCategoryRequest;
 import com.tyrael.kharazim.application.product.vo.category.ModifyProductCategoryRequest;
 import com.tyrael.kharazim.application.product.vo.category.ProductCategoryTreeNodeDTO;
+import com.tyrael.kharazim.application.product.vo.category.ProductCategoryVO;
 import com.tyrael.kharazim.common.dto.DataResponse;
 import com.tyrael.kharazim.common.dto.MultiResponse;
 import com.tyrael.kharazim.common.dto.Response;
@@ -32,6 +33,12 @@ public class ProductCategoryController {
     @Operation(summary = "商品分类树数据")
     public MultiResponse<ProductCategoryTreeNodeDTO> categoryTree() {
         return MultiResponse.success(productCategoryService.tree());
+    }
+
+    @GetMapping("/all")
+    @Operation(summary = "全部商品分类")
+    public MultiResponse<ProductCategoryVO> allCategories() {
+        return MultiResponse.success(productCategoryService.all());
     }
 
     @PostMapping("/add")

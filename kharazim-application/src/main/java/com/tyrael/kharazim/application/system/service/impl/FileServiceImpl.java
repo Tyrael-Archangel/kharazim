@@ -25,6 +25,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.NotDirectoryException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -198,6 +199,9 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public List<FileUrlVO> getUrls(List<String> fileIds) {
+        if (fileIds == null || fileIds.isEmpty()) {
+            return new ArrayList<>();
+        }
         return fileIds.stream()
                 .map(fileId -> new FileUrlVO(fileId, this.getUrl(fileId)))
                 .collect(Collectors.toList());

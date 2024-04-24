@@ -35,6 +35,11 @@ class ProductCategoryControllerTest extends BaseControllerTest<ProductCategoryCo
     }
 
     @Test
+    void allCategories() {
+        super.performWhenCall(mockController.allCategories());
+    }
+
+    @Test
     void add() {
         String categories = """
                 name: null
