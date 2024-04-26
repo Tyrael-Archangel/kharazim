@@ -35,7 +35,9 @@ public class IndexController {
 
         public ProfileResponse(String profile) {
             this.profile = profile;
-            markSuccess();
+            this.code = SUCCESS_CODE;
+            this.success = true;
+            this.msg = "Welcome!";
         }
     }
 
