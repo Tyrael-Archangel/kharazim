@@ -314,7 +314,7 @@ class UserControllerTest extends BaseControllerTest<UserController> {
         uploadFileVO.setFileName(heroName + ".png");
         uploadFileVO.setFile(new MockMultipartFile(heroName, new ByteArrayInputStream(body)));
 
-        return fileService.upload(uploadFileVO, super.mockAdmin());
+        return fileService.upload(uploadFileVO, super.mockAdmin()).getFileId();
     }
 
     @Test

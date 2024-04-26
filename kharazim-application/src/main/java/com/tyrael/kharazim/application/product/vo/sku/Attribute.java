@@ -43,7 +43,7 @@ public class Attribute {
         if (StringUtils.isBlank(name)) {
             return value;
         } else {
-            return name + ":" + value;
+            return name + ": " + value;
         }
     }
 

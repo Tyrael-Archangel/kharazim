@@ -5,7 +5,7 @@ import com.tyrael.kharazim.application.base.auth.CurrentUserHolder;
 import com.tyrael.kharazim.application.config.BusinessCodeConstants;
 import com.tyrael.kharazim.application.config.FileConfig;
 import com.tyrael.kharazim.application.system.domain.FileDO;
-import com.tyrael.kharazim.application.system.dto.file.FileUrlVO;
+import com.tyrael.kharazim.application.system.dto.file.FileVO;
 import com.tyrael.kharazim.application.system.dto.file.UploadFileVO;
 import com.tyrael.kharazim.application.system.mapper.FileMapper;
 import com.tyrael.kharazim.application.system.service.CodeGenerator;
@@ -45,7 +45,7 @@ public class FileServiceImpl implements FileService {
     private final FileConfig fileConfig;
 
     @Override
-    public String upload(UploadFileVO fileVO, AuthUser currentUser) throws IOException {
+    public FileVO upload(UploadFileVO fileVO, AuthUser currentUser) throws IOException {
 
         File root = fileRoot();
         File targetDir = nextDir(root);
@@ -79,7 +79,7 @@ public class FileServiceImpl implements FileService {
 
         fileMapper.insert(fileDO);
 
-        return fileId;
+        return new FileVO(fileId, this.getUrl(fileId));
     }
 
     private File fileRoot() throws IOException {
@@ -198,12 +198,13 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public List<FileUrlVO> getUrls(List<String> fileIds) {
+    public List<FileVO> getUrls(List<String> fileIds) {
         if (fileIds == null || fileIds.isEmpty()) {
             return new ArrayList<>();
         }
         return fileIds.stream()
-                .map(fileId -> new FileUrlVO(fileId, this.getUrl(fileId)))
+                .filter(StringUtils::isNotBlank)
+                .map(fileId -> new FileVO(fileId, this.getUrl(fileId)))
                 .collect(Collectors.toList());
     }
 

@@ -53,7 +53,7 @@ create table `user_role`
     index idx_role (`role_id`)
 ) comment '用户-角色（岗位）关联关系表';
 
--- 初始化用户：admin，id：0，密码：123456
+-- 初始化用户：admin，id：1，密码：123456
 insert into `user`
 (`code`, `name`, `nick_name`, `english_name`, `gender`, `birthday`, `password`,
  `creator`, `creator_code`, `create_time`, `updater`, `updater_code`, `update_time`)
@@ -61,27 +61,16 @@ values ('000000', 'admin', '超级管理员', 'admin',
         1, '2023-08-01',
         '5f39487f11580c14e7a3eff5e80156cab91c66153be64c674a48444a087b0f96', 'admin',
         '000000', now(), 'admin', '000000', now());
+-- 初始化用户：admin，id：1，密码：123456
 
-update `user`
-set id = 0
-where id = 1;
-ALTER TABLE `user`
-    AUTO_INCREMENT = 1;
--- 初始化用户：admin，id：0，密码：123456
-
--- 初始化角色：超级管理员，id：0，code：SUPER_ADMIN
+-- 初始化角色：超级管理员，id：1，code：SUPER_ADMIN
 insert into `role`
 (`code`, `super_admin`, `name`, `sort`, `status`, `create_time`, `update_time`)
 VALUES ('SUPER_ADMIN', 1, '超级管理员', 0, 1, now(), now());
-update `role`
-set id = 0
-where id = 1;
-ALTER TABLE `role`
-    AUTO_INCREMENT = 1;
--- 初始化角色：超级管理员，id：0，code：SUPER_ADMIN
+-- 初始化角色：超级管理员，id：1，code：SUPER_ADMIN
 
 insert into `user_role`(`user_id`, `role_id`)
-VALUES (0, 0);
+VALUES (1, 1);
 
 
 insert into `dict`(`code`, `name`, remark, system_dict, allow_modify_item)

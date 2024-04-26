@@ -10,7 +10,7 @@ import com.tyrael.kharazim.application.product.vo.sku.Attribute;
 import com.tyrael.kharazim.application.product.vo.sku.ProductSkuVO;
 import com.tyrael.kharazim.application.supplier.domain.SupplierDO;
 import com.tyrael.kharazim.application.supplier.mapper.SupplierMapper;
-import com.tyrael.kharazim.application.system.dto.file.FileUrlVO;
+import com.tyrael.kharazim.application.system.dto.file.FileVO;
 import com.tyrael.kharazim.application.system.service.FileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -61,11 +61,12 @@ public class ProductSkuConverter {
         skuVO.setDefaultImage(sku.getDefaultImage());
         skuVO.setDefaultImageUrl(fileService.getUrl(sku.getDefaultImage()));
         skuVO.setImages(sku.getImages());
-        List<String> imageUrls = fileService.getUrls(sku.getImages())
-                .stream()
-                .map(FileUrlVO::getUrl)
+        List<FileVO> files = fileService.getUrls(sku.getImages());
+        List<String> imageUrls = files.stream()
+                .map(FileVO::getUrl)
                 .collect(Collectors.toList());
         skuVO.setImageUrls(imageUrls);
+        skuVO.setImageFiles(files);
         skuVO.setDescription(sku.getDescription());
         skuVO.setAttributes(sku.getAttributes());
         skuVO.setAttributesDesc(Attribute.join(sku.getAttributes()));

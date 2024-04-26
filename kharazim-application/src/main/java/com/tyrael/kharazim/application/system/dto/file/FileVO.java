@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class FileUrlVO {
+public class FileVO {
 
     @Schema(description = "文件ID")
     private String fileId;

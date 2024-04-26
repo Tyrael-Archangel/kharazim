@@ -1,7 +1,7 @@
 package com.tyrael.kharazim.application.system.service;
 
 import com.tyrael.kharazim.application.base.auth.AuthUser;
-import com.tyrael.kharazim.application.system.dto.file.FileUrlVO;
+import com.tyrael.kharazim.application.system.dto.file.FileVO;
 import com.tyrael.kharazim.application.system.dto.file.UploadFileVO;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -19,10 +19,10 @@ public interface FileService {
      *
      * @param fileVO      {@link UploadFileVO}
      * @param currentUser 操作人
-     * @return 文件ID
+     * @return 文件ID + 文件URL
      * @throws IOException IOException
      */
-    String upload(UploadFileVO fileVO, AuthUser currentUser) throws IOException;
+    FileVO upload(UploadFileVO fileVO, AuthUser currentUser) throws IOException;
 
     /**
      * 下载文件
@@ -47,6 +47,6 @@ public interface FileService {
      * @param fileIds 文件IDs
      * @return 文件链接地址
      */
-    List<FileUrlVO> getUrls(List<String> fileIds);
+    List<FileVO> getUrls(List<String> fileIds);
 
 }

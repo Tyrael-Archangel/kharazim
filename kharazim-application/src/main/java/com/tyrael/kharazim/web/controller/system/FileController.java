@@ -2,7 +2,7 @@ package com.tyrael.kharazim.web.controller.system;
 
 import com.tyrael.kharazim.application.base.auth.AuthUser;
 import com.tyrael.kharazim.application.base.auth.CurrentUser;
-import com.tyrael.kharazim.application.system.dto.file.FileUrlVO;
+import com.tyrael.kharazim.application.system.dto.file.FileVO;
 import com.tyrael.kharazim.application.system.dto.file.UploadFileVO;
 import com.tyrael.kharazim.application.system.service.FileService;
 import com.tyrael.kharazim.common.dto.DataResponse;
@@ -34,7 +34,7 @@ public class FileController {
 
     @PostMapping("/upload")
     @Operation(summary = "上传文件", description = "上传文件，返回文件ID")
-    public DataResponse<String> upload(@Parameter(description = "文件") MultipartFile file,
+    public DataResponse<FileVO> upload(@Parameter(description = "文件") MultipartFile file,
                                        @Parameter(description = "文件名") String fileName,
                                        @Schema(hidden = true) @CurrentUser AuthUser currentUser) throws IOException {
         UploadFileVO fileVO = new UploadFileVO();
@@ -58,8 +58,8 @@ public class FileController {
     }
 
     @GetMapping("/urls/{fileIds}")
-    @Operation(summary = "批量获取文件的临时访问URL", description = "获取文件的临时访问URL，10秒内有效")
-    public MultiResponse<FileUrlVO> getUrls(
+    @Operation(summary = "批量获取文件的临时访问URL", description = "获取文件的临时访问URL")
+    public MultiResponse<FileVO> getUrls(
             @PathVariable("fileIds") @Parameter(description = "文件ID", required = true) String fileIds) {
         List<String> fileIdList = Arrays.stream(fileIds.trim().split(","))
                 .map(String::trim)

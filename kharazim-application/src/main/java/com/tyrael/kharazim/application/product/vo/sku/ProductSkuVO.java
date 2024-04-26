@@ -1,5 +1,6 @@
 package com.tyrael.kharazim.application.product.vo.sku;
 
+import com.tyrael.kharazim.application.system.dto.file.FileVO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -50,6 +51,9 @@ public class ProductSkuVO {
 
     @Schema(description = "图片链接")
     private List<String> imageUrls;
+
+    @Schema(description = "图片链接")
+    private List<FileVO> imageFiles;
 
     @Schema(description = "描述信息")
     private String description;
