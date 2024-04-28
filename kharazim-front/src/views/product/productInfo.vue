@@ -227,6 +227,7 @@ import axios from "@/utils/http.js";
 import MultiImageUpload from "@/components/upload/MultiImageUpload.vue";
 import SingleImageUpload from "@/components/upload/SingleImageUpload.vue";
 import { UploadFileObj } from "@/components/upload/UploadFileObj";
+import { useRouter } from "vue-router";
 
 interface Attribute {
   name: string;
@@ -414,7 +415,14 @@ function confirmAddProduct() {
   });
 }
 
+const router = useRouter();
+
 onMounted(() => {
+  const query = router.currentRoute.value.query;
+  const skuCode = query.skuCode as string;
+  if (skuCode) {
+    pageRequest.code = skuCode;
+  }
   loadProducts();
   loadCategories();
   loadSupplierOptions();

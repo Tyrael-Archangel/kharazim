@@ -119,6 +119,14 @@ export const navs: Nav[] = [
       },
       {
         id: idValue++,
+        name: "商品发布",
+        component: "product/productPublish.vue",
+        path: "/product-publish",
+        icon: "/icons/product_publish.svg",
+        children: null,
+      },
+      {
+        id: idValue++,
         name: "商品分类",
         component: "product/productCategory.vue",
         path: "/product-category",

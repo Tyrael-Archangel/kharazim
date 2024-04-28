@@ -23,6 +23,8 @@ service.interceptors.response.use(
     const { msg, code } = error.response.data;
     if (msg) {
       ElMessage.error(msg);
+    } else {
+      ElMessage.error("服务异常");
     }
     if (code === 401) {
       window.location.href = "/";
