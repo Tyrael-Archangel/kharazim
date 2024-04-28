@@ -56,6 +56,30 @@ system:
 
 springdoc:
   group-configs:
-    - group: "系统接口"
+    - group: "系统基础服务"
       packages-to-scan:
-        - com.tyrael.kharazim.web.controller
+        - com.tyrael.kharazim.web.controller.system
+    - group: "系统用户管理"
+      packages-to-scan:
+        - com.tyrael.kharazim.web.controller.user
+    - group: "诊所管理"
+      packages-to-scan:
+        - com.tyrael.kharazim.web.controller.clinic
+    - group: "会员档案"
+      packages-to-scan:
+        - com.tyrael.kharazim.web.controller.customer
+    - group: "处方管理"
+      packages-to-scan:
+        - com.tyrael.kharazim.web.controller.prescription
+    - group: "商品中心"
+      packages-to-scan:
+        - com.tyrael.kharazim.web.controller.product
+    - group: "储值管理"
+      packages-to-scan:
+        - com.tyrael.kharazim.web.controller.recharge
+    - group: "结算管理"
+      packages-to-scan:
+        - com.tyrael.kharazim.web.controller.settlement
+    - group: "供应商管理"
+      packages-to-scan:
+        - com.tyrael.kharazim.web.controller.supplier
