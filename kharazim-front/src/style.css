@@ -1,0 +1,13 @@
+.pagination-block {
+    padding-top: 10px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.page-form-block .el-input {
+    --el-input-width: 300px;
+}
+
+.page-form-block .el-select {
+    --el-select-width: 300px;
+}
