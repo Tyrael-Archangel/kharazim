@@ -12,9 +12,9 @@ import org.springframework.lang.NonNull;
 @Data
 public class PageCommand {
 
-    private static final int DEFAULT_PAGE_SIZE = 10;
-    private static final int MAX_PAGE_SIZE = 2000;
-    private static final int DEFAULT_PAGE_NUM = 1;
+    public static final int DEFAULT_PAGE_SIZE = 10;
+    public static final int MAX_PAGE_SIZE = 2000;
+    public static final int DEFAULT_PAGE_NUM = 1;
 
     @Schema(description = "分页-每页数据条数，默认10", example = "10")
     protected Integer pageSize;
