@@ -52,6 +52,9 @@ public class SkuPublishVO {
     @Schema(description = "默认图片")
     private String defaultImage;
 
+    @Schema(description = "默认图片Url")
+    private String defaultImageUrl;
+
     @Schema(description = "单价")
     private BigDecimal price;
 
