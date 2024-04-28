@@ -54,13 +54,14 @@ public class SkuPublishConverter {
                                      Clinic clinic) {
         SkuPublishVO skuPublishVO = new SkuPublishVO();
         skuPublishVO.setCode(skuPublish.getCode());
-        skuPublishVO.setCanceled(skuPublish.getCanceled());
+        skuPublishVO.setPublishStatus(skuPublish.getStatus());
         skuPublishVO.setSkuCode(sku.getCode());
         skuPublishVO.setSkuName(sku.getName());
         skuPublishVO.setClinicCode(clinic.getCode());
         skuPublishVO.setClinicName(clinic.getName());
         skuPublishVO.setCategoryCode(sku.getCategoryCode());
         skuPublishVO.setCategoryName(sku.getCategoryName());
+        skuPublishVO.setCategoryFullName(sku.getCategoryFullName());
         skuPublishVO.setSupplierCode(sku.getSupplierCode());
         skuPublishVO.setSupplierName(sku.getSupplierName());
         skuPublishVO.setUnitCode(sku.getUnitCode());

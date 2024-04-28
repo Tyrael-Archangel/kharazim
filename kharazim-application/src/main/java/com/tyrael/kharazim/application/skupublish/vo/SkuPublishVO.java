@@ -1,5 +1,7 @@
 package com.tyrael.kharazim.application.skupublish.vo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.tyrael.kharazim.application.skupublish.enums.SkuPublishStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -16,8 +18,8 @@ public class SkuPublishVO {
     @Schema(description = "商品发布序列号")
     private String code;
 
-    @Schema(description = "是否已取消")
-    private Boolean canceled;
+    @Schema(description = "商品发布状态")
+    private SkuPublishStatus publishStatus;
 
     @Schema(description = "SKU编码")
     private String skuCode;
@@ -36,6 +38,9 @@ public class SkuPublishVO {
 
     @Schema(description = "商品分类名称")
     private String categoryName;
+
+    @Schema(description = "商品分类全路径名称")
+    private String categoryFullName;
 
     @Schema(description = "供应商编码")
     private String supplierCode;
@@ -59,9 +64,11 @@ public class SkuPublishVO {
     private BigDecimal price;
 
     @Schema(description = "生效时间")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime effectBegin;
 
     @Schema(description = "失效时间")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime effectEnd;
 
 }

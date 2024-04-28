@@ -41,7 +41,6 @@ class SkuPublishControllerTest extends BaseControllerTest<SkuPublishController> 
     void page() {
         PageSkuPublishRequest pageRequest = new PageSkuPublishRequest();
         pageRequest.setSkuName("测试");
-        pageRequest.setEffect(Boolean.TRUE);
         super.performWhenCall(mockController.page(pageRequest));
     }
 

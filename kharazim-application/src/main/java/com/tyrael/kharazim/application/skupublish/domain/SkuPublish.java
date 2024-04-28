@@ -3,6 +3,7 @@ package com.tyrael.kharazim.application.skupublish.domain;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.tyrael.kharazim.application.base.BaseDO;
+import com.tyrael.kharazim.application.skupublish.enums.SkuPublishStatus;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -54,5 +55,19 @@ public class SkuPublish extends BaseDO {
      * 失效时间
      */
     private LocalDateTime effectEnd;
+
+    public SkuPublishStatus getStatus() {
+        if (Boolean.TRUE.equals(canceled)) {
+            return SkuPublishStatus.CANCELED;
+        }
+        LocalDateTime now = LocalDateTime.now();
+        if (effectBegin.isAfter(now)) {
+            return SkuPublishStatus.WAIT_EFFECT;
+        }
+        if (effectEnd.isBefore(now)) {
+            return SkuPublishStatus.LOST_EFFECT;
+        }
+        return SkuPublishStatus.IN_EFFECT;
+    }
 
 }

@@ -10,6 +10,7 @@ import com.tyrael.kharazim.application.base.LambdaQueryWrapperX;
 import com.tyrael.kharazim.application.product.domain.ProductSku;
 import com.tyrael.kharazim.application.product.mapper.ProductSkuMapper;
 import com.tyrael.kharazim.application.skupublish.domain.SkuPublish;
+import com.tyrael.kharazim.application.skupublish.enums.SkuPublishStatus;
 import com.tyrael.kharazim.application.skupublish.vo.PageSkuPublishRequest;
 import com.tyrael.kharazim.common.dto.PageResponse;
 import com.tyrael.kharazim.common.util.CollectionUtils;
@@ -42,21 +43,26 @@ public interface SkuPublishMapper extends BaseMapper<SkuPublish> {
 
         LambdaQueryWrapperX<SkuPublish> queryWrapper = new LambdaQueryWrapperX<>();
         queryWrapper.inIfPresent(SkuPublish::getSkuCode, skuCodes)
-                .eqIfHasText(SkuPublish::getClinicCode, pageRequest.getClinicCode());
-        Boolean effect = pageRequest.getEffect();
-        if (effect != null) {
-            LocalDateTime now = LocalDateTime.now();
-            if (effect) {
-                queryWrapper.eq(SkuPublish::getCanceled, Boolean.FALSE);
-                queryWrapper.le(SkuPublish::getEffectBegin, now);
-                queryWrapper.ge(SkuPublish::getEffectEnd, now);
-            } else {
-                queryWrapper.and(q -> q.eq(SkuPublish::getCanceled, Boolean.TRUE)
-                        .or()
-                        .ge(SkuPublish::getEffectBegin, now)
-                        .or()
-                        .le(SkuPublish::getEffectEnd, now));
-            }
+                .inIfPresent(SkuPublish::getClinicCode, pageRequest.getClinicCodes());
+
+        SkuPublishStatus publishStatus = pageRequest.getPublishStatus();
+        LocalDateTime now = LocalDateTime.now();
+        if (SkuPublishStatus.WAIT_EFFECT.equals(publishStatus)) {
+            // 待生效 - 未取消 && 还没到生效开始时间
+            queryWrapper.eq(SkuPublish::getCanceled, Boolean.FALSE)
+                    .ge(SkuPublish::getEffectBegin, now);
+        } else if (SkuPublishStatus.IN_EFFECT.equals(publishStatus)) {
+            // 生效中 - 未取消 && 正处于生效时间范围内
+            queryWrapper.eq(SkuPublish::getCanceled, Boolean.FALSE)
+                    .le(SkuPublish::getEffectBegin, now)
+                    .ge(SkuPublish::getEffectEnd, now);
+        } else if (SkuPublishStatus.LOST_EFFECT.equals(publishStatus)) {
+            // 已失效 - 未取消 && 已经过了生效结束时间
+            queryWrapper.eq(SkuPublish::getCanceled, Boolean.FALSE)
+                    .le(SkuPublish::getEffectEnd, now);
+        } else if (SkuPublishStatus.CANCELED.equals(publishStatus)) {
+            // 已取消
+            queryWrapper.eq(SkuPublish::getCanceled, Boolean.TRUE);
         }
 
         Page<SkuPublish> page = new Page<>(pageRequest.getPageNum(), pageRequest.getPageSize());
