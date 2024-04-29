@@ -66,6 +66,13 @@
   <div>
     <el-table :data="skuPublishPageData" border style="width: 100%">
       <el-table-column label="发布编码" prop="code" />
+      <el-table-column align="center" label="发布状态" width="120">
+        <template v-slot="{ row }">
+          <el-tag :type="statusTagType(row.publishStatus)" effect="dark"
+            >{{ row.publishStatusName }}
+          </el-tag>
+        </template>
+      </el-table-column>
       <el-table-column label="商品编码" prop="skuCode">
         <template v-slot="{ row }">
           <el-link
@@ -100,11 +107,19 @@
           {{ row.effectBegin + " ~ " + row.effectEnd }}
         </template>
       </el-table-column>
-      <el-table-column align="center" label="发布状态" width="120">
+      <el-table-column align="center" label="操作" width="100">
         <template v-slot="{ row }">
-          <el-tag :type="statusTagType(row.publishStatus)" effect="dark"
-            >{{ row.publishStatusName }}
-          </el-tag>
+          <el-button
+            v-if="
+              row.publishStatus === 'WAIT_EFFECT' ||
+              row.publishStatus === 'IN_EFFECT'
+            "
+            plain
+            size="small"
+            type="danger"
+            @click="cancelPublish(row)"
+            >取消发布
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -127,6 +142,7 @@
 import { onMounted, reactive, ref } from "vue";
 import axios from "@/utils/http.js";
 import { AxiosResponse } from "axios";
+import { ElMessage, ElMessageBox } from "element-plus";
 
 interface SkuPublish {
   code: string;
@@ -199,22 +215,25 @@ function loadProductPublish() {
     });
 }
 
-interface ProductCategory {
-  id: number;
-  parentId: number | null;
-  children: ProductCategory[] | null;
-  code: string;
-  name: string;
-}
-
-const categoryData = ref<ProductCategory[]>([]);
-
-function loadCategories() {
-  axios
-    .get("/kharazim-api/product/category/tree")
-    .then((res: AxiosResponse) => {
-      categoryData.value = res.data.data;
-    });
+function cancelPublish(row: SkuPublish) {
+  ElMessageBox.confirm("确认取消发布？", "提示", {
+    confirmButtonText: "确定",
+    cancelButtonText: "取消",
+    type: "warning",
+  })
+    .then(() => {
+      axios
+        .post(`/kharazim-api/product/publish/cancel-publish/${row.code}`)
+        .then(() => {
+          loadProductPublish();
+          ElMessage({
+            showClose: true,
+            message: "操作成功",
+            type: "success",
+          });
+        });
+    })
+    .catch(() => {});
 }
 
 interface ClinicOption {
