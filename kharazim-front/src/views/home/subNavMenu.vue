@@ -1,7 +1,7 @@
 <template>
-  <template v-for="menuItem in menuData">
+  <template v-for="menuItem in filterNav(menuData)">
     <el-sub-menu
-      v-if="menuItem.children && menuItem.children.length > 0"
+      v-if="menuItem.children && filterNav(menuItem.children).length > 0"
       :key="menuItem.id"
       :index="menuItem.path"
     >
@@ -9,7 +9,7 @@
         <el-image :src="menuItem.icon" class="menu-icon" />
         <span style="font-size: medium">{{ menuItem.name }}</span>
       </template>
-      <SubMenu :menu-data="menuItem.children"></SubMenu>
+      <SubMenu :menu-data="filterNav(menuItem.children)"></SubMenu>
     </el-sub-menu>
     <el-menu-item v-else :key="menuItem.path" :index="menuItem.path">
       <template #title>
@@ -24,6 +24,14 @@
 export default {
   name: "SubMenu",
   props: ["menuData"],
+  methods: {
+    filterNav: (menuData) => {
+      if (menuData) {
+        return menuData.filter((x) => x.showMenu);
+      }
+      return menuData;
+    },
+  },
 };
 </script>
 
