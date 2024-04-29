@@ -39,7 +39,7 @@ public interface PrescriptionMapper extends BaseMapper<Prescription> {
     default PageResponse<Prescription> page(PagePrescriptionRequest pageRequest) {
         LambdaQueryWrapperX<Prescription> queryWrapper = new LambdaQueryWrapperX<>();
         queryWrapper.eqIfHasText(Prescription::getCustomerCode, pageRequest.getCustomerCode());
-        queryWrapper.eqIfHasText(Prescription::getClinicCode, pageRequest.getClinicCode());
+        queryWrapper.inIfPresent(Prescription::getClinicCode, pageRequest.getClinicCodes());
         queryWrapper.geIfPresent(Prescription::getCreateTime,
                 DateTimeUtil.startTimeOfDate(pageRequest.getCreateDateMin()));
         queryWrapper.leIfPresent(Prescription::getCreateTime,

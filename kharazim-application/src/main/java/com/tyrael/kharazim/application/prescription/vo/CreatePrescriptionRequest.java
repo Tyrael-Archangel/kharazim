@@ -36,6 +36,7 @@ public class CreatePrescriptionRequest {
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
+    @Schema(name = "创建处方商品项")
     public static class Product {
 
         @Schema(description = "SKU编码")

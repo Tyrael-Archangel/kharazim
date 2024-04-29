@@ -48,6 +48,7 @@ public class PrescriptionVO {
     private String creatorCode;
 
     @Data
+    @Schema(name = "处方商品")
     public static class Product {
 
         @Schema(description = "SKU编码")
