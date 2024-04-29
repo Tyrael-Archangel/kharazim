@@ -33,7 +33,7 @@ knife4j:
 system:
   global:
     code-generator: datasource
-    enable-print-request-log: true
+    enable-print-request-log: false
     request-log:
       ignore-urls:
         - ${server.servlet.context-path}/
