@@ -27,7 +27,7 @@ export default {
   methods: {
     filterNav: (menuData) => {
       if (menuData) {
-        return menuData.filter((x) => x.showMenu);
+        return menuData.filter((x) => !x.hiddenMenu);
       }
       return menuData;
     },

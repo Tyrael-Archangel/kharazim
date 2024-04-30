@@ -1,11 +1,11 @@
 interface Nav {
   id: number;
   name: string;
-  component: string | null; // 目录为null，菜单不能为null
+  component?: string | null; // 目录为null，菜单不能为null
   path: string; // 路径
   icon: string | null;
-  showMenu: boolean;
-  children: Nav[] | null;
+  hiddenMenu?: boolean;
+  children?: Nav[] | null;
 }
 
 let idValue: number = 1;
@@ -17,16 +17,12 @@ export const navs: Nav[] = [
     component: "dashboard/index.vue",
     path: "/dashboard",
     icon: "/icons/home.svg",
-    showMenu: true,
-    children: null,
   },
   {
     id: idValue++,
     name: "系统管理",
-    component: null,
     path: "/system-setting",
     icon: "/icons/setting.svg",
-    showMenu: true,
     children: [
       {
         id: idValue++,
@@ -34,8 +30,6 @@ export const navs: Nav[] = [
         component: "userManagement/index.vue",
         path: "/system-setting/user-management",
         icon: "/icons/user.svg",
-        showMenu: true,
-        children: null,
       },
       {
         id: idValue++,
@@ -43,18 +37,14 @@ export const navs: Nav[] = [
         component: "roleManagement/index.vue",
         path: "/system-setting/role-management",
         icon: "/icons/role.svg",
-        showMenu: true,
-        children: null,
       },
     ],
   },
   {
     id: idValue++,
     name: "会员档案",
-    component: null,
     path: "/customer-info",
     icon: "/icons/customer_management.svg",
-    showMenu: true,
     children: [
       {
         id: idValue++,
@@ -62,8 +52,6 @@ export const navs: Nav[] = [
         component: "customer/index.vue",
         path: "/customer-info",
         icon: "/icons/customer.svg",
-        showMenu: true,
-        children: null,
       },
       {
         id: idValue++,
@@ -71,18 +59,14 @@ export const navs: Nav[] = [
         component: "customerFamily/index.vue",
         path: "/customer-family",
         icon: "/icons/family.svg",
-        showMenu: true,
-        children: null,
       },
     ],
   },
   {
     id: idValue++,
     name: "诊所管理",
-    component: null,
     path: "/clinic-management",
     icon: "/icons/clinic_management.svg",
-    showMenu: true,
     children: [
       {
         id: idValue++,
@@ -90,18 +74,14 @@ export const navs: Nav[] = [
         component: "clinic/clinicManagement.vue",
         path: "/clinic-info",
         icon: "/icons/clinic.svg",
-        showMenu: true,
-        children: null,
       },
     ],
   },
   {
     id: idValue++,
     name: "采购管理",
-    component: null,
     path: "/purchase-management",
     icon: "/icons/purchase_management.svg",
-    showMenu: true,
     children: [
       {
         id: idValue++,
@@ -109,18 +89,14 @@ export const navs: Nav[] = [
         component: "supplier/index.vue",
         path: "/supplier-info",
         icon: "/icons/supplier.svg",
-        showMenu: true,
-        children: null,
       },
     ],
   },
   {
     id: idValue++,
     name: "诊疗中心",
-    component: null,
     path: "/diagnosis-treat",
     icon: "/icons/diagnosis_treat.svg",
-    showMenu: true,
     children: [
       {
         id: idValue++,
@@ -128,7 +104,6 @@ export const navs: Nav[] = [
         component: "prescription/prescriptionInfo.vue",
         path: "/prescription-info",
         icon: "/icons/prescription.svg",
-        showMenu: true,
         children: [
           {
             id: idValue++,
@@ -136,8 +111,7 @@ export const navs: Nav[] = [
             component: "prescription/createPrescription.vue",
             path: "/create-prescription",
             icon: "/icons/prescription.svg",
-            showMenu: false,
-            children: null,
+            hiddenMenu: true,
           },
         ],
       },
@@ -146,10 +120,8 @@ export const navs: Nav[] = [
   {
     id: idValue++,
     name: "商品中心",
-    component: null,
     path: "/product-management",
     icon: "/icons/product_management.svg",
-    showMenu: true,
     children: [
       {
         id: idValue++,
@@ -157,8 +129,6 @@ export const navs: Nav[] = [
         component: "product/productInfo.vue",
         path: "/product-info",
         icon: "/icons/product_info.svg",
-        showMenu: true,
-        children: null,
       },
       {
         id: idValue++,
@@ -166,8 +136,6 @@ export const navs: Nav[] = [
         component: "product/productPublish.vue",
         path: "/product-publish",
         icon: "/icons/product_publish.svg",
-        showMenu: true,
-        children: null,
       },
       {
         id: idValue++,
@@ -175,8 +143,6 @@ export const navs: Nav[] = [
         component: "product/productCategory.vue",
         path: "/product-category",
         icon: "/icons/product_category.svg",
-        showMenu: true,
-        children: null,
       },
       {
         id: idValue++,
@@ -184,8 +150,6 @@ export const navs: Nav[] = [
         component: "product/productUnit.vue",
         path: "/product-unit",
         icon: "/icons/product_unit.svg",
-        showMenu: true,
-        children: null,
       },
     ],
   },
@@ -195,7 +159,5 @@ export const navs: Nav[] = [
     component: "demo/index.vue",
     path: "/demo",
     icon: "/icons/demo.svg",
-    showMenu: true,
-    children: null,
   },
 ];
