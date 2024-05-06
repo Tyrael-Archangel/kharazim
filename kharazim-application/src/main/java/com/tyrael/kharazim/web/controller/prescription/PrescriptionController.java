@@ -38,7 +38,7 @@ public class PrescriptionController {
         return DataResponse.ok(prescriptionService.detail(code));
     }
 
-    @GetMapping("/create")
+    @PostMapping("/create")
     @Operation(summary = "创建处方", description = "创建处方，返回处方编码")
     public DataResponse<String> create(@RequestBody @Valid CreatePrescriptionRequest request) {
         return DataResponse.ok(prescriptionService.create(request));
