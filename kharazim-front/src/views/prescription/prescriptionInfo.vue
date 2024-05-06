@@ -71,13 +71,40 @@
         border
         style="width: 100%; margin-top: 10px"
       >
+        <el-table-column type="expand">
+          <template v-slot="{ row }">
+            <div style="padding: 10px 30px 10px 30px">
+              <el-table :data="row.products" border>
+                <el-table-column align="center" type="index" width="50" />
+                <el-table-column align="center" label="商品主图" width="120">
+                  <template v-slot="{ row: product }">
+                    <el-image
+                      v-if="product.defaultImageUrl"
+                      :src="product.defaultImageUrl"
+                      style="width: 50px"
+                    >
+                    </el-image>
+                  </template>
+                </el-table-column>
+                <el-table-column label="商品编码" prop="skuCode" />
+                <el-table-column label="商品名称" prop="skuName" />
+                <el-table-column label="单位" prop="unitName" />
+                <el-table-column label="商品分类" prop="categoryName" />
+                <el-table-column label="供应商" prop="supplierName" />
+                <el-table-column label="单价" prop="price" />
+                <el-table-column label="数量" prop="quantity" />
+                <el-table-column label="金额小计" prop="amount" />
+              </el-table>
+            </div>
+          </template>
+        </el-table-column>
         <el-table-column label="处方编码" prop="code" />
         <el-table-column label="会员姓名" prop="customerName" />
         <el-table-column label="诊所" prop="clinicName" />
         <el-table-column label="总金额（元）" prop="totalAmount" />
-        <el-table-column label="备注" prop="remark" />
         <el-table-column label="创建人" prop="creator" />
         <el-table-column label="创建时间" prop="createTime" />
+        <el-table-column label="备注" prop="remark" />
       </el-table>
     </div>
     <div class="pagination-block">

@@ -80,7 +80,7 @@
       />
       <el-table-column label="商品分类" prop="categoryFullName" width="240" />
       <el-table-column label="供应商" prop="supplierName" width="160" />
-      <el-table-column align="center" label="价格" prop="price" width="120" />
+      <el-table-column align="center" label="单价" prop="price" width="120" />
       <el-table-column align="center" label="数量" prop="quantity" width="180">
         <template v-slot="{ row }">
           <el-input-number
