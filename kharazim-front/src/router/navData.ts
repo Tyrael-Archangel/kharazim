@@ -115,6 +115,13 @@ export const navs: Nav[] = [
           },
         ],
       },
+      {
+        id: idValue++,
+        name: "结算管理",
+        component: "settlementOrder/settlementOrder.vue",
+        path: "/settlement-order",
+        icon: "/icons/settlement_order.svg",
+      },
     ],
   },
   {

@@ -37,8 +37,9 @@ public interface SettlementOrderMapper extends BaseMapper<SettlementOrder> {
      */
     default PageResponse<SettlementOrder> page(PageSettlementOrderRequest pageRequest) {
         LambdaQueryWrapperX<SettlementOrder> queryWrapper = new LambdaQueryWrapperX<>();
+        queryWrapper.eqIfHasText(SettlementOrder::getCode, pageRequest.getSettlementOrderCode());
         queryWrapper.eqIfHasText(SettlementOrder::getCustomerCode, pageRequest.getCustomerCode());
-        queryWrapper.eqIfHasText(SettlementOrder::getClinicCode, pageRequest.getClinicCode());
+        queryWrapper.inIfPresent(SettlementOrder::getClinicCode, pageRequest.getClinicCodes());
         queryWrapper.eqIfPresent(SettlementOrder::getStatus, pageRequest.getStatus());
         queryWrapper.orderByDesc(SettlementOrder::getCode);
 

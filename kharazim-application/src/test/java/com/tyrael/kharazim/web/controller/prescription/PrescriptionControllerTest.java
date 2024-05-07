@@ -1,19 +1,42 @@
 package com.tyrael.kharazim.web.controller.prescription;
 
-import com.google.common.collect.Lists;
+import com.tyrael.kharazim.application.clinic.domain.Clinic;
+import com.tyrael.kharazim.application.clinic.mapper.ClinicMapper;
+import com.tyrael.kharazim.application.clinic.vo.ListClinicRequest;
+import com.tyrael.kharazim.application.customer.domain.Customer;
+import com.tyrael.kharazim.application.customer.mapper.CustomerMapper;
+import com.tyrael.kharazim.application.customer.vo.customer.ListCustomerRequest;
 import com.tyrael.kharazim.application.prescription.vo.CreatePrescriptionRequest;
 import com.tyrael.kharazim.application.prescription.vo.PagePrescriptionRequest;
+import com.tyrael.kharazim.application.skupublish.domain.SkuPublish;
+import com.tyrael.kharazim.application.skupublish.enums.SkuPublishStatus;
+import com.tyrael.kharazim.application.skupublish.mapper.SkuPublishMapper;
+import com.tyrael.kharazim.application.skupublish.vo.PageSkuPublishRequest;
+import com.tyrael.kharazim.common.dto.PageCommand;
+import com.tyrael.kharazim.common.util.CollectionUtils;
 import com.tyrael.kharazim.mock.MockRandomPoetry;
 import com.tyrael.kharazim.web.controller.BaseControllerTest;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author Tyrael Archangel
  * @since 2024/3/28
  */
 class PrescriptionControllerTest extends BaseControllerTest<PrescriptionController> {
+
+    @Autowired
+    private CustomerMapper customerMapper;
+    @Autowired
+    private ClinicMapper clinicMapper;
+    @Autowired
+    private SkuPublishMapper skuPublishMapper;
 
     PrescriptionControllerTest() {
         super(PrescriptionController.class);
@@ -33,16 +56,40 @@ class PrescriptionControllerTest extends BaseControllerTest<PrescriptionControll
 
     @Test
     void create() {
-        CreatePrescriptionRequest request = new CreatePrescriptionRequest();
-        request.setCustomerCode("CU0000000002");
-        request.setClinicCode("CL000001");
-        request.setRemark(MockRandomPoetry.random());
+        List<Customer> customers = customerMapper.list(new ListCustomerRequest());
+        List<Clinic> clinics = clinicMapper.list(new ListClinicRequest());
 
-        List<CreatePrescriptionRequest.Product> products = Lists.newArrayList(
-                new CreatePrescriptionRequest.Product("P240311000001", 5));
-        request.setProducts(products);
+        PageSkuPublishRequest pageRequest = new PageSkuPublishRequest();
+        pageRequest.setPageSize(PageCommand.MAX_PAGE_SIZE);
+        pageRequest.setPublishStatus(SkuPublishStatus.IN_EFFECT);
 
-        super.performWhenCall(mockController.create(request));
+        Map<String, List<SkuPublish>> clinicPublishedMap = skuPublishMapper.page(pageRequest)
+                .getData()
+                .stream()
+                .collect(Collectors.groupingBy(SkuPublish::getClinicCode));
+
+        int totalCount = random.nextInt(300) + 100;
+        for (int i = 0; i < totalCount; i++) {
+            Customer customer = CollectionUtils.random(customers);
+            Clinic clinic = CollectionUtils.random(clinics);
+            List<SkuPublish> clinicPublished = clinicPublishedMap.get(clinic.getCode());
+
+            int productCount = random.nextInt(10) + 2;
+            Map<String, CreatePrescriptionRequest.Product> randomProductsMap = new LinkedHashMap<>();
+            while (randomProductsMap.size() < productCount) {
+                int quantity = random.nextInt(10) + 1;
+                SkuPublish skuPublish = CollectionUtils.random(clinicPublished);
+                randomProductsMap.put(skuPublish.getCode(),
+                        new CreatePrescriptionRequest.Product(skuPublish.getSkuCode(), quantity));
+            }
+
+            CreatePrescriptionRequest request = new CreatePrescriptionRequest();
+            request.setCustomerCode(customer.getCode());
+            request.setClinicCode(clinic.getCode());
+            request.setRemark(MockRandomPoetry.random());
+            request.setProducts(new ArrayList<>(randomProductsMap.values()));
+            super.performWhenCall(mockController.create(request));
+        }
     }
 
 }

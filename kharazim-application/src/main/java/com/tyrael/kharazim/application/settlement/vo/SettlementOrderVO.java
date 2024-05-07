@@ -75,6 +75,9 @@ public class SettlementOrderVO {
         @Schema(description = "单位名称")
         private String unitName;
 
+        @Schema(description = "默认图片链接")
+        private String defaultImageUrl;
+
         @Schema(description = "描述信息")
         private String description;
 

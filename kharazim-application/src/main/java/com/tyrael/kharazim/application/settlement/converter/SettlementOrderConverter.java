@@ -118,6 +118,7 @@ public class SettlementOrderConverter {
         item.setDescription(productInfo.getDescription());
         item.setUnitCode(productInfo.getUnitCode());
         item.setUnitName(productInfo.getUnitName());
+        item.setDefaultImageUrl(productInfo.getDefaultImageUrl());
         item.setQuantity(settlementOrderItem.getQuantity());
         item.setPrice(settlementOrderItem.getPrice());
         item.setAmount(settlementOrderItem.getAmount());

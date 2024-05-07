@@ -14,6 +14,9 @@ import java.util.Set;
 @Data
 public class PagePrescriptionRequest extends PageCommand {
 
+    @Schema(description = "处方编码")
+    private String prescriptionCode;
+
     @Schema(description = "会员编码")
     private String customerCode;
 

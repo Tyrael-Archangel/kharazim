@@ -4,13 +4,13 @@
       :inline="true"
       :model="pageRequest"
       class="page-form-block"
-      @keyup.enter="loadPrescriptions"
+      @keyup.enter="loadSettlementOrders"
     >
-      <el-form-item label="处方编码">
+      <el-form-item label="结算单编码">
         <el-input
-          v-model="pageRequest.prescriptionCode"
+          v-model="pageRequest.settlementOrderCode"
           clearable
-          placeholder="处方编码"
+          placeholder="结算单编码"
         />
       </el-form-item>
       <el-form-item label="会员">
@@ -51,38 +51,22 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="创建时间">
-        <el-date-picker
-          v-model="pageRequest.createDate"
-          end-placeholder="截止时间"
-          start-placeholder="开始时间"
-          type="daterange"
-        />
-      </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="loadPrescriptions">查询</el-button>
-        <el-button type="primary" @click="resetRequestAndLoadPrescriptions"
-          >重置
-        </el-button>
+        <el-button type="primary" @click="loadSettlementOrders">查询</el-button>
       </el-form-item>
     </el-form>
   </div>
   <div>
-    <router-link to="/create-prescription">
-      <el-button type="primary">创建处方</el-button>
-    </router-link>
-  </div>
-  <div>
     <div>
       <el-table
-        :data="prescriptionPageData"
+        :data="settlementOrderPageData"
         border
         style="width: 100%; margin-top: 10px"
       >
         <el-table-column type="expand">
           <template v-slot="{ row }">
             <div style="padding: 10px 50px 10px 50px">
-              <el-table :data="row.products" border>
+              <el-table :data="row.items" border>
                 <el-table-column align="center" type="index" width="50" />
                 <el-table-column align="center" label="商品主图" width="160">
                   <template v-slot="{ row: product }">
@@ -106,25 +90,56 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="处方编码" prop="code" width="180" />
-        <el-table-column label="会员姓名" prop="customerName" width="150" />
-        <el-table-column label="诊所" prop="clinicName" width="160" />
-        <el-table-column label="总金额（元）" prop="totalAmount" width="160" />
-        <el-table-column label="创建人" prop="creator" width="160" />
-        <el-table-column label="创建时间" prop="createTime" width="180" />
-        <el-table-column label="备注" prop="remark" />
+        <el-table-column label="结算单编码" prop="code" width="180" />
+        <el-table-column label="处方编码" width="180">
+          <template v-slot="{ row }">
+            <el-link
+              :href="
+                '/#/prescription-info?prescriptionCode=' +
+                row.sourcePrescriptionCode
+              "
+              type="primary"
+              >{{ row.sourcePrescriptionCode }}
+            </el-link>
+          </template>
+        </el-table-column>
+        <el-table-column label="会员姓名" prop="customerName" />
+        <el-table-column label="诊所" prop="clinicName" />
+        <el-table-column
+          label="总金额（元）"
+          align="center"
+          prop="totalAmount"
+        />
+        <el-table-column label="创建时间" prop="createTime" />
+        <el-table-column label="结算时间" prop="settlementTime" />
+        <el-table-column label="结算状态" align="center">
+          <template v-slot="{ row }">
+            <el-tag v-if="row.status === 'PAID'" type="success">
+              <el-icon>
+                <CircleCheck />
+              </el-icon>
+              已结算
+            </el-tag>
+            <el-tag v-else type="warning">
+              <el-icon>
+                <Warning />
+              </el-icon>
+              待结算
+            </el-tag>
+          </template>
+        </el-table-column>
       </el-table>
     </div>
     <div class="pagination-block">
       <el-pagination
-        v-model:current-page="pageInfo.currentPage"
-        v-model:page-size="pageInfo.pageSize"
+        v-model:current-page="pageRequest.pageNum"
+        v-model:page-size="pageRequest.pageSize"
         :page-sizes="pageInfo.pageSizes"
         :total="pageInfo.totalCount"
         background
         layout="total, sizes, prev, pager, next, jumper"
-        @size-change="loadPrescriptions"
-        @current-change="loadPrescriptions"
+        @size-change="loadSettlementOrders"
+        @current-change="loadSettlementOrders"
       />
     </div>
   </div>
@@ -134,56 +149,30 @@
 import { onMounted, reactive, ref } from "vue";
 import { AxiosResponse } from "axios";
 import axios from "@/utils/http.js";
-import { dateFormat } from "@/utils/DateUtil.js";
-import {useRouter} from "vue-router";
+import { CircleCheck, Warning } from "@element-plus/icons-vue";
 
-const prescriptionPageData = ref([]);
-const pageRequest = reactive({
-  prescriptionCode: "",
-  customerCode: "",
-  clinicCodes: [],
-  createDateMin: "",
-  createDateMax: "",
-  createDate: [] as Date[],
-});
+const settlementOrderPageData = ref([]);
 const pageInfo = reactive({
-  currentPage: 1,
-  pageSize: 10,
   totalCount: 0,
   pageSizes: [10, 20, 50, 100],
 });
 
-function resetRequestAndLoadPrescriptions() {
-  pageRequest.prescriptionCode = "";
-  pageRequest.customerCode = "";
-  pageRequest.clinicCodes = [];
-  pageRequest.createDateMin = "";
-  pageRequest.createDateMax = "";
-  pageRequest.createDate = [] as Date[];
-  loadPrescriptions();
-}
+const pageRequest = reactive({
+  settlementOrderCode: "",
+  customerCode: "",
+  clinicCodes: [],
+  status: "",
+  pageSize: 10,
+  pageNum: 1,
+});
 
-function loadPrescriptions() {
-  let createDateMin = "";
-  let createDateMax = "";
-  if (pageRequest.createDate && pageRequest.createDate.length === 2) {
-    createDateMin = dateFormat(pageRequest.createDate[0]);
-    createDateMax = dateFormat(pageRequest.createDate[1]);
-  }
+function loadSettlementOrders() {
   axios
-    .get("/kharazim-api/prescription/page", {
-      params: {
-        prescriptionCode: pageRequest.prescriptionCode,
-        customerCode: pageRequest.customerCode,
-        clinicCodes: pageRequest.clinicCodes,
-        createDateMin: createDateMin,
-        createDateMax: createDateMax,
-        pageSize: pageInfo.pageSize,
-        pageNum: pageInfo.currentPage,
-      },
+    .get("/kharazim-api/settlement-order/page", {
+      params: pageRequest,
     })
     .then((response: AxiosResponse) => {
-      prescriptionPageData.value = response.data.data;
+      settlementOrderPageData.value = response.data.data;
       pageInfo.totalCount = response.data.totalCount;
     });
 }
@@ -217,23 +206,10 @@ function loadClinicOptions() {
   });
 }
 
-const router = useRouter();
-
 onMounted(() => {
-  const query = router.currentRoute.value.query;
-  const prescriptionCode = query.prescriptionCode as string;
-  if (prescriptionCode) {
-    pageRequest.prescriptionCode = prescriptionCode;
-  }
-  loadPrescriptions();
+  loadSettlementOrders();
   loadClinicOptions();
 });
 </script>
 
-<style scoped>
-.customer-select {
-  float: right;
-  color: var(--el-text-color-secondary);
-  font-size: 13px;
-}
-</style>
+<style scoped></style>
