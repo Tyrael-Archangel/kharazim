@@ -26,6 +26,9 @@ public class ModifyClinicRequest {
     @Size(max = 128, message = "诊所（机构）英文名称超长")
     private String englishName;
 
+    @Schema(description = "图片")
+    private String image;
+
     @Schema(description = "状态", defaultValue = "NORMAL")
     private ClinicStatus status;
 

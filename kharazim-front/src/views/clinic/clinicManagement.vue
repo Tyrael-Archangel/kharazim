@@ -15,13 +15,36 @@
       </el-form-item>
     </el-form>
   </div>
-  <div>
-    <el-table :data="clinicPageData" border style="width: 100%">
-      <el-table-column label="诊所编码" prop="code" width="200" />
-      <el-table-column label="诊所名称" prop="name" />
-      <el-table-column label="诊所英文名称" prop="englishName" />
-      <el-table-column label="状态" prop="statusName" />
-    </el-table>
+  <div></div>
+  <div class="clinic-card-area">
+    <el-card v-for="clinic in clinicPageData" class="clinic-card">
+      <template #header>
+        <el-text size="large" tag="b">{{ clinic.name }}</el-text>
+        <el-text size="default">{{ " " + clinic.englishName }}</el-text>
+      </template>
+      <div class="clinic-image-block">
+        <el-image
+          v-if="clinic.imageUrl"
+          :preview-src-list="[clinic.imageUrl]"
+          :src="clinic.imageUrl"
+          fit="cover"
+          preview-teleported
+        >
+        </el-image>
+      </div>
+      <template #footer>
+        <el-descriptions>
+          <el-descriptions-item label="诊所编码">
+            {{ clinic.code }}
+          </el-descriptions-item>
+          <el-descriptions-item label="状态">
+            <el-tag :type="clinic.status === 'NORMAL' ? 'success' : 'danger'">
+              {{ clinic.statusName }}
+            </el-tag>
+          </el-descriptions-item>
+        </el-descriptions>
+      </template>
+    </el-card>
   </div>
   <div class="pagination-block">
     <el-pagination
@@ -46,6 +69,8 @@ interface ClinicData {
   code: string;
   name: string;
   englishName: string;
+  image: string;
+  imageUrl: string;
   status: string;
   statusName: string;
 }
@@ -53,7 +78,7 @@ interface ClinicData {
 const clinicPageData = ref<ClinicData[]>([]);
 const pageInfo = reactive({
   currentPage: 1,
-  pageSize: 10,
+  pageSize: 20,
   totalCount: 0,
   pageSizes: [10, 20, 50, 100],
 });
@@ -86,5 +111,21 @@ onMounted(() => loadClinic());
 
 .page-condition-form .el-select {
   --el-select-width: 220px;
+}
+
+.clinic-card-area {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+.clinic-card {
+  width: 425px;
+  margin: 12px;
+}
+
+.clinic-image-block {
+  height: 200px;
+  align-content: center;
 }
 </style>

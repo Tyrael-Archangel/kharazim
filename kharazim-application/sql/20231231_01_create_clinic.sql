@@ -4,6 +4,7 @@ create table `clinic`
     `code`         varchar(32)  not null comment '诊所（机构）编码',
     `name`         varchar(128) not null comment '诊所（机构）名称',
     `english_name` varchar(128) comment '诊所（机构）英文名称',
+    `image`        varchar(512) comment '图片',
     `status`       int          not null comment '状态',
     `creator`      varchar(64),
     `creator_code` varchar(32),

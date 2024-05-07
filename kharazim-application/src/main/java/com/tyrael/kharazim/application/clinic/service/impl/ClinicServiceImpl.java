@@ -7,9 +7,11 @@ import com.tyrael.kharazim.application.clinic.service.ClinicService;
 import com.tyrael.kharazim.application.clinic.vo.*;
 import com.tyrael.kharazim.application.config.BusinessCodeConstants;
 import com.tyrael.kharazim.application.system.service.CodeGenerator;
+import com.tyrael.kharazim.application.system.service.FileService;
 import com.tyrael.kharazim.common.dto.PageResponse;
 import com.tyrael.kharazim.common.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +29,7 @@ public class ClinicServiceImpl implements ClinicService {
 
     private final CodeGenerator codeGenerator;
     private final ClinicMapper clinicMapper;
+    private final FileService fileService;
 
     @Override
     public PageResponse<ClinicVO> page(PageClinicRequest pageRequest) {
@@ -56,6 +59,8 @@ public class ClinicServiceImpl implements ClinicService {
                 .code(clinic.getCode())
                 .name(clinic.getName())
                 .englishName(clinic.getEnglishName())
+                .image(clinic.getImage())
+                .imageUrl(fileService.getUrl(clinic.getImage()))
                 .status(clinic.getStatus())
                 .build();
     }
@@ -70,6 +75,7 @@ public class ClinicServiceImpl implements ClinicService {
         clinic.setCode(code);
         clinic.setName(addClinicRequest.getName());
         clinic.setEnglishName(addClinicRequest.getEnglishName());
+        clinic.setImage(addClinicRequest.getImage());
         clinic.setStatus(addClinicRequest.getStatusOrDefault());
 
         try {
@@ -85,9 +91,18 @@ public class ClinicServiceImpl implements ClinicService {
     public void modify(ModifyClinicRequest modifyClinicRequest, AuthUser currentUser) {
         Clinic clinic = clinicMapper.exactlyFindByCode(modifyClinicRequest.getCode());
 
-        clinic.setName(modifyClinicRequest.getName());
-        clinic.setEnglishName(modifyClinicRequest.getEnglishName());
-        clinic.setStatus(modifyClinicRequest.getStatusOrDefault());
+        if (StringUtils.isNotBlank(modifyClinicRequest.getName())) {
+            clinic.setName(modifyClinicRequest.getName());
+        }
+        if (StringUtils.isNotBlank(modifyClinicRequest.getEnglishName())) {
+            clinic.setEnglishName(modifyClinicRequest.getEnglishName());
+        }
+        if (StringUtils.isNotBlank(modifyClinicRequest.getImage())) {
+            clinic.setImage(modifyClinicRequest.getImage());
+        }
+        if (modifyClinicRequest.getStatus() != null) {
+            clinic.setStatus(modifyClinicRequest.getStatus());
+        }
         clinic.setUpdate(currentUser.getCode(), currentUser.getNickName());
 
         try {

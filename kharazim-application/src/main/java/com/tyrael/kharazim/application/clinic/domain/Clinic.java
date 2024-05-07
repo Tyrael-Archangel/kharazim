@@ -32,6 +32,11 @@ public class Clinic extends BaseDO {
     private String englishName;
 
     /**
+     * 诊所（机构）图片
+     */
+    private String image;
+
+    /**
      * 状态
      */
     private ClinicStatus status;
