@@ -65,15 +65,15 @@
   </div>
   <div>
     <el-table :data="skuPublishPageData" border style="width: 100%">
-      <el-table-column label="发布编码" prop="code" />
-      <el-table-column align="center" label="发布状态" width="120">
+      <el-table-column label="发布编码" prop="code" width="220"/>
+      <el-table-column align="center" label="发布状态" width="100">
         <template v-slot="{ row }">
           <el-tag :type="statusTagType(row.publishStatus)" effect="dark"
             >{{ row.publishStatusName }}
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="商品编码" prop="skuCode">
+      <el-table-column label="商品编码" prop="skuCode" width="160">
         <template v-slot="{ row }">
           <el-link
             :href="'/#/product-info?skuCode=' + row.skuCode"

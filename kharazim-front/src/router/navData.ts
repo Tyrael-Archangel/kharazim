@@ -1,5 +1,5 @@
 interface Nav {
-  id: number;
+  id?: number;
   name: string;
   component?: string | null; // 目录为null，菜单不能为null
   path: string; // 路径
@@ -8,31 +8,25 @@ interface Nav {
   children?: Nav[] | null;
 }
 
-let idValue: number = 1;
-
-export const navs: Nav[] = [
+const navs: Nav[] = [
   {
-    id: idValue++,
     name: "首页",
     component: "dashboard/index.vue",
     path: "/dashboard",
     icon: "/icons/home.svg",
   },
   {
-    id: idValue++,
     name: "系统管理",
     path: "/system-setting",
     icon: "/icons/setting.svg",
     children: [
       {
-        id: idValue++,
         name: "用户管理",
         component: "userManagement/index.vue",
         path: "/system-setting/user-management",
         icon: "/icons/user.svg",
       },
       {
-        id: idValue++,
         name: "角色管理",
         component: "roleManagement/index.vue",
         path: "/system-setting/role-management",
@@ -41,20 +35,17 @@ export const navs: Nav[] = [
     ],
   },
   {
-    id: idValue++,
     name: "会员档案",
     path: "/customer-info",
     icon: "/icons/customer_management.svg",
     children: [
       {
-        id: idValue++,
         name: "会员管理",
         component: "customer/index.vue",
         path: "/customer-info",
         icon: "/icons/customer.svg",
       },
       {
-        id: idValue++,
         name: "家庭管理",
         component: "customerFamily/index.vue",
         path: "/customer-family",
@@ -63,13 +54,11 @@ export const navs: Nav[] = [
     ],
   },
   {
-    id: idValue++,
     name: "诊所管理",
     path: "/clinic-management",
     icon: "/icons/clinic_management.svg",
     children: [
       {
-        id: idValue++,
         name: "诊所列表",
         component: "clinic/clinicManagement.vue",
         path: "/clinic-info",
@@ -78,13 +67,11 @@ export const navs: Nav[] = [
     ],
   },
   {
-    id: idValue++,
     name: "采购管理",
     path: "/purchase-management",
     icon: "/icons/purchase_management.svg",
     children: [
       {
-        id: idValue++,
         name: "供应商管理",
         component: "supplier/index.vue",
         path: "/supplier-info",
@@ -93,20 +80,17 @@ export const navs: Nav[] = [
     ],
   },
   {
-    id: idValue++,
     name: "诊疗中心",
     path: "/diagnosis-treat",
     icon: "/icons/diagnosis_treat.svg",
     children: [
       {
-        id: idValue++,
         name: "处方管理",
         component: "prescription/prescriptionInfo.vue",
         path: "/prescription-info",
         icon: "/icons/prescription.svg",
         children: [
           {
-            id: idValue++,
             name: "创建处方",
             component: "prescription/createPrescription.vue",
             path: "/create-prescription",
@@ -115,44 +99,57 @@ export const navs: Nav[] = [
           },
         ],
       },
+    ],
+  },
+  {
+    name: "结算中心",
+    path: "/settlement-center",
+    icon: "/icons/settlement_center.svg",
+    children: [
       {
-        id: idValue++,
-        name: "结算管理",
+        name: "结算单管理",
         component: "settlementOrder/settlementOrder.vue",
         path: "/settlement-order",
         icon: "/icons/settlement_order.svg",
       },
+      {
+        name: "储值卡项",
+        component: "rechargeCard/rechargeCardType.vue",
+        path: "/recharge-card-type",
+        icon: "/icons/recharge_card_type.svg",
+      },
+      {
+        name: "会员储值卡",
+        component: "rechargeCard/customerRechargeCard.vue",
+        path: "/customer-recharge-card",
+        icon: "/icons/customer_recharge_card.svg",
+      },
     ],
   },
   {
-    id: idValue++,
     name: "商品中心",
     path: "/product-management",
     icon: "/icons/product_management.svg",
     children: [
       {
-        id: idValue++,
         name: "商品列表",
         component: "product/productInfo.vue",
         path: "/product-info",
         icon: "/icons/product_info.svg",
       },
       {
-        id: idValue++,
         name: "商品发布",
         component: "product/productPublish.vue",
         path: "/product-publish",
         icon: "/icons/product_publish.svg",
       },
       {
-        id: idValue++,
         name: "商品分类",
         component: "product/productCategory.vue",
         path: "/product-category",
         icon: "/icons/product_category.svg",
       },
       {
-        id: idValue++,
         name: "商品单位",
         component: "product/productUnit.vue",
         path: "/product-unit",
@@ -161,10 +158,24 @@ export const navs: Nav[] = [
     ],
   },
   {
-    id: idValue++,
     name: "Demo",
     component: "demo/index.vue",
     path: "/demo",
     icon: "/icons/demo.svg",
   },
 ];
+
+let idValue: number = 1;
+
+function generateId(navs: Nav[] | null | undefined) {
+  if (navs) {
+    for (let nav of navs) {
+      nav.id = idValue++;
+      generateId(nav.children);
+    }
+  }
+}
+
+generateId(navs);
+
+export { navs };
