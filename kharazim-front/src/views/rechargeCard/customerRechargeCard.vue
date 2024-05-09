@@ -22,14 +22,25 @@
           width="125"
         />
         <el-table-column
+          align="center"
           label="折扣百分比"
           prop="discountPercent"
           width="100"
         />
-        <el-table-column label="状态" prop="statusName" width="90" />
-        <el-table-column label="储值日期" prop="rechargeDate" width="115" />
+        <el-table-column
+          align="center"
+          label="状态"
+          prop="statusName"
+          width="90"
+        />
+        <el-table-column
+          align="center"
+          label="储值日期"
+          prop="rechargeDate"
+          width="115"
+        />
         <el-table-column label="成交员工" prop="traderUserName" width="120" />
-        <el-table-column label="有效期" width="115">
+        <el-table-column align="center" label="过期时间" width="115">
           <template v-slot="{ row }">
             <el-text>{{ expireDate(row) }}</el-text>
           </template>

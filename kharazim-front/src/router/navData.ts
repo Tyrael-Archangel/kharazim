@@ -119,7 +119,7 @@ const navs: Nav[] = [
         icon: "/icons/recharge_card_type.svg",
       },
       {
-        name: "会员储值卡",
+        name: "会员储值单",
         component: "rechargeCard/customerRechargeCard.vue",
         path: "/customer-recharge-card",
         icon: "/icons/customer_recharge_card.svg",
