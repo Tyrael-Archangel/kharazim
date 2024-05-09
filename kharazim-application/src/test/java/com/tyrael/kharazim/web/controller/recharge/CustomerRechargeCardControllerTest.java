@@ -1,17 +1,24 @@
 package com.tyrael.kharazim.web.controller.recharge;
 
-import com.tyrael.kharazim.application.recharge.vo.CustomerRechargeCardChargebackRequest;
-import com.tyrael.kharazim.application.recharge.vo.CustomerRechargeCardPageRequest;
-import com.tyrael.kharazim.application.recharge.vo.CustomerRechargeRequest;
-import com.tyrael.kharazim.application.recharge.vo.PageCustomerRechargeCardLogRequest;
+import com.tyrael.kharazim.application.customer.service.CustomerService;
+import com.tyrael.kharazim.application.customer.vo.customer.CustomerSimpleVO;
+import com.tyrael.kharazim.application.customer.vo.customer.ListCustomerRequest;
+import com.tyrael.kharazim.application.recharge.service.RechargeCardTypeService;
+import com.tyrael.kharazim.application.recharge.vo.*;
+import com.tyrael.kharazim.application.user.dto.user.request.ListUserRequest;
+import com.tyrael.kharazim.application.user.dto.user.response.UserDTO;
+import com.tyrael.kharazim.application.user.service.UserService;
+import com.tyrael.kharazim.common.util.CollectionUtils;
+import com.tyrael.kharazim.mock.MockRandomPoetry;
 import com.tyrael.kharazim.web.controller.BaseControllerTest;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * @author Tyrael Archangel
@@ -19,20 +26,48 @@ import java.time.LocalDateTime;
  */
 class CustomerRechargeCardControllerTest extends BaseControllerTest<CustomerRechargeCardController> {
 
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private CustomerService customerService;
+
+    @Autowired
+    private RechargeCardTypeService rechargeCardTypeService;
+
     CustomerRechargeCardControllerTest() {
         super(CustomerRechargeCardController.class);
     }
 
     @Test
     void recharge() {
-        CustomerRechargeRequest rechargeRequest = new CustomerRechargeRequest();
-        rechargeRequest.setCustomerCode("CU0000000002");
-        rechargeRequest.setCardTypeCode("RCT000001");
-        rechargeRequest.setRechargeDate(LocalDate.now());
-        rechargeRequest.setAmount(BigDecimal.valueOf(8000));
-        rechargeRequest.setTraderUserCode("U000002");
-        rechargeRequest.setRemark("测试: " + LocalDateTime.now());
-        super.performWhenCall(mockController.recharge(rechargeRequest));
+        List<UserDTO> users = userService.list(new ListUserRequest());
+        List<CustomerSimpleVO> customers = customerService.listSimpleInfo(new ListCustomerRequest());
+        List<RechargeCardTypeVO> cardTypes = rechargeCardTypeService.list(new ListRechargeCardTypeRequest());
+
+        int totalCount = random.nextInt(20) + 10;
+        for (int i = 0; i < totalCount; i++) {
+            CustomerSimpleVO customer = CollectionUtils.random(customers);
+            UserDTO user = CollectionUtils.random(users);
+            RechargeCardTypeVO cardType = CollectionUtils.random(cardTypes);
+            LocalDate rechargeDate = LocalDate.now().minusDays(random.nextInt(100));
+
+            int defaultAmount = cardType.getDefaultAmount().intValue();
+            int amount = random.nextInt(100) > 20
+                    ? defaultAmount + random.nextInt(defaultAmount)
+                    : defaultAmount - random.nextInt(defaultAmount);
+            amount = amount / 100 * 100;
+            amount = Math.max(amount, 100);
+
+            CustomerRechargeRequest rechargeRequest = new CustomerRechargeRequest();
+            rechargeRequest.setCustomerCode(customer.getCode());
+            rechargeRequest.setCardTypeCode(cardType.getCode());
+            rechargeRequest.setRechargeDate(rechargeDate);
+            rechargeRequest.setAmount(BigDecimal.valueOf(amount));
+            rechargeRequest.setTraderUserCode(user.getCode());
+            rechargeRequest.setRemark(MockRandomPoetry.random());
+            super.performWhenCall(mockController.recharge(rechargeRequest));
+        }
     }
 
     @Test
