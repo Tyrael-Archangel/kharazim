@@ -35,6 +35,13 @@ public interface RechargeCardTypeService {
      * @param currentUser 操作人
      */
     void disableCreateNewCard(String code, AuthUser currentUser);
+    /**
+     * 启用发卡
+     *
+     * @param code        储值卡项编码
+     * @param currentUser 操作人
+     */
+    void enableCreateNewCard(String code, AuthUser currentUser);
 
     /**
      * 储值卡项分页

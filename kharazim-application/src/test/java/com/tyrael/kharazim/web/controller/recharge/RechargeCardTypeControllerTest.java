@@ -10,6 +10,7 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * @author Tyrael Archangel
@@ -23,13 +24,16 @@ class RechargeCardTypeControllerTest extends BaseControllerTest<RechargeCardType
 
     @Test
     void create() {
-        AddRechargeCardTypeRequest addRequest = new AddRechargeCardTypeRequest();
-        addRequest.setName("初级卡");
-        addRequest.setDiscountPercent(BigDecimal.valueOf(90));
-        addRequest.setNeverExpire(Boolean.FALSE);
-        addRequest.setValidPeriodDays(180);
-        addRequest.setDefaultAmount(BigDecimal.valueOf(5000));
-        super.performWhenCall(mockController.create(addRequest));
+        List<AddRechargeCardTypeRequest> cardTypes = List.of(
+                AddRechargeCardTypeRequest.create("初级卡", 95, false, 180, 5000),
+                AddRechargeCardTypeRequest.create("中级卡", 90, false, 360, 10000),
+                AddRechargeCardTypeRequest.create("高级卡", 85, false, 720, 50000),
+                AddRechargeCardTypeRequest.create("贵宾卡", 80, true, null, 100000),
+                AddRechargeCardTypeRequest.create("至尊卡", 70, true, null, 200000)
+        );
+        for (AddRechargeCardTypeRequest cardType : cardTypes) {
+            super.performWhenCall(mockController.create(cardType));
+        }
     }
 
     @Test

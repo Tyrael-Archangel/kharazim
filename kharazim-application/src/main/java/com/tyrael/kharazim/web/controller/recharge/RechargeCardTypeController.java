@@ -52,6 +52,16 @@ public class RechargeCardTypeController {
         return Response.success();
     }
 
+    @PutMapping("/enable-create-new-card/{code}")
+    @Operation(summary = "启用发卡")
+    public Response enableCreateNewCard(
+            @PathVariable("code") @Parameter(description = "储值卡项编码", required = true) String code,
+            @Schema(hidden = true) @CurrentUser AuthUser currentUser) {
+        rechargeCardTypeService.enableCreateNewCard(code, currentUser);
+        return Response.success();
+    }
+
+
     @GetMapping("/page")
     @Operation(summary = "储值卡项分页")
     public PageResponse<RechargeCardTypeVO> page(@ParameterObject PageRechargeCardTypeRequest pageRequest) {

@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 /**
  * @author Tyrael Archangel
@@ -34,5 +35,19 @@ public class AddRechargeCardTypeRequest {
     @Schema(description = "默认卡金额")
     @NotNull(message = "默认卡金额不能为空")
     private BigDecimal defaultAmount;
+
+    public static AddRechargeCardTypeRequest create(String name,
+                                                    int discountPercent,
+                                                    boolean neverExpire,
+                                                    Integer validPeriodDays,
+                                                    int defaultAmount) {
+        AddRechargeCardTypeRequest request = new AddRechargeCardTypeRequest();
+        request.name = name;
+        request.discountPercent = BigDecimal.valueOf(discountPercent);
+        request.neverExpire = neverExpire;
+        request.validPeriodDays = neverExpire ? null : Objects.requireNonNull(validPeriodDays);
+        request.defaultAmount = BigDecimal.valueOf(defaultAmount);
+        return request;
+    }
 
 }

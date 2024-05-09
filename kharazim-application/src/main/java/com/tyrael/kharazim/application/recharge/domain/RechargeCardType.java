@@ -55,8 +55,12 @@ public class RechargeCardType extends BaseDO {
      */
     private Boolean canCreateNewCard;
 
+    public boolean enabled() {
+        return Boolean.TRUE.equals(canCreateNewCard);
+    }
+
     public boolean forbidden() {
-        return !Boolean.TRUE.equals(canCreateNewCard);
+        return !enabled();
     }
 
 }

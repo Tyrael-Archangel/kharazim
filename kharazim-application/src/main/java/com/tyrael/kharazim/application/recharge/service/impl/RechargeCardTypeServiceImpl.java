@@ -98,6 +98,21 @@ public class RechargeCardTypeServiceImpl implements RechargeCardTypeService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void enableCreateNewCard(String code, AuthUser currentUser) {
+        RechargeCardType cardType = rechargeCardTypeMapper.findByCode(code);
+        DomainNotFoundException.assertFound(cardType, code);
+
+        if (cardType.enabled()) {
+            return;
+        }
+        cardType.setCanCreateNewCard(Boolean.TRUE);
+        cardType.setUpdate(currentUser.getCode(), currentUser.getNickName());
+
+        rechargeCardTypeMapper.updateById(cardType);
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public PageResponse<RechargeCardTypeVO> page(PageRechargeCardTypeRequest pageRequest) {
         PageResponse<RechargeCardType> cardTypePage = rechargeCardTypeMapper.page(pageRequest);
