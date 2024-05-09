@@ -24,8 +24,4 @@ public class CustomerRechargeCardChargebackRequest {
     @NotNull(message = "退卡金额不能为空")
     private BigDecimal chargebackAmount;
 
-    @Schema(description = "退卡员工编码")
-    @NotBlank(message = "请选择退卡员工")
-    private String chargebackUserCode;
-
 }

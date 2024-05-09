@@ -67,7 +67,7 @@ public class CustomerRechargeCardController {
         return MultiResponse.success(customerRechargeCardService.listCustomerEffective(customerCode));
     }
 
-    @PostMapping("/page-log/{code}")
+    @GetMapping("/page-log/{code}")
     @Operation(summary = "储值单分页日志记录")
     public PageResponse<CustomerRechargeCardLogVO> pageRechargeCardLog(
             @PathVariable("code") @Parameter(description = "储值单号", required = true) String code,

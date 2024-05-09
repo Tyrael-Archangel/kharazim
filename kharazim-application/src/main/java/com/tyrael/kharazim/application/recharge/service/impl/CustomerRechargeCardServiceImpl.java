@@ -155,7 +155,7 @@ public class CustomerRechargeCardServiceImpl implements CustomerRechargeCardServ
 
         rechargeCard.setStatus(WAIT_REFUND);
         rechargeCard.setChargebackAmount(chargebackAmount);
-        rechargeCard.setChargebackUserCode(chargebackRequest.getChargebackUserCode());
+        rechargeCard.setChargebackUserCode(currentUser.getCode());
         rechargeCard.setUpdate(currentUser.getCode(), currentUser.getNickName());
 
         int updatedRows = customerRechargeCardMapper.chargeback(rechargeCard);
