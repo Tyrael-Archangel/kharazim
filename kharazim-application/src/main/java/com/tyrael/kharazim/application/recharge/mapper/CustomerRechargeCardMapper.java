@@ -45,8 +45,10 @@ public interface CustomerRechargeCardMapper extends BaseMapper<CustomerRechargeC
         queryWrapper.eqIfHasText(CustomerRechargeCard::getCode, pageRequest.getCode())
                 .eqIfHasText(CustomerRechargeCard::getCustomerCode, pageRequest.getCustomerCode())
                 .eqIfHasText(CustomerRechargeCard::getTraderUserCode, pageRequest.getTraderUserCode())
-                .geIfPresent(CustomerRechargeCard::getRechargeDate, pageRequest.getStartDate())
-                .leIfPresent(CustomerRechargeCard::getRechargeDate, pageRequest.getEndDate());
+                .inIfPresent(CustomerRechargeCard::getCardTypeCode, pageRequest.getRechargeCardTypes())
+                .inIfPresent(CustomerRechargeCard::getStatus, pageRequest.getStatuses())
+                .geIfPresent(CustomerRechargeCard::getRechargeDate, pageRequest.getRechargeStartDate())
+                .leIfPresent(CustomerRechargeCard::getRechargeDate, pageRequest.getRechargeEndDate());
 
         Page<CustomerRechargeCard> page = new Page<>(pageRequest.getPageNum(), pageRequest.getPageSize());
         Page<CustomerRechargeCard> pageResponse = selectPage(page, queryWrapper);

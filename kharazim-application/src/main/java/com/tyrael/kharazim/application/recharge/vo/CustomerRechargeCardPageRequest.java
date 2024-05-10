@@ -1,10 +1,12 @@
 package com.tyrael.kharazim.application.recharge.vo;
 
+import com.tyrael.kharazim.application.recharge.enums.CustomerRechargeCardStatus;
 import com.tyrael.kharazim.common.dto.PageCommand;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.List;
 
 /**
  * @author Tyrael Archangel
@@ -12,12 +14,6 @@ import java.time.LocalDate;
  */
 @Data
 public class CustomerRechargeCardPageRequest extends PageCommand {
-
-    @Schema(description = "起始日期")
-    private LocalDate startDate;
-
-    @Schema(description = "结束日期")
-    private LocalDate endDate;
 
     @Schema(description = "储值单号")
     private String code;
@@ -27,5 +23,17 @@ public class CustomerRechargeCardPageRequest extends PageCommand {
 
     @Schema(description = "成交员工编码")
     private String traderUserCode;
+
+    @Schema(description = "储值卡项类型")
+    private List<String> rechargeCardTypes;
+
+    @Schema(description = "状态，" + CustomerRechargeCardStatus.DESC)
+    private List<CustomerRechargeCardStatus> statuses;
+
+    @Schema(description = "储值起始日期")
+    private LocalDate rechargeStartDate;
+
+    @Schema(description = "储值结束日期")
+    private LocalDate rechargeEndDate;
 
 }

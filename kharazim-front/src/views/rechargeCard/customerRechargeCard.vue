@@ -1,5 +1,106 @@
 <template>
   <div>
+    <el-form
+      :inline="true"
+      :model="pageRequest"
+      class="page-form-block"
+      @keyup.enter="loadCustomerRechargeCard"
+    >
+      <el-form-item label="储值单号">
+        <el-input v-model="pageRequest.code" clearable placeholder="储值单号" />
+      </el-form-item>
+      <el-form-item label="状态">
+        <el-select
+          v-model="pageRequest.statuses"
+          clearable
+          multiple
+          placeholder="状态"
+        >
+          <el-option
+            v-for="status in customerRechargeCardStatuses"
+            :label="status.name"
+            :value="status.value"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="会员">
+        <el-select
+          v-model="pageRequest.customerCode"
+          :remote-method="loadCustomers"
+          clearable
+          filterable
+          placeholder="选择会员"
+          remote
+        >
+          <el-option
+            v-for="item in customers"
+            :key="item.code"
+            :label="item.name"
+            :value="item.code"
+          >
+            <span style="float: left">{{ item.name }}</span>
+            <span style="float: right">{{ item.phone }}</span>
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="储值卡项">
+        <el-select
+          v-model="pageRequest.rechargeCardTypes"
+          clearable
+          filterable
+          multiple
+          placeholder="选择储值卡项"
+          reserve-keyword
+        >
+          <el-option
+            v-for="item in rechargeCardTypeOptions"
+            :key="item.code"
+            :label="item.name"
+            :value="item.code"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="成交员工">
+        <el-select
+          v-model="pageRequest.traderUserCode"
+          :remote-method="loadTraderUsers"
+          clearable
+          filterable
+          placeholder="选择员工"
+          remote
+          width="500px"
+        >
+          <el-option
+            v-for="item in traderUsers"
+            :key="item.code"
+            :label="item.nickName"
+            :value="item.code"
+          >
+            <el-image
+              v-if="item.avatarUrl"
+              :src="item.avatarUrl"
+              style="float: left; width: 30px"
+            />
+            <span style="float: right">{{ item.nickName }}</span>
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="储值日期">
+        <el-date-picker
+          v-model="pageRequest.rechargeDate"
+          end-placeholder="截止日期"
+          start-placeholder="开始日期"
+          type="daterange"
+        />
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="loadCustomerRechargeCard"
+          >查询
+        </el-button>
+      </el-form-item>
+    </el-form>
+  </div>
+  <div>
     <div>
       <el-table
         :data="customerRechargeCardPageData"
@@ -132,6 +233,7 @@ import { onMounted, reactive, ref } from "vue";
 import { AxiosResponse } from "axios";
 import axios from "@/utils/http.js";
 import { ElMessage, ElMessageBox } from "element-plus";
+import { dateFormat } from "@/utils/DateUtil.js";
 
 interface CustomerRechargeCard {
   code: string;
@@ -168,17 +270,32 @@ const pageRequest = reactive({
   code: "",
   customerCode: "",
   traderUserCode: "",
-  clinicCodes: [],
-  startDate: "",
-  endDate: "",
-  datePair: [] as Date[],
+  statuses: [] as string[],
+  rechargeCardTypes: [],
+  rechargeDate: [] as Date[],
 });
 
 function loadCustomerRechargeCard() {
+  let rechargeStartDate = "";
+  let rechargeEndDate = "";
+  if (pageRequest.rechargeDate && pageRequest.rechargeDate.length === 2) {
+    rechargeStartDate = dateFormat(pageRequest.rechargeDate[0]);
+    rechargeEndDate = dateFormat(pageRequest.rechargeDate[1]);
+  }
   axios
-    .get(
-      `/kharazim-api/recharge-card/page?pageSize=${pageInfo.pageSize}&pageNum=${pageInfo.currentPage}`,
-    )
+    .get("/kharazim-api/recharge-card/page", {
+      params: {
+        rechargeStartDate: rechargeStartDate,
+        rechargeEndDate: rechargeEndDate,
+        code: pageRequest.code,
+        customerCode: pageRequest.customerCode,
+        traderUserCode: pageRequest.traderUserCode,
+        rechargeCardTypes: pageRequest.rechargeCardTypes,
+        statuses: pageRequest.statuses,
+        pageSize: pageInfo.pageSize,
+        pageNum: pageInfo.currentPage,
+      },
+    })
     .then((response: AxiosResponse) => {
       customerRechargeCardPageData.value = response.data.data;
       pageInfo.totalCount = response.data.totalCount;
@@ -295,7 +412,90 @@ function loadCustomerRechargeCardLog() {
   }
 }
 
-onMounted(() => loadCustomerRechargeCard());
+interface Customer {
+  code: string;
+  name: string;
+  phone: string;
+}
+
+const customers = ref<Customer[]>([]);
+
+function loadCustomers(query: string) {
+  axios
+    .get(`/kharazim-api/customer/list?conditionType=NAME&keyword=${query}`)
+    .then((res: AxiosResponse) => {
+      customers.value = res.data.data;
+    });
+}
+
+interface TraderUser {
+  code: string;
+  name: string;
+  nickName: string;
+  avatarUrl: string;
+}
+
+const traderUsers = ref<TraderUser[]>([]);
+
+function loadTraderUsers(query: string) {
+  axios
+    .get("/kharazim-api/user/list", {
+      params: {
+        keywords: query,
+      },
+    })
+    .then((res: AxiosResponse) => {
+      traderUsers.value = res.data.data;
+    });
+}
+
+interface RechargeCardType {
+  code: string;
+  name: string;
+  discountPercent: number;
+  neverExpire: boolean;
+  validPeriodDays: number;
+  canCreateNewCard: boolean;
+}
+
+const rechargeCardTypeOptions = ref<RechargeCardType[]>([]);
+
+function loadRechargeCardTypes() {
+  axios
+    .get("/kharazim-api/recharge-card-type/list")
+    .then((res: AxiosResponse) => {
+      rechargeCardTypeOptions.value = res.data.data;
+    });
+}
+
+interface CustomerRechargeCardStatus {
+  name: string;
+  value: string;
+}
+
+const customerRechargeCardStatuses = ref<CustomerRechargeCardStatus[]>([
+  {
+    name: "未收款",
+    value: "UNPAID",
+  },
+  {
+    name: "已收款",
+    value: "PAID",
+  },
+  {
+    name: "未退款",
+    value: "WAIT_REFUND",
+  },
+  {
+    name: "已退款",
+    value: "REFUNDED",
+  },
+]);
+
+onMounted(() => {
+  loadCustomerRechargeCard();
+  loadRechargeCardTypes();
+});
 </script>
 
 <style scoped></style>

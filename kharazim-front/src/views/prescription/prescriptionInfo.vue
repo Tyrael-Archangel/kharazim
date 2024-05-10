@@ -135,7 +135,7 @@ import { onMounted, reactive, ref } from "vue";
 import { AxiosResponse } from "axios";
 import axios from "@/utils/http.js";
 import { dateFormat } from "@/utils/DateUtil.js";
-import {useRouter} from "vue-router";
+import { useRouter } from "vue-router";
 
 const prescriptionPageData = ref([]);
 const pageRequest = reactive({
