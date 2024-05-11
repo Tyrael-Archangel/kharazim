@@ -85,7 +85,7 @@
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="储值日期">
+      <el-form-item label="储值日期" style="width: 340px">
         <el-date-picker
           v-model="pageRequest.rechargeDate"
           end-placeholder="截止日期"
