@@ -21,10 +21,12 @@ service.interceptors.response.use(
   (error) => {
     console.log(error);
     const { msg, code } = error.response.data;
-    if (msg) {
-      ElMessage.error(msg);
-    } else {
-      ElMessage.error("服务异常");
+    if (!error.config?.disablePrintGlobalError) {
+      if (msg) {
+        ElMessage.error(msg);
+      } else {
+        ElMessage.error(error.message);
+      }
     }
     if (code === 401) {
       window.location.href = "/";

@@ -13,6 +13,11 @@
                 :src="currentUser.avatarUrl"
               />
             </div>
+            <el-button
+              class="change-password"
+              @click="showChangeCurrentUserPassword"
+              >修改密码
+            </el-button>
             <el-button class="logout" @click="logout">注销</el-button>
           </div>
         </el-header>
@@ -23,6 +28,34 @@
       </el-container>
     </el-container>
   </div>
+  <el-dialog v-model="changePasswordVisible" title="修改密码" width="500">
+    <el-form
+      ref="changePasswordFormRef"
+      :model="changePasswordForm"
+      :rules="changePasswordRules"
+      label-width="auto"
+      status-icon
+    >
+      <el-form-item label="原密码" prop="oldPassword">
+        <el-input v-model="changePasswordForm.oldPassword" type="password" />
+      </el-form-item>
+      <el-form-item label="新密码" prop="newPassword">
+        <el-input v-model="changePasswordForm.newPassword" type="password" />
+      </el-form-item>
+      <el-form-item label="确认密码" prop="confirmPassword">
+        <el-input
+          v-model="changePasswordForm.confirmPassword"
+          type="password"
+        />
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="submitForm(changePasswordFormRef)">
+          确认
+        </el-button>
+        <el-button @click="changePasswordVisible = false">取消</el-button>
+      </el-form-item>
+    </el-form>
+  </el-dialog>
 </template>
 
 <script lang="ts" setup>
@@ -30,13 +63,20 @@ import Bread from "./bread.vue";
 import NavMenu from "./navMenu.vue";
 import { removeToken } from "@/utils/auth.js";
 import { useRouter } from "vue-router";
-import { onMounted, ref } from "vue";
+import { onMounted, reactive, ref } from "vue";
 import axios from "@/utils/http.js";
 import { AxiosResponse } from "axios";
+import { ElMessage, FormInstance } from "element-plus";
+import type { FormRules } from "element-plus";
 
 const router = useRouter();
 
 function logout() {
+  axios
+    .post("/kharazim-api/auth/logout", null, {
+      disablePrintGlobalError: true,
+    })
+    .catch(() => {});
   removeToken();
   router.push("/login");
 }
@@ -63,6 +103,75 @@ function loadCurrentUser() {
   });
 }
 
+const changePasswordVisible = ref(false);
+
+interface ChangePasswordForm {
+  oldPassword: string;
+  newPassword: string;
+  confirmPassword: string;
+}
+
+const changePasswordFormRef = ref<FormInstance>();
+const changePasswordForm = reactive<ChangePasswordForm>({
+  oldPassword: "",
+  newPassword: "",
+  confirmPassword: "",
+});
+
+const changePasswordRules = reactive<FormRules<ChangePasswordForm>>({
+  oldPassword: [
+    { required: true, message: "请输入原密码", trigger: "blur" },
+    { min: 6, max: 32, message: "密码长度必须在6~32之间", trigger: "blur" },
+  ],
+  newPassword: [
+    { required: true, message: "请输入新密码", trigger: "blur" },
+    { min: 6, max: 32, message: "密码长度必须在6~32之间", trigger: "blur" },
+  ],
+  confirmPassword: [
+    { required: true, message: "请再次输入新密码", trigger: "blur" },
+    { min: 6, max: 32, message: "密码长度必须在6~32之间", trigger: "blur" },
+    { validator: checkConfirmPassword, trigger: "blur" },
+  ],
+});
+
+function checkConfirmPassword(rule: any, value: any, callback: any) {
+  if (value !== changePasswordForm.newPassword) {
+    callback(new Error("确认密码必须与新密码相同错误"));
+  } else {
+    callback();
+  }
+}
+
+const submitForm = async () => {
+  if (changePasswordFormRef.value) {
+    await changePasswordFormRef.value.validate((valid) => {
+      if (valid) {
+        axios
+          .post("/kharazim-api/user/change-password", {
+            oldPassword: changePasswordForm.oldPassword,
+            newPassword: changePasswordForm.newPassword,
+          })
+          .then(() => {
+            ElMessage({
+              message: "修改密码成功!",
+              type: "success",
+            });
+            setTimeout(() => {
+              logout();
+            }, 1000);
+          });
+      }
+    });
+  }
+};
+
+function showChangeCurrentUserPassword() {
+  if (changePasswordFormRef.value) {
+    changePasswordFormRef.value.resetFields();
+  }
+  changePasswordVisible.value = true;
+}
+
 onMounted(() => loadCurrentUser());
 </script>
 
@@ -79,7 +188,11 @@ onMounted(() => loadCurrentUser());
 
 .logout {
   margin-left: 20px;
-  margin-right: 20px;
+  margin-right: 10px;
   padding: 10px;
+}
+
+.change-password {
+  margin-left: 20px;
 }
 </style>

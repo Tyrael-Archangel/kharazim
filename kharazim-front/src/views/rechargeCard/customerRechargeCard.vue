@@ -94,8 +94,11 @@
         />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="loadCustomerRechargeCard"
-          >查询
+        <el-button type="primary" @click="loadCustomerRechargeCard">
+          查询
+        </el-button>
+        <el-button type="primary" @click="clearAndLoadCustomerRechargeCard">
+          重置
         </el-button>
       </el-form-item>
     </el-form>
@@ -274,6 +277,18 @@ const pageRequest = reactive({
   rechargeCardTypes: [],
   rechargeDate: [] as Date[],
 });
+
+function clearAndLoadCustomerRechargeCard() {
+  pageRequest.code = "";
+  pageRequest.customerCode = "";
+  pageRequest.traderUserCode = "";
+  pageRequest.statuses = [] as string[];
+  pageRequest.rechargeCardTypes = [];
+  pageRequest.rechargeDate = [] as Date[];
+  pageInfo.currentPage = 1;
+  pageInfo.pageSize = 10;
+  loadCustomerRechargeCard();
+}
 
 function loadCustomerRechargeCard() {
   let rechargeStartDate = "";
