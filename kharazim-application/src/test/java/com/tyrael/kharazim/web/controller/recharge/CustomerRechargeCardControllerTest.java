@@ -3,11 +3,14 @@ package com.tyrael.kharazim.web.controller.recharge;
 import com.tyrael.kharazim.application.customer.service.CustomerService;
 import com.tyrael.kharazim.application.customer.vo.customer.CustomerSimpleVO;
 import com.tyrael.kharazim.application.customer.vo.customer.ListCustomerRequest;
+import com.tyrael.kharazim.application.recharge.enums.CustomerRechargeCardStatus;
+import com.tyrael.kharazim.application.recharge.service.CustomerRechargeCardService;
 import com.tyrael.kharazim.application.recharge.service.RechargeCardTypeService;
 import com.tyrael.kharazim.application.recharge.vo.*;
 import com.tyrael.kharazim.application.user.dto.user.request.ListUserRequest;
 import com.tyrael.kharazim.application.user.dto.user.response.UserDTO;
 import com.tyrael.kharazim.application.user.service.UserService;
+import com.tyrael.kharazim.common.dto.PageCommand;
 import com.tyrael.kharazim.common.util.CollectionUtils;
 import com.tyrael.kharazim.mock.MockRandomPoetry;
 import com.tyrael.kharazim.web.controller.BaseControllerTest;
@@ -18,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -34,6 +38,9 @@ class CustomerRechargeCardControllerTest extends BaseControllerTest<CustomerRech
 
     @Autowired
     private RechargeCardTypeService rechargeCardTypeService;
+
+    @Autowired
+    private CustomerRechargeCardService customerRechargeCardService;
 
     CustomerRechargeCardControllerTest() {
         super(CustomerRechargeCardController.class);
@@ -72,8 +79,20 @@ class CustomerRechargeCardControllerTest extends BaseControllerTest<CustomerRech
 
     @Test
     void markPaid() {
-        String code = "CRC20240201000001";
-        super.performWhenCall(mockController.markPaid(code, super.mockAdmin()));
+        int pageNum = 1;
+        CustomerRechargeCardPageRequest request = new CustomerRechargeCardPageRequest();
+        request.setPageSize(PageCommand.MAX_PAGE_SIZE);
+        Collection<CustomerRechargeCardVO> customerRechargeCards;
+        do {
+            request.setPageNum(pageNum++);
+            customerRechargeCards = customerRechargeCardService.page(request).getData();
+            for (CustomerRechargeCardVO customerRechargeCard : customerRechargeCards) {
+                if (random.nextInt(100) > 15
+                        && CustomerRechargeCardStatus.UNPAID.equals(customerRechargeCard.getStatus())) {
+                    super.performWhenCall(mockController.markPaid(customerRechargeCard.getCode(), super.mockAdmin()));
+                }
+            }
+        } while (!customerRechargeCards.isEmpty());
     }
 
     @Test
@@ -82,7 +101,6 @@ class CustomerRechargeCardControllerTest extends BaseControllerTest<CustomerRech
     void chargeback() {
         CustomerRechargeCardChargebackRequest chargebackRequest = new CustomerRechargeCardChargebackRequest();
         chargebackRequest.setRechargeCardCode("CRC20240201000001");
-        chargebackRequest.setChargebackUserCode("U000002");
         chargebackRequest.setChargebackAmount(BigDecimal.valueOf(100));
         super.performWhenCall(mockController.chargeback(chargebackRequest, super.mockAdmin()));
     }
