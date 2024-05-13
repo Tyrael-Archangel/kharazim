@@ -13,7 +13,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum SettlementOrderStatus implements BaseNameAndValueEnum {
 
-    UNPAID(1, "未结算"),
+    UNPAID(1, "待结算"),
 
     PAID(2, "已结算");
 

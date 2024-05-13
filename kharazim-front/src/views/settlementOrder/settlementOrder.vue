@@ -51,6 +51,17 @@
           />
         </el-select>
       </el-form-item>
+      <el-form-item label="结算状态">
+        <el-select
+          v-model="pageRequest.status"
+          clearable
+          filterable
+          placeholder="选择结算状态"
+        >
+          <el-option label="待结算" value="UNPAID">待结算</el-option>
+          <el-option label="已结算" value="PAID">已结算</el-option>
+        </el-select>
+      </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="loadSettlementOrders">查询</el-button>
       </el-form-item>
