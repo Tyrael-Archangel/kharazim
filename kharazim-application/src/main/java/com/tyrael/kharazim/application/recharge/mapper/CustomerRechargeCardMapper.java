@@ -12,6 +12,8 @@ import com.tyrael.kharazim.application.recharge.vo.CustomerRechargeCardPageReque
 import com.tyrael.kharazim.common.dto.PageResponse;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,6 +34,21 @@ public interface CustomerRechargeCardMapper extends BaseMapper<CustomerRechargeC
         LambdaQueryWrapper<CustomerRechargeCard> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper.eq(CustomerRechargeCard::getCode, code);
         return selectOne(queryWrapper);
+    }
+
+    /**
+     * list by codes
+     *
+     * @param codes 储值单编码
+     * @return {@link CustomerRechargeCard}
+     */
+    default List<CustomerRechargeCard> listByCodes(List<String> codes) {
+        if (codes == null || codes.isEmpty()) {
+            return new ArrayList<>();
+        }
+        LambdaQueryWrapper<CustomerRechargeCard> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.in(CustomerRechargeCard::getCode, codes);
+        return selectList(queryWrapper);
     }
 
     /**
@@ -120,6 +137,27 @@ public interface CustomerRechargeCardMapper extends BaseMapper<CustomerRechargeC
                 .set(CustomerRechargeCard::getUpdater, rechargeCard.getUpdater())
                 .set(CustomerRechargeCard::getUpdateTime, rechargeCard.getUpdateTime());
         return this.update(null, updateWrapper);
+    }
+
+    /**
+     * 更新消费
+     *
+     * @param originalConsumedAmount 原消费金额（用作乐观锁）
+     * @param rechargeCard           entity
+     * @return success
+     */
+    default boolean consume(BigDecimal originalConsumedAmount, CustomerRechargeCard rechargeCard) {
+        LambdaUpdateWrapper<CustomerRechargeCard> updateWrapper = Wrappers.lambdaUpdate();
+        updateWrapper.eq(CustomerRechargeCard::getId, rechargeCard.getId())
+                .eq(CustomerRechargeCard::getStatus, CustomerRechargeCardStatus.PAID)
+                .eq(CustomerRechargeCard::getConsumedAmount, originalConsumedAmount);
+
+        updateWrapper.set(CustomerRechargeCard::getConsumedAmount, rechargeCard.getConsumedAmount())
+                .set(CustomerRechargeCard::getConsumedOriginalAmount, rechargeCard.getConsumedOriginalAmount())
+                .set(CustomerRechargeCard::getUpdaterCode, rechargeCard.getUpdaterCode())
+                .set(CustomerRechargeCard::getUpdater, rechargeCard.getUpdater())
+                .set(CustomerRechargeCard::getUpdateTime, rechargeCard.getUpdateTime());
+        return this.update(null, updateWrapper) == 1;
     }
 
     /**

@@ -121,9 +121,9 @@
         />
         <el-table-column label="已消耗金额" prop="consumedAmount" width="110" />
         <el-table-column
-          label="已消耗金额原价"
+          label="已抵扣金额"
           prop="consumedOriginalAmount"
-          width="125"
+          width="110"
         />
         <el-table-column
           align="center"

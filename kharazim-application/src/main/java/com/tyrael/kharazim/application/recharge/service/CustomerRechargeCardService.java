@@ -2,6 +2,7 @@ package com.tyrael.kharazim.application.recharge.service;
 
 import com.tyrael.kharazim.application.base.auth.AuthUser;
 import com.tyrael.kharazim.application.recharge.vo.*;
+import com.tyrael.kharazim.application.settlement.vo.SettlementPayCommand;
 import com.tyrael.kharazim.common.dto.PageResponse;
 
 import java.util.List;
@@ -34,6 +35,15 @@ public interface CustomerRechargeCardService {
      * @param currentUser       操作人
      */
     void chargeback(CustomerRechargeCardChargebackRequest chargebackRequest, AuthUser currentUser);
+
+    /**
+     * 抵扣消费
+     *
+     * @param customerCode 会员编码
+     * @param payCommand   {@link SettlementPayCommand}
+     * @param currentUser  操作人
+     */
+    void deduct(String customerCode, SettlementPayCommand payCommand, AuthUser currentUser);
 
     /**
      * 会员储值单分页

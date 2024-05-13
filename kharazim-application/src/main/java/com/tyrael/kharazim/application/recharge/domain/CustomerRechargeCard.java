@@ -3,10 +3,13 @@ package com.tyrael.kharazim.application.recharge.domain;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.tyrael.kharazim.application.base.BaseDO;
+import com.tyrael.kharazim.application.base.auth.AuthUser;
 import com.tyrael.kharazim.application.recharge.enums.CustomerRechargeCardStatus;
+import com.tyrael.kharazim.common.exception.BusinessException;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 
 /**
@@ -121,6 +124,28 @@ public class CustomerRechargeCard extends BaseDO {
      */
     public boolean neverExpire() {
         return Boolean.TRUE.equals(neverExpire);
+    }
+
+    /**
+     * 消费
+     *
+     * @param useAmount    使用金额
+     * @param deductAmount 抵扣金额
+     */
+    public void consume(BigDecimal useAmount, BigDecimal deductAmount) {
+        BusinessException.assertTrue(this.effective(), "储值单[" + this.code + "]已失效");
+
+        BigDecimal discountRate = discountPercent.divide(new BigDecimal(100), 4, RoundingMode.HALF_UP);
+        // 必须满足 (抵扣金额 * 折扣率 == 使用金额) 或者 (使用金额 / 折扣率 == 抵扣金额)
+        if (deductAmount.compareTo(useAmount.divide(discountRate, 2, RoundingMode.HALF_UP)) != 0
+                && useAmount.compareTo(deductAmount.multiply(discountRate)) != 0) {
+            throw new BusinessException("储值单[" + this.code + "]抵扣金额与使用金额不匹配");
+        }
+        if (useAmount.compareTo(this.getBalanceAmount()) > 0) {
+            throw new BusinessException("储值单[" + this.code + "]余额不足");
+        }
+        this.consumedAmount = this.consumedAmount.add(useAmount);
+        this.consumedOriginalAmount = this.consumedOriginalAmount.add(deductAmount);
     }
 
 }

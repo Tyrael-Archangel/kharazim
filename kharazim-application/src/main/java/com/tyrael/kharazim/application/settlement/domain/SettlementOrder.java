@@ -59,4 +59,9 @@ public class SettlementOrder extends BaseDO {
     @TableField(exist = false)
     private List<SettlementOrderItem> items;
 
+    public void settlement() {
+        this.status = SettlementOrderStatus.PAID;
+        this.settlementTime = LocalDateTime.now();
+    }
+
 }

@@ -1,11 +1,13 @@
 package com.tyrael.kharazim.application.settlement.mapper;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.tyrael.kharazim.application.base.LambdaQueryWrapperX;
 import com.tyrael.kharazim.application.settlement.domain.SettlementOrder;
+import com.tyrael.kharazim.application.settlement.enums.SettlementOrderStatus;
 import com.tyrael.kharazim.application.settlement.vo.PageSettlementOrderRequest;
 import com.tyrael.kharazim.common.dto.PageResponse;
 import org.apache.ibatis.annotations.Mapper;
@@ -49,6 +51,24 @@ public interface SettlementOrderMapper extends BaseMapper<SettlementOrder> {
                 pageData.getTotal(),
                 pageRequest.getPageSize(),
                 pageRequest.getPageNum());
+    }
+
+    /**
+     * 保存已结算
+     *
+     * @param settlementOrder 结算单
+     * @return success
+     */
+    default boolean saveSettlement(SettlementOrder settlementOrder) {
+        LambdaUpdateWrapper<SettlementOrder> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.eq(SettlementOrder::getId, settlementOrder.getId())
+                .eq(SettlementOrder::getStatus, SettlementOrderStatus.UNPAID);
+        updateWrapper.set(SettlementOrder::getStatus, settlementOrder.getStatus())
+                .set(SettlementOrder::getSettlementTime, settlementOrder.getSettlementTime())
+                .set(SettlementOrder::getUpdaterCode, settlementOrder.getUpdaterCode())
+                .set(SettlementOrder::getUpdater, settlementOrder.getUpdater())
+                .set(SettlementOrder::getUpdateTime, settlementOrder.getUpdateTime());
+        return this.update(null, updateWrapper) == 1;
     }
 
 }

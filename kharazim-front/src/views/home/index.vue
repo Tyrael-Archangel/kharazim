@@ -37,14 +37,23 @@
       status-icon
     >
       <el-form-item label="原密码" prop="oldPassword">
-        <el-input v-model="changePasswordForm.oldPassword" type="password" />
+        <el-input
+          v-model="changePasswordForm.oldPassword"
+          show-password
+          type="password"
+        />
       </el-form-item>
       <el-form-item label="新密码" prop="newPassword">
-        <el-input v-model="changePasswordForm.newPassword" type="password" />
+        <el-input
+          v-model="changePasswordForm.newPassword"
+          show-password
+          type="password"
+        />
       </el-form-item>
       <el-form-item label="确认密码" prop="confirmPassword">
         <el-input
           v-model="changePasswordForm.confirmPassword"
+          show-password
           type="password"
         />
       </el-form-item>

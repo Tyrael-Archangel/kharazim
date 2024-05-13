@@ -19,6 +19,7 @@ import com.tyrael.kharazim.application.recharge.mapper.CustomerRechargeCardMappe
 import com.tyrael.kharazim.application.recharge.mapper.RechargeCardTypeMapper;
 import com.tyrael.kharazim.application.recharge.service.CustomerRechargeCardService;
 import com.tyrael.kharazim.application.recharge.vo.*;
+import com.tyrael.kharazim.application.settlement.vo.SettlementPayCommand;
 import com.tyrael.kharazim.application.system.service.CodeGenerator;
 import com.tyrael.kharazim.application.user.domain.User;
 import com.tyrael.kharazim.application.user.mapper.UserMapper;
@@ -160,6 +161,62 @@ public class CustomerRechargeCardServiceImpl implements CustomerRechargeCardServ
 
         int updatedRows = customerRechargeCardMapper.chargeback(rechargeCard);
         BusinessException.assertTrue(updatedRows > 0, "储值单" + rechargeCardCode + "退卡失败");
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void deduct(String customerCode, SettlementPayCommand payCommand, AuthUser currentUser) {
+
+        List<SettlementPayCommand.RechargeCardPayDetail> payDetails = payCommand.getRechargeCardPayDetails();
+        for (SettlementPayCommand.RechargeCardPayDetail payDetail : payDetails) {
+            CustomerRechargeCard rechargeCard = customerRechargeCardMapper.findByCode(payDetail.getRechargeCardCode());
+            DomainNotFoundException.assertFound(rechargeCard, payDetail.getRechargeCardCode());
+
+            BusinessException.assertTrue(customerCode.equals(rechargeCard.getCustomerCode()),
+                    "储值单[" + rechargeCard.getCode() + "]无法用于该结算单");
+
+            // 记录原始的consumedAmount，用作悲观锁
+            BigDecimal originalConsumedAmount = rechargeCard.getConsumedAmount();
+            rechargeCard.consume(payDetail.getUseAmount(), payDetail.getDeductAmount());
+            rechargeCard.setUpdate(currentUser.getCode(), currentUser.getNickName());
+
+            boolean success = customerRechargeCardMapper.consume(originalConsumedAmount, rechargeCard);
+            BusinessException.assertTrue(success, "储值单[" + rechargeCard.getCode() + "]抵扣失败");
+
+            saveDeductTransaction(payCommand, rechargeCard, payDetail, currentUser);
+        }
+    }
+
+    private void saveDeductTransaction(SettlementPayCommand payCommand,
+                                       CustomerRechargeCard customerRechargeCard,
+                                       SettlementPayCommand.RechargeCardPayDetail payDetail,
+                                       AuthUser currentUser) {
+
+        CustomerRechargeCardLog rechargeCardLog = new CustomerRechargeCardLog();
+        rechargeCardLog.setRechargeCardCode(customerRechargeCard.getCode());
+        rechargeCardLog.setCustomerCode(customerRechargeCard.getCustomerCode());
+        rechargeCardLog.setLogType(CustomerRechargeCardLogType.CONSUME);
+        rechargeCardLog.setSourceBusinessCode(payCommand.getSettlementOrderCode());
+        rechargeCardLog.setCreateTime(LocalDateTime.now());
+        rechargeCardLog.setAmount(payDetail.getUseAmount());
+        rechargeCardLog.setOperator(currentUser.getNickName());
+        rechargeCardLog.setOperatorCode(currentUser.getCode());
+        rechargeCardLog.setRemark(null);
+        rechargeCardLogMapper.insert(rechargeCardLog);
+
+        String transactionCode = codeGenerator.dailyTimeNext(BusinessCodeConstants.CUSTOMER_WALLET_TRANSACTION);
+        CustomerWalletTransaction transaction = new CustomerWalletTransaction();
+        transaction.setCode(transactionCode);
+        transaction.setCustomerCode(customerRechargeCard.getCustomerCode());
+        transaction.setType(TransactionTypeEnum.CONSUME);
+        transaction.setSource(TransactionSourceEnum.SETTLEMENT_ORDER);
+        transaction.setSourceBusinessCode(payCommand.getSettlementOrderCode());
+        transaction.setTransactionTime(LocalDateTime.now());
+        transaction.setAmount(payDetail.getUseAmount());
+        transaction.setOperator(currentUser.getNickName());
+        transaction.setOperatorCode(currentUser.getCode());
+        transaction.setRemark(null);
+        customerWalletTransactionMapper.insert(transaction);
     }
 
     @Override
