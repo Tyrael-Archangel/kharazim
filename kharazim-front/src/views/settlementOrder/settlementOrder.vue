@@ -202,10 +202,26 @@
           {{ currentPaySO.totalAmount }}
         </el-descriptions-item>
         <el-descriptions-item label="总使用金额">
-          {{ currentPaySO.totalUseAmount }}
+          <el-text
+            :style="
+              currentPaySO.totalAmount !== currentPaySO.totalDeductAmount
+                ? 'color: red'
+                : ''
+            "
+          >
+            {{ currentPaySO.totalUseAmount }}
+          </el-text>
         </el-descriptions-item>
         <el-descriptions-item label="总抵扣金额">
-          {{ currentPaySO.totalDeductAmount }}
+          <el-text
+            :style="
+              currentPaySO.totalAmount !== currentPaySO.totalDeductAmount
+                ? 'color: red'
+                : ''
+            "
+          >
+            {{ currentPaySO.totalDeductAmount }}
+          </el-text>
         </el-descriptions-item>
       </el-descriptions>
     </div>
@@ -441,11 +457,13 @@ function submitPay() {
   const usedCustomerRechargeCards =
     customerRechargeCardTableRef.value?.getSelectionRows() as CustomerRechargeCard[];
   for (const customerRechargeCard of usedCustomerRechargeCards) {
-    rechargeCardPayDetails.push({
-      rechargeCardCode: customerRechargeCard.code,
-      useAmount: customerRechargeCard.useAmount,
-      deductAmount: customerRechargeCard.deductAmount,
-    });
+    if (customerRechargeCard.useAmount && customerRechargeCard.deductAmount) {
+      rechargeCardPayDetails.push({
+        rechargeCardCode: customerRechargeCard.code,
+        useAmount: customerRechargeCard.useAmount,
+        deductAmount: customerRechargeCard.deductAmount,
+      });
+    }
   }
   axios
     .post("/kharazim-api/settlement-order/pay", {
@@ -465,4 +483,8 @@ onMounted(() => {
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+.red-text {
+  color: red;
+}
+</style>
