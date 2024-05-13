@@ -23,7 +23,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author Tyrael Archangel
@@ -51,12 +50,9 @@ class CustomerRechargeCardControllerTest extends BaseControllerTest<CustomerRech
     void recharge() {
         List<UserDTO> users = userService.list(new ListUserRequest());
         List<CustomerSimpleVO> customers = customerService.listSimpleInfo(new ListCustomerRequest());
-        customers = customers.stream()
-                .filter(e -> e.getName().equals("朱学阳"))
-                .collect(Collectors.toList());
         List<RechargeCardTypeVO> cardTypes = rechargeCardTypeService.list(new ListRechargeCardTypeRequest());
 
-        int totalCount = 6;
+        int totalCount = random.nextInt(20) + 10;
         for (int i = 0; i < totalCount; i++) {
             CustomerSimpleVO customer = CollectionUtils.random(customers);
             UserDTO user = CollectionUtils.random(users);
