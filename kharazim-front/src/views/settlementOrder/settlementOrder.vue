@@ -494,8 +494,4 @@ onMounted(() => {
 });
 </script>
 
-<style scoped>
-.red-text {
-  color: red;
-}
-</style>
+<style scoped></style>

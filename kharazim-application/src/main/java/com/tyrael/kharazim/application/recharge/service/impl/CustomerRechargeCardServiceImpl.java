@@ -1,6 +1,5 @@
 package com.tyrael.kharazim.application.recharge.service.impl;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.tyrael.kharazim.application.base.auth.AuthUser;
 import com.tyrael.kharazim.application.config.BusinessCodeConstants;
@@ -443,21 +442,17 @@ public class CustomerRechargeCardServiceImpl implements CustomerRechargeCardServ
                 .collect(Collectors.groupingBy(CustomerRechargeCard::getCardTypeCode,
                         Collectors.reducing(BigDecimal.ZERO, CustomerRechargeCard::getBalanceAmount, BigDecimal::add)));
 
-        Map<String, RechargeCardType> rechargeCardTypeMap = rechargeCardTypeMapper.mapByCodes(cardTypeToBalanceMap.keySet());
-
-        List<CustomerRechargeCardTypeBalanceVO> result = Lists.newArrayList();
-        cardTypeToBalanceMap.forEach((cardTypeCode, balanceAmount) -> {
-            RechargeCardType rechargeCardType = rechargeCardTypeMap.get(cardTypeCode);
-            CustomerRechargeCardTypeBalanceVO rechargeCardBalance = CustomerRechargeCardTypeBalanceVO.builder()
-                    .customerCode(customerCode)
-                    .customerName(customer.getName())
-                    .balanceAmount(balanceAmount)
-                    .cardTypeCode(cardTypeCode)
-                    .cardTypeName(rechargeCardType.getName())
-                    .build();
-            result.add(rechargeCardBalance);
-        });
-        return result;
+        List<RechargeCardType> rechargeCardTypes = rechargeCardTypeMapper.listAll();
+        return rechargeCardTypes.stream()
+                .map(rechargeCardType -> CustomerRechargeCardTypeBalanceVO.builder()
+                        .customerCode(customerCode)
+                        .customerName(customer.getName())
+                        .balanceAmount(cardTypeToBalanceMap.getOrDefault(rechargeCardType.getCode(), BigDecimal.ZERO))
+                        .cardTypeCode(rechargeCardType.getCode())
+                        .cardTypeName(rechargeCardType.getName())
+                        .build()
+                )
+                .collect(Collectors.toList());
     }
 
 }

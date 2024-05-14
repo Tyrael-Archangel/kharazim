@@ -58,6 +58,15 @@ public interface RechargeCardTypeMapper extends BaseMapper<RechargeCardType> {
     }
 
     /**
+     * list all
+     *
+     * @return RechargeCardTypes
+     */
+    default List<RechargeCardType> listAll() {
+        return selectList(new LambdaQueryWrapper<>());
+    }
+
+    /**
      * list
      *
      * @param listRequest {@link ListRechargeCardTypeRequest}

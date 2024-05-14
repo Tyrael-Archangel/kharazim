@@ -109,6 +109,43 @@
         <div />
       </div>
     </div>
+    <div class="customer-filed-block">
+      <div>
+        <el-text class="customer-block-header">会员账户总览</el-text>
+        <div style="padding-left: 10px">
+          <el-row>
+            <el-col :span="2">
+              <el-text>储值卡余额</el-text>
+            </el-col>
+            <el-col :span="4">
+              <el-text>{{ customerBalance.totalBalanceAmount }}</el-text>
+            </el-col>
+            <el-col :span="2">
+              <el-text>累计充值金额</el-text>
+            </el-col>
+            <el-col :span="4">
+              <el-text>{{ customerBalance.accumulatedRechargeAmount }}</el-text>
+            </el-col>
+            <el-col :span="2">
+              <el-text>累计消费金额</el-text>
+            </el-col>
+            <el-col :span="3">
+              <el-text>{{ customerBalance.accumulatedConsumedAmount }}</el-text>
+            </el-col>
+            <el-col :span="3">
+              <el-text>最近即将过期金额</el-text>
+            </el-col>
+            <el-col :span="3">
+              <el-text>{{ customerBalance.latestExpireAmount }}</el-text>
+            </el-col>
+          </el-row>
+        </div>
+        <div
+          id="customerCardTypeBalancesChart"
+          style="width: 1100px; height: 300px; padding-left: 50px"
+        ></div>
+      </div>
+    </div>
   </el-drawer>
 
   <el-dialog v-model="editCustomerVisible" title="编辑会员" width="30%">
@@ -130,9 +167,10 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, reactive, ref } from "vue";
+import { nextTick, onMounted, reactive, ref } from "vue";
 import axios from "@/utils/http.js";
 import { AxiosResponse } from "axios";
+import * as echarts from "echarts/core";
 
 interface CustomerData {
   code: string;
@@ -191,6 +229,8 @@ const showDetail = (customerData: CustomerData) => {
   queryInsuranceAddress(customerData);
   queryCustomerServiceUserData(customerData);
   queryCustomerSalesConsultantData(customerData);
+  loadCustomerRechargeCardBalance(customerData);
+  loadCustomerCardTypeBalances(customerData);
 };
 
 const queryCustomerTags = (customerData: CustomerData) => {
@@ -317,6 +357,87 @@ const queryCustomerSalesConsultantData = (customerData: CustomerData) => {
       customerConsultant.value = response.data.data;
     });
 };
+
+interface CustomerBalanceOverview {
+  customerCode: string;
+  customerName: string;
+  totalBalanceAmount: number;
+  accumulatedRechargeAmount: number;
+  accumulatedConsumedAmount: number;
+  latestExpireAmount: number;
+  expireDate: string;
+}
+
+const customerBalance = ref<CustomerBalanceOverview>({
+  customerCode: "",
+  customerName: "",
+  totalBalanceAmount: 0,
+  accumulatedRechargeAmount: 0,
+  accumulatedConsumedAmount: 0,
+  latestExpireAmount: 0,
+  expireDate: "",
+});
+
+function loadCustomerRechargeCardBalance(customerData: CustomerData) {
+  axios
+    .get(
+      `/kharazim-api/recharge-card/customer/balance-overview/${customerData.code}`,
+    )
+    .then((response: AxiosResponse) => {
+      customerBalance.value = response.data.data;
+    });
+}
+
+interface CustomerCardTypeBalance {
+  customerCode: string;
+  customerName: string;
+  balanceAmount: number;
+  cardTypeCode: string;
+  cardTypeName: string;
+}
+
+const customerCardTypeBalances = ref<CustomerCardTypeBalance[]>([]);
+
+function loadCustomerCardTypeBalances(customerData: CustomerData) {
+  axios
+    .get(
+      `/kharazim-api/recharge-card/customer/card-type-balance/${customerData.code}`,
+    )
+    .then((response: AxiosResponse) => {
+      customerCardTypeBalances.value = response.data.data;
+      renderChart();
+    });
+}
+
+function renderChart() {
+  let cardTypes = customerCardTypeBalances.value.map((x) => x.cardTypeName);
+  let balanceAmounts = customerCardTypeBalances.value.map(
+    (x) => x.balanceAmount,
+  );
+  nextTick(() => {
+    let cardTypeBalancesChart = echarts.init(
+      document.getElementById("customerCardTypeBalancesChart"),
+    );
+    const option = {
+      tooltip: {},
+      legend: {
+        data: ["剩余金额"],
+      },
+      xAxis: {
+        data: cardTypes,
+      },
+      yAxis: {},
+      series: [
+        {
+          name: "剩余金额",
+          type: "bar",
+          data: balanceAmounts,
+        },
+      ],
+    };
+    cardTypeBalancesChart.setOption(option);
+  });
+}
 
 onMounted(() => loadCustomer());
 </script>
