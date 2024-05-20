@@ -68,6 +68,10 @@ public class FullPermutationDemo {
             return index == element.index && Objects.equals(t, element.t);
         }
 
+        @Override
+        public int hashCode() {
+            return Objects.hash(t, index);
+        }
     }
 
 }
