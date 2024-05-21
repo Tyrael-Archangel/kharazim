@@ -19,6 +19,11 @@ public enum SequenceGroup {
     TRIGONOMETRIC,
 
     /**
+     * 百分比
+     */
+    PERCENT,
+
+    /**
      * 乘、除
      */
     MULTIPLY_DIVIDE,
@@ -29,7 +34,7 @@ public enum SequenceGroup {
     ADD_SUBTRACT;
 
     public static List<SequenceGroup> getSequences() {
-        return List.of(BRACKET, TRIGONOMETRIC, MULTIPLY_DIVIDE, ADD_SUBTRACT);
+        return List.of(BRACKET, TRIGONOMETRIC, PERCENT, MULTIPLY_DIVIDE, ADD_SUBTRACT);
     }
 
 }

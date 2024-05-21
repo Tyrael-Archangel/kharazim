@@ -28,7 +28,8 @@ public class NormalSymbolExpressionFactory implements SymbolExpressionFactory {
                 new SinExpression.SinSymbol(),
                 new CosExpression.CosSymbol(),
                 new BracketSymbolExpression.Left(),
-                new BracketSymbolExpression.Right()
+                new BracketSymbolExpression.Right(),
+                new PercentExpression.PercentSymbol()
         );
     }
 
