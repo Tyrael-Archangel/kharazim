@@ -1,5 +1,24 @@
 <template>
   <div>
+    <el-form
+      ref="pageRequestFormRef"
+      :inline="true"
+      :model="pageRequest"
+      class="page-form-block"
+    >
+      <el-form-item label="会员编码" prop="code">
+        <el-input v-model="pageRequest.code" clearable placeholder="会员编码" />
+      </el-form-item>
+      <el-form-item label="会员名" prop="name">
+        <el-input v-model="pageRequest.name" clearable placeholder="会员名" />
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="loadCustomer">查询</el-button>
+        <el-button type="primary" @click="resetAndLoadCustomer">重置</el-button>
+      </el-form-item>
+    </el-form>
+  </div>
+  <div>
     <el-table :data="customerPageData" border style="width: 100%">
       <el-table-column label="会员编码" prop="code" width="140">
         <template v-slot="{ row }">
@@ -171,6 +190,7 @@ import { nextTick, onMounted, reactive, ref } from "vue";
 import axios from "@/utils/http.js";
 import { AxiosResponse } from "axios";
 import * as echarts from "echarts/core";
+import { FormInstance } from "element-plus";
 
 interface CustomerData {
   code: string;
@@ -185,6 +205,13 @@ interface CustomerData {
 }
 
 const customerPageData = ref<CustomerData[]>([]);
+
+const pageRequestFormRef = ref<FormInstance>();
+const pageRequest = ref({
+  code: "",
+  name: "",
+});
+
 const pageInfo = reactive({
   currentPage: 1,
   pageSize: 10,
@@ -194,13 +221,23 @@ const pageInfo = reactive({
 
 function loadCustomer() {
   axios
-    .get(
-      `/kharazim-api/customer/page?pageSize=${pageInfo.pageSize}&pageNum=${pageInfo.currentPage}`,
-    )
+    .get("/kharazim-api/customer/page", {
+      params: {
+        pageSize: pageInfo.pageSize,
+        pageNum: pageInfo.currentPage,
+        code: pageRequest.value.code,
+        name: pageRequest.value.name,
+      },
+    })
     .then((response: AxiosResponse) => {
       customerPageData.value = response.data.data;
       pageInfo.totalCount = response.data.totalCount;
     });
+}
+
+function resetAndLoadCustomer() {
+  pageRequestFormRef.value?.resetFields();
+  loadCustomer();
 }
 
 const detailCustomerData = ref<CustomerData>({

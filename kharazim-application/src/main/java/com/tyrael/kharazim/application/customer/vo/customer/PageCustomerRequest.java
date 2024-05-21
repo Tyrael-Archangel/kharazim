@@ -11,6 +11,9 @@ import lombok.Data;
 @Data
 public class PageCustomerRequest extends PageCommand {
 
+    @Schema(description = "会员编码")
+    private String code;
+
     @Schema(description = "会员名")
     private String name;
 

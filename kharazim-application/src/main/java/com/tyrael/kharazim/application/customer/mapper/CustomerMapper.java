@@ -73,6 +73,7 @@ public interface CustomerMapper extends BaseMapper<Customer> {
      */
     default PageResponse<Customer> page(PageCustomerRequest pageRequest) {
         LambdaQueryWrapperX<Customer> queryWrapper = new LambdaQueryWrapperX<>();
+        queryWrapper.eqIfHasText(Customer::getCode, pageRequest.getCode());
         queryWrapper.likeIfPresent(Customer::getName, pageRequest.getName());
         queryWrapper.orderByAsc(Customer::getCode);
         Page<Customer> pageData = selectPage(new Page<>(pageRequest.getPageNum(), pageRequest.getPageSize()), queryWrapper);
