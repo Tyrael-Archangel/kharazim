@@ -1,5 +1,9 @@
 package com.tyrael.kharazim.application.customer.service.impl;
 
+import com.alibaba.excel.EasyExcelFactory;
+import com.alibaba.excel.ExcelWriter;
+import com.alibaba.excel.write.metadata.WriteSheet;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.collect.Lists;
 import com.tyrael.kharazim.application.base.auth.AuthUser;
 import com.tyrael.kharazim.application.config.BusinessCodeConstants;
@@ -18,6 +22,7 @@ import com.tyrael.kharazim.application.user.mapper.UserMapper;
 import com.tyrael.kharazim.common.dto.PageResponse;
 import com.tyrael.kharazim.common.exception.BusinessException;
 import com.tyrael.kharazim.common.exception.DomainNotFoundException;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -26,6 +31,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.MonthDay;
@@ -60,10 +68,38 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public PageResponse<CustomerBaseVO> page(PageCustomerRequest pageRequest) {
-        PageResponse<Customer> pageData = customerMapper.page(pageRequest);
+        Page<Customer> pageCondition = new Page<>(pageRequest.getPageNum(), pageRequest.getPageSize());
+        PageResponse<Customer> pageData = customerMapper.page(pageRequest, pageCondition);
         return PageResponse.success(customerConverter.customerBaseVOs(pageData.getData()),
                 pageData.getTotalCount(), pageRequest.getPageSize(), pageRequest.getPageNum());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void export(PageCustomerRequest pageRequest, HttpServletResponse response) throws IOException {
+        WriteSheet writeSheet = EasyExcelFactory.writerSheet("会员数据")
+                .head(CustomerExportVO.class)
+                .build();
+        int pageSize = 200;
+        int pageNum = 1;
+        try (ExcelWriter excelWriter = EasyExcelFactory.write(response.getOutputStream()).build()) {
+            List<CustomerExportVO> exports;
+            do {
+                Page<Customer> pageCondition = new Page<>(pageNum, pageSize, false);
+                PageResponse<Customer> pageData = customerMapper.page(pageRequest, pageCondition);
+
+                exports = customerConverter.customerExportVOs(pageData.getData());
+                excelWriter.write(exports, writeSheet);
+
+                pageNum++;
+            } while (!exports.isEmpty());
+
+            response.addHeader("Content-disposition", "attachment;filename="
+                    + URLEncoder.encode("会员数据.xlsx", StandardCharsets.UTF_8));
+            response.setContentType("application/vnd.ms-excel;charset=UTF-8");
+        }
     }
 
     @Override

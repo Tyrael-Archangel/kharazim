@@ -3,7 +3,9 @@ package com.tyrael.kharazim.application.customer.service;
 import com.tyrael.kharazim.application.base.auth.AuthUser;
 import com.tyrael.kharazim.application.customer.vo.customer.*;
 import com.tyrael.kharazim.common.dto.PageResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -27,6 +29,15 @@ public interface CustomerService {
      * @return 会员分页数据
      */
     PageResponse<CustomerBaseVO> page(PageCustomerRequest pageRequest);
+
+    /**
+     * 导出会员数据
+     *
+     * @param pageRequest         {@link PageCustomerRequest}
+     * @param httpServletResponse HttpServletResponse
+     * @throws IOException IOException
+     */
+    void export(PageCustomerRequest pageRequest, HttpServletResponse httpServletResponse) throws IOException;
 
     /**
      * 新增会员

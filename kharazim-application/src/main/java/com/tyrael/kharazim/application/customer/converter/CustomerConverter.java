@@ -6,9 +6,13 @@ import com.tyrael.kharazim.application.customer.vo.customer.*;
 import com.tyrael.kharazim.application.system.service.DictService;
 import com.tyrael.kharazim.application.system.service.FileService;
 import com.tyrael.kharazim.application.user.domain.User;
+import com.tyrael.kharazim.common.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.time.DateTimeException;
+import java.time.LocalDate;
+import java.time.MonthDay;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -146,6 +150,53 @@ public class CustomerConverter {
                 .salesConsultantAvatarUrl(fileService.getUrl(user.getAvatar()))
                 .updateTime(customerSalesConsultant.getUpdateTime())
                 .build();
+    }
+
+    /**
+     * Customers -> CustomerExportVOs
+     */
+    public List<CustomerExportVO> customerExportVOs(Collection<Customer> customers) {
+        if (customers == null || customers.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        Map<String, String> sourceChannelValueToName = dictService.dictItemMap(
+                DictCodeConstants.CUSTOMER_SOURCE_CHANNEL);
+
+        return customers.stream()
+                .map(customer -> CustomerExportVO.builder()
+                        .code(customer.getCode())
+                        .name(customer.getName())
+                        .gender(customer.getGender())
+                        .birthday(customerBirthday(customer))
+                        .phone(customer.getPhone())
+                        .certificateType(customer.getCertificateType())
+                        .certificateCode(customer.getCertificateCode())
+                        .remark(customer.getRemark())
+                        .sourceChannel(sourceChannelValueToName.get(customer.getSourceChannelDict()))
+                        .createTime(customer.getCreateTime())
+                        .build()
+                )
+                .collect(Collectors.toList());
+    }
+
+    private String customerBirthday(Customer customer) {
+        Integer birthYear = customer.getBirthYear();
+        Integer birthDayOfMonth = customer.getBirthDayOfMonth();
+        Integer birthMonth = customer.getBirthMonth();
+
+        if (birthMonth != null && birthDayOfMonth != null) {
+            try {
+                if (birthYear != null) {
+                    return LocalDate.of(birthYear, birthMonth, birthDayOfMonth).toString();
+                } else {
+                    return MonthDay.of(birthMonth, birthDayOfMonth).toString();
+                }
+            } catch (DateTimeException e) {
+                throw new BusinessException(e.getMessage(), e);
+            }
+        }
+        return null;
     }
 
 }

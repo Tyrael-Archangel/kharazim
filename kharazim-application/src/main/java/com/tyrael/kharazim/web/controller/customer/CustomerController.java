@@ -4,15 +4,21 @@ import com.tyrael.kharazim.application.base.auth.AuthUser;
 import com.tyrael.kharazim.application.base.auth.CurrentUser;
 import com.tyrael.kharazim.application.customer.service.CustomerService;
 import com.tyrael.kharazim.application.customer.vo.customer.*;
-import com.tyrael.kharazim.common.dto.*;
+import com.tyrael.kharazim.common.dto.DataResponse;
+import com.tyrael.kharazim.common.dto.MultiResponse;
+import com.tyrael.kharazim.common.dto.PageResponse;
+import com.tyrael.kharazim.common.dto.Response;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 /**
  * @author Tyrael Archangel
@@ -37,6 +43,13 @@ public class CustomerController {
     @Operation(summary = "会员分页")
     public PageResponse<CustomerBaseVO> page(@ParameterObject PageCustomerRequest pageRequest) {
         return customerService.page(pageRequest);
+    }
+
+    @GetMapping("/export")
+    @Operation(summary = "导出会员数据")
+    public void export(@ParameterObject PageCustomerRequest pageRequest,
+                       HttpServletResponse httpServletResponse) throws IOException {
+        customerService.export(pageRequest, httpServletResponse);
     }
 
     @PostMapping
