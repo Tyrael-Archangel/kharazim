@@ -19,7 +19,17 @@
     </el-form>
   </div>
   <div>
-    <el-table :data="customerPageData" border style="width: 100%">
+    <el-link
+      :href="`/kharazim-api/customer/export?code=${pageRequest.code}&name=${pageRequest.name}`"
+      :underline="false"
+    >
+      <el-button plain>导出</el-button>
+    </el-link>
+    <el-table
+      :data="customerPageData"
+      border
+      style="width: 100%; margin-top: 10px"
+    >
       <el-table-column label="会员编码" prop="code" width="140">
         <template v-slot="{ row }">
           <el-link type="primary" @click="showDetail(row)"
