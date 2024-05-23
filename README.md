@@ -10,6 +10,3 @@ A quality outpatient operate system
     * 使用knife4j管理接口文档
 * kharazim-front，提供高质量的门诊管理系统前端服务
     * vue3 + vite + element-plus
-* kharazim-demo，示例用模块
-    * 记录一些容易出错或者不太明确运行结果的代码相关问题
-    * 编写一些简单的用于练手的逻辑实现
