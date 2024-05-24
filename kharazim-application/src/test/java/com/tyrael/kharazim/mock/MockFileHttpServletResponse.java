@@ -21,6 +21,22 @@ public class MockFileHttpServletResponse extends MockHttpServletResponse {
         this.file = file;
     }
 
+    public MockFileHttpServletResponse(String fileName, String fileDir) {
+        this(new File(fileDir, fileName));
+    }
+
+    public MockFileHttpServletResponse(String fileName) {
+        this(fileName, defaultFileDir());
+    }
+
+    private static String defaultFileDir() {
+        String kharazimExportDir = System.getenv("KHARAZIM_EXPORT_DIR");
+        if (kharazimExportDir != null) {
+            return kharazimExportDir;
+        }
+        return new File(System.getProperty("java.io.tmpdir"), "kharazim_export").getAbsolutePath();
+    }
+
     @Override
     @NonNull
     public ServletOutputStream getOutputStream() {

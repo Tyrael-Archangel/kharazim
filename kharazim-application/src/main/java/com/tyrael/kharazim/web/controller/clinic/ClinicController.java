@@ -11,10 +11,13 @@ import com.tyrael.kharazim.common.dto.Response;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 /**
  * @author Tyrael Archangel
@@ -32,6 +35,13 @@ public class ClinicController {
     @Operation(summary = "诊所（机构）分页")
     public PageResponse<ClinicVO> page(@ParameterObject PageClinicRequest pageRequest) {
         return clinicService.page(pageRequest);
+    }
+
+    @GetMapping("/export")
+    @Operation(summary = "诊所（机构）导出")
+    public void export(@ParameterObject PageClinicRequest request,
+                       HttpServletResponse httpServletResponse) throws IOException {
+        clinicService.export(request, httpServletResponse);
     }
 
     @GetMapping("/list")

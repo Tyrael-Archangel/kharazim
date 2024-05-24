@@ -34,6 +34,15 @@ public interface FileService {
     void download(String fileId, HttpServletResponse httpServletResponse) throws IOException;
 
     /**
+     * 获取文件字节数据
+     *
+     * @param fileId 文件ID
+     * @return 文件字节数据
+     * @throws IOException IOException
+     */
+    byte[] readBytes(String fileId) throws IOException;
+
+    /**
      * 获取文件链接地址
      *
      * @param fileId 文件ID

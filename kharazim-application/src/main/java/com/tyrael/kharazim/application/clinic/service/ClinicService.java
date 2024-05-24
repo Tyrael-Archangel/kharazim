@@ -3,7 +3,9 @@ package com.tyrael.kharazim.application.clinic.service;
 import com.tyrael.kharazim.application.base.auth.AuthUser;
 import com.tyrael.kharazim.application.clinic.vo.*;
 import com.tyrael.kharazim.common.dto.PageResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -19,6 +21,15 @@ public interface ClinicService {
      * @return Clinics
      */
     PageResponse<ClinicVO> page(PageClinicRequest pageRequest);
+
+    /**
+     * export
+     *
+     * @param request             {@link PageClinicRequest}
+     * @param httpServletResponse HttpServletResponse
+     * @throws IOException IOException
+     */
+    void export(PageClinicRequest request, HttpServletResponse httpServletResponse) throws IOException;
 
     /**
      * list

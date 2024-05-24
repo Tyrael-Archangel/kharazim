@@ -55,10 +55,11 @@ public interface ClinicMapper extends BaseMapper<Clinic> {
     /**
      * 分页查询
      *
-     * @param pageRequest {@link PageClinicRequest}
+     * @param pageRequest   {@link PageClinicRequest}
+     * @param pageCondition 分页条件
      * @return 分页数据
      */
-    default PageResponse<Clinic> page(PageClinicRequest pageRequest) {
+    default PageResponse<Clinic> page(PageClinicRequest pageRequest, Page<Clinic> pageCondition) {
 
         LambdaQueryWrapperX<Clinic> queryWrapper = new LambdaQueryWrapperX<>();
         String name = StringUtils.trim(pageRequest.getName());
@@ -70,12 +71,11 @@ public interface ClinicMapper extends BaseMapper<Clinic> {
         queryWrapper.eqIfPresent(Clinic::getStatus, pageRequest.getStatus());
         queryWrapper.orderByAsc(Clinic::getCode);
 
-        Page<Clinic> page = new Page<>(pageRequest.getPageNum(), pageRequest.getPageSize());
-        Page<Clinic> pageResponse = selectPage(page, queryWrapper);
+        Page<Clinic> pageResponse = selectPage(pageCondition, queryWrapper);
         return PageResponse.success(pageResponse.getRecords(),
                 pageResponse.getTotal(),
-                pageRequest.getPageSize(),
-                pageRequest.getPageNum());
+                (int) pageCondition.getSize(),
+                (int) pageCondition.getCurrent());
     }
 
     /**

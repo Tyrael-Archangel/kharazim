@@ -18,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StopWatch;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
@@ -179,6 +180,18 @@ public class FileServiceImpl implements FileService {
             httpServletResponse.setContentLengthLong(targetFile.length());
 
             fileInputStream.transferTo(httpServletResponse.getOutputStream());
+        }
+    }
+
+    @Override
+    public byte[] readBytes(String fileId) throws IOException {
+        FileDO fileDO = fileMapper.selectById(fileId);
+        DomainNotFoundException.assertFound(fileDO, fileId);
+
+        File root = fileRoot();
+        File targetFile = new File(root, fileDO.getPath());
+        try (FileInputStream fileInputStream = new FileInputStream(targetFile)) {
+            return fileInputStream.readAllBytes();
         }
     }
 

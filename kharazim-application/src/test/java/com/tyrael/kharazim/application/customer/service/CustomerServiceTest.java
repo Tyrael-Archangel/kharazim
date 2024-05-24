@@ -21,9 +21,8 @@ class CustomerServiceTest {
 
     @Test
     void export() throws IOException {
-        File exportDir = new File(System.getProperty("java.io.tmpdir"), "kharazim_export");
-        File file = new File(exportDir, "会员数据" + System.currentTimeMillis() + ".xlsx");
-        customerService.export(new PageCustomerRequest(), new MockFileHttpServletResponse(file));
+        String fileName = "会员数据" + System.currentTimeMillis() + ".xlsx";
+        customerService.export(new PageCustomerRequest(), new MockFileHttpServletResponse(fileName));
     }
 
 }
