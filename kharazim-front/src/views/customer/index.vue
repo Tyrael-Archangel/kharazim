@@ -20,7 +20,7 @@
   </div>
   <div>
     <el-link
-      :href="`/kharazim-api/customer/export?code=${pageRequest.code}&name=${pageRequest.name}`"
+      :href="`/kharazim-api/customer/export?code=${pageRequest.code}&name=${pageRequest.name}&${ACCESS_TOKEN}=${getToken()}`"
       :underline="false"
     >
       <el-button plain>导出</el-button>
@@ -198,6 +198,7 @@
 <script lang="ts" setup>
 import { nextTick, onMounted, reactive, ref } from "vue";
 import axios from "@/utils/http.js";
+import { ACCESS_TOKEN, getToken } from "@/utils/auth.js";
 import { AxiosResponse } from "axios";
 import * as echarts from "echarts/core";
 import { FormInstance } from "element-plus";

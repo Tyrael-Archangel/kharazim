@@ -61,8 +61,8 @@
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="loadPrescriptions">查询</el-button>
-        <el-button type="primary" @click="resetRequestAndLoadPrescriptions"
-          >重置
+        <el-button type="primary" @click="resetAndReloadPrescriptions">
+          重置
         </el-button>
       </el-form-item>
     </el-form>
@@ -71,6 +71,13 @@
     <router-link to="/create-prescription">
       <el-button type="primary">创建处方</el-button>
     </router-link>
+    <el-link
+      :href="`/kharazim-api/prescription/export` + formatPageUrlQuery()"
+      :underline="false"
+      style="float: right"
+    >
+      <el-button plain>导出</el-button>
+    </el-link>
   </div>
   <div>
     <div>
@@ -134,7 +141,9 @@
 import { onMounted, reactive, ref } from "vue";
 import { AxiosResponse } from "axios";
 import axios from "@/utils/http.js";
+import { ACCESS_TOKEN, getToken } from "@/utils/auth.js";
 import { dateFormat } from "@/utils/DateUtil.js";
+import { join } from "@/utils/StringUtil.ts";
 import { useRouter } from "vue-router";
 
 const prescriptionPageData = ref([]);
@@ -153,7 +162,7 @@ const pageInfo = reactive({
   pageSizes: [10, 20, 50, 100],
 });
 
-function resetRequestAndLoadPrescriptions() {
+function resetAndReloadPrescriptions() {
   pageRequest.prescriptionCode = "";
   pageRequest.customerCode = "";
   pageRequest.clinicCodes = [];
@@ -164,28 +173,36 @@ function resetRequestAndLoadPrescriptions() {
 }
 
 function loadPrescriptions() {
+  axios
+    .get("/kharazim-api/prescription/page" + formatPageUrlQuery())
+    .then((response: AxiosResponse) => {
+      prescriptionPageData.value = response.data.data;
+      pageInfo.totalCount = response.data.totalCount;
+    });
+}
+
+function formatPageUrlQuery() {
   let createDateMin = "";
   let createDateMax = "";
   if (pageRequest.createDate && pageRequest.createDate.length === 2) {
     createDateMin = dateFormat(pageRequest.createDate[0]);
     createDateMax = dateFormat(pageRequest.createDate[1]);
   }
-  axios
-    .get("/kharazim-api/prescription/page", {
-      params: {
-        prescriptionCode: pageRequest.prescriptionCode,
-        customerCode: pageRequest.customerCode,
-        clinicCodes: pageRequest.clinicCodes,
-        createDateMin: createDateMin,
-        createDateMax: createDateMax,
-        pageSize: pageInfo.pageSize,
-        pageNum: pageInfo.currentPage,
-      },
-    })
-    .then((response: AxiosResponse) => {
-      prescriptionPageData.value = response.data.data;
-      pageInfo.totalCount = response.data.totalCount;
-    });
+
+  return join(
+    [
+      `prescriptionCode=${pageRequest.prescriptionCode ? pageRequest.prescriptionCode : ""}`,
+      `customerCode=${pageRequest.customerCode ? pageRequest.customerCode : ""}`,
+      `clinicCodes=${pageRequest.clinicCodes ? pageRequest.clinicCodes : ""}`,
+      `createDateMin=${createDateMin}`,
+      `createDateMax=${createDateMax}`,
+      `pageSize=${pageInfo.pageSize}`,
+      `pageNum=${pageInfo.currentPage}`,
+      `${ACCESS_TOKEN}=${getToken()}`,
+    ],
+    "&",
+    "?",
+  );
 }
 
 interface Customer {

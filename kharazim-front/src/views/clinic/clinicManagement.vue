@@ -16,7 +16,8 @@
       <el-link
         :href="
           `/kharazim-api/clinic/export?name=${pageRequest.name}` +
-          (pageRequest.status ? `&status=${pageRequest.status}` : '')
+          (pageRequest.status ? `&status=${pageRequest.status}` : '') +
+          `&${ACCESS_TOKEN}=${getToken()}`
         "
         :underline="false"
         style="float: right"
@@ -73,6 +74,7 @@
 <script lang="ts" setup>
 import { onMounted, reactive, ref } from "vue";
 import axios from "@/utils/http.js";
+import { ACCESS_TOKEN, getToken } from "@/utils/auth.js";
 import { AxiosResponse } from "axios";
 
 interface ClinicData {
