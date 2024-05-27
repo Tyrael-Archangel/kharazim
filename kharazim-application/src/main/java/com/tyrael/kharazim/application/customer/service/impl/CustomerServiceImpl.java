@@ -19,6 +19,7 @@ import com.tyrael.kharazim.application.system.service.CodeGenerator;
 import com.tyrael.kharazim.application.system.service.DictService;
 import com.tyrael.kharazim.application.user.domain.User;
 import com.tyrael.kharazim.application.user.mapper.UserMapper;
+import com.tyrael.kharazim.common.excel.ExcelMergeStrategy;
 import com.tyrael.kharazim.common.dto.PageResponse;
 import com.tyrael.kharazim.common.exception.BusinessException;
 import com.tyrael.kharazim.common.exception.DomainNotFoundException;
@@ -81,6 +82,7 @@ public class CustomerServiceImpl implements CustomerService {
     public void export(PageCustomerRequest pageRequest, HttpServletResponse response) throws IOException {
         WriteSheet writeSheet = EasyExcelFactory.writerSheet("会员数据")
                 .head(CustomerExportVO.class)
+                .registerWriteHandler(new ExcelMergeStrategy())
                 .build();
         int pageSize = 200;
         int pageNum = 1;

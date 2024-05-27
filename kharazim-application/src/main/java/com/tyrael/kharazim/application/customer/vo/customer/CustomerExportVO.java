@@ -20,10 +20,10 @@ import java.time.LocalDateTime;
 @ColumnWidth(16)
 public class CustomerExportVO {
 
-    @ExcelProperty("会员编号")
+    @ExcelProperty({"会员基本信息", "会员编号"})
     private String code;
 
-    @ExcelProperty("会员姓名")
+    @ExcelProperty({"会员基本信息", "会员姓名"})
     private String name;
 
     @ExcelProperty("会员性别")

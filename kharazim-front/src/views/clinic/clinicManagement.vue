@@ -1,10 +1,10 @@
 <template>
   <div>
     <el-form :inline="true" :model="pageRequest" class="page-condition-form">
-      <el-form-item label="名称">
+      <el-form-item label="名称" prop="name">
         <el-input v-model="pageRequest.name" clearable placeholder="名称" />
       </el-form-item>
-      <el-form-item label="状态">
+      <el-form-item label="状态" prop="status">
         <el-select v-model="pageRequest.status" clearable placeholder="状态">
           <el-option label="正常经营" value="NORMAL" />
           <el-option label="已关闭" value="CLOSED" />
@@ -13,6 +13,16 @@
       <el-form-item>
         <el-button type="primary" @click="loadClinic">查询</el-button>
       </el-form-item>
+      <el-link
+        :href="
+          `/kharazim-api/clinic/export?name=${pageRequest.name}` +
+          (pageRequest.status ? `&status=${pageRequest.status}` : '')
+        "
+        :underline="false"
+        style="float: right"
+      >
+        <el-button plain>导出</el-button>
+      </el-link>
     </el-form>
   </div>
   <div></div>
@@ -83,18 +93,21 @@ const pageInfo = reactive({
   pageSizes: [10, 20, 50, 100],
 });
 
-const pageRequest = reactive({
+const pageRequest = ref({
   name: "",
   status: "",
 });
 
 function loadClinic() {
   axios
-    .get(
-      `/kharazim-api/clinic/page?pageSize=${pageInfo.pageSize}&pageNum=${pageInfo.currentPage}` +
-        `${pageRequest.name ? "&name=" + pageRequest.name : ""}` +
-        `${pageRequest.status ? "&status=" + pageRequest.status : ""}`,
-    )
+    .get("/kharazim-api/clinic/page", {
+      params: {
+        name: pageRequest.value.name,
+        status: pageRequest.value.status,
+        pageSize: pageInfo.pageSize,
+        pageNum: pageInfo.currentPage,
+      },
+    })
     .then((response: AxiosResponse) => {
       clinicPageData.value = response.data.data;
       pageInfo.totalCount = response.data.totalCount;

@@ -1,42 +1,43 @@
-package com.tyrael.kharazim.common.converter;
+package com.tyrael.kharazim.common.excel.converter;
 
 import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.metadata.GlobalConfiguration;
 import com.alibaba.excel.metadata.data.ReadCellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
-import com.alibaba.excel.util.StringUtils;
 
-import java.time.LocalTime;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 
 /**
  * @author Tyrael Archangel
  * @since 2024/5/22
  */
-public class LocalTimeStringConverter extends DateTimeConverter<LocalTime> {
+public class LocalDateNumberConverter extends DateTimeConverter<LocalDate> {
 
     @Override
-    public Class<LocalTime> supportJavaTypeKey() {
-        return LocalTime.class;
+    public Class<LocalDate> supportJavaTypeKey() {
+        return LocalDate.class;
     }
 
     @Override
     public CellDataTypeEnum supportExcelTypeKey() {
-        return CellDataTypeEnum.STRING;
+        return CellDataTypeEnum.NUMBER;
     }
 
     @Override
-    public LocalTime convertToJavaData(ReadCellData<?> cellData,
+    public LocalDate convertToJavaData(ReadCellData<?> cellData,
                                        ExcelContentProperty contentProperty,
                                        GlobalConfiguration globalConfiguration) {
-        String dateString = cellData.getStringValue();
-        if (StringUtils.isBlank(dateString)) {
+        BigDecimal numberValue = cellData.getNumberValue();
+        if (numberValue == null) {
             return null;
         }
-        return super.getLocalDateTime(dateString, contentProperty, globalConfiguration).toLocalTime();
+        return super.getLocalDateTime(numberValue, contentProperty, globalConfiguration).toLocalDate();
     }
 
     @Override
     protected String getDefaultDateTimeFormat() {
-        return "HH:mm:ss";
+        return "yyyy-MM-dd";
     }
+
 }

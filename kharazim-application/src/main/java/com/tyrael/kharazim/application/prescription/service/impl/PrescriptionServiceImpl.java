@@ -1,5 +1,9 @@
 package com.tyrael.kharazim.application.prescription.service.impl;
 
+import com.alibaba.excel.EasyExcelFactory;
+import com.alibaba.excel.ExcelWriter;
+import com.alibaba.excel.write.metadata.WriteSheet;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.tyrael.kharazim.application.clinic.domain.Clinic;
 import com.tyrael.kharazim.application.clinic.mapper.ClinicMapper;
 import com.tyrael.kharazim.application.config.BusinessCodeConstants;
@@ -12,6 +16,7 @@ import com.tyrael.kharazim.application.prescription.mapper.PrescriptionProductMa
 import com.tyrael.kharazim.application.prescription.service.PrescriptionService;
 import com.tyrael.kharazim.application.prescription.vo.CreatePrescriptionRequest;
 import com.tyrael.kharazim.application.prescription.vo.PagePrescriptionRequest;
+import com.tyrael.kharazim.application.prescription.vo.PrescriptionExportVO;
 import com.tyrael.kharazim.application.prescription.vo.PrescriptionVO;
 import com.tyrael.kharazim.application.product.domain.ProductSku;
 import com.tyrael.kharazim.application.product.mapper.ProductSkuMapper;
@@ -20,14 +25,19 @@ import com.tyrael.kharazim.application.skupublish.domain.SkuPublish;
 import com.tyrael.kharazim.application.skupublish.mapper.SkuPublishMapper;
 import com.tyrael.kharazim.application.system.service.CodeGenerator;
 import com.tyrael.kharazim.common.dto.PageResponse;
+import com.tyrael.kharazim.common.excel.ExcelMergeStrategy;
 import com.tyrael.kharazim.common.exception.BusinessException;
 import com.tyrael.kharazim.common.exception.DomainNotFoundException;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -139,18 +149,53 @@ public class PrescriptionServiceImpl implements PrescriptionService {
     @Transactional(readOnly = true)
     public PageResponse<PrescriptionVO> page(PagePrescriptionRequest pageRequest) {
 
-        PageResponse<Prescription> pageData = prescriptionMapper.page(pageRequest);
+        Page<Prescription> pageCondition = new Page<>(pageRequest.getPageNum(), pageRequest.getPageSize());
+        PageResponse<Prescription> pageData = prescriptionMapper.page(pageRequest, pageCondition);
 
         Collection<Prescription> prescriptions = pageData.getData();
-        List<String> prescriptionCodes = prescriptions.stream()
-                .map(Prescription::getCode)
-                .collect(Collectors.toList());
-        List<PrescriptionProduct> products = prescriptionProductMapper.listByPrescriptionCodes(prescriptionCodes);
+        List<PrescriptionProduct> products = listPrescriptionProducts(prescriptions);
 
         return PageResponse.success(prescriptionConverter.prescriptionVOs(prescriptions, products),
                 pageData.getTotalCount(),
                 pageData.getPageSize(),
                 pageData.getPageNum());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void export(PagePrescriptionRequest pageRequest, HttpServletResponse response) throws IOException {
+        WriteSheet writeSheet = EasyExcelFactory.writerSheet("处方数据")
+                .head(PrescriptionExportVO.class)
+                .registerWriteHandler(new ExcelMergeStrategy())
+                .build();
+        int pageSize = 200;
+        int pageNum = 1;
+        try (ExcelWriter excelWriter = EasyExcelFactory.write(response.getOutputStream()).build()) {
+            List<PrescriptionExportVO> exports;
+            do {
+                Page<Prescription> pageCondition = new Page<>(pageNum, pageSize, false);
+                PageResponse<Prescription> pageData = prescriptionMapper.page(pageRequest, pageCondition);
+
+                Collection<Prescription> prescriptions = pageData.getData();
+                List<PrescriptionProduct> products = listPrescriptionProducts(prescriptions);
+
+                exports = prescriptionConverter.prescriptionExportVOs(prescriptions, products);
+                excelWriter.write(exports, writeSheet);
+
+                pageNum++;
+            } while (!exports.isEmpty());
+
+            response.addHeader("Content-disposition", "attachment;filename="
+                    + URLEncoder.encode("处方数据.xlsx", StandardCharsets.UTF_8));
+            response.setContentType("application/vnd.ms-excel;charset=UTF-8");
+        }
+    }
+
+    private List<PrescriptionProduct> listPrescriptionProducts(Collection<Prescription> prescriptions) {
+        List<String> prescriptionCodes = prescriptions.stream()
+                .map(Prescription::getCode)
+                .collect(Collectors.toList());
+        return prescriptionProductMapper.listByPrescriptionCodes(prescriptionCodes);
     }
 
 }

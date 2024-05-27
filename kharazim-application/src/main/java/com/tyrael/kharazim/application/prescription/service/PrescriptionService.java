@@ -4,6 +4,9 @@ import com.tyrael.kharazim.application.prescription.vo.CreatePrescriptionRequest
 import com.tyrael.kharazim.application.prescription.vo.PagePrescriptionRequest;
 import com.tyrael.kharazim.application.prescription.vo.PrescriptionVO;
 import com.tyrael.kharazim.common.dto.PageResponse;
+import jakarta.servlet.http.HttpServletResponse;
+
+import java.io.IOException;
 
 /**
  * @author Tyrael Archangel
@@ -34,5 +37,14 @@ public interface PrescriptionService {
      * @return 处方分页数据
      */
     PageResponse<PrescriptionVO> page(PagePrescriptionRequest pageRequest);
+
+    /**
+     * 处方导出
+     *
+     * @param pageRequest         {@link PagePrescriptionRequest}
+     * @param httpServletResponse HttpServletResponse
+     * @throws IOException IOException
+     */
+    void export(PagePrescriptionRequest pageRequest, HttpServletResponse httpServletResponse) throws IOException;
 
 }

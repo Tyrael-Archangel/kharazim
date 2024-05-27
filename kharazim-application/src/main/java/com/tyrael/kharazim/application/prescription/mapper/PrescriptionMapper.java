@@ -33,10 +33,11 @@ public interface PrescriptionMapper extends BaseMapper<Prescription> {
     /**
      * 处方分页查询
      *
-     * @param pageRequest {@link PagePrescriptionRequest}
+     * @param pageRequest   {@link PagePrescriptionRequest}
+     * @param pageCondition 分页条件
      * @return 处方分页数据
      */
-    default PageResponse<Prescription> page(PagePrescriptionRequest pageRequest) {
+    default PageResponse<Prescription> page(PagePrescriptionRequest pageRequest, Page<Prescription> pageCondition) {
         LambdaQueryWrapperX<Prescription> queryWrapper = new LambdaQueryWrapperX<>();
         queryWrapper.eqIfHasText(Prescription::getCode, pageRequest.getPrescriptionCode());
         queryWrapper.eqIfHasText(Prescription::getCustomerCode, pageRequest.getCustomerCode());
@@ -48,12 +49,11 @@ public interface PrescriptionMapper extends BaseMapper<Prescription> {
 
         queryWrapper.orderByDesc(Prescription::getCode);
 
-        Page<Prescription> page = new Page<>(pageRequest.getPageNum(), pageRequest.getPageSize());
-        Page<Prescription> pageData = selectPage(page, queryWrapper);
+        Page<Prescription> pageData = selectPage(pageCondition, queryWrapper);
         return PageResponse.success(pageData.getRecords(),
                 pageData.getTotal(),
-                pageRequest.getPageSize(),
-                pageRequest.getPageNum());
+                (int) pageCondition.getSize(),
+                (int) pageCondition.getCurrent());
     }
 
 }

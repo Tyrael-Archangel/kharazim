@@ -9,10 +9,13 @@ import com.tyrael.kharazim.common.dto.PageResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 /**
  * @author Tyrael Archangel
@@ -30,6 +33,13 @@ public class PrescriptionController {
     @Operation(summary = "处方分页")
     public PageResponse<PrescriptionVO> page(@ParameterObject PagePrescriptionRequest pageRequest) {
         return prescriptionService.page(pageRequest);
+    }
+
+    @GetMapping("/export")
+    @Operation(summary = "处方导出")
+    public void export(@ParameterObject PagePrescriptionRequest pageRequest,
+                       HttpServletResponse httpServletResponse) throws IOException {
+        prescriptionService.export(pageRequest, httpServletResponse);
     }
 
     @GetMapping("/detail/{code}")

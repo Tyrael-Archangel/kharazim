@@ -7,6 +7,7 @@ import com.tyrael.kharazim.application.customer.domain.Customer;
 import com.tyrael.kharazim.application.customer.mapper.CustomerMapper;
 import com.tyrael.kharazim.application.prescription.domain.Prescription;
 import com.tyrael.kharazim.application.prescription.domain.PrescriptionProduct;
+import com.tyrael.kharazim.application.prescription.vo.PrescriptionExportVO;
 import com.tyrael.kharazim.application.prescription.vo.PrescriptionVO;
 import com.tyrael.kharazim.application.product.service.ProductSkuRepository;
 import com.tyrael.kharazim.application.product.vo.sku.ProductSkuVO;
@@ -45,65 +46,41 @@ public class PrescriptionConverter {
      */
     public List<PrescriptionVO> prescriptionVOs(Collection<Prescription> prescriptions,
                                                 Collection<PrescriptionProduct> prescriptionProducts) {
+
         if (prescriptions == null || prescriptions.isEmpty()) {
             return new ArrayList<>();
         }
-
-        Set<String> customerCodes = Sets.newHashSet();
-        Set<String> clinicCodes = Sets.newHashSet();
-        for (Prescription prescription : prescriptions) {
-            customerCodes.add(prescription.getCustomerCode());
-            clinicCodes.add(prescription.getClinicCode());
-        }
-        Map<String, Customer> customerMap = customerMapper.mapByCodes(customerCodes);
-        Map<String, Clinic> clinicMap = clinicMapper.mapByCodes(clinicCodes);
-
-        Map<String, List<PrescriptionProduct>> productGroups;
-        Map<String, ProductSkuVO> skuMap;
-        if (prescriptionProducts == null || prescriptionProducts.isEmpty()) {
-            productGroups = Collections.emptyMap();
-            skuMap = Collections.emptyMap();
-        } else {
-            productGroups = prescriptionProducts.stream()
-                    .collect(Collectors.groupingBy(PrescriptionProduct::getPrescriptionCode));
-            Set<String> skuCodes = prescriptionProducts.stream()
-                    .map(PrescriptionProduct::getSkuCode)
-                    .collect(Collectors.toSet());
-            skuMap = productSkuRepository.mapByCodes(skuCodes);
-        }
+        ConverterHelper converterHelper = new ConverterHelper(prescriptions, prescriptionProducts);
 
         return prescriptions.stream()
-                .map(e -> this.prescriptionVO(e,
-                        customerMap.get(e.getCustomerCode()),
-                        clinicMap.get(e.getClinicCode()),
-                        productGroups.getOrDefault(e.getCode(), Collections.emptyList()),
-                        skuMap))
+                .map(prescription -> {
+
+                    PrescriptionVO prescriptionVO = new PrescriptionVO();
+                    prescriptionVO.setCode(prescription.getCode());
+
+                    Customer customer = converterHelper.getCustomer(prescription.getCustomerCode());
+                    prescriptionVO.setCustomerCode(customer.getCode());
+                    prescriptionVO.setCustomerName(customer.getName());
+
+                    Clinic clinic = converterHelper.getClinic(prescription.getClinicCode());
+                    prescriptionVO.setClinicCode(clinic.getCode());
+                    prescriptionVO.setClinicName(clinic.getName());
+
+                    prescriptionVO.setTotalAmount(prescription.getTotalAmount());
+
+                    List<PrescriptionVO.Product> products = converterHelper.getPrescriptionProducts(prescription.getCode())
+                            .stream()
+                            .map(e -> this.prescriptionProductVO(e, converterHelper.getSku(e.getSkuCode())))
+                            .collect(Collectors.toList());
+                    prescriptionVO.setProducts(products);
+
+                    prescriptionVO.setRemark(prescription.getRemark());
+                    prescriptionVO.setCreateTime(prescription.getCreateTime());
+                    prescriptionVO.setCreator(prescription.getCreator());
+                    prescriptionVO.setCreatorCode(prescription.getCreatorCode());
+                    return prescriptionVO;
+                })
                 .collect(Collectors.toList());
-    }
-
-    private PrescriptionVO prescriptionVO(Prescription prescription,
-                                          Customer customer,
-                                          Clinic clinic,
-                                          List<PrescriptionProduct> prescriptionProducts,
-                                          Map<String, ProductSkuVO> skuMap) {
-        PrescriptionVO prescriptionVO = new PrescriptionVO();
-        prescriptionVO.setCode(prescription.getCode());
-        prescriptionVO.setCustomerCode(customer.getCode());
-        prescriptionVO.setCustomerName(customer.getName());
-        prescriptionVO.setClinicCode(clinic.getCode());
-        prescriptionVO.setClinicName(clinic.getName());
-        prescriptionVO.setTotalAmount(prescription.getTotalAmount());
-
-        List<PrescriptionVO.Product> products = prescriptionProducts.stream()
-                .map(e -> this.prescriptionProductVO(e, skuMap.get(e.getSkuCode())))
-                .collect(Collectors.toList());
-
-        prescriptionVO.setProducts(products);
-        prescriptionVO.setRemark(prescription.getRemark());
-        prescriptionVO.setCreateTime(prescription.getCreateTime());
-        prescriptionVO.setCreator(prescription.getCreator());
-        prescriptionVO.setCreatorCode(prescription.getCreatorCode());
-        return prescriptionVO;
     }
 
     private PrescriptionVO.Product prescriptionProductVO(PrescriptionProduct prescriptionProduct,
@@ -123,6 +100,120 @@ public class PrescriptionConverter {
         product.setPrice(prescriptionProduct.getPrice());
         product.setAmount(prescriptionProduct.getAmount());
         return product;
+    }
+
+    /**
+     * Prescription、PrescriptionProducts -> PrescriptionExportVOs
+     */
+    public List<PrescriptionExportVO> prescriptionExportVOs(Collection<Prescription> prescriptions,
+                                                            List<PrescriptionProduct> prescriptionProducts) {
+        if (prescriptions == null || prescriptions.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        ConverterHelper converterHelper = new ConverterHelper(prescriptions, prescriptionProducts);
+
+        List<PrescriptionExportVO> exports = new ArrayList<>();
+        for (Prescription prescription : prescriptions) {
+
+            Customer customer = converterHelper.getCustomer(prescription.getCustomerCode());
+            Clinic clinic = converterHelper.getClinic(prescription.getClinicCode());
+            List<PrescriptionProduct> products = converterHelper.getPrescriptionProducts(prescription.getCode());
+
+            if (products == null || products.isEmpty()) {
+                PrescriptionExportVO export = PrescriptionExportVO.builder()
+                        .code(prescription.getCode())
+                        .customerCode(customer.getCode())
+                        .customerName(customer.getName())
+                        .clinicName(clinic.getName())
+                        .totalAmount(prescription.getTotalAmount())
+                        .remark(prescription.getRemark())
+                        .createTime(prescription.getCreateTime())
+                        .creator(prescription.getCreator())
+                        .build();
+                exports.add(export);
+            } else {
+                for (PrescriptionProduct product : products) {
+                    ProductSkuVO skuInfo = converterHelper.getSku(product.getSkuCode());
+                    PrescriptionExportVO export = PrescriptionExportVO.builder()
+                            .code(prescription.getCode())
+                            .customerCode(customer.getCode())
+                            .customerName(customer.getName())
+                            .clinicName(clinic.getName())
+                            .totalAmount(prescription.getTotalAmount())
+                            .remark(prescription.getRemark())
+                            .createTime(prescription.getCreateTime())
+                            .creator(prescription.getCreator())
+                            .skuCode(skuInfo.getCode())
+                            .skuName(skuInfo.getName())
+                            .categoryName(skuInfo.getCategoryName())
+                            .supplierName(skuInfo.getSupplierName())
+                            .unitName(skuInfo.getUnitName())
+                            .quantity(product.getQuantity())
+                            .price(product.getPrice())
+                            .amount(product.getAmount())
+                            .build();
+                    exports.add(export);
+                }
+            }
+        }
+        return exports;
+    }
+
+    private class ConverterHelper {
+        private final Collection<Prescription> prescriptions;
+        private final Collection<PrescriptionProduct> prescriptionProducts;
+
+        private Map<String, Customer> customerMap;
+        private Map<String, Clinic> clinicMap;
+        private Map<String, List<PrescriptionProduct>> productGroups;
+        private Map<String, ProductSkuVO> skuMap;
+
+        public ConverterHelper(Collection<Prescription> prescriptions,
+                               Collection<PrescriptionProduct> prescriptionProducts) {
+            this.prescriptions = prescriptions;
+            this.prescriptionProducts = prescriptionProducts;
+            prepare();
+        }
+
+        private void prepare() {
+            Set<String> customerCodes = Sets.newHashSet();
+            Set<String> clinicCodes = Sets.newHashSet();
+            for (Prescription prescription : prescriptions) {
+                customerCodes.add(prescription.getCustomerCode());
+                clinicCodes.add(prescription.getClinicCode());
+            }
+            this.customerMap = customerMapper.mapByCodes(customerCodes);
+            this.clinicMap = clinicMapper.mapByCodes(clinicCodes);
+
+            if (prescriptionProducts == null || prescriptionProducts.isEmpty()) {
+                this.productGroups = Collections.emptyMap();
+                this.skuMap = Collections.emptyMap();
+            } else {
+                this.productGroups = prescriptionProducts.stream()
+                        .collect(Collectors.groupingBy(PrescriptionProduct::getPrescriptionCode));
+                Set<String> skuCodes = prescriptionProducts.stream()
+                        .map(PrescriptionProduct::getSkuCode)
+                        .collect(Collectors.toSet());
+                this.skuMap = productSkuRepository.mapByCodes(skuCodes);
+            }
+        }
+
+        public Clinic getClinic(String clinicCode) {
+            return clinicMap.get(clinicCode);
+        }
+
+        public Customer getCustomer(String customerCode) {
+            return customerMap.get(customerCode);
+        }
+
+        public List<PrescriptionProduct> getPrescriptionProducts(String prescriptionCode) {
+            return productGroups.getOrDefault(prescriptionCode, Collections.emptyList());
+        }
+
+        public ProductSkuVO getSku(String skuCode) {
+            return skuMap.get(skuCode);
+        }
     }
 
 }
