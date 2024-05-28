@@ -63,6 +63,7 @@ public class DataSourceCodeGenerator extends AbstractCodeGenerator {
             if (cache == null) {
                 TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
                 transactionTemplate.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
+                transactionTemplate.setIsolationLevel(TransactionDefinition.ISOLATION_READ_COMMITTED);
                 cache = transactionTemplate.execute(status -> loadCacheAndIncreaseStep(tag));
                 tagCacheMap.put(tag, cache);
             }
