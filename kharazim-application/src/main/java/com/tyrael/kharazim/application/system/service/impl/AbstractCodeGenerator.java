@@ -40,31 +40,26 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
 
     @Override
     public String dailyNext(BusinessCodeConstants businessCode) {
-        String dailyNext = dailyNext(businessCode.name(), businessCode.getBit());
-        String prefix = businessCode.getPrefix();
-        return prefix == null ? dailyNext : (prefix.trim() + dailyNext);
-    }
-
-    private String dailyNext(String tag, int bit) {
         String dayTime = dateFormatter.format(LocalDate.now());
-        long nextValue = increment(tag + dayTime);
-        return dayTime + format(nextValue, bit);
+        long nextValue = increment(businessCode.name() + dayTime);
+        String dailyNext = dayTime + format(nextValue, businessCode.getBit());
+        return joinPrefix(businessCode, dailyNext);
     }
 
     @Override
     public String dailyTimeNext(BusinessCodeConstants businessCode) {
-        String dailyTimeNext = dailyTimeNext(businessCode.name(), businessCode.getBit());
-        String prefix = businessCode.getPrefix();
-        return prefix == null ? dailyTimeNext : (prefix.trim() + dailyTimeNext);
-    }
-
-    private String dailyTimeNext(String tag, int bit) {
         LocalDateTime now = LocalDateTime.now();
-        long nextValue = increment(tag + dateFormatter.format(now.toLocalDate()));
-        return dateTimeFormatter.format(now) + format(nextValue, bit);
+        long nextValue = increment(businessCode.name() + dateFormatter.format(now.toLocalDate()));
+        String dailyTimeNext = dateTimeFormatter.format(now) + format(nextValue, businessCode.getBit());
+        return joinPrefix(businessCode, dailyTimeNext);
     }
 
-    protected String format(long value, int bit) {
+    private String joinPrefix(BusinessCodeConstants businessCode, String code) {
+        String prefix = businessCode.getPrefix();
+        return prefix == null ? code : (prefix.trim() + code);
+    }
+
+    private String format(long value, int bit) {
         String s = Long.toString(value);
         int zeroCount = bit - s.length();
         if (zeroCount <= 0) {
