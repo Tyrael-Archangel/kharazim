@@ -1,13 +1,21 @@
 package com.tyrael.kharazim.application.system.service;
 
-import jakarta.annotation.Resource;
+import com.tyrael.kharazim.application.config.TagStepConfig;
+import com.tyrael.kharazim.common.util.CollectionUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.locks.LockSupport;
 
 import static com.tyrael.kharazim.application.config.BusinessCodeConstants.SYSTEM_TEST;
 
@@ -18,10 +26,14 @@ import static com.tyrael.kharazim.application.config.BusinessCodeConstants.SYSTE
 @SpringBootTest(properties = {
         "system.global.code-generator=DATASOURCE"
 })
+@Slf4j
 class CodeGeneratorTest {
 
-    @Resource
+    @Autowired
     private CodeGenerator codeGenerator;
+
+    @Autowired
+    private TagStepConfig tagStepConfig;
 
     @Test
     void next() {
@@ -61,6 +73,45 @@ class CodeGeneratorTest {
             }
         } finally {
             executorService.shutdown();
+        }
+    }
+
+    @Test
+    void speedTest() {
+
+        int defaultStep = 500;
+        int threadCount = 20;
+
+        tagStepConfig.setDefaultStep(defaultStep);
+        List<String> randomTags = new ArrayList<>();
+        for (int i = 0; i < 20; i++) {
+            randomTags.add(SYSTEM_TEST.name() + i);
+        }
+
+        AtomicLong count = new AtomicLong();
+        for (int i = 0; i < threadCount; i++) {
+            new Thread(() -> {
+                while (true) {
+                    codeGenerator.next(CollectionUtils.random(randomTags), 12);
+                    count.incrementAndGet();
+                }
+            }).start();
+        }
+
+        long lastCount = 0L;
+        int seconds = 5;
+        while (true) {
+            try {
+                LockSupport.parkUntil(System.currentTimeMillis() + (seconds * 1000L));
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+                return;
+            }
+            long current = count.get();
+            log.info("got " + ((current - lastCount) / seconds) + " codes per second "
+                    + "with cache: " + defaultStep
+                    + ", thread count: " + threadCount);
+            lastCount = current;
         }
     }
 
