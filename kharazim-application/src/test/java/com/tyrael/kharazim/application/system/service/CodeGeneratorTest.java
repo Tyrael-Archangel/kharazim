@@ -77,10 +77,11 @@ class CodeGeneratorTest {
     }
 
     @Test
-    void speedTest() {
+    void speedTest() throws Exception {
 
         int defaultStep = 500;
         int threadCount = 20;
+        long maxCount = 10000000L;
 
         tagStepConfig.setDefaultStep(defaultStep);
         List<String> randomTags = new ArrayList<>();
@@ -89,18 +90,23 @@ class CodeGeneratorTest {
         }
 
         AtomicLong count = new AtomicLong();
+        List<Thread> threads = new ArrayList<>();
         for (int i = 0; i < threadCount; i++) {
-            new Thread(() -> {
+            Thread thread = new Thread(() -> {
                 while (true) {
                     codeGenerator.next(CollectionUtils.random(randomTags), 12);
-                    count.incrementAndGet();
+                    if (count.incrementAndGet() >= maxCount) {
+                        return;
+                    }
                 }
-            }).start();
+            });
+            thread.start();
+            threads.add(thread);
         }
 
         long lastCount = 0L;
         int seconds = 5;
-        while (true) {
+        while (count.incrementAndGet() < maxCount) {
             try {
                 LockSupport.parkUntil(System.currentTimeMillis() + (seconds * 1000L));
             } catch (Exception e) {
@@ -112,6 +118,9 @@ class CodeGeneratorTest {
                     + "with cache: " + defaultStep
                     + ", thread count: " + threadCount);
             lastCount = current;
+        }
+        for (Thread thread : threads) {
+            thread.join();
         }
     }
 
