@@ -11,12 +11,10 @@ import com.tyrael.kharazim.application.customer.service.CustomerCommunicationLog
 import com.tyrael.kharazim.application.customer.vo.communication.AddCustomerCommunicationLogRequest;
 import com.tyrael.kharazim.application.customer.vo.communication.CustomerCommunicationLogPageRequest;
 import com.tyrael.kharazim.application.customer.vo.communication.CustomerCommunicationLogVO;
-import com.tyrael.kharazim.application.system.domain.DictItem;
 import com.tyrael.kharazim.application.system.service.DictService;
 import com.tyrael.kharazim.application.user.domain.User;
 import com.tyrael.kharazim.application.user.mapper.UserMapper;
 import com.tyrael.kharazim.common.dto.PageResponse;
-import com.tyrael.kharazim.common.util.CollectionUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -53,13 +51,11 @@ public class CustomerCommunicationLogServiceImpl implements CustomerCommunicatio
             serviceUserCodes.add(customerCommunicationLog.getServiceUserCode());
         }
 
-        List<DictItem> typeDictItems = dictService.findByDict(DictCodeConstants.CUSTOMER_COMMUNICATION_TYPE);
-        List<DictItem> evaluateDictItems = dictService.findByDict(DictCodeConstants.CUSTOMER_COMMUNICATION_EVALUATE);
-
         Map<String, User> userMap = userMapper.mapByCodes(serviceUserCodes);
         Map<String, Customer> customerMap = customerMapper.mapByCodes(customerCodes);
-        Map<String, String> typeDictItemMap = CollectionUtils.convertMap(typeDictItems, DictItem::getValue, DictItem::getName);
-        Map<String, String> evaluateDictItemMap = CollectionUtils.convertMap(evaluateDictItems, DictItem::getValue, DictItem::getName);
+
+        Map<String, String> typeDictItemMap = dictService.dictItemMap(DictCodeConstants.CUSTOMER_COMMUNICATION_TYPE);
+        Map<String, String> evaluateDictItemMap = dictService.dictItemMap(DictCodeConstants.CUSTOMER_COMMUNICATION_EVALUATE);
 
         List<CustomerCommunicationLogVO> logs = pageLogs.stream()
                 .map(e -> {
