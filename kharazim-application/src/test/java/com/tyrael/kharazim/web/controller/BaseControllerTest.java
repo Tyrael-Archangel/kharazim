@@ -31,7 +31,6 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
@@ -172,7 +171,7 @@ public abstract class BaseControllerTest<T> {
                         ? MockMvcRequestBuilders.request(requestMethod.asHttpMethod(), url)
                         : MockMvcRequestBuilders.request(requestMethod.asHttpMethod(), url, uriVariables);
 
-                if (!CollectionUtils.isEmpty(params)) {
+                if (!params.isEmpty()) {
                     requestBuilder.params(params);
                 }
 
@@ -372,7 +371,7 @@ public abstract class BaseControllerTest<T> {
             }
 
             List<String> pathVariables = resolvePathVariables(url);
-            if (CollectionUtils.isEmpty(pathVariables)) {
+            if (pathVariables.isEmpty()) {
                 return null;
             }
 

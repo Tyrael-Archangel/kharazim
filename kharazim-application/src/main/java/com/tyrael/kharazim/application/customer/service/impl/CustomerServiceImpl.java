@@ -19,10 +19,11 @@ import com.tyrael.kharazim.application.system.service.CodeGenerator;
 import com.tyrael.kharazim.application.system.service.DictService;
 import com.tyrael.kharazim.application.user.domain.User;
 import com.tyrael.kharazim.application.user.mapper.UserMapper;
-import com.tyrael.kharazim.common.excel.ExcelMergeStrategy;
 import com.tyrael.kharazim.common.dto.PageResponse;
+import com.tyrael.kharazim.common.excel.ExcelMergeStrategy;
 import com.tyrael.kharazim.common.exception.BusinessException;
 import com.tyrael.kharazim.common.exception.DomainNotFoundException;
+import com.tyrael.kharazim.common.util.CollectionUtils;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +31,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -171,7 +171,7 @@ public class CustomerServiceImpl implements CustomerService {
         customer.setCertificateCode(modifyCustomerRequest.getCertificateCode());
         customer.setRemark(modifyCustomerRequest.getRemark());
 
-        customer.setUpdate(currentUser.getCode(), currentUser.getNickName());
+        customer.setUpdateUser(currentUser.getCode(), currentUser.getNickName());
         customerMapper.updateById(customer);
     }
 
@@ -187,7 +187,7 @@ public class CustomerServiceImpl implements CustomerService {
         ensureCustomerSourceNotCircular(customer, sourceCustomerCode);
 
         customer.setSourceCustomerCode(sourceCustomerCode);
-        customer.setUpdate(currentUser.getCode(), currentUser.getNickName());
+        customer.setUpdateUser(currentUser.getCode(), currentUser.getNickName());
         customerMapper.updateById(customer);
     }
 
@@ -239,7 +239,7 @@ public class CustomerServiceImpl implements CustomerService {
 
         customer.setPhone(phone);
         customer.setPhoneVerified(Boolean.TRUE);
-        customer.setUpdate(currentUser.getCode(), currentUser.getNickName());
+        customer.setUpdateUser(currentUser.getCode(), currentUser.getNickName());
         customerMapper.updateById(customer);
     }
 
@@ -249,7 +249,7 @@ public class CustomerServiceImpl implements CustomerService {
         Customer customer = customerMapper.exactlyFindByCode(code);
 
         customer.setPhoneVerified(false);
-        customer.setUpdate(currentUser.getCode(), currentUser.getNickName());
+        customer.setUpdateUser(currentUser.getCode(), currentUser.getNickName());
         customerMapper.updateById(customer);
     }
 
@@ -410,7 +410,7 @@ public class CustomerServiceImpl implements CustomerService {
         customerAddress.setCountyName(modifyCustomerAddressRequest.getCountyName());
         customerAddress.setDetailAddress(modifyCustomerAddressRequest.getDetailAddress());
 
-        customerAddress.setUpdate(currentUser.getCode(), currentUser.getNickName());
+        customerAddress.setUpdateUser(currentUser.getCode(), currentUser.getNickName());
 
         customerAddressMapper.updateById(customerAddress);
 
@@ -512,7 +512,7 @@ public class CustomerServiceImpl implements CustomerService {
         customerInsurance.setPolicyNumber(modifyCustomerInsuranceRequest.getPolicyNumber());
         customerInsurance.setDuration(modifyCustomerInsuranceRequest.getDuration());
         customerInsurance.setBenefits(modifyCustomerInsuranceRequest.getBenefits());
-        customerInsurance.setUpdate(currentUser.getCode(), currentUser.getNickName());
+        customerInsurance.setUpdateUser(currentUser.getCode(), currentUser.getNickName());
 
         customerInsuranceMapper.updateById(customerInsurance);
 
@@ -557,7 +557,7 @@ public class CustomerServiceImpl implements CustomerService {
 
         } else if (!StringUtils.equals(customerServiceUser.getServiceUserCode(), serviceUserCode)) {
             customerServiceUser.setServiceUserCode(serviceUserCode);
-            customerServiceUser.setUpdate(currentUser.getCode(), currentUser.getNickName());
+            customerServiceUser.setUpdateUser(currentUser.getCode(), currentUser.getNickName());
             customerServiceUserMapper.updateById(customerServiceUser);
         }
     }
@@ -591,7 +591,7 @@ public class CustomerServiceImpl implements CustomerService {
 
         } else if (!StringUtils.equals(customerSalesConsultant.getSalesConsultantCode(), salesConsultantCode)) {
             customerSalesConsultant.setSalesConsultantCode(salesConsultantCode);
-            customerSalesConsultant.setUpdate(currentUser.getCode(), currentUser.getNickName());
+            customerSalesConsultant.setUpdateUser(currentUser.getCode(), currentUser.getNickName());
             customerSalesConsultantMapper.updateById(customerSalesConsultant);
         }
     }

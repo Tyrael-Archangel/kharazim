@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -42,6 +43,10 @@ public class CreatePurchaseOrderRequest {
         @NotNull(message = "请指定商品数量")
         @Size(min = 1, max = 999, message = "商品数量超过限制")
         private Integer quantity;
+
+        @Schema(description = "商品单价")
+        @NotNull(message = "请指定商品单价")
+        private BigDecimal price;
 
     }
 

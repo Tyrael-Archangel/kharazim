@@ -90,7 +90,7 @@ public class SkuPublishServiceImpl implements SkuPublishService {
             return;
         }
         skuPublish.setCanceled(Boolean.TRUE);
-        skuPublish.setUpdate(currentUser.getCode(), currentUser.getNickName());
+        skuPublish.setUpdateUser(currentUser.getCode(), currentUser.getNickName());
 
         skuPublishMapper.saveCanceled(skuPublish);
     }

@@ -92,7 +92,7 @@ public class ProductUnitServiceImpl implements ProductUnitService {
         }
 
         unit.setEnglishName(modifyUnitRequest.getEnglishName());
-        unit.setUpdate(currentUser.getCode(), currentUser.getNickName());
+        unit.setUpdateUser(currentUser.getCode(), currentUser.getNickName());
 
         productUnitMapper.updateById(unit);
     }

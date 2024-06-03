@@ -1,17 +1,15 @@
 package com.tyrael.kharazim.common.util;
 
-import cn.hutool.core.collection.CollUtil;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Random;
-import java.util.RandomAccess;
+import java.util.*;
+import java.util.stream.Stream;
 
 /**
  * @author Tyrael Archangel
  * @since 2024/1/24
  */
-public class CollectionUtils extends CollUtil {
+@SuppressWarnings("unused")
+public class CollectionUtils {
 
     private static final Random RANDOM = new Random();
 
@@ -30,6 +28,30 @@ public class CollectionUtils extends CollUtil {
             }
         }
         throw new IllegalStateException("Will not happen");
+    }
+
+    public static boolean isEmpty(final Collection<?> coll) {
+        return coll == null || coll.isEmpty();
+    }
+
+    public static boolean isNotEmpty(final Collection<?> coll) {
+        return !isEmpty(coll);
+    }
+
+    public static <E> List<E> safeList(List<E> list) {
+        return isEmpty(list) ? new ArrayList<>() : list;
+    }
+
+    public static <T extends Collection<E>, E> Stream<E> safeStream(T t) {
+        return isEmpty(t) ? Stream.empty() : t.stream();
+    }
+
+    public static boolean isEmpty(final Map<?, ?> map) {
+        return map == null || map.isEmpty();
+    }
+
+    public static boolean isNotEmpty(final Map<?, ?> map) {
+        return !isEmpty(map);
     }
 
 }

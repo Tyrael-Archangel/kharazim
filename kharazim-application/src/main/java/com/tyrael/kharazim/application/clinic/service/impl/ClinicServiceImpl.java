@@ -154,7 +154,7 @@ public class ClinicServiceImpl implements ClinicService {
         if (modifyClinicRequest.getStatus() != null) {
             clinic.setStatus(modifyClinicRequest.getStatus());
         }
-        clinic.setUpdate(currentUser.getCode(), currentUser.getNickName());
+        clinic.setUpdateUser(currentUser.getCode(), currentUser.getNickName());
 
         try {
             clinicMapper.updateById(clinic);

@@ -77,7 +77,7 @@ public class RechargeCardTypeServiceImpl implements RechargeCardTypeService {
         cardType.setNeverExpire(neverExpire);
         cardType.setValidPeriodDays(validPeriodDays);
         cardType.setDefaultAmount(modifyRequest.getDefaultAmount());
-        cardType.setUpdate(currentUser.getCode(), currentUser.getNickName());
+        cardType.setUpdateUser(currentUser.getCode(), currentUser.getNickName());
 
         rechargeCardTypeMapper.updateById(cardType);
     }
@@ -92,7 +92,7 @@ public class RechargeCardTypeServiceImpl implements RechargeCardTypeService {
             return;
         }
         cardType.setCanCreateNewCard(Boolean.FALSE);
-        cardType.setUpdate(currentUser.getCode(), currentUser.getNickName());
+        cardType.setUpdateUser(currentUser.getCode(), currentUser.getNickName());
 
         rechargeCardTypeMapper.updateById(cardType);
     }
@@ -107,7 +107,7 @@ public class RechargeCardTypeServiceImpl implements RechargeCardTypeService {
             return;
         }
         cardType.setCanCreateNewCard(Boolean.TRUE);
-        cardType.setUpdate(currentUser.getCode(), currentUser.getNickName());
+        cardType.setUpdateUser(currentUser.getCode(), currentUser.getNickName());
 
         rechargeCardTypeMapper.updateById(cardType);
     }

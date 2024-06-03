@@ -9,8 +9,8 @@ import com.tyrael.kharazim.application.recharge.domain.RechargeCardType;
 import com.tyrael.kharazim.application.recharge.vo.ListRechargeCardTypeRequest;
 import com.tyrael.kharazim.application.recharge.vo.PageRechargeCardTypeRequest;
 import com.tyrael.kharazim.common.dto.PageResponse;
+import com.tyrael.kharazim.common.util.CollectionUtils;
 import org.apache.ibatis.annotations.Mapper;
-import org.springframework.util.CollectionUtils;
 
 import java.util.Collection;
 import java.util.Collections;

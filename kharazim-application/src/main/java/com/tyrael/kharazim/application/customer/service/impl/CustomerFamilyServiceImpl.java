@@ -15,13 +15,13 @@ import com.tyrael.kharazim.application.system.service.CodeGenerator;
 import com.tyrael.kharazim.common.dto.PageResponse;
 import com.tyrael.kharazim.common.exception.BusinessException;
 import com.tyrael.kharazim.common.exception.DomainNotFoundException;
+import com.tyrael.kharazim.common.util.CollectionUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import java.util.Collection;
 import java.util.List;
@@ -183,11 +183,11 @@ public class CustomerFamilyServiceImpl implements CustomerFamilyService {
         DomainNotFoundException.assertFound(familyMember, customerCode);
 
         family.setLeaderCode(customerCode);
-        family.setUpdate(currentUser.getCode(), currentUser.getNickName());
+        family.setUpdateUser(currentUser.getCode(), currentUser.getNickName());
         familyMapper.updateById(family);
 
         familyMember.setRelationToLeader(LEADER_NAME);
-        familyMember.setUpdate(currentUser.getCode(), currentUser.getNickName());
+        familyMember.setUpdateUser(currentUser.getCode(), currentUser.getNickName());
         familyMemberMapper.updateById(familyMember);
     }
 
@@ -204,7 +204,7 @@ public class CustomerFamilyServiceImpl implements CustomerFamilyService {
         DomainNotFoundException.assertFound(familyMember, customerCode);
 
         familyMember.setRelationToLeader(modifyRelationRequest.getRelationToLeader());
-        familyMember.setUpdate(currentUser.getCode(), currentUser.getNickName());
+        familyMember.setUpdateUser(currentUser.getCode(), currentUser.getNickName());
         familyMemberMapper.updateById(familyMember);
     }
 

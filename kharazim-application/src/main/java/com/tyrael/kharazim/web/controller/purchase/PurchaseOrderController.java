@@ -2,7 +2,8 @@ package com.tyrael.kharazim.web.controller.purchase;
 
 import com.tyrael.kharazim.application.base.auth.AuthUser;
 import com.tyrael.kharazim.application.base.auth.CurrentUser;
-import com.tyrael.kharazim.application.purchase.service.PurchaseOrderService;
+import com.tyrael.kharazim.application.purchase.service.CreatePurchaseOrderService;
+import com.tyrael.kharazim.application.purchase.service.QueryPurchaseOrderService;
 import com.tyrael.kharazim.application.purchase.vo.PurchaseOrderVO;
 import com.tyrael.kharazim.application.purchase.vo.request.CreatePurchaseOrderRequest;
 import com.tyrael.kharazim.common.dto.DataResponse;
@@ -22,19 +23,20 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "采购单管理")
 public class PurchaseOrderController {
 
-    private final PurchaseOrderService purchaseOrderService;
+    private final CreatePurchaseOrderService createPurchaseOrderService;
+    private final QueryPurchaseOrderService queryPurchaseOrderService;
 
     @PostMapping("/create")
     @Operation(summary = "创建采购单")
     public DataResponse<String> create(@RequestBody CreatePurchaseOrderRequest request,
                                        @Schema(hidden = true) @CurrentUser AuthUser currentUser) {
-        return DataResponse.ok(purchaseOrderService.create(request, currentUser));
+        return DataResponse.ok(createPurchaseOrderService.create(request, currentUser));
     }
 
     @GetMapping("/detail/{code}")
     @Operation(summary = "采购单详情")
     public DataResponse<PurchaseOrderVO> detail(@Schema(description = "采购单号") @PathVariable String code) {
-        return DataResponse.ok(purchaseOrderService.detail(code));
+        return DataResponse.ok(queryPurchaseOrderService.detail(code));
     }
 
 }

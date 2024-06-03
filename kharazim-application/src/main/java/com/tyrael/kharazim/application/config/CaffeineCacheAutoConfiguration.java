@@ -11,7 +11,6 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.caffeine.CaffeineCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -53,7 +52,7 @@ public class CaffeineCacheAutoConfiguration {
     private void setCustomerCache(CaffeineCacheManager cacheManager, CaffeineCacheProperties caffeineCacheProperties) {
 
         List<CacheKeyProperties> caches = caffeineCacheProperties.getCaches();
-        if (CollectionUtils.isEmpty(caches)) {
+        if (caches == null || caches.isEmpty()) {
             return;
         }
 

@@ -1,6 +1,7 @@
 package com.tyrael.kharazim.application.purchase.domain;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.tyrael.kharazim.application.base.BaseDO;
 import com.tyrael.kharazim.application.purchase.enums.PurchaseOrderPaymentStatus;
@@ -8,6 +9,7 @@ import com.tyrael.kharazim.application.purchase.enums.PurchaseOrderReceiveStatus
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * 采购单
@@ -52,8 +54,16 @@ public class PurchaseOrder extends BaseDO {
     private BigDecimal totalAmount;
 
     /**
+     * 已结算金额（元）
+     */
+    private BigDecimal paidAmount;
+
+    /**
      * 备注
      */
     private String remark;
+
+    @TableField(exist = false)
+    private List<PurchaseOrderItem> items;
 
 }

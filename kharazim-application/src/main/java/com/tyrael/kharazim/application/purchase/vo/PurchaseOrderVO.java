@@ -4,7 +4,10 @@ import com.tyrael.kharazim.application.purchase.enums.PurchaseOrderPaymentStatus
 import com.tyrael.kharazim.application.purchase.enums.PurchaseOrderReceiveStatus;
 import com.tyrael.kharazim.application.system.dto.file.FileVO;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -15,6 +18,9 @@ import java.util.List;
  * @since 2024/5/31
  */
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class PurchaseOrderVO {
 
     @Schema(description = "采购单编码")
@@ -57,6 +63,9 @@ public class PurchaseOrderVO {
     private List<PurchaseOrderReceiveRecordVO> receiveRecords;
 
     @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class PurchaseOrderItemVO {
 
         @Schema(description = "SKU编码")
@@ -98,6 +107,9 @@ public class PurchaseOrderVO {
     }
 
     @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class PurchaseOrderPaymentRecordVO {
 
         @Schema(description = "流水号")
@@ -127,6 +139,9 @@ public class PurchaseOrderVO {
     }
 
     @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class PurchaseOrderReceiveRecordVO {
 
         @Schema(description = "流水号")
@@ -150,6 +165,9 @@ public class PurchaseOrderVO {
     }
 
     @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class ReceiveRecordItemVO {
 
         @Schema(description = "收货SKU编码")

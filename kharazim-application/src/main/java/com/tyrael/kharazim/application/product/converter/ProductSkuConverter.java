@@ -61,7 +61,7 @@ public class ProductSkuConverter {
         skuVO.setDefaultImage(sku.getDefaultImage());
         skuVO.setDefaultImageUrl(fileService.getUrl(sku.getDefaultImage()));
         skuVO.setImages(sku.getImages());
-        List<FileVO> files = fileService.getUrls(sku.getImages());
+        List<FileVO> files = fileService.getFiles(sku.getImages());
         List<String> imageUrls = files.stream()
                 .map(FileVO::getUrl)
                 .collect(Collectors.toList());

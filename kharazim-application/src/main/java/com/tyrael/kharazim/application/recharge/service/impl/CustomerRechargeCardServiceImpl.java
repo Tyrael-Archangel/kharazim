@@ -103,7 +103,7 @@ public class CustomerRechargeCardServiceImpl implements CustomerRechargeCardServ
 
         BusinessException.assertTrue(UNPAID.equals(rechargeCard.getStatus()), "储值单无法标记收款");
         rechargeCard.setStatus(PAID);
-        rechargeCard.setUpdate(currentUser.getCode(), currentUser.getNickName());
+        rechargeCard.setUpdateUser(currentUser.getCode(), currentUser.getNickName());
 
         int updatedRows = customerRechargeCardMapper.markPaid(rechargeCard);
         BusinessException.assertTrue(updatedRows > 0, "储值单无法标记收款");
@@ -156,7 +156,7 @@ public class CustomerRechargeCardServiceImpl implements CustomerRechargeCardServ
         rechargeCard.setStatus(WAIT_REFUND);
         rechargeCard.setChargebackAmount(chargebackAmount);
         rechargeCard.setChargebackUserCode(currentUser.getCode());
-        rechargeCard.setUpdate(currentUser.getCode(), currentUser.getNickName());
+        rechargeCard.setUpdateUser(currentUser.getCode(), currentUser.getNickName());
 
         int updatedRows = customerRechargeCardMapper.chargeback(rechargeCard);
         BusinessException.assertTrue(updatedRows > 0, "储值单" + rechargeCardCode + "退卡失败");
@@ -177,7 +177,7 @@ public class CustomerRechargeCardServiceImpl implements CustomerRechargeCardServ
             // 记录原始的consumedAmount，用作悲观锁
             BigDecimal originalConsumedAmount = rechargeCard.getConsumedAmount();
             rechargeCard.consume(payDetail.getUseAmount(), payDetail.getDeductAmount());
-            rechargeCard.setUpdate(currentUser.getCode(), currentUser.getNickName());
+            rechargeCard.setUpdateUser(currentUser.getCode(), currentUser.getNickName());
 
             boolean success = customerRechargeCardMapper.consume(originalConsumedAmount, rechargeCard);
             BusinessException.assertTrue(success, "储值单[" + rechargeCard.getCode() + "]抵扣失败");
@@ -345,7 +345,7 @@ public class CustomerRechargeCardServiceImpl implements CustomerRechargeCardServ
 
         BusinessException.assertTrue(WAIT_REFUND.equals(rechargeCard.getStatus()), "储值单无法标记退款");
         rechargeCard.setStatus(REFUNDED);
-        rechargeCard.setUpdate(currentUser.getCode(), currentUser.getNickName());
+        rechargeCard.setUpdateUser(currentUser.getCode(), currentUser.getNickName());
 
         int updatedRows = customerRechargeCardMapper.markRefunded(rechargeCard);
         BusinessException.assertTrue(updatedRows > 0, "储值单无法标记退款");

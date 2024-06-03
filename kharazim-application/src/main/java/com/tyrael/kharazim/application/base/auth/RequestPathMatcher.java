@@ -1,10 +1,10 @@
 package com.tyrael.kharazim.application.base.auth;
 
+import com.tyrael.kharazim.common.util.CollectionUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.server.PathContainer;
 import org.springframework.http.server.RequestPath;
 import org.springframework.util.AntPathMatcher;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.util.ServletRequestPathUtils;
 import org.springframework.web.util.UrlPathHelper;
 import org.springframework.web.util.pattern.PathPattern;

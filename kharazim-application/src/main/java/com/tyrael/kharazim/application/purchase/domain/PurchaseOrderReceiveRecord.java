@@ -1,10 +1,12 @@
 package com.tyrael.kharazim.application.purchase.domain;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * @author Tyrael Archangel
@@ -45,5 +47,8 @@ public class PurchaseOrderReceiveRecord {
      * 收货人编码
      */
     private String receiveUserCode;
+
+    @TableField(exist = false)
+    private List<PurchaseOrderReceiveRecordItem> recordItems;
 
 }

@@ -10,9 +10,9 @@ import com.tyrael.kharazim.application.user.dto.user.request.ListUserRequest;
 import com.tyrael.kharazim.application.user.dto.user.request.PageUserRequest;
 import com.tyrael.kharazim.common.dto.PageResponse;
 import com.tyrael.kharazim.common.exception.DomainNotFoundException;
+import com.tyrael.kharazim.common.util.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.annotations.Mapper;
-import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.util.Collection;

@@ -65,7 +65,7 @@ public class FileController {
                 .map(String::trim)
                 .distinct()
                 .toList();
-        return MultiResponse.success(fileService.getUrls(fileIdList));
+        return MultiResponse.success(fileService.getFiles(fileIdList));
     }
 
 }

@@ -36,11 +36,17 @@ public class BaseDO {
     @TableLogic
     private Boolean deleted;
 
-    public void setUpdate(String updaterCode, String updater) {
-        this.setUpdate(updaterCode, updater, LocalDateTime.now());
+    public void setCreateUser(String creatorCode, String creator) {
+        this.creatorCode = creatorCode;
+        this.creator = creator;
+        this.createTime = LocalDateTime.now();
     }
 
-    public void setUpdate(String updaterCode, String updater, LocalDateTime updateTime) {
+    public void setUpdateUser(String updaterCode, String updater) {
+        this.setUpdateUser(updaterCode, updater, LocalDateTime.now());
+    }
+
+    public void setUpdateUser(String updaterCode, String updater, LocalDateTime updateTime) {
         this.updaterCode = updaterCode;
         this.updater = updater;
         this.updateTime = updateTime;

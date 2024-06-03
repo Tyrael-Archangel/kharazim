@@ -1,6 +1,5 @@
 package com.tyrael.kharazim.application.config.requestlog;
 
-import cn.hutool.core.io.IoUtil;
 import com.google.common.collect.Lists;
 import com.tyrael.kharazim.application.base.auth.RequestPathMatcher;
 import com.tyrael.kharazim.application.system.domain.SystemRequestLog;
@@ -9,6 +8,7 @@ import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletRequestWrapper;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.compress.utils.IOUtils;
 import org.springframework.http.MediaType;
 
 import java.io.BufferedReader;
@@ -48,7 +48,7 @@ public class RequestLogPrepareFilter implements Filter {
             byte[] contentBytes = null;
             MediaType mediaType = getMediaType(httpServletRequest);
             if (MediaType.APPLICATION_JSON.includes(mediaType)) {
-                contentBytes = IoUtil.readBytes(request.getInputStream());
+                contentBytes = IOUtils.toByteArray(request.getInputStream());
                 httpServletRequest = new ContentCachingHttpServletRequestWrapper(httpServletRequest, contentBytes);
             }
 

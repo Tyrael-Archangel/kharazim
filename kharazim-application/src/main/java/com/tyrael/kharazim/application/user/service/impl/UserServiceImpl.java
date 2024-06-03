@@ -24,6 +24,7 @@ import com.tyrael.kharazim.common.dto.PageResponse;
 import com.tyrael.kharazim.common.exception.BusinessException;
 import com.tyrael.kharazim.common.exception.DomainNotFoundException;
 import com.tyrael.kharazim.common.exception.ForbiddenException;
+import com.tyrael.kharazim.common.util.CollectionUtils;
 import com.tyrael.kharazim.common.util.RandomStringUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
@@ -32,7 +33,6 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -185,7 +185,7 @@ public class UserServiceImpl implements UserService {
         user.setCertificateCode(modifyUserRequest.getCertificateCode());
         user.setRemark(modifyUserRequest.getRemark());
         user.setBirthday(modifyUserRequest.getBirthday());
-        user.setUpdate(currentUser.getCode(), currentUser.getNickName());
+        user.setUpdateUser(currentUser.getCode(), currentUser.getNickName());
 
         try {
             userMapper.modify(user);

@@ -9,8 +9,8 @@ import com.google.common.collect.Sets;
 import com.tyrael.kharazim.application.system.domain.Dict;
 import com.tyrael.kharazim.application.system.dto.dict.PageDictRequest;
 import com.tyrael.kharazim.common.dto.PageResponse;
+import com.tyrael.kharazim.common.util.CollectionUtils;
 import org.apache.ibatis.annotations.Mapper;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;

@@ -18,7 +18,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StopWatch;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
@@ -211,7 +210,7 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public List<FileVO> getUrls(List<String> fileIds) {
+    public List<FileVO> getFiles(List<String> fileIds) {
         if (fileIds == null || fileIds.isEmpty()) {
             return new ArrayList<>();
         }

@@ -56,6 +56,6 @@ public interface FileService {
      * @param fileIds 文件IDs
      * @return 文件链接地址
      */
-    List<FileVO> getUrls(List<String> fileIds);
+    List<FileVO> getFiles(List<String> fileIds);
 
 }

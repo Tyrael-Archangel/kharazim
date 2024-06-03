@@ -10,9 +10,9 @@ import com.tyrael.kharazim.application.product.vo.unit.ListProductUnitRequest;
 import com.tyrael.kharazim.application.product.vo.unit.PageProductUnitRequest;
 import com.tyrael.kharazim.common.dto.PageResponse;
 import com.tyrael.kharazim.common.exception.DomainNotFoundException;
+import com.tyrael.kharazim.common.util.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.annotations.Mapper;
-import org.springframework.util.CollectionUtils;
 
 import java.util.Collection;
 import java.util.Collections;
