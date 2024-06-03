@@ -1,6 +1,7 @@
 package com.tyrael.kharazim.application.prescription.vo;
 
 import com.tyrael.kharazim.common.dto.PageCommand;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -20,7 +21,7 @@ public class PagePrescriptionRequest extends PageCommand {
     @Schema(description = "会员编码")
     private String customerCode;
 
-    @Schema(description = "诊所（机构）编码")
+    @ArraySchema(arraySchema = @Schema(description = "诊所（机构）编码"))
     private Set<String> clinicCodes;
 
     @Schema(description = "创建开始日期", format = "yyyy-MM-dd", example = "2024-04-01")

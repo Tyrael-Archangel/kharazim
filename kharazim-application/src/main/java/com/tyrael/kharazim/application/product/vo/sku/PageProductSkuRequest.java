@@ -1,6 +1,7 @@
 package com.tyrael.kharazim.application.product.vo.sku;
 
 import com.tyrael.kharazim.common.dto.PageCommand;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -19,10 +20,10 @@ public class PageProductSkuRequest extends PageCommand {
     @Schema(description = "SKU名称")
     private String name;
 
-    @Schema(description = "商品分类编码")
+    @ArraySchema(arraySchema = @Schema(description = "商品分类编码"))
     private Set<String> categoryCodes;
 
-    @Schema(description = "供应商编码")
+    @ArraySchema(arraySchema = @Schema(description = "供应商编码"))
     private Set<String> supplierCodes;
 
     @Schema(description = "描述信息")

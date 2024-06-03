@@ -66,5 +66,5 @@ create table `purchase_order_receive_record_item`
     `receive_serial_code` varchar(32) not null comment '收货记录流水号',
     `sku_code`            varchar(32) not null comment '收货商品编码',
     `quantity`            int         not null comment '收货数量',
-    unique index udx_receive_serial_code (`receive_serial_code`)
+    index idx_receive_serial_code (`receive_serial_code`)
 ) comment '采购单收货明细';
