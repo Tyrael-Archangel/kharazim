@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import com.tyrael.kharazim.application.base.LambdaQueryWrapperX;
 import com.tyrael.kharazim.application.product.domain.ProductSku;
 import com.tyrael.kharazim.application.product.vo.sku.PageProductSkuRequest;
@@ -21,6 +22,18 @@ import java.util.stream.Collectors;
  */
 @Mapper
 public interface ProductSkuMapper extends BaseMapper<ProductSku> {
+
+    /**
+     * filter codes by name
+     *
+     * @param name SKU name
+     * @return skuCodes
+     */
+    static List<String> filterSkuCodesByName(String name) {
+        ProductSkuMapper productSkuMapper = (ProductSkuMapper) SqlHelper.getMapper(
+                ProductSku.class, SqlHelper.sqlSession(ProductSku.class));
+        return productSkuMapper.filterCodesByName(name);
+    }
 
     /**
      * get by code

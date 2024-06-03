@@ -83,6 +83,12 @@ springdoc:
     - group: "供应商管理"
       packages-to-scan:
         - com.tyrael.kharazim.web.controller.supplier
+    - group: "采购管理"
+      packages-to-scan:
+        - com.tyrael.kharazim.web.controller.purchase
+    - group: "药房管理"
+      packages-to-scan:
+        - com.tyrael.kharazim.web.controller.pharmacy
     - group: "示例功能"
       packages-to-scan:
         - com.tyrael.kharazim.web.controller.demo

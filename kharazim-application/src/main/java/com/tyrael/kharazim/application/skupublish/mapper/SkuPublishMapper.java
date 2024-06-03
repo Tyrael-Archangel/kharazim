@@ -5,9 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import com.tyrael.kharazim.application.base.LambdaQueryWrapperX;
-import com.tyrael.kharazim.application.product.domain.ProductSku;
 import com.tyrael.kharazim.application.product.mapper.ProductSkuMapper;
 import com.tyrael.kharazim.application.skupublish.domain.SkuPublish;
 import com.tyrael.kharazim.application.skupublish.enums.SkuPublishStatus;
@@ -37,13 +35,22 @@ public interface SkuPublishMapper extends BaseMapper<SkuPublish> {
      */
     default PageResponse<SkuPublish> page(PageSkuPublishRequest pageRequest) {
 
-        ProductSkuMapper productSkuMapper = (ProductSkuMapper) SqlHelper.getMapper(
-                ProductSku.class, SqlHelper.sqlSession(ProductSku.class));
-        List<String> skuCodes = productSkuMapper.filterCodesByName(pageRequest.getSkuName());
-
         LambdaQueryWrapperX<SkuPublish> queryWrapper = new LambdaQueryWrapperX<>();
-        queryWrapper.inIfPresent(SkuPublish::getSkuCode, skuCodes)
-                .inIfPresent(SkuPublish::getClinicCode, pageRequest.getClinicCodes());
+
+        String skuName = pageRequest.getSkuName();
+        if (StringUtils.isNotBlank(skuName)) {
+            List<String> skuCodes = ProductSkuMapper.filterSkuCodesByName(skuName);
+            if (CollectionUtils.isNotEmpty(skuCodes)) {
+                queryWrapper.in(SkuPublish::getSkuCode, skuCodes);
+            } else {
+                return PageResponse.success(new ArrayList<>(),
+                        0L,
+                        pageRequest.getPageSize(),
+                        pageRequest.getPageNum());
+            }
+        }
+
+        queryWrapper.inIfPresent(SkuPublish::getClinicCode, pageRequest.getClinicCodes());
 
         SkuPublishStatus publishStatus = pageRequest.getPublishStatus();
         LocalDateTime now = LocalDateTime.now();
