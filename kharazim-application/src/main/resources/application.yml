@@ -15,6 +15,12 @@ spring:
   servlet:
     multipart:
       max-file-size: 10MB
+  boot:
+    admin:
+      client:
+        url: http://localhost:9508/kharazim-admin
+        instance:
+          service-host-type: ip
 
 mybatis-plus:
   global-config:
@@ -92,3 +98,13 @@ springdoc:
     - group: "示例功能"
       packages-to-scan:
         - com.tyrael.kharazim.web.controller.demo
+
+management:
+  endpoints:
+    enabled-by-default: true
+    web:
+      exposure:
+        include: "*"
+  info:
+    env:
+      enabled: true
