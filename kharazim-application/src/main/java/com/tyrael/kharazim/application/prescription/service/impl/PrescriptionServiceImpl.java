@@ -8,6 +8,7 @@ import com.tyrael.kharazim.application.clinic.domain.Clinic;
 import com.tyrael.kharazim.application.clinic.mapper.ClinicMapper;
 import com.tyrael.kharazim.application.config.BusinessCodeConstants;
 import com.tyrael.kharazim.application.customer.mapper.CustomerMapper;
+import com.tyrael.kharazim.application.pharmacy.event.OccupyInventoryEvent;
 import com.tyrael.kharazim.application.prescription.converter.PrescriptionConverter;
 import com.tyrael.kharazim.application.prescription.domain.Prescription;
 import com.tyrael.kharazim.application.prescription.domain.PrescriptionProduct;
@@ -64,6 +65,9 @@ public class PrescriptionServiceImpl implements PrescriptionService {
     public String create(CreatePrescriptionRequest request) {
         Prescription prescription = buildPrescription(request);
         this.save(prescription);
+
+        // 预占库存
+        publisher.publishEvent(new OccupyInventoryEvent(this, prescription));
 
         // 创建结算单
         publisher.publishEvent(new CreateSettlementOrderEvent(this, prescription));

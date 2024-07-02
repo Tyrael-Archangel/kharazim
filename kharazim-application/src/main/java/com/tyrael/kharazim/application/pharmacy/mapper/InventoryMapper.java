@@ -10,6 +10,8 @@ import com.tyrael.kharazim.common.dto.PageResponse;
 import com.tyrael.kharazim.common.util.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,5 +54,22 @@ public interface InventoryMapper extends BaseMapper<Inventory> {
                 (int) pageCondition.getSize(),
                 (int) pageCondition.getCurrent());
     }
+
+    /**
+     * 预占库存
+     *
+     * @param clinicCode     诊所编码
+     * @param skuCode        SKU编码
+     * @param occupyQuantity 预占熟练
+     * @return 是否预占成功
+     */
+    @Update("update `inventory` " +
+            "set `occupied_quantity` = `occupied_quantity` + #{occupyQuantity} " +
+            "where `clinic_code` = #{clinicCode} " +
+            "  and `sku_code` = #{skuCode} " +
+            "  and (`quantity` - `occupied_quantity`) >= #{occupyQuantity}")
+    int increaseOccupy(@Param("clinicCode") String clinicCode,
+                       @Param("skuCode") String skuCode,
+                       @Param("occupyQuantity") int occupyQuantity);
 
 }
