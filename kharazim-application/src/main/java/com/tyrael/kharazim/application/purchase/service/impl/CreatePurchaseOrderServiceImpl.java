@@ -3,6 +3,7 @@ package com.tyrael.kharazim.application.purchase.service.impl;
 import com.tyrael.kharazim.application.base.auth.AuthUser;
 import com.tyrael.kharazim.application.clinic.mapper.ClinicMapper;
 import com.tyrael.kharazim.application.config.BusinessCodeConstants;
+import com.tyrael.kharazim.application.pharmacy.event.CreateInboundOrderEvent;
 import com.tyrael.kharazim.application.purchase.domain.PurchaseOrder;
 import com.tyrael.kharazim.application.purchase.domain.PurchaseOrderItem;
 import com.tyrael.kharazim.application.purchase.enums.PurchaseOrderPaymentStatus;
@@ -14,6 +15,7 @@ import com.tyrael.kharazim.application.purchase.vo.request.CreatePurchaseOrderRe
 import com.tyrael.kharazim.application.supplier.mapper.SupplierMapper;
 import com.tyrael.kharazim.application.system.service.CodeGenerator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,6 +36,7 @@ public class CreatePurchaseOrderServiceImpl implements CreatePurchaseOrderServic
     private final CodeGenerator codeGenerator;
     private final ClinicMapper clinicMapper;
     private final SupplierMapper supplierMapper;
+    private final ApplicationEventPublisher publisher;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -46,7 +49,7 @@ public class CreatePurchaseOrderServiceImpl implements CreatePurchaseOrderServic
         purchaseOrderMapper.insert(purchaseOrder);
         purchaseOrderItemMapper.batchInsert(purchaseOrder.getItems());
 
-        // TODO @Tyrael Archangel 创建入库单
+        publisher.publishEvent(new CreateInboundOrderEvent(this, purchaseOrder));
 
         return purchaseOrder.getCode();
     }
