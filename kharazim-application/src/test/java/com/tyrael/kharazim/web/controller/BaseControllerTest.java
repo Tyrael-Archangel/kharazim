@@ -59,7 +59,8 @@ import java.util.stream.Stream;
  * @since 2023/12/21
  */
 @SpringBootTest(properties = {
-        "system.global.enable-print-request-log=false"
+        "system.global.enable-print-request-log=false",
+        "spring.boot.admin.client.enabled=false"
 })
 @AutoConfigureMockMvc
 public abstract class BaseControllerTest<T> {
