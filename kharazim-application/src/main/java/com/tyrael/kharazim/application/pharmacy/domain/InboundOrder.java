@@ -1,10 +1,13 @@
 package com.tyrael.kharazim.application.pharmacy.domain;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.tyrael.kharazim.application.base.BaseDO;
 import com.tyrael.kharazim.application.pharmacy.enums.InboundOrderStatus;
 import lombok.Data;
+
+import java.util.List;
 
 /**
  * 入库单
@@ -39,8 +42,16 @@ public class InboundOrder extends BaseDO {
     private String supplierCode;
 
     /**
+     * 来源采购备注
+     */
+    private String sourcePurchaseRemark;
+
+    /**
      * 入库状态
      */
     private InboundOrderStatus status;
+
+    @TableField(exist = false)
+    private List<InboundOrderItem> items;
 
 }

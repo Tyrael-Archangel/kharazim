@@ -37,7 +37,8 @@ public enum BusinessCodeConstants {
     SKU_PUBLISH("商品发布", 5, "SPB"),
     FILE("文件", 10, "F"),
     FILE_DIR("文件目录", 5, "dir"),
-    PURCHASE_ORDER("采购订单", 3, "PO");
+    PURCHASE_ORDER("采购订单", 3, "PO"),
+    INBOUND_ORDER("入库单", 5, "IO");
 
     private static final int DEFAULT_BIT = 6;
 
