@@ -22,7 +22,7 @@ public class MockAuth {
 
     public static AuthUser mockAdmin() {
         AuthUser authUser = new AuthUser();
-        authUser.setId(0L);
+        authUser.setId(1L);
         authUser.setCode("000000");
         authUser.setSuperAdmin(true);
         authUser.setName("admin");

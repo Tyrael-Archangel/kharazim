@@ -87,13 +87,7 @@ public abstract class BaseControllerTest<T> {
     }
 
     protected AuthUser mockAdmin() {
-        AuthUser authUser = new AuthUser();
-        authUser.setId(0L);
-        authUser.setCode("000000");
-        authUser.setSuperAdmin(true);
-        authUser.setName("admin");
-        authUser.setNickName("超级管理员");
-        return authUser;
+        return MockAuth.mockAdmin();
     }
 
     @BeforeEach

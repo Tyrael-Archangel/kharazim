@@ -1,6 +1,5 @@
 package com.tyrael.kharazim.web.controller.user;
 
-import com.tyrael.kharazim.application.base.auth.AuthUser;
 import com.tyrael.kharazim.application.system.dto.file.UploadFileVO;
 import com.tyrael.kharazim.application.system.service.FileService;
 import com.tyrael.kharazim.application.user.domain.Role;
@@ -14,6 +13,7 @@ import com.tyrael.kharazim.application.user.enums.UserGenderEnum;
 import com.tyrael.kharazim.application.user.mapper.RoleMapper;
 import com.tyrael.kharazim.common.dto.Pair;
 import com.tyrael.kharazim.common.dto.Pairs;
+import com.tyrael.kharazim.mock.MockAuth;
 import com.tyrael.kharazim.mock.MockMultipartFile;
 import com.tyrael.kharazim.web.controller.BaseControllerTest;
 import lombok.Getter;
@@ -336,13 +336,7 @@ class UserControllerTest extends BaseControllerTest<UserController> {
         changePasswordRequest.setNewPassword("123456789");
         changePasswordRequest.setOldPassword("123456");
 
-        AuthUser authUser = new AuthUser();
-        authUser.setId(1L);
-        authUser.setSuperAdmin(true);
-        authUser.setName("admin");
-        authUser.setNickName("超级管理员");
-
-        super.performWhenCall(mockController.changePassword(authUser, changePasswordRequest));
+        super.performWhenCall(mockController.changePassword(MockAuth.mockAdmin(), changePasswordRequest));
     }
 
     @Test
