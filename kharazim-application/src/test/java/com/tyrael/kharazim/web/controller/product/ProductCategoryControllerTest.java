@@ -3,6 +3,7 @@ package com.tyrael.kharazim.web.controller.product;
 import com.tyrael.kharazim.application.product.service.ProductCategoryService;
 import com.tyrael.kharazim.application.product.vo.category.AddProductCategoryRequest;
 import com.tyrael.kharazim.common.dto.DataResponse;
+import com.tyrael.kharazim.mock.MockAuth;
 import com.tyrael.kharazim.web.controller.BaseControllerTest;
 import lombok.Data;
 import org.junit.jupiter.api.Test;
@@ -40,6 +41,7 @@ class ProductCategoryControllerTest extends BaseControllerTest<ProductCategoryCo
     }
 
     @Test
+    @SuppressWarnings("all")
     void add() {
         String categories = """
                 name: null
@@ -71,6 +73,8 @@ class ProductCategoryControllerTest extends BaseControllerTest<ProductCategoryCo
         Yaml yaml = new Yaml();
         yaml.setBeanAccess(BeanAccess.FIELD);
         PrivateCategory category = yaml.loadAs(categories, PrivateCategory.class);
+        MockAuth.mockCurrentAdmin();
+
         recursiveAdd(category, null);
     }
 
