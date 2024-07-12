@@ -31,6 +31,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -60,7 +63,7 @@ class ProductSkuControllerTest extends BaseControllerTest<ProductSkuController> 
     }
 
     @Test
-    void create() {
+    void create() throws Exception {
 
         List<ProductCategoryTreeNodeDTO> categoryTree = productCategoryService.tree();
         List<SupplierVO> suppliers = supplierService.list(new ListSupplierRequest());
@@ -71,33 +74,35 @@ class ProductSkuControllerTest extends BaseControllerTest<ProductSkuController> 
         List<HeroAbility> heroAbilities = new ArrayList<>(heroAbilities());
         Collections.shuffle(heroAbilities);
 
+        int processors = Runtime.getRuntime().availableProcessors();
+        ExecutorService threadPoolExecutor = Executors.newFixedThreadPool(processors);
+
         for (HeroAbility heroAbility : heroAbilities) {
-            String image = heroAbility.image;
-            String imageFileId = null;
-            if (StringUtils.isNotBlank(image)) {
-                try {
-                    imageFileId = uploadAbilityIcon(heroAbility.name, image);
-                } catch (Exception e) {
-                    log.error("get hero avatar error: " + e.getMessage(), e);
-                }
-            }
+            threadPoolExecutor.execute(() -> {
 
-            ProductCategoryTreeNodeDTO category = randomCategory(categoryTree);
-            SupplierVO supplier = supplierMap.getOrDefault(heroAbility.supplier,
-                    CollectionUtils.random(supplierMap.values()));
-            ProductUnitVO productUnit = CollectionUtils.random(productUnits);
+                ProductCategoryTreeNodeDTO category = randomCategory(categoryTree);
+                SupplierVO supplier = supplierMap.getOrDefault(heroAbility.supplier,
+                        CollectionUtils.random(supplierMap.values()));
+                ProductUnitVO productUnit = CollectionUtils.random(productUnits);
 
-            AddProductRequest addRequest = new AddProductRequest();
-            addRequest.setName(heroAbility.name);
-            addRequest.setCategoryCode(category.getCode());
-            addRequest.setSupplierCode(supplier.getCode());
-            addRequest.setDefaultImage(imageFileId);
-            addRequest.setUnitCode(productUnit.getCode());
-            addRequest.setDescription(heroAbility.desc);
-            String cooldown = heroAbility.cooldown.replace("Cooldown: ", "");
-            addRequest.setAttributes(List.of(new Attribute("cooldown", cooldown)));
-            super.performWhenCall(mockController.create(addRequest));
+                AddProductRequest addRequest = new AddProductRequest();
+                addRequest.setName(heroAbility.name);
+                addRequest.setCategoryCode(category.getCode());
+                addRequest.setSupplierCode(supplier.getCode());
+                addRequest.setDefaultImage(this.uploadAbilityIcon(heroAbility.name, heroAbility.image));
+                addRequest.setUnitCode(productUnit.getCode());
+                addRequest.setDescription(heroAbility.desc);
+                String cooldown = heroAbility.cooldown.replace("Cooldown: ", "");
+                addRequest.setAttributes(List.of(new Attribute("cooldown", cooldown)));
+                super.performWhenCall(mockController.create(addRequest));
+            });
         }
+
+        threadPoolExecutor.shutdown();
+        if (!threadPoolExecutor.awaitTermination(10, TimeUnit.MINUTES)) {
+            log.error("should not happen", new ShouldNotHappenException());
+        }
+
     }
 
     private ProductCategoryTreeNodeDTO randomCategory(List<ProductCategoryTreeNodeDTO> categoryTree) {
@@ -109,20 +114,28 @@ class ProductSkuControllerTest extends BaseControllerTest<ProductSkuController> 
         return category;
     }
 
-    private String uploadAbilityIcon(String abilityName, String url) throws Exception {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(url))
-                .build();
-        byte[] body = HttpClient.newHttpClient()
-                .send(request, HttpResponse.BodyHandlers.ofByteArray())
-                .body();
+    private String uploadAbilityIcon(String abilityName, String url) {
+        if (StringUtils.isNotBlank(url)) {
+            return null;
+        }
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(url))
+                    .build();
+            byte[] body = HttpClient.newHttpClient()
+                    .send(request, HttpResponse.BodyHandlers.ofByteArray())
+                    .body();
 
-        UploadFileVO uploadFileVO = new UploadFileVO();
-        String fileName = url.substring(url.lastIndexOf("/") + 1);
-        uploadFileVO.setFileName(fileName);
-        uploadFileVO.setFile(new MockMultipartFile(abilityName, new ByteArrayInputStream(body)));
+            UploadFileVO uploadFileVO = new UploadFileVO();
+            String fileName = url.substring(url.lastIndexOf("/") + 1);
+            uploadFileVO.setFileName(fileName);
+            uploadFileVO.setFile(new MockMultipartFile(abilityName, new ByteArrayInputStream(body)));
 
-        return fileService.upload(uploadFileVO, super.mockAdmin()).getFileId();
+            return fileService.upload(uploadFileVO, super.mockAdmin()).getFileId();
+        } catch (Exception e) {
+            log.error("get hero avatar error: {}", e.getMessage(), e);
+            return null;
+        }
     }
 
     @Test
