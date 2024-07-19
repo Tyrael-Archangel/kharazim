@@ -13,6 +13,7 @@ import com.tyrael.kharazim.application.user.enums.UserGenderEnum;
 import com.tyrael.kharazim.application.user.mapper.RoleMapper;
 import com.tyrael.kharazim.common.dto.Pair;
 import com.tyrael.kharazim.common.dto.Pairs;
+import com.tyrael.kharazim.common.exception.ShouldNotHappenException;
 import com.tyrael.kharazim.mock.MockAuth;
 import com.tyrael.kharazim.mock.MockMultipartFile;
 import com.tyrael.kharazim.web.controller.BaseControllerTest;
@@ -34,6 +35,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import static com.tyrael.kharazim.application.user.enums.UserGenderEnum.FEMALE;
@@ -70,7 +75,6 @@ class UserControllerTest extends BaseControllerTest<UserController> {
     }
 
     @Test
-    @SuppressWarnings("all")
     void add() throws Exception {
 
         List<Role> roles = roleMapper.listAll();
@@ -84,8 +88,10 @@ class UserControllerTest extends BaseControllerTest<UserController> {
         Map<String, String> heroAvatarMap = heroAvatars.stream()
                 .collect(Collectors.toMap(Pair::left, Pair::right));
 
-        for (Hero hero : heroes) {
+        int processors = Runtime.getRuntime().availableProcessors();
+        ExecutorService threadPoolExecutor = Executors.newFixedThreadPool(processors);
 
+        Consumer<Hero> addHero = hero -> {
             Role role = roleMap.get(hero.getRole());
 
             AddUserRequest addUserRequest = new AddUserRequest();
@@ -99,7 +105,7 @@ class UserControllerTest extends BaseControllerTest<UserController> {
                     String fileId = uploadAvatar(hero.getName(), avatarUrl);
                     addUserRequest.setAvatar(fileId);
                 } catch (Exception e) {
-                    log.error("get hero avatar error: " + e.getMessage(), e);
+                    log.error("get hero avatar error: {}", e.getMessage(), e);
                 }
             }
 
@@ -110,6 +116,15 @@ class UserControllerTest extends BaseControllerTest<UserController> {
             addUserRequest.setBirthday(hero.getRelease());
 
             super.performWhenCall(mockController.add(addUserRequest));
+        };
+
+        for (Hero hero : heroes) {
+            threadPoolExecutor.execute(() -> addHero.accept(hero));
+        }
+
+        threadPoolExecutor.shutdown();
+        if (!threadPoolExecutor.awaitTermination(10, TimeUnit.MINUTES)) {
+            log.error("should not happen", new ShouldNotHappenException());
         }
     }
 

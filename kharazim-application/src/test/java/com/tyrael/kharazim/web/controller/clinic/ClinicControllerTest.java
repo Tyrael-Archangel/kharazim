@@ -57,7 +57,7 @@ class ClinicControllerTest extends BaseControllerTest<ClinicController> {
                 try {
                     imageFileId = uploadBattlegroundImage(name, image);
                 } catch (Exception e) {
-                    log.error("get battleground image error: " + e.getMessage(), e);
+                    log.error("get battleground image error: {}", e.getMessage(), e);
                 }
             }
             AddClinicRequest addClinicRequest = new AddClinicRequest();
