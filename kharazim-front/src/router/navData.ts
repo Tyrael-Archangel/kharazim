@@ -73,10 +73,15 @@ const navs: Nav[] = [
     children: [
       {
         name: "供应商管理",
-        component: "supplier/index.vue",
+        component: "supplier/supplier.vue",
         path: "/supplier-info",
         icon: "/icons/supplier.svg",
-      },
+      },{
+        name: "采购单管理",
+        component: "purchaseOrder/purchaseOrder.vue",
+        path: "/purchase-order",
+        icon: "/icons/purchase_order.svg",
+      }
     ],
   },
   {
