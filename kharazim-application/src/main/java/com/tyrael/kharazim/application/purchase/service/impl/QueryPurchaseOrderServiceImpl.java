@@ -8,6 +8,8 @@ import com.tyrael.kharazim.application.purchase.domain.PurchaseOrderReceiveRecor
 import com.tyrael.kharazim.application.purchase.mapper.*;
 import com.tyrael.kharazim.application.purchase.service.QueryPurchaseOrderService;
 import com.tyrael.kharazim.application.purchase.vo.PurchaseOrderVO;
+import com.tyrael.kharazim.application.purchase.vo.request.PagePurchaseOrderRequest;
+import com.tyrael.kharazim.common.dto.PageResponse;
 import com.tyrael.kharazim.common.exception.DomainNotFoundException;
 import com.tyrael.kharazim.common.util.CollectionUtils;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +35,11 @@ public class QueryPurchaseOrderServiceImpl implements QueryPurchaseOrderService 
     private final PurchaseOrderReceiveRecordMapper receiveRecordMapper;
     private final PurchaseOrderReceiveRecordItemMapper receiveRecordItemMapper;
     private final PurchaseOrderConverter purchaseOrderConverter;
+
+    @Override
+    public PageResponse<PurchaseOrderVO> page(PagePurchaseOrderRequest pageRequest) {
+        return null;
+    }
 
     @Override
     @Transactional(readOnly = true)

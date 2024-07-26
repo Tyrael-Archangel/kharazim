@@ -6,11 +6,14 @@ import com.tyrael.kharazim.application.purchase.service.CreatePurchaseOrderServi
 import com.tyrael.kharazim.application.purchase.service.QueryPurchaseOrderService;
 import com.tyrael.kharazim.application.purchase.vo.PurchaseOrderVO;
 import com.tyrael.kharazim.application.purchase.vo.request.CreatePurchaseOrderRequest;
+import com.tyrael.kharazim.application.purchase.vo.request.PagePurchaseOrderRequest;
 import com.tyrael.kharazim.common.dto.DataResponse;
+import com.tyrael.kharazim.common.dto.PageResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -31,6 +34,12 @@ public class PurchaseOrderController {
     public DataResponse<String> create(@RequestBody CreatePurchaseOrderRequest request,
                                        @Schema(hidden = true) @CurrentUser AuthUser currentUser) {
         return DataResponse.ok(createPurchaseOrderService.create(request, currentUser));
+    }
+
+    @GetMapping("/page")
+    @Operation(summary = "采购单分页")
+    public PageResponse<PurchaseOrderVO> page(@ParameterObject PagePurchaseOrderRequest pageRequest) {
+        return queryPurchaseOrderService.page(pageRequest);
     }
 
     @GetMapping("/detail/{code}")
