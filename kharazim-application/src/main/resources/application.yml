@@ -25,6 +25,7 @@ spring:
         url: http://localhost:9508/kharazim-admin
         instance:
           service-host-type: ip
+        enabled: false
 
 mybatis-plus:
   global-config:
