@@ -23,13 +23,9 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
     plugins: [vue()],
     resolve: {
       // 配置路径别名
-      alias: [
-        // @代替src
-        {
-          find: "@",
-          replacement: path.resolve("./src"),
-        },
-      ],
+      alias: {
+        "@": path.resolve(__dirname, "./src"),
+      },
     },
   };
 });
