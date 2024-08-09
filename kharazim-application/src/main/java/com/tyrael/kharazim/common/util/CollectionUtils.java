@@ -38,6 +38,10 @@ public class CollectionUtils {
         return !isEmpty(coll);
     }
 
+    public static <E> Collection<E> safeCollection(Collection<E> collection) {
+        return isEmpty(collection) ? new ArrayList<>() : collection;
+    }
+
     public static <E> List<E> safeList(List<E> list) {
         return isEmpty(list) ? new ArrayList<>() : list;
     }

@@ -47,7 +47,7 @@ public class PurchaseOrderConverter {
     /**
      * PurchaseOrders、PurchaseOrderPaymentRecords、PurchaseOrderReceiveRecords -> PurchaseOrderVOs
      */
-    public List<PurchaseOrderVO> purchaseOrderVOs(List<PurchaseOrder> purchaseOrders,
+    public List<PurchaseOrderVO> purchaseOrderVOs(Collection<PurchaseOrder> purchaseOrders,
                                                   List<PurchaseOrderPaymentRecord> paymentRecords,
                                                   List<PurchaseOrderReceiveRecord> receiveRecords) {
 
@@ -170,7 +170,7 @@ public class PurchaseOrderConverter {
 
     private class ConverterHelper {
 
-        private final List<PurchaseOrder> purchaseOrders;
+        private final Collection<PurchaseOrder> purchaseOrders;
         private final List<PurchaseOrderPaymentRecord> paymentRecords;
         private final List<PurchaseOrderReceiveRecord> receiveRecords;
 
@@ -179,7 +179,7 @@ public class PurchaseOrderConverter {
         private Map<String, ProductSkuVO> skuMap;
         private Map<String, FileVO> fileMap;
 
-        ConverterHelper(List<PurchaseOrder> purchaseOrders,
+        ConverterHelper(Collection<PurchaseOrder> purchaseOrders,
                         List<PurchaseOrderPaymentRecord> paymentRecords,
                         List<PurchaseOrderReceiveRecord> receiveRecords) {
             this.purchaseOrders = purchaseOrders;
@@ -192,7 +192,7 @@ public class PurchaseOrderConverter {
 
             Set<String> clinicCodes = new HashSet<>();
             Set<String> supplierCodes = new HashSet<>();
-            for (PurchaseOrder purchaseOrder : CollectionUtils.safeList(purchaseOrders)) {
+            for (PurchaseOrder purchaseOrder : CollectionUtils.safeCollection(purchaseOrders)) {
                 clinicCodes.add(purchaseOrder.getClinicCode());
                 supplierCodes.add(purchaseOrder.getSupplierCode());
             }

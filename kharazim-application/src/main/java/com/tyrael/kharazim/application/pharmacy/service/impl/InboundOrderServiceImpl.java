@@ -50,7 +50,7 @@ public class InboundOrderServiceImpl implements InboundOrderService {
         inboundOrder.setSourcePurchaseOrderCode(purchaseOrder.getCode());
         inboundOrder.setClinicCode(purchaseOrder.getClinicCode());
         inboundOrder.setSupplierCode(purchaseOrder.getSupplierCode());
-        inboundOrder.setSourcePurchaseOrderCode(purchaseOrder.getRemark());
+        inboundOrder.setSourcePurchaseRemark(purchaseOrder.getRemark());
         inboundOrder.setStatus(InboundOrderStatus.WAIT_RECEIVE);
 
         List<InboundOrderItem> inboundOrderItems = purchaseOrder.getItems()

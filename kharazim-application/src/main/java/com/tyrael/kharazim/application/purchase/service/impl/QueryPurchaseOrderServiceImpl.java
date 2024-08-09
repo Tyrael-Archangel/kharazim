@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -38,7 +39,21 @@ public class QueryPurchaseOrderServiceImpl implements QueryPurchaseOrderService 
 
     @Override
     public PageResponse<PurchaseOrderVO> page(PagePurchaseOrderRequest pageRequest) {
-        return null;
+        PageResponse<PurchaseOrder> purchaseOrderPage = purchaseOrderMapper.page(pageRequest);
+        Collection<PurchaseOrder> purchaseOrders = purchaseOrderPage.getData();
+        List<String> purchaseOrderCodes = purchaseOrders.stream()
+                .map(PurchaseOrder::getCode)
+                .toList();
+
+        List<PurchaseOrderVO> pageData = purchaseOrderConverter.purchaseOrderVOs(
+                purchaseOrders,
+                paymentRecordMapper.listByPurchaseOrderCodes(purchaseOrderCodes),
+                receiveRecordMapper.listByPurchaseOrderCodes(purchaseOrderCodes));
+        return PageResponse.success(
+                pageData,
+                purchaseOrderPage.getTotalCount(),
+                purchaseOrderPage.getPageSize(),
+                purchaseOrderPage.getPageNum());
     }
 
     @Override

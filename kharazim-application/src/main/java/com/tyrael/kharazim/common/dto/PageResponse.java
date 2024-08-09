@@ -16,7 +16,7 @@ import java.util.Optional;
 public class PageResponse<T> extends MultiResponse<T> {
 
     private int totalCount;
-    private int currentPageSize;
+    private int currentPageCount;
     private int pageSize;
     private int pageNum;
 
@@ -24,7 +24,7 @@ public class PageResponse<T> extends MultiResponse<T> {
         PageResponse<T> response = new PageResponse<>();
         response.markSuccess();
         response.data = data;
-        response.currentPageSize = data == null ? 0 : data.size();
+        response.currentPageCount = data == null ? 0 : data.size();
         response.totalCount = totalCount;
         response.pageSize = pageSize;
         response.pageNum = pageNum;
