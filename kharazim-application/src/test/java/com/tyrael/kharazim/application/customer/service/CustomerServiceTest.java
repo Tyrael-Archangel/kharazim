@@ -22,7 +22,9 @@ class CustomerServiceTest {
     @Test
     void export() throws IOException {
         String fileName = "会员数据" + System.currentTimeMillis() + ".xlsx";
-        customerService.export(new PageCustomerRequest(), new MockFileHttpServletResponse(fileName));
+        MockFileHttpServletResponse response = new MockFileHttpServletResponse(fileName);
+        customerService.export(new PageCustomerRequest(), response);
+        System.out.println(response.getFile().getAbsolutePath());
     }
 
 }

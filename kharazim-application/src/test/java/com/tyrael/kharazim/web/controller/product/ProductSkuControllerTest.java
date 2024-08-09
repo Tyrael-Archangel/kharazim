@@ -115,7 +115,7 @@ class ProductSkuControllerTest extends BaseControllerTest<ProductSkuController> 
     }
 
     private String uploadAbilityIcon(String abilityName, String url) {
-        if (StringUtils.isNotBlank(url)) {
+        if (StringUtils.isBlank(url)) {
             return null;
         }
         try {
