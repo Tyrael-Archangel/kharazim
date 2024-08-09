@@ -2,6 +2,7 @@ package com.tyrael.kharazim.application.purchase.mapper;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.extension.toolkit.Db;
 import com.tyrael.kharazim.application.purchase.domain.PurchaseOrderReceiveRecordItem;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -15,6 +16,15 @@ import java.util.List;
  */
 @Mapper
 public interface PurchaseOrderReceiveRecordItemMapper extends BaseMapper<PurchaseOrderReceiveRecordItem> {
+
+    /**
+     * 批量插入
+     *
+     * @param items PurchaseOrderReceiveRecordItems
+     */
+    default void batchInsert(Collection<PurchaseOrderReceiveRecordItem> items) {
+        Db.saveBatch(items);
+    }
 
     /**
      * list by serialCodes

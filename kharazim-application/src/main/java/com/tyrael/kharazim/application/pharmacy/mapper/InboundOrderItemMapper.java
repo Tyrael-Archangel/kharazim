@@ -1,5 +1,6 @@
 package com.tyrael.kharazim.application.pharmacy.mapper;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.toolkit.Db;
 import com.tyrael.kharazim.application.pharmacy.domain.InboundOrderItem;
@@ -21,6 +22,18 @@ public interface InboundOrderItemMapper extends BaseMapper<InboundOrderItem> {
      */
     default void batchInsert(List<InboundOrderItem> items) {
         Db.saveBatch(items);
+    }
+
+    /**
+     * list by inboundOrderCode
+     *
+     * @param inboundOrderCode inboundOrderCode
+     * @return InboundOrderItems
+     */
+    default List<InboundOrderItem> listByInboundOrderCode(String inboundOrderCode) {
+        LambdaQueryWrapper<InboundOrderItem> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(InboundOrderItem::getInboundOrderCode, inboundOrderCode);
+        return this.selectList(queryWrapper);
     }
 
 }

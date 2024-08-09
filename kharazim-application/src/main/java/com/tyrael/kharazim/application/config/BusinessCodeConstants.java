@@ -38,7 +38,9 @@ public enum BusinessCodeConstants {
     FILE("文件", 10, "F"),
     FILE_DIR("文件目录", 5, "dir"),
     PURCHASE_ORDER("采购订单", 3, "PO"),
-    INBOUND_ORDER("入库单", 5, "IO");
+    INBOUND_ORDER("入库单", 5, "IO"),
+    INVENTORY_INBOUND("库存入库流水", "IIN"),
+    PURCHASE_ORDER_RECEIVE("采购单收货流水", "POI");
 
     private static final int DEFAULT_BIT = 6;
 

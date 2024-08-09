@@ -54,4 +54,17 @@ public class InboundOrder extends BaseDO {
     @TableField(exist = false)
     private List<InboundOrderItem> items;
 
+    public void refreshStatus() {
+        boolean allReceived = items.stream()
+                .allMatch(e -> e.getRemainQuantity() <= 0);
+        if (allReceived) {
+            this.status = InboundOrderStatus.RECEIVE_FINISHED;
+        } else {
+            boolean hasAnyReceived = items.stream()
+                    .anyMatch(e -> e.getReceivedQuantity() > 0);
+            this.status = hasAnyReceived
+                    ? InboundOrderStatus.RECEIVING
+                    : InboundOrderStatus.WAIT_RECEIVE;
+        }
+    }
 }

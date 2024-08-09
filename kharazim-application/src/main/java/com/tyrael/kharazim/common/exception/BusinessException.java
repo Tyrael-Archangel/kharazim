@@ -20,10 +20,21 @@ public class BusinessException extends RuntimeException {
         this.msg = msg;
     }
 
+    /**
+     * condition必须为true，否则抛出异常
+     */
     public static void assertTrue(boolean condition, String msg) {
         if (!condition) {
             throw new BusinessException(msg);
         }
     }
+
+    /**
+     * condition必须为false，否则抛出异常
+     */
+    public static void assertFalse(boolean condition, String msg) {
+        assertTrue(!condition, msg);
+    }
+
 }
 

@@ -34,4 +34,13 @@ public class InboundOrderItem {
      */
     private Integer receivedQuantity;
 
+    public int getRemainQuantity() {
+        return quantity - receivedQuantity;
+    }
+
+    public void addReceivedQuantity(int quantity) {
+        // 允许多收货，不校验收货数量是否超额
+        this.receivedQuantity += quantity;
+    }
+
 }

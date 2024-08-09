@@ -66,4 +66,17 @@ public class PurchaseOrder extends BaseDO {
     @TableField(exist = false)
     private List<PurchaseOrderItem> items;
 
+    public void refreshReceiveStatus() {
+        boolean noneReceive = items.stream()
+                .allMatch(e -> e.getReceivedQuantity() == 0);
+        if (noneReceive) {
+            this.receiveStatus = PurchaseOrderReceiveStatus.WAIT_RECEIVE;
+        } else {
+            boolean hasAnyNotFinish = items.stream()
+                    .anyMatch(e -> e.getRemainQuantity() > 0);
+            this.receiveStatus = hasAnyNotFinish
+                    ? PurchaseOrderReceiveStatus.RECEIVING
+                    : PurchaseOrderReceiveStatus.RECEIVE_FINISHED;
+        }
+    }
 }

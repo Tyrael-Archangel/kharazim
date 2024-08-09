@@ -48,4 +48,12 @@ public class PurchaseOrderItem {
      */
     private BigDecimal amount;
 
+    public int getRemainQuantity() {
+        return quantity - receivedQuantity;
+    }
+
+    public void increaseReceive(Integer quantity) {
+        this.receivedQuantity += quantity;
+    }
+
 }
