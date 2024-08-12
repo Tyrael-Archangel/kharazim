@@ -13,10 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -44,9 +41,9 @@ public class QueryPurchaseOrderServiceImpl implements QueryPurchaseOrderService 
 
         List<PurchaseOrderVO> pageData = purchaseOrderConverter.purchaseOrderVOs(
                 purchaseOrders,
-                purchaseOrderItemMapper.listByPurchaseOrderCodes(purchaseOrderCodes),
-                paymentRecordMapper.listByPurchaseOrderCodes(purchaseOrderCodes),
-                receiveRecordMapper.listByPurchaseOrderCodes(purchaseOrderCodes));
+                this.purchaseOrderItems(purchaseOrderCodes),
+                this.paymentRecords(purchaseOrderCodes),
+                this.receiveRecords(purchaseOrderCodes));
         return PageResponse.success(
                 pageData,
                 purchaseOrderPage.getTotalCount(),
@@ -62,21 +59,21 @@ public class QueryPurchaseOrderServiceImpl implements QueryPurchaseOrderService 
 
         return purchaseOrderConverter.purchaseOrderVO(
                 purchaseOrder,
-                this.purchaseOrderItems(code),
-                this.paymentRecords(code),
-                this.receiveRecords(code));
+                this.purchaseOrderItems(Collections.singletonList(code)),
+                this.paymentRecords(Collections.singletonList(code)),
+                this.receiveRecords(Collections.singletonList(code)));
     }
 
-    private List<PurchaseOrderItem> purchaseOrderItems(String purchaseOrderCode) {
-        return purchaseOrderItemMapper.listByPurchaseOrderCode(purchaseOrderCode);
+    private List<PurchaseOrderItem> purchaseOrderItems(Collection<String> purchaseOrderCodes) {
+        return purchaseOrderItemMapper.listByPurchaseOrderCodes(purchaseOrderCodes);
     }
 
-    private List<PurchaseOrderPaymentRecord> paymentRecords(String purchaseOrderCode) {
-        return paymentRecordMapper.listByPurchaseOrderCode(purchaseOrderCode);
+    private List<PurchaseOrderPaymentRecord> paymentRecords(Collection<String> purchaseOrderCodes) {
+        return paymentRecordMapper.listByPurchaseOrderCodes(purchaseOrderCodes);
     }
 
-    private List<PurchaseOrderReceiveRecord> receiveRecords(String purchaseOrderCode) {
-        List<PurchaseOrderReceiveRecord> receiveRecords = receiveRecordMapper.listByPurchaseOrderCode(purchaseOrderCode);
+    private List<PurchaseOrderReceiveRecord> receiveRecords(Collection<String> purchaseOrderCodes) {
+        List<PurchaseOrderReceiveRecord> receiveRecords = receiveRecordMapper.listByPurchaseOrderCodes(purchaseOrderCodes);
         List<String> serialCodes = CollectionUtils.safeStream(receiveRecords)
                 .map(PurchaseOrderReceiveRecord::getSerialCode)
                 .collect(Collectors.toList());
