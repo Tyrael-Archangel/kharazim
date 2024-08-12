@@ -1,10 +1,7 @@
 package com.tyrael.kharazim.application.purchase.service.impl;
 
 import com.tyrael.kharazim.application.purchase.converter.PurchaseOrderConverter;
-import com.tyrael.kharazim.application.purchase.domain.PurchaseOrder;
-import com.tyrael.kharazim.application.purchase.domain.PurchaseOrderPaymentRecord;
-import com.tyrael.kharazim.application.purchase.domain.PurchaseOrderReceiveRecord;
-import com.tyrael.kharazim.application.purchase.domain.PurchaseOrderReceiveRecordItem;
+import com.tyrael.kharazim.application.purchase.domain.*;
 import com.tyrael.kharazim.application.purchase.mapper.*;
 import com.tyrael.kharazim.application.purchase.service.QueryPurchaseOrderService;
 import com.tyrael.kharazim.application.purchase.vo.PurchaseOrderVO;
@@ -47,6 +44,7 @@ public class QueryPurchaseOrderServiceImpl implements QueryPurchaseOrderService 
 
         List<PurchaseOrderVO> pageData = purchaseOrderConverter.purchaseOrderVOs(
                 purchaseOrders,
+                purchaseOrderItemMapper.listByPurchaseOrderCodes(purchaseOrderCodes),
                 paymentRecordMapper.listByPurchaseOrderCodes(purchaseOrderCodes),
                 receiveRecordMapper.listByPurchaseOrderCodes(purchaseOrderCodes));
         return PageResponse.success(
@@ -59,22 +57,18 @@ public class QueryPurchaseOrderServiceImpl implements QueryPurchaseOrderService 
     @Override
     @Transactional(readOnly = true)
     public PurchaseOrderVO detail(String code) {
-        PurchaseOrder purchaseOrder = this.findByCode(code);
+        PurchaseOrder purchaseOrder = purchaseOrderMapper.findByCode(code);
         DomainNotFoundException.assertFound(purchaseOrder, code);
 
         return purchaseOrderConverter.purchaseOrderVO(
                 purchaseOrder,
+                this.purchaseOrderItems(code),
                 this.paymentRecords(code),
                 this.receiveRecords(code));
     }
 
-    private PurchaseOrder findByCode(String purchaseOrderCode) {
-        PurchaseOrder purchaseOrder = purchaseOrderMapper.findByCode(purchaseOrderCode);
-        if (purchaseOrder == null) {
-            return null;
-        }
-        purchaseOrder.setItems(purchaseOrderItemMapper.listByPurchaseOrderCode(purchaseOrderCode));
-        return purchaseOrder;
+    private List<PurchaseOrderItem> purchaseOrderItems(String purchaseOrderCode) {
+        return purchaseOrderItemMapper.listByPurchaseOrderCode(purchaseOrderCode);
     }
 
     private List<PurchaseOrderPaymentRecord> paymentRecords(String purchaseOrderCode) {

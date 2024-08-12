@@ -32,27 +32,31 @@ public class PurchaseOrderConverter {
     private final ProductSkuRepository productSkuRepository;
 
     /**
-     * PurchaseOrder、PurchaseOrderPaymentRecords、PurchaseOrderReceiveRecords -> PurchaseOrderVO
+     * PurchaseOrder、PurchaseOrderItems、PurchaseOrderPaymentRecords、PurchaseOrderReceiveRecords -> PurchaseOrderVO
      */
     public PurchaseOrderVO purchaseOrderVO(PurchaseOrder purchaseOrder,
+                                           List<PurchaseOrderItem> purchaseOrderItems,
                                            List<PurchaseOrderPaymentRecord> paymentRecords,
                                            List<PurchaseOrderReceiveRecord> receiveRecords) {
         if (purchaseOrder == null) {
             return null;
         }
-        return purchaseOrderVOs(Collections.singletonList(purchaseOrder), paymentRecords, receiveRecords)
+        return purchaseOrderVOs(Collections.singletonList(purchaseOrder), purchaseOrderItems, paymentRecords, receiveRecords)
                 .get(0);
     }
 
     /**
-     * PurchaseOrders、PurchaseOrderPaymentRecords、PurchaseOrderReceiveRecords -> PurchaseOrderVOs
+     * PurchaseOrders、PurchaseOrderItems、PurchaseOrderPaymentRecords、PurchaseOrderReceiveRecords -> PurchaseOrderVOs
      */
     public List<PurchaseOrderVO> purchaseOrderVOs(Collection<PurchaseOrder> purchaseOrders,
+                                                  List<PurchaseOrderItem> purchaseOrderItems,
                                                   List<PurchaseOrderPaymentRecord> paymentRecords,
                                                   List<PurchaseOrderReceiveRecord> receiveRecords) {
 
-        ConverterHelper converterHelper = new ConverterHelper(purchaseOrders, paymentRecords, receiveRecords);
+        ConverterHelper converterHelper = new ConverterHelper(purchaseOrders, purchaseOrderItems, paymentRecords, receiveRecords);
 
+        Map<String, List<PurchaseOrderItem>> purchaseOrderItemGroups = CollectionUtils.safeStream(purchaseOrderItems)
+                .collect(Collectors.groupingBy(PurchaseOrderItem::getPurchaseOrderCode));
         Map<String, List<PurchaseOrderPaymentRecord>> purchaseOrderPaymentGroups = CollectionUtils.safeStream(paymentRecords)
                 .collect(Collectors.groupingBy(PurchaseOrderPaymentRecord::getPurchaseOrderCode));
         Map<String, List<PurchaseOrderReceiveRecord>> purchaseOrderReceiveGroups = CollectionUtils.safeStream(receiveRecords)
@@ -61,6 +65,7 @@ public class PurchaseOrderConverter {
         return purchaseOrders.stream()
                 .map(purchaseOrder -> this.purchaseOrderVO(
                         purchaseOrder,
+                        purchaseOrderItemGroups.get(purchaseOrder.getCode()),
                         purchaseOrderPaymentGroups.get(purchaseOrder.getCode()),
                         purchaseOrderReceiveGroups.get(purchaseOrder.getCode()),
                         converterHelper))
@@ -68,6 +73,7 @@ public class PurchaseOrderConverter {
     }
 
     private PurchaseOrderVO purchaseOrderVO(PurchaseOrder purchaseOrder,
+                                            List<PurchaseOrderItem> purchaseOrderItems,
                                             List<PurchaseOrderPaymentRecord> paymentRecords,
                                             List<PurchaseOrderReceiveRecord> receiveRecords,
                                             ConverterHelper converterHelper) {
@@ -86,9 +92,12 @@ public class PurchaseOrderConverter {
                 .receiveStatus(purchaseOrder.getReceiveStatus())
                 .paymentStatus(purchaseOrder.getPaymentStatus())
                 .remark(purchaseOrder.getRemark())
-                .items(this.purchaseOrderItemVOs(purchaseOrder.getItems(), converterHelper))
+                .items(this.purchaseOrderItemVOs(purchaseOrderItems, converterHelper))
                 .paymentRecords(this.paymentRecordVOs(paymentRecords, converterHelper))
                 .receiveRecords(this.receiveRecordVOs(receiveRecords, converterHelper))
+                .createTime(purchaseOrder.getCreateTime())
+                .creator(purchaseOrder.getCreator())
+                .creatorCode(purchaseOrder.getCreatorCode())
                 .build();
 
     }
@@ -171,6 +180,7 @@ public class PurchaseOrderConverter {
     private class ConverterHelper {
 
         private final Collection<PurchaseOrder> purchaseOrders;
+        private final List<PurchaseOrderItem> purchaseOrderItems;
         private final List<PurchaseOrderPaymentRecord> paymentRecords;
         private final List<PurchaseOrderReceiveRecord> receiveRecords;
 
@@ -180,9 +190,11 @@ public class PurchaseOrderConverter {
         private Map<String, FileVO> fileMap;
 
         ConverterHelper(Collection<PurchaseOrder> purchaseOrders,
+                        List<PurchaseOrderItem> purchaseOrderItems,
                         List<PurchaseOrderPaymentRecord> paymentRecords,
                         List<PurchaseOrderReceiveRecord> receiveRecords) {
             this.purchaseOrders = purchaseOrders;
+            this.purchaseOrderItems = purchaseOrderItems;
             this.paymentRecords = paymentRecords;
             this.receiveRecords = receiveRecords;
             this.prepare();
@@ -199,11 +211,7 @@ public class PurchaseOrderConverter {
             this.clinicMap = clinicMapper.mapByCodes(clinicCodes);
             this.supplierMap = supplierMapper.mapByCodes(supplierCodes);
 
-            Stream<String> purchaseOrderItemSkuStream = CollectionUtils.safeStream(purchaseOrders)
-                    .map(PurchaseOrder::getItems)
-                    .filter(Objects::nonNull)
-                    .flatMap(List::stream)
-                    .filter(Objects::nonNull)
+            Stream<String> purchaseOrderItemSkuStream = CollectionUtils.safeStream(purchaseOrderItems)
                     .map(PurchaseOrderItem::getSkuCode);
             Stream<String> receiveSkuStream = CollectionUtils.safeStream(receiveRecords)
                     .map(PurchaseOrderReceiveRecord::getRecordItems)

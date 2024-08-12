@@ -7,6 +7,7 @@ create table `purchase_order`
     `receive_status` int            not null comment '收货状态',
     `payment_status` int            not null comment '结算状态',
     `total_amount`   decimal(10, 2) not null comment '总金额（元）',
+    `paid_amount`    decimal(10, 2) not null comment '已结算金额（元）',
     `remark`         varchar(256) comment '备注',
     `creator`        varchar(64),
     `creator_code`   varchar(32),
@@ -39,8 +40,8 @@ create table `purchase_order_payment_record`
     `purchase_order_code` varchar(32)    not null comment '采购单号',
     `amount`              decimal(10, 2) not null comment '商品项金额（元）',
     `payment_time`        datetime       not null comment '支付时间',
-    `paymentUser`         varchar(64)    not null comment '支付用户',
-    `paymentUserCode`     varchar(32)    not null comment '支付用户编码',
+    `payment_user`        varchar(64)    not null comment '支付用户',
+    `payment_user_code`   varchar(32)    not null comment '支付用户编码',
     `vouchers`            json comment '支付凭证',
     unique index udx_serial_code (`serial_code`),
     index idx_purchase_order_code (`purchase_order_code`)

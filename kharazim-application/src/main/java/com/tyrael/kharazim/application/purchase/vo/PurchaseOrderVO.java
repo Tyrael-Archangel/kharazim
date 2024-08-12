@@ -62,6 +62,15 @@ public class PurchaseOrderVO {
     @Schema(description = "收货记录")
     private List<PurchaseOrderReceiveRecordVO> receiveRecords;
 
+    @Schema(description = "创建时间")
+    private LocalDateTime createTime;
+
+    @Schema(description = "创建人")
+    private String creator;
+
+    @Schema(description = "创建人编码")
+    private String creatorCode;
+
     @Data
     @Builder
     @NoArgsConstructor
