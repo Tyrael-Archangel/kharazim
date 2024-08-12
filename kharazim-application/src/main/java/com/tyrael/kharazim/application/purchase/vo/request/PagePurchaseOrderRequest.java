@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.util.Set;
 
 /**
@@ -31,4 +32,9 @@ public class PagePurchaseOrderRequest extends PageCommand {
     @ArraySchema(arraySchema = @Schema(description = "结算状态", implementation = PurchaseOrderPaymentStatus.class))
     private Set<PurchaseOrderPaymentStatus> paymentStatuses;
 
+    @Schema(description = "创建开始日期", format = "yyyy-MM-dd", example = "2024-04-01")
+    private LocalDate createDateMin;
+
+    @Schema(description = "创建截止日期", format = "yyyy-MM-dd", example = "2024-04-30")
+    private LocalDate createDateMax;
 }

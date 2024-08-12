@@ -79,6 +79,14 @@
           <el-option key="ALL_PAID" label="已结算" value="ALL_PAID" />
         </el-select>
       </el-form-item>
+      <el-form-item label="创建时间">
+        <el-date-picker
+          v-model="pageRequest.createDate"
+          end-placeholder="截止时间"
+          start-placeholder="开始时间"
+          type="daterange"
+        />
+      </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="loadPurchaseOrders">查询</el-button>
         <el-button type="primary" @click="resetAndReloadPurchaseOrders">
@@ -172,6 +180,7 @@
 import { onMounted, reactive, ref } from "vue";
 import { AxiosResponse } from "axios";
 import axios from "@/utils/http.js";
+import { dateFormat } from "@/utils/DateUtil";
 
 const purchaseOrderPageData = ref([]);
 
@@ -181,6 +190,7 @@ const pageRequest = reactive({
   supplierCodes: [],
   receiveStatuses: [],
   paymentStatuses: [],
+  createDate: [] as Date[],
 });
 const pageInfo = reactive({
   currentPage: 1,
@@ -221,10 +231,18 @@ function resetAndReloadPurchaseOrders() {
   pageRequest.supplierCodes = [];
   pageRequest.receiveStatuses = [];
   pageRequest.paymentStatuses = [];
+  pageRequest.createDate = [] as Date[];
   loadPurchaseOrders();
 }
 
 function loadPurchaseOrders() {
+  let createDateMin = "";
+  let createDateMax = "";
+  if (pageRequest.createDate && pageRequest.createDate.length === 2) {
+    createDateMin = dateFormat(pageRequest.createDate[0]);
+    createDateMax = dateFormat(pageRequest.createDate[1]);
+  }
+
   axios
     .get("/kharazim-api/purchase-order/page", {
       params: {
@@ -235,6 +253,8 @@ function loadPurchaseOrders() {
         paymentStatuses: pageRequest.paymentStatuses,
         pageSize: pageInfo.pageSize,
         pageNum: pageInfo.currentPage,
+        createDateMin: createDateMin,
+        createDateMax: createDateMax,
       },
     })
     .then((response: AxiosResponse) => {
@@ -244,6 +264,7 @@ function loadPurchaseOrders() {
 }
 
 onMounted(() => {
+  loadPurchaseOrders();
   loadClinicOptions();
   loadSupplierOptions();
 });

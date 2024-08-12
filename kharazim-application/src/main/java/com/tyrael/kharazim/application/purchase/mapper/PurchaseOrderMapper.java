@@ -7,6 +7,7 @@ import com.tyrael.kharazim.application.base.LambdaQueryWrapperX;
 import com.tyrael.kharazim.application.purchase.domain.PurchaseOrder;
 import com.tyrael.kharazim.application.purchase.vo.request.PagePurchaseOrderRequest;
 import com.tyrael.kharazim.common.dto.PageResponse;
+import com.tyrael.kharazim.common.util.DateTimeUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -44,6 +45,12 @@ public interface PurchaseOrderMapper extends BaseMapper<PurchaseOrder> {
         queryWrapper.inIfPresent(PurchaseOrder::getSupplierCode, pageRequest.getSupplierCodes());
         queryWrapper.inIfPresent(PurchaseOrder::getReceiveStatus, pageRequest.getReceiveStatuses());
         queryWrapper.inIfPresent(PurchaseOrder::getPaymentStatus, pageRequest.getPaymentStatuses());
+        queryWrapper.geIfPresent(PurchaseOrder::getCreateTime,
+                DateTimeUtil.startTimeOfDate(pageRequest.getCreateDateMin()));
+        queryWrapper.leIfPresent(PurchaseOrder::getCreateTime,
+                DateTimeUtil.startTimeOfDate(pageRequest.getCreateDateMax()));
+
+        queryWrapper.orderByDesc(PurchaseOrder::getCode);
 
         Page<PurchaseOrder> pageCondition = new Page<>(pageRequest.getPageNum(), pageRequest.getPageSize());
         Page<PurchaseOrder> pageData = this.selectPage(pageCondition, queryWrapper);
