@@ -76,7 +76,8 @@ const navs: Nav[] = [
         component: "supplier/supplier.vue",
         path: "/supplier-info",
         icon: "/icons/supplier.svg",
-      },{
+      },
+      {
         name: "采购单管理",
         component: "purchaseOrder/purchaseOrder.vue",
         path: "/purchase-order",
@@ -88,9 +89,9 @@ const navs: Nav[] = [
             path: "/create-purchase-order",
             icon: "/icons/purchase_order.svg",
             hiddenMenu: true,
-          }
-        ]
-      }
+          },
+        ],
+      },
     ],
   },
   {
@@ -168,6 +169,19 @@ const navs: Nav[] = [
         component: "product/productUnit.vue",
         path: "/product-unit",
         icon: "/icons/product_unit.svg",
+      },
+    ],
+  },
+  {
+    name: "药房管理",
+    path: "/pharmacy-management",
+    icon: "/icons/pharmacy_management.svg",
+    children: [
+      {
+        name: "库存管理",
+        component: "pharmacy/inventory.vue",
+        path: "/pharmacy-inventory",
+        icon: "/icons/inventory_management.svg",
       },
     ],
   },
