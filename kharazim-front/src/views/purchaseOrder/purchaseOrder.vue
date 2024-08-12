@@ -96,6 +96,11 @@
     </el-form>
   </div>
   <div>
+    <router-link to="/create-purchase-order">
+      <el-button type="primary">创建采购单</el-button>
+    </router-link>
+  </div>
+  <div>
     <div>
       <el-table
         :data="purchaseOrderPageData"

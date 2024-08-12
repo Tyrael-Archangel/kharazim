@@ -81,6 +81,15 @@ const navs: Nav[] = [
         component: "purchaseOrder/purchaseOrder.vue",
         path: "/purchase-order",
         icon: "/icons/purchase_order.svg",
+        children: [
+          {
+            name: "创建采购单",
+            component: "purchaseOrder/createPurchaseOrder.vue",
+            path: "/create-purchase-order",
+            icon: "/icons/purchase_order.svg",
+            hiddenMenu: true,
+          }
+        ]
       }
     ],
   },

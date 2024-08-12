@@ -48,7 +48,7 @@ public interface PurchaseOrderMapper extends BaseMapper<PurchaseOrder> {
         queryWrapper.geIfPresent(PurchaseOrder::getCreateTime,
                 DateTimeUtil.startTimeOfDate(pageRequest.getCreateDateMin()));
         queryWrapper.leIfPresent(PurchaseOrder::getCreateTime,
-                DateTimeUtil.startTimeOfDate(pageRequest.getCreateDateMax()));
+                DateTimeUtil.endTimeOfDate(pageRequest.getCreateDateMax()));
 
         queryWrapper.orderByDesc(PurchaseOrder::getCode);
 

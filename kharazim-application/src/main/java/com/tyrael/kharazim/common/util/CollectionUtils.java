@@ -1,6 +1,9 @@
 package com.tyrael.kharazim.common.util;
 
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -9,6 +12,7 @@ import java.util.stream.Stream;
  * @since 2024/1/24
  */
 @SuppressWarnings("unused")
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CollectionUtils {
 
     private static final Random RANDOM = new Random();

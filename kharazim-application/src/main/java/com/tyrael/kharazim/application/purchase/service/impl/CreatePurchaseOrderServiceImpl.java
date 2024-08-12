@@ -82,6 +82,7 @@ public class CreatePurchaseOrderServiceImpl implements CreatePurchaseOrderServic
         purchaseOrder.setReceiveStatus(PurchaseOrderReceiveStatus.WAIT_RECEIVE);
         purchaseOrder.setPaymentStatus(PurchaseOrderPaymentStatus.UNPAID);
         purchaseOrder.setTotalAmount(totalAmount);
+        purchaseOrder.setPaidAmount(BigDecimal.ZERO);
         purchaseOrder.setRemark(request.getRemark());
         purchaseOrder.setItems(items);
         purchaseOrder.setCreateUser(currentUser.getCode(), currentUser.getNickName());
