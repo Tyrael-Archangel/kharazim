@@ -178,10 +178,16 @@ const navs: Nav[] = [
     icon: "/icons/pharmacy_management.svg",
     children: [
       {
-        name: "库存管理",
+        name: "库存列表",
         component: "pharmacy/inventory.vue",
         path: "/pharmacy-inventory",
         icon: "/icons/inventory_management.svg",
+      },
+      {
+        name: "入库管理",
+        component: "pharmacy/inboundOrder.vue",
+        path: "/pharmacy-inbound",
+        icon: "/icons/inbound_order.svg",
       },
     ],
   },
