@@ -1,5 +1,6 @@
 package com.tyrael.kharazim.application.pharmacy.service.impl;
 
+import com.tyrael.kharazim.application.pharmacy.domain.Inventory;
 import com.tyrael.kharazim.application.pharmacy.domain.InventoryLog;
 import com.tyrael.kharazim.application.pharmacy.mapper.InventoryLogMapper;
 import com.tyrael.kharazim.application.pharmacy.mapper.InventoryMapper;
@@ -33,7 +34,16 @@ public class InventoryInboundServiceImpl implements InventoryInboundService {
             Integer quantity = inboundItem.quantity();
 
             // 增加库存
-            inventoryMapper.increaseQuantity(skuCode, clinicCode, quantity);
+            int row = inventoryMapper.increaseQuantity(skuCode, clinicCode, quantity);
+            if (row <= 0) {
+                // 库存数据不存在
+                Inventory inventory = new Inventory();
+                inventory.setClinicCode(clinicCode);
+                inventory.setSkuCode(skuCode);
+                inventory.setQuantity(quantity);
+                inventory.setOccupiedQuantity(0);
+                inventoryMapper.insert(inventory);
+            }
 
             // 保存日志
             InventoryLog inventoryLog = new InventoryLog();

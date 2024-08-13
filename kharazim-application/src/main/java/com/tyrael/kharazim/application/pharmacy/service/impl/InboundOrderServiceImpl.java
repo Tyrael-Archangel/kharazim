@@ -2,8 +2,10 @@ package com.tyrael.kharazim.application.pharmacy.service.impl;
 
 import com.tyrael.kharazim.application.base.auth.AuthUser;
 import com.tyrael.kharazim.application.config.BusinessCodeConstants;
+import com.tyrael.kharazim.application.pharmacy.converter.InboundOrderConverter;
 import com.tyrael.kharazim.application.pharmacy.domain.InboundOrder;
 import com.tyrael.kharazim.application.pharmacy.domain.InboundOrderItem;
+import com.tyrael.kharazim.application.pharmacy.enums.InboundOrderSourceType;
 import com.tyrael.kharazim.application.pharmacy.enums.InboundOrderStatus;
 import com.tyrael.kharazim.application.pharmacy.enums.InventoryOutInTypeEnum;
 import com.tyrael.kharazim.application.pharmacy.mapper.InboundOrderItemMapper;
@@ -11,18 +13,23 @@ import com.tyrael.kharazim.application.pharmacy.mapper.InboundOrderMapper;
 import com.tyrael.kharazim.application.pharmacy.service.InboundOrderService;
 import com.tyrael.kharazim.application.pharmacy.service.InventoryInboundService;
 import com.tyrael.kharazim.application.pharmacy.vo.inboundorder.AddInboundRequest;
+import com.tyrael.kharazim.application.pharmacy.vo.inboundorder.InboundOrderVO;
+import com.tyrael.kharazim.application.pharmacy.vo.inboundorder.PageInboundOrderRequest;
 import com.tyrael.kharazim.application.pharmacy.vo.inventory.InventoryChangeCommand;
 import com.tyrael.kharazim.application.purchase.domain.PurchaseOrder;
 import com.tyrael.kharazim.application.purchase.event.PurchaseOrderReceivedEvent;
 import com.tyrael.kharazim.application.purchase.vo.PurchaseOrderReceivedVO;
 import com.tyrael.kharazim.application.system.service.CodeGenerator;
+import com.tyrael.kharazim.common.dto.PageResponse;
 import com.tyrael.kharazim.common.exception.BusinessException;
 import com.tyrael.kharazim.common.exception.DomainNotFoundException;
+import com.tyrael.kharazim.common.util.CollectionUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -39,6 +46,7 @@ public class InboundOrderServiceImpl implements InboundOrderService {
     private final InboundOrderItemMapper inboundOrderItemMapper;
     private final CodeGenerator codeGenerator;
     private final InventoryInboundService inventoryInboundService;
+    private final InboundOrderConverter inboundOrderConverter;
     private final ApplicationEventPublisher publisher;
 
     @Override
@@ -47,10 +55,11 @@ public class InboundOrderServiceImpl implements InboundOrderService {
         InboundOrder inboundOrder = new InboundOrder();
 
         inboundOrder.setCode(codeGenerator.dailyNext(BusinessCodeConstants.INBOUND_ORDER));
-        inboundOrder.setSourcePurchaseOrderCode(purchaseOrder.getCode());
+        inboundOrder.setSourceBusinessCode(purchaseOrder.getCode());
         inboundOrder.setClinicCode(purchaseOrder.getClinicCode());
         inboundOrder.setSupplierCode(purchaseOrder.getSupplierCode());
-        inboundOrder.setSourcePurchaseRemark(purchaseOrder.getRemark());
+        inboundOrder.setSourceRemark(purchaseOrder.getRemark());
+        inboundOrder.setSourceType(InboundOrderSourceType.PURCHASE_ORDER);
         inboundOrder.setStatus(InboundOrderStatus.WAIT_RECEIVE);
 
         List<InboundOrderItem> inboundOrderItems = purchaseOrder.getItems()
@@ -67,6 +76,23 @@ public class InboundOrderServiceImpl implements InboundOrderService {
         inboundOrder.setItems(inboundOrderItems);
 
         this.save(inboundOrder);
+    }
+
+    @Override
+    public PageResponse<InboundOrderVO> page(PageInboundOrderRequest pageRequest) {
+        PageResponse<InboundOrder> pageData = inboundOrderMapper.page(pageRequest);
+
+        Collection<InboundOrder> inboundOrders = pageData.getData();
+        List<String> inboundOrderCodes = CollectionUtils.safeStream(inboundOrders)
+                .map(InboundOrder::getCode)
+                .toList();
+        List<InboundOrderItem> inboundOrderItems = inboundOrderItemMapper.listByInboundOrderCodes(inboundOrderCodes);
+
+        return PageResponse.success(
+                inboundOrderConverter.inboundOrderVOs(inboundOrders, inboundOrderItems),
+                pageData.getTotalCount(),
+                pageData.getPageSize(),
+                pageData.getPageNum());
     }
 
     @Override
@@ -124,7 +150,7 @@ public class InboundOrderServiceImpl implements InboundOrderService {
                 .map(e -> new PurchaseOrderReceivedVO.Item(e.getSkuCode(), e.getQuantity()))
                 .collect(Collectors.toList());
         PurchaseOrderReceivedVO receivedVO = new PurchaseOrderReceivedVO(
-                inboundOrder.getSourcePurchaseOrderCode(),
+                inboundOrder.getSourceBusinessCode(),
                 serialCode,
                 items,
                 operator.getNickName(),

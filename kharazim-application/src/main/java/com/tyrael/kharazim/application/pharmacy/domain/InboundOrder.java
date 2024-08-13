@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.tyrael.kharazim.application.base.BaseDO;
+import com.tyrael.kharazim.application.pharmacy.enums.InboundOrderSourceType;
 import com.tyrael.kharazim.application.pharmacy.enums.InboundOrderStatus;
 import lombok.Data;
 
@@ -27,9 +28,9 @@ public class InboundOrder extends BaseDO {
     private String code;
 
     /**
-     * 来源采购单
+     * 来源单据编码
      */
-    private String sourcePurchaseOrderCode;
+    private String sourceBusinessCode;
 
     /**
      * 诊所编码
@@ -42,9 +43,14 @@ public class InboundOrder extends BaseDO {
     private String supplierCode;
 
     /**
-     * 来源采购备注
+     * 来源备注
      */
-    private String sourcePurchaseRemark;
+    private String sourceRemark;
+
+    /**
+     * 来源类型
+     */
+    private InboundOrderSourceType sourceType;
 
     /**
      * 入库状态

@@ -50,8 +50,8 @@ public class CollectionUtils {
         return isEmpty(list) ? new ArrayList<>() : list;
     }
 
-    public static <T extends Collection<E>, E> Stream<E> safeStream(T t) {
-        return isEmpty(t) ? Stream.empty() : t.stream();
+    public static <E> Stream<E> safeStream(Collection<E> collection) {
+        return isEmpty(collection) ? Stream.empty() : collection.stream();
     }
 
     public static boolean isEmpty(final Map<?, ?> map) {

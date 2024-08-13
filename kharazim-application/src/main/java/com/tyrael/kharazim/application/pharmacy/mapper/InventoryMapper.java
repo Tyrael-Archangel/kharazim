@@ -29,13 +29,14 @@ public interface InventoryMapper extends BaseMapper<Inventory> {
      * @param skuCode    SKU编码
      * @param clinicCode 诊所编码
      * @param quantity   数量
+     * @return updated rows
      */
     @Update("update `inventory` set `quantity` = `quantity` + #{quantity} " +
             "where `clinic_code` = #{clinicCode} " +
             "  and `sku_code` = #{skuCode}")
-    void increaseQuantity(@Param("skuCode") String skuCode,
-                          @Param("clinicCode") String clinicCode,
-                          @Param("quantity") Integer quantity);
+    int increaseQuantity(@Param("skuCode") String skuCode,
+                         @Param("clinicCode") String clinicCode,
+                         @Param("quantity") Integer quantity);
 
     /**
      * 预占库存
@@ -76,6 +77,8 @@ public interface InventoryMapper extends BaseMapper<Inventory> {
         }
         queryWrapper.inIfPresent(Inventory::getClinicCode, pageRequest.getClinicCodes());
         queryWrapper.eqIfHasText(Inventory::getSkuCode, pageRequest.getSkuCode());
+
+        queryWrapper.orderByDesc(Inventory::getId);
 
         Page<Inventory> pageCondition = new Page<>(pageRequest.getPageNum(), pageRequest.getPageSize());
         Page<Inventory> pageData = selectPage(pageCondition, queryWrapper);
