@@ -13,11 +13,11 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum InboundOrderStatus implements BaseNameAndValueEnum {
 
-    WAIT_RECEIVE(1, "待收货"),
+    WAIT_INBOUND(1, "待入库"),
 
-    RECEIVING(2, "收货中"),
+    INBOUNDING(2, "入库中"),
 
-    RECEIVE_FINISHED(3, "收货完结");
+    INBOUND_FINISHED(3, "入库完结");
 
     @EnumValue
     private final Integer value;

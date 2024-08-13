@@ -24,7 +24,7 @@ public class InboundOrderVO implements Serializable {
     @Schema(description = "入库单编码")
     private String code;
 
-    @Schema(description = "入库单编码")
+    @Schema(description = "来源业务编码")
     private String sourceBusinessCode;
 
     @Schema(description = "诊所编码")
@@ -81,10 +81,10 @@ public class InboundOrderVO implements Serializable {
         @Schema(description = "数量")
         private Integer quantity;
 
-        @Schema(description = "已收货数量")
-        private Integer receivedQuantity;
+        @Schema(description = "已入库数量")
+        private Integer inboundedQuantity;
 
-        @Schema(description = "待收货数量")
+        @Schema(description = "待入库数量")
         private Integer remainQuantity;
     }
 

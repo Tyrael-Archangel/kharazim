@@ -30,17 +30,17 @@ public class InboundOrderItem {
     private Integer quantity;
 
     /**
-     * 已收货数量
+     * 已入库数量
      */
-    private Integer receivedQuantity;
+    private Integer inboundedQuantity;
 
     public int getRemainQuantity() {
-        return quantity - receivedQuantity;
+        return quantity - inboundedQuantity;
     }
 
-    public void addReceivedQuantity(int quantity) {
-        // 允许多收货，不校验收货数量是否超额
-        this.receivedQuantity += quantity;
+    public void addInboundQuantity(int quantity) {
+        // 允许多入库，不校验入库数量是否超额
+        this.inboundedQuantity += quantity;
     }
 
 }

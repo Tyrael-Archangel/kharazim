@@ -64,13 +64,13 @@ public class InboundOrder extends BaseDO {
         boolean allReceived = items.stream()
                 .allMatch(e -> e.getRemainQuantity() <= 0);
         if (allReceived) {
-            this.status = InboundOrderStatus.RECEIVE_FINISHED;
+            this.status = InboundOrderStatus.INBOUND_FINISHED;
         } else {
             boolean hasAnyReceived = items.stream()
-                    .anyMatch(e -> e.getReceivedQuantity() > 0);
+                    .anyMatch(e -> e.getInboundedQuantity() > 0);
             this.status = hasAnyReceived
-                    ? InboundOrderStatus.RECEIVING
-                    : InboundOrderStatus.WAIT_RECEIVE;
+                    ? InboundOrderStatus.INBOUNDING
+                    : InboundOrderStatus.WAIT_INBOUND;
         }
     }
 }

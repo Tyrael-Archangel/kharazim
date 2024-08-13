@@ -60,7 +60,7 @@ public class InboundOrderServiceImpl implements InboundOrderService {
         inboundOrder.setSupplierCode(purchaseOrder.getSupplierCode());
         inboundOrder.setSourceRemark(purchaseOrder.getRemark());
         inboundOrder.setSourceType(InboundOrderSourceType.PURCHASE_ORDER);
-        inboundOrder.setStatus(InboundOrderStatus.WAIT_RECEIVE);
+        inboundOrder.setStatus(InboundOrderStatus.WAIT_INBOUND);
 
         List<InboundOrderItem> inboundOrderItems = purchaseOrder.getItems()
                 .stream()
@@ -69,7 +69,7 @@ public class InboundOrderServiceImpl implements InboundOrderService {
                     inboundOrderItem.setInboundOrderCode(inboundOrder.getCode());
                     inboundOrderItem.setSkuCode(e.getSkuCode());
                     inboundOrderItem.setQuantity(e.getQuantity());
-                    inboundOrderItem.setReceivedQuantity(0);
+                    inboundOrderItem.setInboundedQuantity(0);
                     return inboundOrderItem;
                 })
                 .collect(Collectors.toList());
@@ -99,7 +99,7 @@ public class InboundOrderServiceImpl implements InboundOrderService {
     @Transactional(rollbackFor = Exception.class)
     public void inbound(AddInboundRequest addInboundRequest, AuthUser operator) {
         InboundOrder inboundOrder = exactlyFindByCodeForUpdate(addInboundRequest.getInboundOrderCode());
-        BusinessException.assertFalse(InboundOrderStatus.RECEIVE_FINISHED.equals(inboundOrder.getStatus()),
+        BusinessException.assertFalse(InboundOrderStatus.INBOUND_FINISHED.equals(inboundOrder.getStatus()),
                 "入库单已收货完成");
 
         Map<String, InboundOrderItem> skuItemMap = inboundOrder.getItems()
@@ -108,7 +108,7 @@ public class InboundOrderServiceImpl implements InboundOrderService {
         for (AddInboundRequest.InboundItem item : addInboundRequest.getItems()) {
             InboundOrderItem inboundOrderItem = skuItemMap.get(item.getSkuCode());
             BusinessException.assertTrue(inboundOrderItem != null, "商品信息有误");
-            inboundOrderItem.addReceivedQuantity(item.getQuantity());
+            inboundOrderItem.addInboundQuantity(item.getQuantity());
         }
         inboundOrder.refreshStatus();
 

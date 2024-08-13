@@ -27,6 +27,6 @@ create table `inbound_order_item`
     `inbound_order_code` varchar(32) not null comment '入库单号',
     `sku_code`           varchar(32) not null comment 'SKU编码',
     `quantity`           int         not null comment '数量',
-    `received_quantity`  int         not null comment '已收货数量',
+    `inbounded_quantity` int         not null comment '已入库数量',
     index idx_inbound_order_code (inbound_order_code)
 ) comment '入库单商品明细';
