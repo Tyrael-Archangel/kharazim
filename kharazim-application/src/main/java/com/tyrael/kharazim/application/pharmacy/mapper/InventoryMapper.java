@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.tyrael.kharazim.application.base.LambdaQueryWrapperX;
 import com.tyrael.kharazim.application.pharmacy.domain.Inventory;
+import com.tyrael.kharazim.application.pharmacy.vo.inventory.ListInventoryOfClinicRequest;
 import com.tyrael.kharazim.application.pharmacy.vo.inventory.PageInventoryRequest;
 import com.tyrael.kharazim.application.product.mapper.ProductSkuMapper;
 import com.tyrael.kharazim.common.dto.PageResponse;
@@ -87,6 +88,19 @@ public interface InventoryMapper extends BaseMapper<Inventory> {
                 pageData.getTotal(),
                 (int) pageCondition.getSize(),
                 (int) pageCondition.getCurrent());
+    }
+
+    /**
+     * 查询诊所库存数据
+     *
+     * @param listRequest 诊所+sku
+     * @return 诊所库存数据
+     */
+    default List<Inventory> listOfClinic(ListInventoryOfClinicRequest listRequest) {
+        LambdaQueryWrapperX<Inventory> queryWrapper = new LambdaQueryWrapperX<>();
+        queryWrapper.eq(Inventory::getClinicCode, listRequest.getClinicCode());
+        queryWrapper.inIfPresent(Inventory::getSkuCode, listRequest.getSkuCodes());
+        return selectList(queryWrapper);
     }
 
 }

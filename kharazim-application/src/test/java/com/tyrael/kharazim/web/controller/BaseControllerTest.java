@@ -47,6 +47,7 @@ import java.lang.reflect.Parameter;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -212,6 +213,8 @@ public abstract class BaseControllerTest<T> {
             MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
             if (parameterType.isArray()) {
                 map.put(parameterName, getParamsFromArray(argument));
+            } else if (isCollection(parameterType)) {
+                map.put(parameterName, getParamsFromCollection(argument));
             } else if (isBasicParamType(parameterType)) {
                 map.put(parameterName, Lists.newArrayList(String.valueOf(argument)));
             } else if (isTemporalAccessor(parameterType)) {
@@ -231,6 +234,19 @@ public abstract class BaseControllerTest<T> {
                 values.add(String.valueOf(Array.get(argument, i)));
             }
             return values;
+        }
+
+        private List<String> getParamsFromCollection(Object argument) {
+            List<String> values = Lists.newArrayList();
+            Collection<?> collection = (Collection<?>) argument;
+            for (Object element : collection) {
+                values.add(String.valueOf(element));
+            }
+            return values;
+        }
+
+        private boolean isCollection(Class<?> parameterType) {
+            return Collection.class.isAssignableFrom(parameterType);
         }
 
         private boolean isBasicParamType(Class<?> parameterType) {
@@ -264,8 +280,10 @@ public abstract class BaseControllerTest<T> {
                 field.setAccessible(true);
                 Object fieldValue = field.get(argument);
                 if (fieldValue != null) {
-                    if (field.getClass().isArray()) {
+                    if (field.getType().isArray()) {
                         params.put(fieldName, this.getParamsFromArray(fieldValue));
+                    } else if (isCollection(field.getType())) {
+                        params.put(fieldName, this.getParamsFromCollection(fieldValue));
                     } else {
                         params.put(fieldName, Lists.newArrayList(String.valueOf(fieldValue)));
                     }
