@@ -51,17 +51,19 @@ public class ExcelMergeStrategy implements RowWriteHandler {
 
         Integer fromIndex = mergeUnique.fromIndex;
         if (!StringUtils.equals(mergeUnique.uniqueValue, currentRowUniqueValue)) {
-            for (Integer mergeColumnIndex : mergeInfo.getMergeColumnIndices()) {
-                CellRangeAddress cellRangeAddress = new CellRangeAddress(
-                        fromIndex, rowIndex - 1, mergeColumnIndex, mergeColumnIndex);
-                context.getWriteSheetHolder().getSheet().addMergedRegionUnsafe(cellRangeAddress);
-                Cell cell = context.getWriteSheetHolder().getSheet().getRow(fromIndex).getCell(mergeColumnIndex);
-                Workbook workbook = context.getWriteWorkbookHolder().getWorkbook();
-                CellStyle style = workbook.createCellStyle();
-                style.cloneStyleFrom(currentCell.getCellStyle());
-                // 设置垂直居中
-                style.setVerticalAlignment(VerticalAlignment.CENTER);
-                cell.setCellStyle(style);
+            if (rowIndex - 1 > fromIndex) {
+                for (Integer mergeColumnIndex : mergeInfo.getMergeColumnIndices()) {
+                    CellRangeAddress cellRangeAddress = new CellRangeAddress(
+                            fromIndex, rowIndex - 1, mergeColumnIndex, mergeColumnIndex);
+                    context.getWriteSheetHolder().getSheet().addMergedRegionUnsafe(cellRangeAddress);
+                    Cell cell = context.getWriteSheetHolder().getSheet().getRow(fromIndex).getCell(mergeColumnIndex);
+                    Workbook workbook = context.getWriteWorkbookHolder().getWorkbook();
+                    CellStyle style = workbook.createCellStyle();
+                    style.cloneStyleFrom(currentCell.getCellStyle());
+                    // 设置垂直居中
+                    style.setVerticalAlignment(VerticalAlignment.CENTER);
+                    cell.setCellStyle(style);
+                }
             }
 
             mergeUnique = new MergeUnique(currentRowUniqueValue, rowIndex);
