@@ -6,6 +6,9 @@ import com.tyrael.kharazim.application.clinic.vo.ListClinicRequest;
 import com.tyrael.kharazim.application.customer.domain.Customer;
 import com.tyrael.kharazim.application.customer.mapper.CustomerMapper;
 import com.tyrael.kharazim.application.customer.vo.customer.ListCustomerRequest;
+import com.tyrael.kharazim.application.pharmacy.domain.Inventory;
+import com.tyrael.kharazim.application.pharmacy.mapper.InventoryMapper;
+import com.tyrael.kharazim.application.pharmacy.vo.inventory.ListInventoryOfClinicRequest;
 import com.tyrael.kharazim.application.prescription.vo.CreatePrescriptionRequest;
 import com.tyrael.kharazim.application.prescription.vo.PagePrescriptionRequest;
 import com.tyrael.kharazim.application.skupublish.domain.SkuPublish;
@@ -19,10 +22,7 @@ import com.tyrael.kharazim.web.controller.BaseControllerTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -37,6 +37,8 @@ class PrescriptionControllerTest extends BaseControllerTest<PrescriptionControll
     private ClinicMapper clinicMapper;
     @Autowired
     private SkuPublishMapper skuPublishMapper;
+    @Autowired
+    private InventoryMapper inventoryMapper;
 
     PrescriptionControllerTest() {
         super(PrescriptionController.class);
@@ -73,22 +75,34 @@ class PrescriptionControllerTest extends BaseControllerTest<PrescriptionControll
             Customer customer = CollectionUtils.random(customers);
             Clinic clinic = CollectionUtils.random(clinics);
             List<SkuPublish> clinicPublished = clinicPublishedMap.get(clinic.getCode());
+            Set<String> publishedSkuCodes = clinicPublished.stream()
+                    .map(SkuPublish::getSkuCode)
+                    .collect(Collectors.toSet());
+            List<Inventory> usableInventories = inventoryMapper.listOfClinic(
+                            new ListInventoryOfClinicRequest(clinic.getCode(), publishedSkuCodes))
+                    .stream()
+                    .filter(e -> e.getUsableQuantity() > 0)
+                    .collect(Collectors.toList());
 
-            int productCount = random.nextInt(10) + 2;
+            int productCount = Math.min(random.nextInt(10) + 2, usableInventories.size());
             Map<String, CreatePrescriptionRequest.Product> randomProductsMap = new LinkedHashMap<>();
             while (randomProductsMap.size() < productCount) {
-                int quantity = random.nextInt(10) + 1;
-                SkuPublish skuPublish = CollectionUtils.random(clinicPublished);
-                randomProductsMap.put(skuPublish.getCode(),
-                        new CreatePrescriptionRequest.Product(skuPublish.getSkuCode(), quantity));
+                Inventory inventory = CollectionUtils.random(usableInventories);
+                String skuCode = inventory.getSkuCode();
+                int quantity = Math.min(
+                        random.nextInt(inventory.getUsableQuantity()) + 1,
+                        random.nextInt(10) + 5);
+                randomProductsMap.put(skuCode, new CreatePrescriptionRequest.Product(skuCode, quantity));
             }
 
-            CreatePrescriptionRequest request = new CreatePrescriptionRequest();
-            request.setCustomerCode(customer.getCode());
-            request.setClinicCode(clinic.getCode());
-            request.setRemark(MockRandomPoetry.random());
-            request.setProducts(new ArrayList<>(randomProductsMap.values()));
-            super.performWhenCall(mockController.create(request));
+            if (!randomProductsMap.isEmpty()) {
+                CreatePrescriptionRequest request = new CreatePrescriptionRequest();
+                request.setCustomerCode(customer.getCode());
+                request.setClinicCode(clinic.getCode());
+                request.setRemark(MockRandomPoetry.random());
+                request.setProducts(new ArrayList<>(randomProductsMap.values()));
+                super.performWhenCall(mockController.create(request));
+            }
         }
     }
 

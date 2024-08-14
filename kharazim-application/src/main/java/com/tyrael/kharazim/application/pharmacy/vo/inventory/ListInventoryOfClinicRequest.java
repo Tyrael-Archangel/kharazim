@@ -4,7 +4,9 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Set;
 
@@ -13,6 +15,8 @@ import java.util.Set;
  * @since 2024/8/14
  */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class ListInventoryOfClinicRequest {
 
     @Schema(description = "诊所编码")
