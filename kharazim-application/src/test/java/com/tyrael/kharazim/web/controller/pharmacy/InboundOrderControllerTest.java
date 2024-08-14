@@ -36,7 +36,6 @@ class InboundOrderControllerTest extends BaseControllerTest<InboundOrderControll
     @Test
     void inbound() {
         PageInboundOrderRequest pageRequest = new PageInboundOrderRequest();
-        pageRequest.setStatus(InboundOrderStatus.WAIT_INBOUND);
         int pageIndex = 1;
 
         PageResponse<InboundOrderVO> pageResponse;
