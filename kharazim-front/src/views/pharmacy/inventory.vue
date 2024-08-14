@@ -49,10 +49,10 @@
         border
         style="width: 100%; margin-top: 10px"
       >
-        <el-table-column label="诊所" prop="clinicName" width="160" />
-        <el-table-column label="SKU编码" prop="skuCode" width="160" />
-        <el-table-column label="SKU名称" prop="skuName" width="160" />
-        <el-table-column align="center" label="商品主图" width="120">
+        <el-table-column label="诊所" prop="clinicName" />
+        <el-table-column label="SKU编码" prop="skuCode" />
+        <el-table-column label="SKU名称" prop="skuName" />
+        <el-table-column align="center" label="商品主图">
           <template v-slot="{ row }">
             <el-image
               v-if="row.defaultImageUrl"
@@ -62,10 +62,18 @@
             </el-image>
           </template>
         </el-table-column>
-        <el-table-column label="单位" prop="unitName" width="160" />
-        <el-table-column label="在库库存" prop="quantity" width="160" />
-        <el-table-column label="预占数量" prop="occupiedQuantity" width="160" />
-        <el-table-column label="可用库存" prop="usableQuantity" width="160" />
+        <el-table-column label="单位" prop="unitName" align="center" />
+        <el-table-column align="center" label="在库库存" prop="quantity" />
+        <el-table-column
+          align="center"
+          label="可用库存"
+          prop="usableQuantity"
+        />
+        <el-table-column
+          align="center"
+          label="预占数量"
+          prop="occupiedQuantity"
+        />
       </el-table>
     </div>
     <div class="pagination-block">
