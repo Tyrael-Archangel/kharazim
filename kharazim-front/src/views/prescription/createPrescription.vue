@@ -59,7 +59,17 @@
       border
       style="width: 100%; margin-top: 10px"
     >
-      <el-table-column align="center" type="index" width="90" />
+      <el-table-column align="center" type="index" width="60" />
+      <el-table-column align="center" label="操作" width="80">
+        <template v-slot="{ row }">
+          <el-button
+            :icon="Delete"
+            circle
+            type="danger"
+            @click="removeSelectedSku(row)"
+          />
+        </template>
+      </el-table-column>
       <el-table-column align="center" label="商品主图" width="160">
         <template v-slot="{ row }">
           <el-image
@@ -71,40 +81,36 @@
         </template>
       </el-table-column>
       <el-table-column label="商品编码" prop="skuCode" width="160" />
-      <el-table-column label="商品名称" prop="skuName" width="280" />
+      <el-table-column label="商品名称" prop="skuName" width="180" />
+      <el-table-column align="center" label="单位" prop="unitName" width="80" />
+      <el-table-column align="center" label="单价" prop="price" width="100" />
       <el-table-column
         align="center"
-        label="单位"
-        prop="unitName"
+        label="可用库存"
+        prop="inventoryQuantity"
         width="100"
       />
-      <el-table-column label="商品分类" prop="categoryFullName" width="240" />
-      <el-table-column label="供应商" prop="supplierName" width="160" />
-      <el-table-column align="center" label="单价" prop="price" width="120" />
-      <el-table-column align="center" label="数量" prop="quantity" width="180">
+      <el-table-column align="center" label="数量" prop="quantity" width="150">
         <template v-slot="{ row }">
           <el-input-number
             v-model="row.quantity"
-            max="999"
+            :max="row.inventoryQuantity"
             min="1"
+            style="width: 120px"
           ></el-input-number>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="金额小计" width="150">
+      <el-table-column align="center" label="金额小计" width="140">
         <template v-slot="{ row }">
           <el-text>{{ calculateItemAmount(row) }}</el-text>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="操作">
-        <template v-slot="{ row }">
-          <el-button
-            :icon="Delete"
-            circle
-            type="danger"
-            @click="removeSelectedSku(row)"
-          />
-        </template>
-      </el-table-column>
+      <el-table-column label="供应商" min-width="180" prop="supplierName" />
+      <el-table-column
+        label="商品分类"
+        min-width="240"
+        prop="categoryFullName"
+      />
     </el-table>
   </div>
   <br />
@@ -147,9 +153,12 @@
       row-key="code"
       style="width: 100%; margin-top: 10px"
     >
-      <el-table-column type="selection" width="50" />
+      <el-table-column
+        :selectable="skuSelectable"
+        type="selection"
+        width="50"
+      />
       <el-table-column label="商品编码" prop="skuCode" width="180" />
-      <el-table-column label="商品名称" prop="skuName" width="260" />
       <el-table-column align="center" label="商品主图" width="120">
         <template v-slot="{ row }">
           <el-image
@@ -160,8 +169,10 @@
           </el-image>
         </template>
       </el-table-column>
+      <el-table-column label="商品名称" prop="skuName" width="260" />
+      <el-table-column label="诊所" prop="clinicName" width="160" />
+      <el-table-column label="可用库存" prop="inventoryQuantity" width="120" />
       <el-table-column align="center" label="价格" prop="price" width="120" />
-      <el-table-column label="诊所名称" prop="clinicName" width="240" />
       <el-table-column label="商品分类" prop="categoryFullName" width="240" />
       <el-table-column label="供应商" prop="supplierName" />
     </el-table>
@@ -263,6 +274,7 @@ interface SkuPublish {
   effectBegin: string;
   effectEnd: string;
   quantity: number;
+  inventoryQuantity: number;
 }
 
 const selectedProducts = ref<SkuPublish[]>([]);
@@ -334,8 +346,38 @@ function loadProductPublish() {
     .then((response: AxiosResponse) => {
       publishSkuPage.value = response.data.data;
       pageInfo.totalCount = response.data.totalCount;
+      querySkuInventory();
       showSelectedSku();
     });
+}
+
+function querySkuInventory() {
+  const publishSkuCurrentPageData = publishSkuPage.value;
+  if (publishSkuCurrentPageData) {
+    const skuCodes = publishSkuCurrentPageData.map((x) => x.skuCode);
+    axios
+      .get(`/kharazim-api/inventory/list-clinic`, {
+        params: {
+          clinicCode: createPrescriptionRequest.value.clinicCode,
+          skuCodes: skuCodes,
+        },
+      })
+      .then((response) => {
+        const skuUsableQuantity = new Map(
+          response.data.data.map((inventory) => [
+            inventory.skuCode,
+            inventory.usableQuantity,
+          ]),
+        );
+        publishSkuCurrentPageData.forEach((e) => {
+          e.inventoryQuantity = skuUsableQuantity.get(e.skuCode) || 0;
+        });
+      });
+  }
+}
+
+function skuSelectable(row: SkuPublish) {
+  return row.inventoryQuantity && row.inventoryQuantity > 0;
 }
 
 function showSelectedSku() {
