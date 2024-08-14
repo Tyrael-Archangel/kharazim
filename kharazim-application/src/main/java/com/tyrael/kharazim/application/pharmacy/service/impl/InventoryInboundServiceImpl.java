@@ -6,11 +6,14 @@ import com.tyrael.kharazim.application.pharmacy.mapper.InventoryLogMapper;
 import com.tyrael.kharazim.application.pharmacy.mapper.InventoryMapper;
 import com.tyrael.kharazim.application.pharmacy.service.InventoryInboundService;
 import com.tyrael.kharazim.application.pharmacy.vo.inventory.InventoryChangeCommand;
+import com.tyrael.kharazim.common.util.CollectionUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * @author Tyrael Archangel
@@ -29,7 +32,11 @@ public class InventoryInboundServiceImpl implements InventoryInboundService {
         String businessCode = inboundCommand.businessCode();
         String clinicCode = inboundCommand.clinicCode();
 
-        for (InventoryChangeCommand.Item inboundItem : inboundCommand.items()) {
+        List<InventoryChangeCommand.Item> sortedItems = CollectionUtils.safeStream(inboundCommand.items())
+                .sorted(Comparator.comparing(InventoryChangeCommand.Item::skuCode))
+                .toList();
+
+        for (InventoryChangeCommand.Item inboundItem : sortedItems) {
             String skuCode = inboundItem.skuCode();
             Integer quantity = inboundItem.quantity();
 
