@@ -47,4 +47,11 @@ public interface PrescriptionService {
      */
     void export(PagePrescriptionRequest pageRequest, HttpServletResponse httpServletResponse) throws IOException;
 
+    /**
+     * 处方已支付回调
+     *
+     * @param code 处方编码
+     */
+    void paidCallback(String code);
+
 }

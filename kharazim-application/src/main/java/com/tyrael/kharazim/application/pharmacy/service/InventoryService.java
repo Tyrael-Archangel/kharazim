@@ -1,8 +1,10 @@
 package com.tyrael.kharazim.application.pharmacy.service;
 
+import com.tyrael.kharazim.application.pharmacy.vo.inventory.InventoryChangeCommand;
 import com.tyrael.kharazim.application.pharmacy.vo.inventory.InventoryVO;
 import com.tyrael.kharazim.application.pharmacy.vo.inventory.ListInventoryOfClinicRequest;
 import com.tyrael.kharazim.application.pharmacy.vo.inventory.PageInventoryRequest;
+import com.tyrael.kharazim.application.prescription.domain.Prescription;
 import com.tyrael.kharazim.common.dto.PageResponse;
 
 import java.util.List;
@@ -28,5 +30,26 @@ public interface InventoryService {
      * @return 诊所库存数据
      */
     List<InventoryVO> listOfClinic(ListInventoryOfClinicRequest listRequest);
+
+    /**
+     * 根据处方预占库存
+     *
+     * @param prescription {@linkplain Prescription 处方}
+     */
+    void occupyByPrescription(Prescription prescription);
+
+    /**
+     * 入库
+     *
+     * @param inboundCommand {@link InventoryChangeCommand}
+     */
+    void inbound(InventoryChangeCommand inboundCommand);
+
+    /**
+     * 出库
+     *
+     * @param outboundCommand {@link InventoryChangeCommand}
+     */
+    void outbound(InventoryChangeCommand outboundCommand);
 
 }

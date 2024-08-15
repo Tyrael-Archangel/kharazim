@@ -46,21 +46,6 @@ public class InventoryLog {
     private String operator;
     private String operatorCode;
 
-
-    public static InventoryLog build(String sourceBusinessCode,
-                                     String skuCode,
-                                     Integer quantity,
-                                     String clinicCode,
-                                     InventoryOutInTypeEnum outInType) {
-        InventoryLog inventoryLog = new InventoryLog();
-        inventoryLog.setSourceBusinessCode(sourceBusinessCode);
-        inventoryLog.setSkuCode(skuCode);
-        inventoryLog.setQuantity(quantity);
-        inventoryLog.setClinicCode(clinicCode);
-        inventoryLog.setOutInType(outInType);
-        return inventoryLog;
-    }
-
     public void setQuantity(Integer quantity) {
         if (quantity == null || quantity < 0) {
             throw new IllegalArgumentException("Quantity cannot be less than 0");

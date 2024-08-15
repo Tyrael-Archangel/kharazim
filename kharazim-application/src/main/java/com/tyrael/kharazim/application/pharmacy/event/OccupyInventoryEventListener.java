@@ -1,6 +1,6 @@
 package com.tyrael.kharazim.application.pharmacy.event;
 
-import com.tyrael.kharazim.application.pharmacy.service.InventoryOccupyService;
+import com.tyrael.kharazim.application.pharmacy.service.InventoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -13,11 +13,11 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class OccupyInventoryEventListener {
 
-    private final InventoryOccupyService inventoryOccupyService;
+    private final InventoryService inventoryService;
 
     @EventListener
     public void listen(OccupyInventoryEvent event) {
-        inventoryOccupyService.occupyByPrescription(event.getPrescription());
+        inventoryService.occupyByPrescription(event.getPrescription());
     }
 
 }

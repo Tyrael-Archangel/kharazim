@@ -11,7 +11,7 @@ import com.tyrael.kharazim.application.pharmacy.enums.InventoryOutInTypeEnum;
 import com.tyrael.kharazim.application.pharmacy.mapper.InboundOrderItemMapper;
 import com.tyrael.kharazim.application.pharmacy.mapper.InboundOrderMapper;
 import com.tyrael.kharazim.application.pharmacy.service.InboundOrderService;
-import com.tyrael.kharazim.application.pharmacy.service.InventoryInboundService;
+import com.tyrael.kharazim.application.pharmacy.service.InventoryService;
 import com.tyrael.kharazim.application.pharmacy.vo.inboundorder.AddInboundRequest;
 import com.tyrael.kharazim.application.pharmacy.vo.inboundorder.InboundOrderVO;
 import com.tyrael.kharazim.application.pharmacy.vo.inboundorder.PageInboundOrderRequest;
@@ -45,7 +45,7 @@ public class InboundOrderServiceImpl implements InboundOrderService {
     private final InboundOrderMapper inboundOrderMapper;
     private final InboundOrderItemMapper inboundOrderItemMapper;
     private final CodeGenerator codeGenerator;
-    private final InventoryInboundService inventoryInboundService;
+    private final InventoryService inventoryService;
     private final InboundOrderConverter inboundOrderConverter;
     private final ApplicationEventPublisher publisher;
 
@@ -138,7 +138,7 @@ public class InboundOrderServiceImpl implements InboundOrderService {
                 inboundItems,
                 operator.getNickName(),
                 operator.getCode());
-        inventoryInboundService.inbound(inventoryChangeCommand);
+        inventoryService.inbound(inventoryChangeCommand);
     }
 
     private void notifyPurchaseOrderReceived(InboundOrder inboundOrder,

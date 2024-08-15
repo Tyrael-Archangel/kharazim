@@ -32,9 +32,12 @@ public interface InventoryMapper extends BaseMapper<Inventory> {
      * @param quantity   数量
      * @return updated rows
      */
-    @Update("update `inventory` set `quantity` = `quantity` + #{quantity} " +
-            "where `clinic_code` = #{clinicCode} " +
-            "  and `sku_code` = #{skuCode}")
+    @Update("""
+            update `inventory`
+            set `quantity` = `quantity` + #{quantity}
+            where `clinic_code` = #{clinicCode}
+              and `sku_code` = #{skuCode}
+            """)
     int increaseQuantity(@Param("skuCode") String skuCode,
                          @Param("clinicCode") String clinicCode,
                          @Param("quantity") Integer quantity);
@@ -47,14 +50,34 @@ public interface InventoryMapper extends BaseMapper<Inventory> {
      * @param occupyQuantity 预占数量
      * @return 是否预占成功
      */
-    @Update("update `inventory` " +
-            "set `occupied_quantity` = `occupied_quantity` + #{occupyQuantity} " +
-            "where `clinic_code` = #{clinicCode} " +
-            "  and `sku_code` = #{skuCode} " +
-            "  and (`quantity` - `occupied_quantity`) >= #{occupyQuantity}")
+    @Update("""
+            update `inventory`
+            set `occupied_quantity` = `occupied_quantity` + #{occupyQuantity}
+            where `clinic_code` = #{clinicCode}
+             and `sku_code` = #{skuCode}
+             and (`quantity` - `occupied_quantity`) >= #{occupyQuantity}
+            """)
     int increaseOccupy(@Param("clinicCode") String clinicCode,
                        @Param("skuCode") String skuCode,
                        @Param("occupyQuantity") int occupyQuantity);
+
+    /**
+     * 根据预占减少库存
+     *
+     * @param clinicCode 诊所编码
+     * @param skuCode    SKU编码
+     * @param quantity   数量
+     */
+    @Update("""
+            update `inventory`
+             set `quantity` = `quantity` - #{quantity},
+                `occupied_quantity` = `occupied_quantity` - #{quantity}
+            where `clinic_code` = #{clinicCode}
+             and `sku_code` = #{skuCode}
+            """)
+    void decreaseQuantityByOccupy(@Param("clinicCode") String clinicCode,
+                                  @Param("skuCode") String skuCode,
+                                  @Param("quantity") int quantity);
 
     /**
      * 库存分页

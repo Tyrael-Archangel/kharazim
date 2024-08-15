@@ -1,6 +1,7 @@
 package com.tyrael.kharazim.application.settlement.service.impl;
 
 import com.tyrael.kharazim.application.base.auth.AuthUser;
+import com.tyrael.kharazim.application.prescription.event.PrescriptionPaidEvent;
 import com.tyrael.kharazim.application.recharge.service.CustomerRechargeCardService;
 import com.tyrael.kharazim.application.settlement.domain.SettlementOrder;
 import com.tyrael.kharazim.application.settlement.enums.SettlementOrderStatus;
@@ -10,6 +11,7 @@ import com.tyrael.kharazim.application.settlement.vo.SettlementPayCommand;
 import com.tyrael.kharazim.common.exception.BusinessException;
 import com.tyrael.kharazim.common.exception.DomainNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +28,7 @@ public class SettlementPayServiceImpl implements SettlementPayService {
 
     private final SettlementOrderMapper settlementOrderMapper;
     private final CustomerRechargeCardService customerRechargeCardService;
+    private final ApplicationEventPublisher publisher;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -49,6 +52,9 @@ public class SettlementPayServiceImpl implements SettlementPayService {
         settlementOrder.settlement();
         boolean success = settlementOrderMapper.saveSettlement(settlementOrder);
         BusinessException.assertTrue(success, "结算单结算失败");
+
+        // 通知处方已结算
+        publisher.publishEvent(new PrescriptionPaidEvent(this, settlementOrder.getSourcePrescriptionCode()));
     }
 
 }

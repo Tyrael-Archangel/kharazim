@@ -8,6 +8,7 @@ import com.tyrael.kharazim.application.clinic.domain.Clinic;
 import com.tyrael.kharazim.application.clinic.mapper.ClinicMapper;
 import com.tyrael.kharazim.application.config.BusinessCodeConstants;
 import com.tyrael.kharazim.application.customer.mapper.CustomerMapper;
+import com.tyrael.kharazim.application.pharmacy.event.CreateOutboundOrderEvent;
 import com.tyrael.kharazim.application.pharmacy.event.OccupyInventoryEvent;
 import com.tyrael.kharazim.application.prescription.converter.PrescriptionConverter;
 import com.tyrael.kharazim.application.prescription.domain.Prescription;
@@ -200,6 +201,20 @@ public class PrescriptionServiceImpl implements PrescriptionService {
                 .map(Prescription::getCode)
                 .collect(Collectors.toList());
         return prescriptionProductMapper.listByPrescriptionCodes(prescriptionCodes);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void paidCallback(String code) {
+
+        Prescription prescription = prescriptionMapper.findByCode(code);
+        prescription.setProducts(prescriptionProductMapper.listByPrescriptionCode(code));
+
+        // 处方已支付
+
+        // 创建出库单
+        publisher.publishEvent(new CreateOutboundOrderEvent(this, prescription));
+
     }
 
 }

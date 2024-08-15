@@ -1,7 +1,6 @@
-package com.tyrael.kharazim.application.pharmacy.vo.inboundorder;
+package com.tyrael.kharazim.application.pharmacy.vo.outboundorder;
 
-import com.tyrael.kharazim.application.pharmacy.enums.InboundOrderSourceType;
-import com.tyrael.kharazim.application.pharmacy.enums.InboundOrderStatus;
+import com.tyrael.kharazim.application.pharmacy.enums.OutboundOrderStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,42 +11,39 @@ import java.util.List;
 
 /**
  * @author Tyrael Archangel
- * @since 2024/8/8
+ * @since 2024/8/15
  */
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class InboundOrderVO {
+public class OutboundOrderVO {
 
-    @Schema(description = "入库单编码")
+    @Schema(description = "出库单编码")
     private String code;
 
-    @Schema(description = "来源业务编码")
+    @Schema(description = "出库状态")
+    private OutboundOrderStatus status;
+
+    @Schema(description = "来源单据编码")
     private String sourceBusinessCode;
+
+    @Schema(description = "会员编码")
+    private String customerCode;
+
+    @Schema(description = "会员姓名")
+    private String customerName;
 
     @Schema(description = "诊所编码")
     private String clinicCode;
 
-    @Schema(description = "诊所")
+    @Schema(description = "诊所名称")
     private String clinicName;
 
-    @Schema(description = "供应商编码")
-    private String supplierCode;
-
-    @Schema(description = "供应商")
-    private String supplierName;
-
-    @Schema(description = "来源备注")
+    @Schema(description = "来源单据备注")
     private String sourceRemark;
 
-    @Schema(description = "来源类型")
-    private InboundOrderSourceType sourceType;
-
-    @Schema(description = "入库状态")
-    private InboundOrderStatus status;
-
-    @Schema(description = "商品明细数据")
+    @Schema(description = "出库单商品明细")
     private List<Item> items;
 
     @Data
@@ -80,11 +76,6 @@ public class InboundOrderVO {
         @Schema(description = "数量")
         private Integer quantity;
 
-        @Schema(description = "已入库数量")
-        private Integer inboundedQuantity;
-
-        @Schema(description = "待入库数量")
-        private Integer remainQuantity;
     }
 
 }
