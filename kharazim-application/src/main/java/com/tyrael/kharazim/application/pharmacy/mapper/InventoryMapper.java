@@ -75,9 +75,9 @@ public interface InventoryMapper extends BaseMapper<Inventory> {
             where `clinic_code` = #{clinicCode}
              and `sku_code` = #{skuCode}
             """)
-    void decreaseQuantityByOccupy(@Param("clinicCode") String clinicCode,
-                                  @Param("skuCode") String skuCode,
-                                  @Param("quantity") int quantity);
+    void decreaseQuantityByOccupy(@Param("skuCode") String skuCode,
+                                  @Param("clinicCode") String clinicCode,
+                                  @Param("quantity") Integer quantity);
 
     /**
      * 库存分页
