@@ -26,4 +26,12 @@ class PrescriptionServiceTest {
         System.out.println(response.getFile().getAbsolutePath());
     }
 
+    @Test
+    void exportAll() throws IOException {
+        String fileName = "全部处方数据" + System.currentTimeMillis() + ".xlsx";
+        MockFileHttpServletResponse response = new MockFileHttpServletResponse(fileName);
+        prescriptionService.exportAll(response);
+        System.out.println(response.getFile().getAbsolutePath());
+    }
+
 }

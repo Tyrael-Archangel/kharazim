@@ -10,6 +10,8 @@ import com.tyrael.kharazim.application.prescription.vo.PagePrescriptionRequest;
 import com.tyrael.kharazim.common.dto.PageResponse;
 import com.tyrael.kharazim.common.util.DateTimeUtil;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.cursor.Cursor;
 
 /**
  * @author Tyrael Archangel
@@ -17,6 +19,14 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface PrescriptionMapper extends BaseMapper<Prescription> {
+
+    /**
+     * find all with cursor
+     *
+     * @return Prescription cursor
+     */
+    @Select("select * from prescription")
+    Cursor<Prescription> findAll();
 
     /**
      * find by code

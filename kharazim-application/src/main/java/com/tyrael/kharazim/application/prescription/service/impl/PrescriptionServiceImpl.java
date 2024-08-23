@@ -32,9 +32,13 @@ import com.tyrael.kharazim.common.exception.BusinessException;
 import com.tyrael.kharazim.common.exception.DomainNotFoundException;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.apache.ibatis.cursor.Cursor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -60,6 +64,7 @@ public class PrescriptionServiceImpl implements PrescriptionService {
     private final SkuPublishMapper skuPublishMapper;
     private final PrescriptionConverter prescriptionConverter;
     private final ApplicationEventPublisher publisher;
+    private final PlatformTransactionManager transactionManager;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -164,6 +169,42 @@ public class PrescriptionServiceImpl implements PrescriptionService {
                 pageData.getTotalCount(),
                 pageData.getPageSize(),
                 pageData.getPageNum());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void exportAll(HttpServletResponse response) throws IOException {
+        WriteSheet writeSheet = EasyExcelFactory.writerSheet("处方数据")
+                .head(PrescriptionExportVO.class)
+                .registerWriteHandler(new ExcelMergeStrategy())
+                .build();
+        int pageSize = 200;
+        try (ExcelWriter excelWriter = EasyExcelFactory.write(response.getOutputStream()).build();
+             Cursor<Prescription> prescriptionCursor = prescriptionMapper.findAll()) {
+
+            List<Prescription> slice = new ArrayList<>();
+            for (Prescription prescription : prescriptionCursor) {
+                slice.add(prescription);
+                if (slice.size() >= pageSize) {
+                    excelWriter.write(this.convertExports(slice), writeSheet);
+                    slice = new ArrayList<>();
+                }
+            }
+            excelWriter.write(this.convertExports(slice), writeSheet);
+
+            response.addHeader("Content-disposition", "attachment;filename="
+                    + URLEncoder.encode("全部处方数据.xlsx", StandardCharsets.UTF_8));
+            response.setContentType("application/vnd.ms-excel;charset=UTF-8");
+        }
+    }
+
+    private List<PrescriptionExportVO> convertExports(List<Prescription> prescriptions) {
+        TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
+        transactionTemplate.setPropagationBehavior(TransactionDefinition.PROPAGATION_NOT_SUPPORTED);
+        return transactionTemplate.execute(status -> {
+            List<PrescriptionProduct> products = listPrescriptionProducts(prescriptions);
+            return prescriptionConverter.prescriptionExportVOs(prescriptions, products);
+        });
     }
 
     @Override

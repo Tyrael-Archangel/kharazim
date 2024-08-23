@@ -39,6 +39,14 @@ public interface PrescriptionService {
     PageResponse<PrescriptionVO> page(PagePrescriptionRequest pageRequest);
 
     /**
+     * export all by cursor
+     *
+     * @param httpServletResponse HttpServletResponse
+     * @throws IOException IOException
+     */
+    void exportAll(HttpServletResponse httpServletResponse) throws IOException;
+
+    /**
      * 处方导出
      *
      * @param pageRequest         {@link PagePrescriptionRequest}
