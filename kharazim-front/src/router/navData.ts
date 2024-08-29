@@ -189,6 +189,12 @@ const navs: Nav[] = [
         path: "/pharmacy-inbound",
         icon: "/icons/inbound_order.svg",
       },
+      {
+        name: "出库管理",
+        component: "pharmacy/outboundOrder.vue",
+        path: "/pharmacy-outbound",
+        icon: "/icons/outbound_order.svg",
+      },
     ],
   },
   {
