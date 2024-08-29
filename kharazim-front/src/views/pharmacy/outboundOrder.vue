@@ -170,6 +170,7 @@
 import { onMounted, reactive, ref } from "vue";
 import { AxiosResponse } from "axios";
 import axios from "@/utils/http.js";
+import { ElMessage, ElMessageBox } from "element-plus";
 
 const outboundOrderPageData = ref([]);
 
@@ -177,7 +178,7 @@ const pageRequest = reactive({
   code: "",
   sourceBusinessCode: "",
   clinicCodes: [],
-  customerCode: '',
+  customerCode: "",
   status: "",
 });
 const pageInfo = reactive({
@@ -210,7 +211,7 @@ function resetAndLoadOutboundOrders() {
   pageRequest.code = "";
   pageRequest.sourceBusinessCode = "";
   pageRequest.clinicCodes = [];
-  pageRequest.customerCode = '';
+  pageRequest.customerCode = "";
   pageRequest.status = "";
   pageInfo.currentPage = 1;
   pageInfo.pageSize = 10;
@@ -247,13 +248,31 @@ function loadClinicOptions() {
 }
 
 function markOutboundFinished(row: any) {
-  // TODO
+  ElMessageBox.confirm("确认已收货？", "提示", {
+    confirmButtonText: "确认",
+    cancelButtonText: "取消",
+    type: "warning",
+  })
+    .then(() => {
+      axios
+        .post("/kharazim-api/outbound-order/outbound", {
+          outboundOrderCode: row.code,
+        })
+        .then(() => {
+          ElMessage({
+            type: "success",
+            message: "收货成功",
+          });
+          loadOutboundOrders();
+        });
+    })
+    .catch(() => {});
   console.log(row);
 }
 
 onMounted(() => {
-  loadOutboundOrders();
   loadClinicOptions();
+  loadOutboundOrders();
 });
 </script>
 

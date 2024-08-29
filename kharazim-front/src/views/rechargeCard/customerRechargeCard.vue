@@ -104,6 +104,9 @@
     </el-form>
   </div>
   <div>
+    <el-button @click="showAddCustomerRechargeCardDialog">新建储值单</el-button>
+  </div>
+  <div>
     <div>
       <el-table
         :data="customerRechargeCardPageData"
@@ -229,6 +232,113 @@
       />
     </div>
   </el-dialog>
+  <el-dialog
+    v-model="addCustomerRechargeCardVisible"
+    title="新建储值单"
+    width="600"
+  >
+    <el-form :model="addCustomerRechargeCardData" label-width="15%">
+      <el-form-item label="会员">
+        <el-select
+          v-model="addCustomerRechargeCardData.customerCode"
+          :remote-method="loadAddRechargeCardCustomers"
+          filterable
+          placeholder="选择会员"
+          remote
+          style="width: 95%"
+        >
+          <el-option
+            v-for="item in addRechargeCardCustomers"
+            :key="item.code"
+            :label="item.name"
+            :value="item.code"
+          >
+            <span style="float: left">{{ item.name }}</span>
+            <span class="family-leader-select">{{ item.phone }}</span>
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="储值卡项">
+        <el-select
+          v-model="addCustomerRechargeCardData.cardTypeCode"
+          clearable
+          filterable
+          placeholder="选择储值卡项"
+          reserve-keyword
+          style="width: 95%"
+        >
+          <el-option
+            v-for="item in rechargeCardTypeOptions"
+            :key="item.code"
+            :label="item.name"
+            :value="item.code"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="储值日期">
+        <el-date-picker
+          v-model="addCustomerRechargeCardData.rechargeDate"
+          placeholder="储值日期"
+          style="width: 95%"
+          type="date"
+        />
+      </el-form-item>
+      <el-form-item label="充值金额">
+        <el-input-number
+          v-model="addCustomerRechargeCardData.amount"
+          :controls="false"
+          :max="1000000"
+          :min="1"
+          :precision="2"
+          :step="0.01"
+          placeholder="充值金额"
+          style="width: 95%"
+        />
+      </el-form-item>
+      <el-form-item label="成交员工">
+        <el-select
+          v-model="addCustomerRechargeCardData.traderUserCode"
+          :remote-method="loadAddRechargeCardTraderUsers"
+          clearable
+          filterable
+          placeholder="选择员工"
+          remote
+          style="width: 95%"
+        >
+          <el-option
+            v-for="item in addRechargeCardTraderUsers"
+            :key="item.code"
+            :label="item.nickName"
+            :value="item.code"
+          >
+            <el-image
+              v-if="item.avatarUrl"
+              :src="item.avatarUrl"
+              style="float: left; width: 30px"
+            />
+            <span style="float: right">{{ item.nickName }}</span>
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="备注">
+        <el-input
+          v-model="addCustomerRechargeCardData.remark"
+          autocomplete="off"
+          placeholder="备注"
+          style="width: 95%"
+          type="textarea"
+        />
+      </el-form-item>
+    </el-form>
+    <template #footer>
+      <div class="dialog-footer">
+        <el-button @click="closeAddCustomerRechargeCardDialog">取消</el-button>
+        <el-button type="primary" @click="confirmAddCustomerRechargeCard">
+          确定
+        </el-button>
+      </div>
+    </template>
+  </el-dialog>
 </template>
 
 <script lang="ts" setup>
@@ -277,6 +387,52 @@ const pageRequest = reactive({
   rechargeCardTypes: [],
   rechargeDate: [] as Date[],
 });
+
+const addCustomerRechargeCardVisible = ref(false);
+const addCustomerRechargeCardData = ref({
+  customerCode: "",
+  traderUserCode: "",
+  cardTypeCode: "",
+  rechargeDate: null as Date | null,
+  amount: null as number | null,
+  remark: "",
+});
+
+function showAddCustomerRechargeCardDialog() {
+  addCustomerRechargeCardData.value.customerCode = "";
+  addCustomerRechargeCardData.value.traderUserCode = "";
+  addCustomerRechargeCardData.value.cardTypeCode = "";
+  addCustomerRechargeCardData.value.rechargeDate = null;
+  addCustomerRechargeCardData.value.amount = null;
+  addCustomerRechargeCardData.value.remark = "";
+  addCustomerRechargeCardVisible.value = true;
+}
+
+function closeAddCustomerRechargeCardDialog() {
+  addCustomerRechargeCardVisible.value = false;
+}
+
+function confirmAddCustomerRechargeCard() {
+  console.log(addCustomerRechargeCardData.value);
+  axios
+    .post("kharazim-api/recharge-card/recharge", {
+      customerCode: addCustomerRechargeCardData.value.customerCode,
+      cardTypeCode: addCustomerRechargeCardData.value.cardTypeCode,
+      rechargeDate: dateFormat(addCustomerRechargeCardData.value.rechargeDate),
+      amount: addCustomerRechargeCardData.value.amount,
+      traderUserCode: addCustomerRechargeCardData.value.traderUserCode,
+      remark: addCustomerRechargeCardData.value.remark,
+    })
+    .then(() => {
+      ElMessage({
+        showClose: true,
+        message: "创建储值单成功",
+        type: "success",
+      });
+      closeAddCustomerRechargeCardDialog();
+      loadCustomerRechargeCard();
+    });
+}
 
 function clearAndLoadCustomerRechargeCard() {
   pageRequest.code = "";
@@ -434,12 +590,21 @@ interface Customer {
 }
 
 const customers = ref<Customer[]>([]);
+const addRechargeCardCustomers = ref<Customer[]>([]);
 
 function loadCustomers(query: string) {
   axios
     .get(`/kharazim-api/customer/list?conditionType=NAME&keyword=${query}`)
     .then((res: AxiosResponse) => {
       customers.value = res.data.data;
+    });
+}
+
+function loadAddRechargeCardCustomers(query: string) {
+  axios
+    .get(`/kharazim-api/customer/list?conditionType=NAME&keyword=${query}`)
+    .then((res: AxiosResponse) => {
+      addRechargeCardCustomers.value = res.data.data;
     });
 }
 
@@ -451,8 +616,12 @@ interface TraderUser {
 }
 
 const traderUsers = ref<TraderUser[]>([]);
+const addRechargeCardTraderUsers = ref<TraderUser[]>([]);
 
-function loadTraderUsers(query: string) {
+function executeLoadTraderUsers(
+  query: string,
+  callback: (traderUsers: TraderUser[]) => void,
+) {
   axios
     .get("/kharazim-api/user/list", {
       params: {
@@ -460,8 +629,19 @@ function loadTraderUsers(query: string) {
       },
     })
     .then((res: AxiosResponse) => {
-      traderUsers.value = res.data.data;
+      callback(res.data.data);
     });
+}
+
+function loadTraderUsers(query: string) {
+  executeLoadTraderUsers(query, (result) => (traderUsers.value = result));
+}
+
+function loadAddRechargeCardTraderUsers(query: string) {
+  executeLoadTraderUsers(
+    query,
+    (result) => (addRechargeCardTraderUsers.value = result),
+  );
 }
 
 interface RechargeCardType {
