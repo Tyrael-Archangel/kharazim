@@ -25,6 +25,8 @@ public interface InventoryLogMapper extends BaseMapper<InventoryLog> {
         LambdaQueryWrapperX<InventoryLog> queryWrapper = new LambdaQueryWrapperX<>();
         queryWrapper.eqIfHasText(InventoryLog::getSkuCode, pageRequest.getSkuCode());
         queryWrapper.eqIfHasText(InventoryLog::getClinicCode, pageRequest.getClinicCode());
+        queryWrapper.geIfPresent(InventoryLog::getOperateTime, pageRequest.getStartTime());
+        queryWrapper.leIfPresent(InventoryLog::getOperateTime, pageRequest.getEndTime());
 
         queryWrapper.orderByDesc(InventoryLog::getOperateTime);
         queryWrapper.orderByDesc(InventoryLog::getId);

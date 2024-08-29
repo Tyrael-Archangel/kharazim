@@ -19,6 +19,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class InventoryLogVO {
 
+    @Schema(description = "库存流水ID")
     private Long id;
 
     @Schema(description = "关联业务编码")

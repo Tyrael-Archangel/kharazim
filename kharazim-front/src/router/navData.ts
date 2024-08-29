@@ -184,6 +184,12 @@ const navs: Nav[] = [
         icon: "/icons/inventory_management.svg",
       },
       {
+        name: "库存流水",
+        component: "pharmacy/inventoryLog.vue",
+        path: "/pharmacy-inventory-log",
+        icon: "/icons/inventory_log.svg",
+      },
+      {
         name: "入库管理",
         component: "pharmacy/inboundOrder.vue",
         path: "/pharmacy-inbound",
