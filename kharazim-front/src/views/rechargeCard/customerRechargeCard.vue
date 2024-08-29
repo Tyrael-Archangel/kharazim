@@ -413,7 +413,6 @@ function closeAddCustomerRechargeCardDialog() {
 }
 
 function confirmAddCustomerRechargeCard() {
-  console.log(addCustomerRechargeCardData.value);
   axios
     .post("kharazim-api/recharge-card/recharge", {
       customerCode: addCustomerRechargeCardData.value.customerCode,

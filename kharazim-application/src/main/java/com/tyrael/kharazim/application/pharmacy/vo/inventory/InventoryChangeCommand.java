@@ -1,6 +1,6 @@
 package com.tyrael.kharazim.application.pharmacy.vo.inventory;
 
-import com.tyrael.kharazim.application.pharmacy.enums.InventoryOutInTypeEnum;
+import com.tyrael.kharazim.application.pharmacy.enums.InventoryChangeTypeEnum;
 
 import java.util.List;
 
@@ -9,14 +9,14 @@ import java.util.List;
  *
  * @param businessCode 业务单据编码
  * @param clinicCode   诊所编码
- * @param outInType    出入库类型
+ * @param changeType   出入库类型
  * @param items        出入库明细
  * @param operator     操作人
  * @param operatorCode 操作人编码
  */
 public record InventoryChangeCommand(String businessCode,
                                      String clinicCode,
-                                     InventoryOutInTypeEnum outInType,
+                                     InventoryChangeTypeEnum changeType,
                                      List<Item> items,
                                      String operator,
                                      String operatorCode) {

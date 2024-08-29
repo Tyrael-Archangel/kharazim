@@ -7,7 +7,7 @@ import com.tyrael.kharazim.application.pharmacy.domain.InboundOrder;
 import com.tyrael.kharazim.application.pharmacy.domain.InboundOrderItem;
 import com.tyrael.kharazim.application.pharmacy.enums.InboundOrderSourceType;
 import com.tyrael.kharazim.application.pharmacy.enums.InboundOrderStatus;
-import com.tyrael.kharazim.application.pharmacy.enums.InventoryOutInTypeEnum;
+import com.tyrael.kharazim.application.pharmacy.enums.InventoryChangeTypeEnum;
 import com.tyrael.kharazim.application.pharmacy.mapper.InboundOrderItemMapper;
 import com.tyrael.kharazim.application.pharmacy.mapper.InboundOrderMapper;
 import com.tyrael.kharazim.application.pharmacy.service.InboundOrderService;
@@ -134,7 +134,7 @@ public class InboundOrderServiceImpl implements InboundOrderService {
         InventoryChangeCommand inventoryChangeCommand = new InventoryChangeCommand(
                 serialCode,
                 inboundOrder.getClinicCode(),
-                InventoryOutInTypeEnum.PURCHASE_IN,
+                InventoryChangeTypeEnum.PURCHASE_IN,
                 inboundItems,
                 operator.getNickName(),
                 operator.getCode());

@@ -2,7 +2,7 @@ package com.tyrael.kharazim.application.pharmacy.domain;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.tyrael.kharazim.application.pharmacy.enums.InventoryOutInTypeEnum;
+import com.tyrael.kharazim.application.pharmacy.enums.InventoryChangeTypeEnum;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -33,14 +33,24 @@ public class InventoryLog {
     private Integer quantity;
 
     /**
+     * 结存数量
+     */
+    private Integer balanceQuantity;
+
+    /**
+     * 结存预占数量
+     */
+    private Integer balanceOccupyQuantity;
+
+    /**
      * 诊所编码
      */
     private String clinicCode;
 
     /**
-     * 出入库类型
+     * 库存变化类型
      */
-    private InventoryOutInTypeEnum outInType;
+    private InventoryChangeTypeEnum changeType;
 
     private LocalDateTime operateTime;
     private String operator;

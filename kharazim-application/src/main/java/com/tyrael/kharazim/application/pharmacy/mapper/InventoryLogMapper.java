@@ -1,7 +1,11 @@
 package com.tyrael.kharazim.application.pharmacy.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.tyrael.kharazim.application.base.LambdaQueryWrapperX;
 import com.tyrael.kharazim.application.pharmacy.domain.InventoryLog;
+import com.tyrael.kharazim.application.pharmacy.vo.inventory.PageInventoryLogRequest;
+import com.tyrael.kharazim.common.dto.PageResponse;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -10,4 +14,28 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface InventoryLogMapper extends BaseMapper<InventoryLog> {
+
+    /**
+     * 库存流水日志分页
+     *
+     * @param pageRequest {@link PageInventoryLogRequest}
+     * @return 库存流水日志分页数据
+     */
+    default PageResponse<InventoryLog> page(PageInventoryLogRequest pageRequest) {
+        LambdaQueryWrapperX<InventoryLog> queryWrapper = new LambdaQueryWrapperX<>();
+        queryWrapper.eqIfHasText(InventoryLog::getSkuCode, pageRequest.getSkuCode());
+        queryWrapper.eqIfHasText(InventoryLog::getClinicCode, pageRequest.getClinicCode());
+
+        queryWrapper.orderByDesc(InventoryLog::getOperateTime);
+        queryWrapper.orderByDesc(InventoryLog::getId);
+
+        Page<InventoryLog> pageCondition = new Page<>(pageRequest.getPageNum(), pageRequest.getPageSize());
+        Page<InventoryLog> pageData = selectPage(pageCondition, queryWrapper);
+        return PageResponse.success(
+                pageData.getRecords(),
+                pageData.getTotal(),
+                (int) pageCondition.getSize(),
+                (int) pageCondition.getCurrent());
+    }
+
 }

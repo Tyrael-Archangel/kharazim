@@ -11,11 +11,13 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
-public enum InventoryOutInTypeEnum implements BaseNameAndValueEnum {
+public enum InventoryChangeTypeEnum implements BaseNameAndValueEnum {
 
     PURCHASE_IN(1, "采购入库"),
 
-    SALE_OUT(2, "销售出库");
+    SALE_OUT(2, "销售出库"),
+
+    SALE_OCCUPY(3, "销售预占");
 
     @EnumValue
     private final Integer value;

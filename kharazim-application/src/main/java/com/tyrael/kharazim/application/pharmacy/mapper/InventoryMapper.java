@@ -1,5 +1,6 @@
 package com.tyrael.kharazim.application.pharmacy.mapper;
 
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.tyrael.kharazim.application.base.LambdaQueryWrapperX;
@@ -25,59 +26,18 @@ import java.util.List;
 public interface InventoryMapper extends BaseMapper<Inventory> {
 
     /**
-     * 增加库存
-     *
-     * @param skuCode    SKU编码
-     * @param clinicCode 诊所编码
-     * @param quantity   数量
-     * @return updated rows
-     */
-    @Update("""
-            update `inventory`
-            set `quantity` = `quantity` + #{quantity}
-            where `clinic_code` = #{clinicCode}
-              and `sku_code` = #{skuCode}
-            """)
-    int increaseQuantity(@Param("skuCode") String skuCode,
-                         @Param("clinicCode") String clinicCode,
-                         @Param("quantity") Integer quantity);
-
-    /**
-     * 预占库存
-     *
-     * @param clinicCode     诊所编码
-     * @param skuCode        SKU编码
-     * @param occupyQuantity 预占数量
-     * @return 是否预占成功
-     */
-    @Update("""
-            update `inventory`
-            set `occupied_quantity` = `occupied_quantity` + #{occupyQuantity}
-            where `clinic_code` = #{clinicCode}
-             and `sku_code` = #{skuCode}
-             and (`quantity` - `occupied_quantity`) >= #{occupyQuantity}
-            """)
-    int increaseOccupy(@Param("clinicCode") String clinicCode,
-                       @Param("skuCode") String skuCode,
-                       @Param("occupyQuantity") int occupyQuantity);
-
-    /**
-     * 根据预占减少库存
+     * find by unique key
      *
      * @param clinicCode 诊所编码
      * @param skuCode    SKU编码
-     * @param quantity   数量
+     * @return Inventory
      */
-    @Update("""
-            update `inventory`
-             set `quantity` = `quantity` - #{quantity},
-                `occupied_quantity` = `occupied_quantity` - #{quantity}
-            where `clinic_code` = #{clinicCode}
-             and `sku_code` = #{skuCode}
-            """)
-    void decreaseQuantityByOccupy(@Param("skuCode") String skuCode,
-                                  @Param("clinicCode") String clinicCode,
-                                  @Param("quantity") Integer quantity);
+    default Inventory findOne(String clinicCode, String skuCode) {
+        LambdaUpdateWrapper<Inventory> queryWrapper = new LambdaUpdateWrapper<>();
+        queryWrapper.eq(Inventory::getSkuCode, skuCode);
+        queryWrapper.eq(Inventory::getClinicCode, clinicCode);
+        return selectOne(queryWrapper);
+    }
 
     /**
      * 库存分页
@@ -125,5 +85,60 @@ public interface InventoryMapper extends BaseMapper<Inventory> {
         queryWrapper.inIfPresent(Inventory::getSkuCode, listRequest.getSkuCodes());
         return selectList(queryWrapper);
     }
+
+    /**
+     * 增加库存
+     *
+     * @param skuCode    SKU编码
+     * @param clinicCode 诊所编码
+     * @param quantity   数量
+     * @return updated rows
+     */
+    @Update("""
+            update `inventory`
+            set `quantity` = `quantity` + #{quantity}
+            where `clinic_code` = #{clinicCode}
+              and `sku_code` = #{skuCode}
+            """)
+    int increaseQuantity(@Param("clinicCode") String clinicCode,
+                         @Param("skuCode") String skuCode,
+                         @Param("quantity") Integer quantity);
+
+    /**
+     * 预占库存
+     *
+     * @param clinicCode     诊所编码
+     * @param skuCode        SKU编码
+     * @param occupyQuantity 预占数量
+     * @return 是否预占成功
+     */
+    @Update("""
+            update `inventory`
+            set `occupied_quantity` = `occupied_quantity` + #{occupyQuantity}
+            where `clinic_code` = #{clinicCode}
+             and `sku_code` = #{skuCode}
+             and (`quantity` - `occupied_quantity`) >= #{occupyQuantity}
+            """)
+    int increaseOccupy(@Param("clinicCode") String clinicCode,
+                       @Param("skuCode") String skuCode,
+                       @Param("occupyQuantity") int occupyQuantity);
+
+    /**
+     * 根据预占减少库存
+     *
+     * @param clinicCode 诊所编码
+     * @param skuCode    SKU编码
+     * @param quantity   数量
+     */
+    @Update("""
+            update `inventory`
+             set `quantity` = `quantity` - #{quantity},
+                 `occupied_quantity` = `occupied_quantity` - #{quantity}
+            where `clinic_code` = #{clinicCode}
+             and `sku_code` = #{skuCode}
+            """)
+    void decreaseQuantityByOccupy(@Param("clinicCode") String clinicCode,
+                                  @Param("skuCode") String skuCode,
+                                  @Param("quantity") Integer quantity);
 
 }

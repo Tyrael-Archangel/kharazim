@@ -1,9 +1,6 @@
 package com.tyrael.kharazim.application.pharmacy.service;
 
-import com.tyrael.kharazim.application.pharmacy.vo.inventory.InventoryChangeCommand;
-import com.tyrael.kharazim.application.pharmacy.vo.inventory.InventoryVO;
-import com.tyrael.kharazim.application.pharmacy.vo.inventory.ListInventoryOfClinicRequest;
-import com.tyrael.kharazim.application.pharmacy.vo.inventory.PageInventoryRequest;
+import com.tyrael.kharazim.application.pharmacy.vo.inventory.*;
 import com.tyrael.kharazim.application.prescription.domain.Prescription;
 import com.tyrael.kharazim.common.dto.PageResponse;
 
@@ -30,6 +27,14 @@ public interface InventoryService {
      * @return 诊所库存数据
      */
     List<InventoryVO> listOfClinic(ListInventoryOfClinicRequest listRequest);
+
+    /**
+     * 库存日志数据分页
+     *
+     * @param pageRequest {@link PageInventoryLogRequest}
+     * @return 库存日志分页数据
+     */
+    PageResponse<InventoryLogVO> pageLog(PageInventoryLogRequest pageRequest);
 
     /**
      * 根据处方预占库存

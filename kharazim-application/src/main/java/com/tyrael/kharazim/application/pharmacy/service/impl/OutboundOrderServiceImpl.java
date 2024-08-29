@@ -5,7 +5,7 @@ import com.tyrael.kharazim.application.config.BusinessCodeConstants;
 import com.tyrael.kharazim.application.pharmacy.converter.OutboundOrderConverter;
 import com.tyrael.kharazim.application.pharmacy.domain.OutboundOrder;
 import com.tyrael.kharazim.application.pharmacy.domain.OutboundOrderItem;
-import com.tyrael.kharazim.application.pharmacy.enums.InventoryOutInTypeEnum;
+import com.tyrael.kharazim.application.pharmacy.enums.InventoryChangeTypeEnum;
 import com.tyrael.kharazim.application.pharmacy.enums.OutboundOrderStatus;
 import com.tyrael.kharazim.application.pharmacy.mapper.OutboundOrderItemMapper;
 import com.tyrael.kharazim.application.pharmacy.mapper.OutboundOrderMapper;
@@ -111,7 +111,7 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
         InventoryChangeCommand inventoryChangeCommand = new InventoryChangeCommand(
                 serialCode,
                 outboundOrder.getClinicCode(),
-                InventoryOutInTypeEnum.SALE_OUT,
+                InventoryChangeTypeEnum.SALE_OUT,
                 outboundItems,
                 operator.getNickName(),
                 operator.getCode());
