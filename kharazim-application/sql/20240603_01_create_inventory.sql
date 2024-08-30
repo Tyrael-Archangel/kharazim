@@ -25,3 +25,15 @@ create table `inventory_log`
     index idx_source_business_code (source_business_code),
     index idx_operate_time (operate_time desc)
 ) comment '库存流水日志';
+
+create table `inventory_occupy`
+(
+    `id`            bigint       NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `business_code` varchar(32)  not null comment '关联业务编码',
+    `clinic_code`   varchar(32)  not null comment '诊所编码',
+    `sku_code`      varchar(32)  not null comment 'SKU编码',
+    `quantity`      int unsigned not null comment '数量',
+    unique index udx_sku_clinic_business (sku_code, clinic_code, business_code),
+    index udx_sku_clinic_quantity (sku_code, clinic_code, quantity),
+    index idx_business_code (business_code)
+) comment '库存预占数据';

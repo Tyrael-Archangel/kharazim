@@ -37,6 +37,14 @@ public interface InventoryService {
     PageResponse<InventoryLogVO> pageLog(PageInventoryLogRequest pageRequest);
 
     /**
+     * 库存预占数据分页
+     *
+     * @param pageRequest {@link PageInventoryOccupyRequest}
+     * @return 库存预占分页数据
+     */
+    PageResponse<InventoryOccupyVO> pageOccupy(PageInventoryOccupyRequest pageRequest);
+
+    /**
      * 根据处方预占库存
      *
      * @param prescription {@linkplain Prescription 处方}

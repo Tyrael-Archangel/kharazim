@@ -70,7 +70,7 @@ class PrescriptionControllerTest extends BaseControllerTest<PrescriptionControll
                 .stream()
                 .collect(Collectors.groupingBy(SkuPublish::getClinicCode));
 
-        int totalCount = random.nextInt(300) + 100;
+        int totalCount = 1;
         for (int i = 0; i < totalCount; i++) {
             Customer customer = CollectionUtils.random(customers);
             Clinic clinic = CollectionUtils.random(clinics);

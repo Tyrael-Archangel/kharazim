@@ -12,7 +12,7 @@ import java.util.Set;
 
 /**
  * @author Tyrael Archangel
- * @since 2024/6/3
+ * @since 2024/8/29
  */
 @Data
 public class PageInventoryLogRequest extends PageCommand {

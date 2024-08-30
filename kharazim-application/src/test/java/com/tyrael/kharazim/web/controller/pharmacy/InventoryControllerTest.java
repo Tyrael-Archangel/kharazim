@@ -2,6 +2,7 @@ package com.tyrael.kharazim.web.controller.pharmacy;
 
 import com.tyrael.kharazim.application.pharmacy.vo.inventory.ListInventoryOfClinicRequest;
 import com.tyrael.kharazim.application.pharmacy.vo.inventory.PageInventoryLogRequest;
+import com.tyrael.kharazim.application.pharmacy.vo.inventory.PageInventoryOccupyRequest;
 import com.tyrael.kharazim.application.pharmacy.vo.inventory.PageInventoryRequest;
 import com.tyrael.kharazim.web.controller.BaseControllerTest;
 import org.junit.jupiter.api.Test;
@@ -36,6 +37,14 @@ class InventoryControllerTest extends BaseControllerTest<InventoryController> {
     void pageLog() {
         PageInventoryLogRequest pageRequest = new PageInventoryLogRequest();
         this.performWhenCall(mockController.pageLog(pageRequest));
+    }
+
+    @Test
+    void pageOccupy() {
+        PageInventoryOccupyRequest pageRequest = new PageInventoryOccupyRequest();
+        pageRequest.setSkuCode("P240808000290");
+        pageRequest.setClinicCode("CL000013");
+        this.performWhenCall(mockController.pageOccupy(pageRequest));
     }
 
 }

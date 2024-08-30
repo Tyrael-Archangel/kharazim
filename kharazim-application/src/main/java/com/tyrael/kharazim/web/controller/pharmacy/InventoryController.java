@@ -6,6 +6,7 @@ import com.tyrael.kharazim.common.dto.MultiResponse;
 import com.tyrael.kharazim.common.dto.PageResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,6 +41,12 @@ public class InventoryController {
     @Operation(summary = "库存日志数据分页")
     public PageResponse<InventoryLogVO> pageLog(@ParameterObject PageInventoryLogRequest pageRequest) {
         return inventoryService.pageLog(pageRequest);
+    }
+
+    @GetMapping("/page-occupy")
+    @Operation(summary = "库存预占数据分页")
+    public PageResponse<InventoryOccupyVO> pageOccupy(@ParameterObject @Valid PageInventoryOccupyRequest pageRequest) {
+        return inventoryService.pageOccupy(pageRequest);
     }
 
 }

@@ -3,9 +3,11 @@ package com.tyrael.kharazim.application.pharmacy.service.impl;
 import com.tyrael.kharazim.application.pharmacy.converter.InventoryConverter;
 import com.tyrael.kharazim.application.pharmacy.domain.Inventory;
 import com.tyrael.kharazim.application.pharmacy.domain.InventoryLog;
+import com.tyrael.kharazim.application.pharmacy.domain.InventoryOccupy;
 import com.tyrael.kharazim.application.pharmacy.enums.InventoryChangeTypeEnum;
 import com.tyrael.kharazim.application.pharmacy.mapper.InventoryLogMapper;
 import com.tyrael.kharazim.application.pharmacy.mapper.InventoryMapper;
+import com.tyrael.kharazim.application.pharmacy.mapper.InventoryOccupyMapper;
 import com.tyrael.kharazim.application.pharmacy.service.InventoryService;
 import com.tyrael.kharazim.application.pharmacy.vo.inventory.*;
 import com.tyrael.kharazim.application.prescription.domain.Prescription;
@@ -20,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Tyrael Archangel
@@ -31,6 +34,7 @@ public class InventoryServiceImpl implements InventoryService {
 
     private final InventoryMapper inventoryMapper;
     private final InventoryLogMapper inventoryLogMapper;
+    private final InventoryOccupyMapper inventoryOccupyMapper;
     private final InventoryConverter inventoryConverter;
 
     @Override
@@ -58,8 +62,29 @@ public class InventoryServiceImpl implements InventoryService {
         return PageResponse.success(
                 inventoryConverter.inventoryLogs(pageData.getData()),
                 pageData.getTotalCount(),
-                pageRequest.getPageSize(),
-                pageRequest.getPageNum());
+                pageData.getPageSize(),
+                pageData.getPageNum());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PageResponse<InventoryOccupyVO> pageOccupy(PageInventoryOccupyRequest pageRequest) {
+        PageResponse<InventoryOccupy> pageData = inventoryOccupyMapper.page(pageRequest);
+
+        List<InventoryOccupyVO> occupyPageData = pageData.getData()
+                .stream()
+                .map(e -> InventoryOccupyVO.builder()
+                        .businessCode(e.getBusinessCode())
+                        .skuCode(e.getSkuCode())
+                        .quantity(e.getQuantity())
+                        .clinicCode(e.getClinicCode())
+                        .build())
+                .collect(Collectors.toList());
+        return PageResponse.success(
+                occupyPageData,
+                pageData.getTotalCount(),
+                pageData.getPageSize(),
+                pageData.getPageNum());
     }
 
     @Override
@@ -80,6 +105,9 @@ public class InventoryServiceImpl implements InventoryService {
 
             // save occupy log
             saveOccupyInventoryLog(prescription, product);
+
+            // save prescription occupy record
+            saveOccupyRecord(prescription, product);
         }
     }
 
@@ -101,6 +129,14 @@ public class InventoryServiceImpl implements InventoryService {
         inventoryLog.setOperator(prescription.getCreator());
         inventoryLog.setOperatorCode(prescription.getCreatorCode());
         inventoryLogMapper.insert(inventoryLog);
+    }
+
+    private void saveOccupyRecord(Prescription prescription, PrescriptionProduct product) {
+        inventoryOccupyMapper.occupy(
+                prescription.getClinicCode(),
+                product.getSkuCode(),
+                prescription.getCode(),
+                product.getQuantity());
     }
 
     @Override
@@ -149,6 +185,9 @@ public class InventoryServiceImpl implements InventoryService {
 
             // 保存库存日志
             saveInventoryChangeLog(outboundCommand, outboundItem);
+
+            // save release occupy record
+            saveReleaseOccupyRecord(outboundCommand, outboundItem);
         }
     }
 
@@ -171,6 +210,15 @@ public class InventoryServiceImpl implements InventoryService {
         inventoryLog.setOperator(changeCommand.operator());
         inventoryLog.setOperatorCode(changeCommand.operatorCode());
         inventoryLogMapper.insert(inventoryLog);
+    }
+
+    private void saveReleaseOccupyRecord(InventoryChangeCommand outboundCommand,
+                                         InventoryChangeCommand.Item outboundItem) {
+        inventoryOccupyMapper.release(
+                outboundCommand.clinicCode(),
+                outboundItem.skuCode(),
+                outboundCommand.businessCode(),
+                outboundItem.quantity());
     }
 
 }
