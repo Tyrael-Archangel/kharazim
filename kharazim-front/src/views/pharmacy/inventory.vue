@@ -37,8 +37,11 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item>
+      <el-form-item class="page-form-block-search-block">
         <el-button type="primary" @click="loadInventories">查询</el-button>
+        <el-button type="primary" @click="resetAndLoadInventories"
+          >重置</el-button
+        >
       </el-form-item>
     </el-form>
   </div>
@@ -62,7 +65,7 @@
             </el-image>
           </template>
         </el-table-column>
-        <el-table-column label="单位" prop="unitName" align="center" />
+        <el-table-column align="center" label="单位" prop="unitName" />
         <el-table-column align="center" label="在库库存" prop="quantity" />
         <el-table-column
           align="center"
@@ -126,6 +129,16 @@ function loadInventories() {
       inventoryPageData.value = response.data.data;
       pageInfo.totalCount = response.data.totalCount;
     });
+}
+
+function resetAndLoadInventories() {
+  pageRequest.skuCode = "";
+  pageRequest.skuName = "";
+  pageRequest.clinicCodes = [];
+  pageInfo.currentPage = 1;
+  pageInfo.pageSize = 10;
+  pageInfo.totalCount = 0;
+  loadInventories();
 }
 
 interface ClinicOption {

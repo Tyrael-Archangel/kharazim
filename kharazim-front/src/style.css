@@ -12,3 +12,15 @@
 .page-form-block .el-select {
     --el-select-width: 300px;
 }
+
+.page-form-block-time-range {
+    width: 280px !important;
+}
+
+.page-form-block-search-block {
+    margin-left: 30px
+}
+
+.el-form-item__label {
+    width: 100px;
+}

@@ -82,12 +82,13 @@
       <el-form-item label="创建时间">
         <el-date-picker
           v-model="pageRequest.createDate"
+          class="page-form-block-time-range"
           end-placeholder="截止时间"
           start-placeholder="开始时间"
           type="daterange"
         />
       </el-form-item>
-      <el-form-item>
+      <el-form-item class="page-form-block-search-block">
         <el-button type="primary" @click="loadPurchaseOrders">查询</el-button>
         <el-button type="primary" @click="resetAndReloadPurchaseOrders">
           重置

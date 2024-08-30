@@ -1,6 +1,6 @@
 <template>
   <el-form :inline="true" :model="pageRequest" class="page-form-block">
-    <el-form-item label="用户名/昵称/手机号">
+    <el-form-item label="关键字">
       <el-input
         v-model="pageRequest.keywords"
         clearable

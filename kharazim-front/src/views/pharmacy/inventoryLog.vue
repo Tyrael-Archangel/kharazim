@@ -29,16 +29,41 @@
           />
         </el-select>
       </el-form-item>
+      <el-form-item label="库存变化类型">
+        <el-select
+          v-model="pageRequest.changeTypes"
+          clearable
+          filterable
+          multiple
+          placeholder="库存变化类型"
+          reserve-keyword
+        >
+          <el-option key="PURCHASE_IN" label="采购入库" value="PURCHASE_IN" />
+          <el-option key="SALE_OUT" label="销售出库" value="SALE_OUT" />
+          <el-option key="SALE_OCCUPY" label="销售预占" value="SALE_OCCUPY" />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="关联业务编码">
+        <el-input
+          v-model="pageRequest.sourceBusinessCode"
+          clearable
+          placeholder="关联业务编码"
+        />
+      </el-form-item>
       <el-form-item label="时间">
         <el-date-picker
           v-model="pageRequest.timeRange"
           end-placeholder="截止时间"
           start-placeholder="开始时间"
+          style="width: 280px"
           type="datetimerange"
         />
       </el-form-item>
-      <el-form-item>
+      <el-form-item class="page-form-block-search-block">
         <el-button type="primary" @click="loadInventoryLogs">查询</el-button>
+        <el-button type="primary" @click="resetAndLoadInventoryLogs"
+          >重置
+        </el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -50,13 +75,13 @@
         style="width: 100%; margin-top: 10px"
       >
         <el-table-column label="流水号" prop="id" width="100" />
+        <el-table-column label="商品编码" prop="skuCode" width="160" />
+        <el-table-column label="诊所" prop="clinicName" width="160" />
         <el-table-column
           label="关联业务编码"
           prop="sourceBusinessCode"
           width="170"
         />
-        <el-table-column label="诊所" prop="clinicName" width="160" />
-        <el-table-column label="SKU编码" prop="skuCode" width="160" />
         <el-table-column
           align="center"
           label="类型"
@@ -137,6 +162,8 @@ const inventoryLogPageData = ref([]);
 
 const pageRequest = reactive({
   skuCode: "",
+  sourceBusinessCode: "",
+  changeTypes: [],
   clinicCode: "",
   timeRange: [] as Date[],
 });
@@ -161,6 +188,8 @@ function loadInventoryLogs() {
       params: {
         skuCode: pageRequest.skuCode,
         clinicCode: pageRequest.clinicCode,
+        sourceBusinessCode: pageRequest.sourceBusinessCode,
+        changeTypes: pageRequest.changeTypes,
         startTime: startTime,
         endTime: endTime,
         pageSize: pageInfo.pageSize,
@@ -171,6 +200,18 @@ function loadInventoryLogs() {
       inventoryLogPageData.value = response.data.data;
       pageInfo.totalCount = response.data.totalCount;
     });
+}
+
+function resetAndLoadInventoryLogs() {
+  pageRequest.skuCode = "";
+  pageRequest.sourceBusinessCode = "";
+  pageRequest.changeTypes = [];
+  pageRequest.clinicCode = "";
+  pageRequest.timeRange = [] as Date[];
+  pageInfo.currentPage = 1;
+  pageInfo.pageSize = 10;
+  pageInfo.totalCount = 0;
+  loadInventoryLogs();
 }
 
 interface ClinicOption {

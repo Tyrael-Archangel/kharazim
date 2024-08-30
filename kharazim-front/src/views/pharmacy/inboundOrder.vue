@@ -1,26 +1,27 @@
 <template>
   <div>
     <el-form
+      ref="pageRequestFormRef"
       :inline="true"
       :model="pageRequest"
       class="page-form-block"
       @keyup.enter="loadInboundOrders"
     >
-      <el-form-item label="入库单编码">
+      <el-form-item label="入库单编码" prop="code">
         <el-input
           v-model="pageRequest.code"
           clearable
           placeholder="入库单编码"
         />
       </el-form-item>
-      <el-form-item label="来源单据编码">
+      <el-form-item label="来源单据编码" prop="sourceBusinessCode">
         <el-input
           v-model="pageRequest.sourceBusinessCode"
           clearable
           placeholder="来源单据编码"
         />
       </el-form-item>
-      <el-form-item label="诊所">
+      <el-form-item label="诊所" prop="clinicCodes">
         <el-select
           v-model="pageRequest.clinicCodes"
           clearable
@@ -37,7 +38,7 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="供应商">
+      <el-form-item label="供应商" prop="supplierCodes">
         <el-select
           v-model="pageRequest.supplierCodes"
           clearable
@@ -54,7 +55,7 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="入库状态">
+      <el-form-item label="入库状态" prop="status">
         <el-select
           v-model="pageRequest.status"
           clearable
@@ -73,6 +74,9 @@
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="loadInboundOrders">查询</el-button>
+        <el-button type="primary" @click="resetAndLoadInboundOrders">
+          重置
+        </el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -242,10 +246,11 @@
 import { onMounted, reactive, ref } from "vue";
 import { AxiosResponse } from "axios";
 import axios from "@/utils/http.js";
-import { ElMessage } from "element-plus";
+import { ElMessage, FormInstance } from "element-plus";
 
 const inboundOrderPageData = ref([]);
 
+const pageRequestFormRef = ref<FormInstance>();
 const pageRequest = reactive({
   code: "",
   sourceBusinessCode: "",
@@ -303,6 +308,13 @@ function loadInboundOrders() {
       inboundOrderPageData.value = response.data.data;
       pageInfo.totalCount = response.data.totalCount;
     });
+}
+
+function resetAndLoadInboundOrders() {
+  if (pageRequestFormRef.value) {
+    pageRequestFormRef.value.resetFields();
+  }
+  loadInboundOrders();
 }
 
 const doInboundOrder = ref();

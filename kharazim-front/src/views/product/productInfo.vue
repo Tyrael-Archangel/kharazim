@@ -58,7 +58,7 @@
           @keyup.enter="loadProducts"
         />
       </el-form-item>
-      <el-form-item>
+      <el-form-item class="page-form-block-search-block">
         <el-button type="primary" @click="loadProducts">查询</el-button>
         <el-button type="primary" @click="clearPageRequestAndLoadProducts"
           >重置

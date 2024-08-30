@@ -85,15 +85,16 @@
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="储值日期" style="width: 340px">
+      <el-form-item label="储值日期">
         <el-date-picker
           v-model="pageRequest.rechargeDate"
+          class="page-form-block-time-range"
           end-placeholder="截止日期"
           start-placeholder="开始日期"
           type="daterange"
         />
       </el-form-item>
-      <el-form-item>
+      <el-form-item class="page-form-block-search-block">
         <el-button type="primary" @click="loadCustomerRechargeCard">
           查询
         </el-button>

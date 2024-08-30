@@ -56,10 +56,11 @@
           v-model="pageRequest.createDate"
           end-placeholder="截止时间"
           start-placeholder="开始时间"
+          style="width: 280px"
           type="daterange"
         />
       </el-form-item>
-      <el-form-item>
+      <el-form-item class="page-form-block-search-block">
         <el-button type="primary" @click="loadPrescriptions">查询</el-button>
         <el-button type="primary" @click="resetAndReloadPrescriptions">
           重置
