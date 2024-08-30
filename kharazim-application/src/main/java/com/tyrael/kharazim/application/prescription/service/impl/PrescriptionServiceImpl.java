@@ -9,7 +9,8 @@ import com.tyrael.kharazim.application.clinic.mapper.ClinicMapper;
 import com.tyrael.kharazim.application.config.BusinessCodeConstants;
 import com.tyrael.kharazim.application.customer.mapper.CustomerMapper;
 import com.tyrael.kharazim.application.pharmacy.event.CreateOutboundOrderEvent;
-import com.tyrael.kharazim.application.pharmacy.event.OccupyInventoryEvent;
+import com.tyrael.kharazim.application.pharmacy.service.InventoryService;
+import com.tyrael.kharazim.application.pharmacy.vo.inventory.InventoryOccupyCommand;
 import com.tyrael.kharazim.application.prescription.converter.PrescriptionConverter;
 import com.tyrael.kharazim.application.prescription.domain.Prescription;
 import com.tyrael.kharazim.application.prescription.domain.PrescriptionProduct;
@@ -65,6 +66,7 @@ public class PrescriptionServiceImpl implements PrescriptionService {
     private final PrescriptionConverter prescriptionConverter;
     private final ApplicationEventPublisher publisher;
     private final PlatformTransactionManager transactionManager;
+    private final InventoryService inventoryService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -73,7 +75,7 @@ public class PrescriptionServiceImpl implements PrescriptionService {
         this.save(prescription);
 
         // 预占库存
-        publisher.publishEvent(new OccupyInventoryEvent(this, prescription));
+        this.occupy(prescription);
 
         // 创建结算单
         publisher.publishEvent(new CreateSettlementOrderEvent(this, prescription));
@@ -144,6 +146,21 @@ public class PrescriptionServiceImpl implements PrescriptionService {
             product.setPrescriptionCode(prescription.getCode());
         }
         prescriptionProductMapper.saveBatch(prescription.getProducts());
+    }
+
+    private void occupy(Prescription prescription) {
+        List<InventoryOccupyCommand.Item> items = prescription.getProducts()
+                .stream()
+                .map(e -> new InventoryOccupyCommand.Item(e.getSkuCode(), e.getQuantity()))
+                .toList();
+
+        InventoryOccupyCommand occupyCommand = new InventoryOccupyCommand(
+                prescription.getCode(),
+                prescription.getClinicCode(),
+                items,
+                prescription.getCreator(),
+                prescription.getCreatorCode());
+        inventoryService.occupy(occupyCommand);
     }
 
     @Override

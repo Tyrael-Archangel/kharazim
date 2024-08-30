@@ -45,7 +45,7 @@
       </el-form-item>
       <el-form-item label="关联业务编码">
         <el-input
-          v-model="pageRequest.sourceBusinessCode"
+          v-model="pageRequest.businessCode"
           clearable
           placeholder="关联业务编码"
         />
@@ -74,14 +74,16 @@
         border
         style="width: 100%; margin-top: 10px"
       >
-        <el-table-column label="流水号" prop="id" width="100" />
-        <el-table-column label="商品编码" prop="skuCode" width="160" />
-        <el-table-column label="诊所" prop="clinicName" width="160" />
+        <el-table-column align="center" label="ID" prop="id" width="70" />
+        <el-table-column label="流水批次号" prop="serialCode" width="170" />
+        <el-table-column label="商品编码" prop="skuCode" width="150" />
         <el-table-column
-          label="关联业务编码"
-          prop="sourceBusinessCode"
-          width="170"
+          align="center"
+          label="诊所"
+          prop="clinicName"
+          width="140"
         />
+        <el-table-column label="关联业务编码" prop="businessCode" width="170" />
         <el-table-column
           align="center"
           label="类型"
@@ -92,13 +94,13 @@
           align="center"
           label="变化数量"
           prop="quantity"
-          width="100"
+          width="90"
         />
         <el-table-column
           align="center"
           label="结存数量"
           prop="balanceQuantity"
-          width="100"
+          width="90"
         />
         <el-table-column
           align="center"
@@ -115,8 +117,8 @@
         <el-table-column
           align="center"
           label="操作人"
+          min-width="100"
           prop="operator"
-          width="100"
         />
         <el-table-column label="SKU名称" min-width="160" prop="skuName" />
         <el-table-column
@@ -162,7 +164,7 @@ const inventoryLogPageData = ref([]);
 
 const pageRequest = reactive({
   skuCode: "",
-  sourceBusinessCode: "",
+  businessCode: "",
   changeTypes: [],
   clinicCode: "",
   timeRange: [] as Date[],
@@ -188,7 +190,7 @@ function loadInventoryLogs() {
       params: {
         skuCode: pageRequest.skuCode,
         clinicCode: pageRequest.clinicCode,
-        sourceBusinessCode: pageRequest.sourceBusinessCode,
+        businessCode: pageRequest.businessCode,
         changeTypes: pageRequest.changeTypes,
         startTime: startTime,
         endTime: endTime,
@@ -204,7 +206,7 @@ function loadInventoryLogs() {
 
 function resetAndLoadInventoryLogs() {
   pageRequest.skuCode = "";
-  pageRequest.sourceBusinessCode = "";
+  pageRequest.businessCode = "";
   pageRequest.changeTypes = [];
   pageRequest.clinicCode = "";
   pageRequest.timeRange = [] as Date[];

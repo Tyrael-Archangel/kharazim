@@ -26,7 +26,7 @@ public class PageInventoryLogRequest extends PageCommand {
     private String clinicCode;
 
     @Schema(description = "关联业务编码")
-    private String sourceBusinessCode;
+    private String businessCode;
 
     @ArraySchema(arraySchema = @Schema(description = "库存变化类型", implementation = InventoryChangeTypeEnum.class))
     private Set<InventoryChangeTypeEnum> changeTypes;

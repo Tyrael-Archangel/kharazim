@@ -21,6 +21,9 @@ public class PageSkuPublishRequest extends PageCommand {
     @Schema(description = "商品名称")
     private String skuName;
 
+    @Schema(description = "商品编码")
+    private String skuCode;
+
     @ArraySchema(arraySchema = @Schema(description = "诊所编码"))
     private Set<String> clinicCodes;
 

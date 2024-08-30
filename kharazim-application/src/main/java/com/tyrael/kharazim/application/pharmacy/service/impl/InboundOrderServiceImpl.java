@@ -7,7 +7,6 @@ import com.tyrael.kharazim.application.pharmacy.domain.InboundOrder;
 import com.tyrael.kharazim.application.pharmacy.domain.InboundOrderItem;
 import com.tyrael.kharazim.application.pharmacy.enums.InboundOrderSourceType;
 import com.tyrael.kharazim.application.pharmacy.enums.InboundOrderStatus;
-import com.tyrael.kharazim.application.pharmacy.enums.InventoryChangeTypeEnum;
 import com.tyrael.kharazim.application.pharmacy.mapper.InboundOrderItemMapper;
 import com.tyrael.kharazim.application.pharmacy.mapper.InboundOrderMapper;
 import com.tyrael.kharazim.application.pharmacy.service.InboundOrderService;
@@ -16,6 +15,7 @@ import com.tyrael.kharazim.application.pharmacy.vo.inboundorder.AddInboundReques
 import com.tyrael.kharazim.application.pharmacy.vo.inboundorder.InboundOrderVO;
 import com.tyrael.kharazim.application.pharmacy.vo.inboundorder.PageInboundOrderRequest;
 import com.tyrael.kharazim.application.pharmacy.vo.inventory.InventoryChangeCommand;
+import com.tyrael.kharazim.application.pharmacy.vo.inventory.InventoryInboundCommand;
 import com.tyrael.kharazim.application.purchase.domain.PurchaseOrder;
 import com.tyrael.kharazim.application.purchase.event.PurchaseOrderReceivedEvent;
 import com.tyrael.kharazim.application.purchase.vo.PurchaseOrderReceivedVO;
@@ -131,10 +131,10 @@ public class InboundOrderServiceImpl implements InboundOrderService {
                 .stream()
                 .map(e -> new InventoryChangeCommand.Item(e.getSkuCode(), e.getQuantity()))
                 .collect(Collectors.toList());
-        InventoryChangeCommand inventoryChangeCommand = new InventoryChangeCommand(
+        InventoryInboundCommand inventoryChangeCommand = new InventoryInboundCommand(
+                inboundOrder.getCode(),
                 serialCode,
                 inboundOrder.getClinicCode(),
-                InventoryChangeTypeEnum.PURCHASE_IN,
                 inboundItems,
                 operator.getNickName(),
                 operator.getCode());

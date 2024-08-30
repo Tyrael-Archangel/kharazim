@@ -40,8 +40,8 @@
       <el-form-item class="page-form-block-search-block">
         <el-button type="primary" @click="loadInventories">查询</el-button>
         <el-button type="primary" @click="resetAndLoadInventories"
-          >重置</el-button
-        >
+          >重置
+        </el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -52,20 +52,9 @@
         border
         style="width: 100%; margin-top: 10px"
       >
+        <el-table-column label="商品编码" prop="skuCode" />
         <el-table-column label="诊所" prop="clinicName" />
-        <el-table-column label="SKU编码" prop="skuCode" />
-        <el-table-column label="SKU名称" prop="skuName" />
-        <el-table-column align="center" label="商品主图">
-          <template v-slot="{ row }">
-            <el-image
-              v-if="row.defaultImageUrl"
-              :src="row.defaultImageUrl"
-              style="width: 80px"
-            >
-            </el-image>
-          </template>
-        </el-table-column>
-        <el-table-column align="center" label="单位" prop="unitName" />
+        <el-table-column label="商品名称" prop="skuName" />
         <el-table-column align="center" label="在库库存" prop="quantity" />
         <el-table-column
           align="center"
@@ -77,6 +66,24 @@
           label="预占数量"
           prop="occupiedQuantity"
         />
+        <el-table-column align="center" label="预占数量">
+          <template v-slot="{ row }">
+            <el-button link type="primary" @click="showSkuOccupyRecord(row)">
+              {{ row.occupiedQuantity }}
+            </el-button>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="商品主图">
+          <template v-slot="{ row }">
+            <el-image
+              v-if="row.defaultImageUrl"
+              :src="row.defaultImageUrl"
+              style="width: 40px"
+            >
+            </el-image>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="单位" prop="unitName" />
       </el-table>
     </div>
     <div class="pagination-block">
@@ -92,6 +99,28 @@
       />
     </div>
   </div>
+  <el-dialog v-model="skuOccupyRecordVisible" title="商品预占情况" width="50%">
+    <el-table
+      :data="skuOccupyRecordPageData"
+      border
+      style="width: 100%; margin-top: 10px"
+    >
+      <el-table-column label="单据编码" prop="businessCode" />
+      <el-table-column label="数量" prop="quantity" />
+    </el-table>
+    <div class="pagination-block">
+      <el-pagination
+        v-model:current-page="skuOccupyRecordPageInfo.currentPage"
+        v-model:page-size="skuOccupyRecordPageInfo.pageSize"
+        :page-sizes="skuOccupyRecordPageInfo.pageSizes"
+        :total="skuOccupyRecordPageInfo.totalCount"
+        background
+        layout="total, sizes, prev, pager, next, jumper"
+        @size-change="loadSkuOccupyRecords"
+        @current-change="loadSkuOccupyRecords"
+      />
+    </div>
+  </el-dialog>
 </template>
 
 <script lang="ts" setup>
@@ -152,6 +181,43 @@ function loadClinicOptions() {
   axios.get("/kharazim-api/clinic/list").then((res: AxiosResponse) => {
     clinicOptions.value = res.data.data;
   });
+}
+
+function showSkuOccupyRecord(row: any) {
+  currentSkuOccupyRow.value = row;
+  skuOccupyRecordPageInfo.currentPage = 1;
+  skuOccupyRecordPageInfo.pageSize = 10;
+  skuOccupyRecordPageInfo.totalCount = 0;
+  loadSkuOccupyRecords();
+  skuOccupyRecordVisible.value = true;
+}
+
+const skuOccupyRecordVisible = ref(false);
+const skuOccupyRecordPageData = ref([]);
+
+const currentSkuOccupyRow = ref();
+
+const skuOccupyRecordPageInfo = reactive({
+  currentPage: 1,
+  pageSize: 10,
+  totalCount: 0,
+  pageSizes: [10, 20, 50, 100],
+});
+
+function loadSkuOccupyRecords() {
+  axios
+    .get("/kharazim-api/inventory/page-occupy", {
+      params: {
+        skuCode: currentSkuOccupyRow.value.skuCode,
+        clinicCode: currentSkuOccupyRow.value.clinicCode,
+        pageSize: skuOccupyRecordPageInfo.pageSize,
+        pageNum: skuOccupyRecordPageInfo.currentPage,
+      },
+    })
+    .then((res: AxiosResponse) => {
+      skuOccupyRecordPageData.value = res.data.data;
+      skuOccupyRecordPageInfo.totalCount = res.data.totalCount;
+    });
 }
 
 onMounted(() => {

@@ -4,14 +4,11 @@ import com.tyrael.kharazim.application.pharmacy.converter.InventoryConverter;
 import com.tyrael.kharazim.application.pharmacy.domain.Inventory;
 import com.tyrael.kharazim.application.pharmacy.domain.InventoryLog;
 import com.tyrael.kharazim.application.pharmacy.domain.InventoryOccupy;
-import com.tyrael.kharazim.application.pharmacy.enums.InventoryChangeTypeEnum;
 import com.tyrael.kharazim.application.pharmacy.mapper.InventoryLogMapper;
 import com.tyrael.kharazim.application.pharmacy.mapper.InventoryMapper;
 import com.tyrael.kharazim.application.pharmacy.mapper.InventoryOccupyMapper;
 import com.tyrael.kharazim.application.pharmacy.service.InventoryService;
 import com.tyrael.kharazim.application.pharmacy.vo.inventory.*;
-import com.tyrael.kharazim.application.prescription.domain.Prescription;
-import com.tyrael.kharazim.application.prescription.domain.PrescriptionProduct;
 import com.tyrael.kharazim.common.dto.PageResponse;
 import com.tyrael.kharazim.common.exception.BusinessException;
 import com.tyrael.kharazim.common.util.CollectionUtils;
@@ -88,62 +85,41 @@ public class InventoryServiceImpl implements InventoryService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void occupyByPrescription(Prescription prescription) {
+    public void occupy(InventoryOccupyCommand occupyCommand) {
 
-        List<PrescriptionProduct> sortedProducts = prescription.getProducts()
+        List<InventoryChangeCommand.Item> sortedItems = occupyCommand.getItems()
                 .stream()
-                .sorted(Comparator.comparing(PrescriptionProduct::getSkuCode))
+                .sorted(Comparator.comparing(InventoryChangeCommand.Item::skuCode))
                 .toList();
-
-        for (PrescriptionProduct product : sortedProducts) {
+        for (InventoryChangeCommand.Item item : sortedItems) {
             int updatedRow = inventoryMapper.increaseOccupy(
-                    prescription.getClinicCode(),
-                    product.getSkuCode(),
-                    product.getQuantity());
+                    occupyCommand.getClinicCode(),
+                    item.skuCode(),
+                    item.quantity());
             BusinessException.assertTrue(updatedRow > 0, "商品库存不足");
 
             // save occupy log
-            saveOccupyInventoryLog(prescription, product);
+            saveInventoryChangeLog(occupyCommand, item);
 
             // save prescription occupy record
-            saveOccupyRecord(prescription, product);
+            saveOccupyRecord(occupyCommand, item);
         }
+
     }
 
-    private void saveOccupyInventoryLog(Prescription prescription, PrescriptionProduct product) {
-        String clinicCode = prescription.getClinicCode();
-        String skuCode = product.getSkuCode();
-
-        Inventory balanceInventory = inventoryMapper.findOne(clinicCode, skuCode);
-
-        InventoryLog inventoryLog = new InventoryLog();
-        inventoryLog.setSourceBusinessCode(prescription.getCode());
-        inventoryLog.setSkuCode(skuCode);
-        inventoryLog.setQuantity(product.getQuantity());
-        inventoryLog.setBalanceQuantity(balanceInventory.getQuantity());
-        inventoryLog.setBalanceOccupyQuantity(balanceInventory.getOccupiedQuantity());
-        inventoryLog.setClinicCode(clinicCode);
-        inventoryLog.setChangeType(InventoryChangeTypeEnum.SALE_OCCUPY);
-        inventoryLog.setOperateTime(LocalDateTime.now());
-        inventoryLog.setOperator(prescription.getCreator());
-        inventoryLog.setOperatorCode(prescription.getCreatorCode());
-        inventoryLogMapper.insert(inventoryLog);
-    }
-
-    private void saveOccupyRecord(Prescription prescription, PrescriptionProduct product) {
+    private void saveOccupyRecord(InventoryOccupyCommand occupyCommand, InventoryChangeCommand.Item item) {
         inventoryOccupyMapper.occupy(
-                prescription.getClinicCode(),
-                product.getSkuCode(),
-                prescription.getCode(),
-                product.getQuantity());
+                occupyCommand.getClinicCode(),
+                item.skuCode(),
+                occupyCommand.getBusinessCode(),
+                item.quantity());
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void inbound(InventoryChangeCommand inboundCommand) {
+    public void inbound(InventoryInboundCommand inboundCommand) {
 
-        List<InventoryChangeCommand.Item> sortedItems = CollectionUtils.safeStream(inboundCommand.items())
+        List<InventoryChangeCommand.Item> sortedItems = CollectionUtils.safeStream(inboundCommand.getItems())
                 .sorted(Comparator.comparing(InventoryChangeCommand.Item::skuCode))
                 .toList();
 
@@ -152,11 +128,11 @@ public class InventoryServiceImpl implements InventoryService {
             Integer quantity = inboundItem.quantity();
 
             // 增加库存
-            int row = inventoryMapper.increaseQuantity(inboundCommand.clinicCode(), skuCode, quantity);
+            int row = inventoryMapper.increaseQuantity(inboundCommand.getClinicCode(), skuCode, quantity);
             if (row <= 0) {
                 // 库存数据不存在
                 Inventory inventory = new Inventory();
-                inventory.setClinicCode(inboundCommand.clinicCode());
+                inventory.setClinicCode(inboundCommand.getClinicCode());
                 inventory.setSkuCode(skuCode);
                 inventory.setQuantity(quantity);
                 inventory.setOccupiedQuantity(0);
@@ -170,16 +146,16 @@ public class InventoryServiceImpl implements InventoryService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void outbound(InventoryChangeCommand outboundCommand) {
+    public void outbound(InventoryOutboundCommand outboundCommand) {
 
-        List<InventoryChangeCommand.Item> sortedItems = CollectionUtils.safeStream(outboundCommand.items())
+        List<InventoryChangeCommand.Item> sortedItems = CollectionUtils.safeStream(outboundCommand.getItems())
                 .sorted(Comparator.comparing(InventoryChangeCommand.Item::skuCode))
                 .toList();
 
         for (InventoryChangeCommand.Item outboundItem : sortedItems) {
             // 扣减库存和预占
             inventoryMapper.decreaseQuantityByOccupy(
-                    outboundCommand.clinicCode(),
+                    outboundCommand.getClinicCode(),
                     outboundItem.skuCode(),
                     outboundItem.quantity());
 
@@ -191,34 +167,34 @@ public class InventoryServiceImpl implements InventoryService {
         }
     }
 
-    private void saveInventoryChangeLog(InventoryChangeCommand changeCommand, InventoryChangeCommand.Item changeItem) {
+    private void saveReleaseOccupyRecord(InventoryOutboundCommand outboundCommand,
+                                         InventoryChangeCommand.Item outboundItem) {
+        inventoryOccupyMapper.release(
+                outboundCommand.getClinicCode(),
+                outboundItem.skuCode(),
+                outboundCommand.getOccupySerialCode(),
+                outboundItem.quantity());
+    }
 
-        String clinicCode = changeCommand.clinicCode();
-        String skuCode = changeItem.skuCode();
+    private void saveInventoryChangeLog(InventoryChangeCommand changeCommand, InventoryChangeCommand.Item item) {
+        String clinicCode = changeCommand.getClinicCode();
+        String skuCode = item.skuCode();
 
         Inventory balanceInventory = inventoryMapper.findOne(clinicCode, skuCode);
 
         InventoryLog inventoryLog = new InventoryLog();
-        inventoryLog.setSourceBusinessCode(changeCommand.businessCode());
+        inventoryLog.setBusinessCode(changeCommand.getBusinessCode());
+        inventoryLog.setSerialCode(changeCommand.getSerialCode());
         inventoryLog.setSkuCode(skuCode);
-        inventoryLog.setQuantity(changeItem.quantity());
+        inventoryLog.setQuantity(item.quantity());
         inventoryLog.setBalanceQuantity(balanceInventory.getQuantity());
         inventoryLog.setBalanceOccupyQuantity(balanceInventory.getOccupiedQuantity());
         inventoryLog.setClinicCode(clinicCode);
-        inventoryLog.setChangeType(changeCommand.changeType());
+        inventoryLog.setChangeType(changeCommand.getChangeType());
         inventoryLog.setOperateTime(LocalDateTime.now());
-        inventoryLog.setOperator(changeCommand.operator());
-        inventoryLog.setOperatorCode(changeCommand.operatorCode());
+        inventoryLog.setOperator(changeCommand.getOperator());
+        inventoryLog.setOperatorCode(changeCommand.getOperatorCode());
         inventoryLogMapper.insert(inventoryLog);
-    }
-
-    private void saveReleaseOccupyRecord(InventoryChangeCommand outboundCommand,
-                                         InventoryChangeCommand.Item outboundItem) {
-        inventoryOccupyMapper.release(
-                outboundCommand.clinicCode(),
-                outboundItem.skuCode(),
-                outboundCommand.businessCode(),
-                outboundItem.quantity());
     }
 
 }

@@ -88,7 +88,8 @@ public class InventoryConverter {
 
                     return InventoryLogVO.builder()
                             .id(inventoryLog.getId())
-                            .sourceBusinessCode(inventoryLog.getSourceBusinessCode())
+                            .businessCode(inventoryLog.getBusinessCode())
+                            .serialCode(inventoryLog.getSerialCode())
                             .skuCode(skuVO.getCode())
                             .skuName(skuVO.getName())
                             .categoryCode(skuVO.getCategoryCode())

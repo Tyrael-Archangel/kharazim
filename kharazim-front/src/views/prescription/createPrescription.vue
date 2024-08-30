@@ -134,6 +134,13 @@
         class="page-form-block"
         @keyup.enter="loadProductPublish"
       >
+        <el-form-item label="商品编码">
+          <el-input
+            v-model="pagePublishSkuRequest.skuCode"
+            clearable
+            placeholder="商品编码"
+          />
+        </el-form-item>
         <el-form-item label="商品名称">
           <el-input
             v-model="pagePublishSkuRequest.skuName"
@@ -316,6 +323,7 @@ function removeSelectedSku(row: SkuPublish) {
 const selectSkuTableRef = ref<InstanceType<typeof ElTable>>();
 
 const pagePublishSkuRequest = reactive({
+  skuCode: "",
   skuName: "",
   publishStatus: "IN_EFFECT",
   clinicCodes: [] as string[],

@@ -20,7 +20,12 @@ public class InventoryLog {
     /**
      * 关联业务编码
      */
-    private String sourceBusinessCode;
+    private String businessCode;
+
+    /**
+     * 批次序列号
+     */
+    private String serialCode;
 
     /**
      * SKU编码

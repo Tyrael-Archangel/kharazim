@@ -23,7 +23,10 @@ public class InventoryLogVO {
     private Long id;
 
     @Schema(description = "关联业务编码")
-    private String sourceBusinessCode;
+    private String businessCode;
+
+    @Schema(description = "批次序列号")
+    private String serialCode;
 
     @Schema(description = "SKU编码")
     private String skuCode;

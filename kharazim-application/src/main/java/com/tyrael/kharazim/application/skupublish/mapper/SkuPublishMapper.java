@@ -50,6 +50,7 @@ public interface SkuPublishMapper extends BaseMapper<SkuPublish> {
             }
         }
 
+        queryWrapper.eqIfHasText(SkuPublish::getSkuCode, pageRequest.getSkuCode());
         queryWrapper.inIfPresent(SkuPublish::getClinicCode, pageRequest.getClinicCodes());
 
         SkuPublishStatus publishStatus = pageRequest.getPublishStatus();

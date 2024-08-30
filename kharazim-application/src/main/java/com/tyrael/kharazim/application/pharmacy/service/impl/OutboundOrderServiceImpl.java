@@ -5,13 +5,13 @@ import com.tyrael.kharazim.application.config.BusinessCodeConstants;
 import com.tyrael.kharazim.application.pharmacy.converter.OutboundOrderConverter;
 import com.tyrael.kharazim.application.pharmacy.domain.OutboundOrder;
 import com.tyrael.kharazim.application.pharmacy.domain.OutboundOrderItem;
-import com.tyrael.kharazim.application.pharmacy.enums.InventoryChangeTypeEnum;
 import com.tyrael.kharazim.application.pharmacy.enums.OutboundOrderStatus;
 import com.tyrael.kharazim.application.pharmacy.mapper.OutboundOrderItemMapper;
 import com.tyrael.kharazim.application.pharmacy.mapper.OutboundOrderMapper;
 import com.tyrael.kharazim.application.pharmacy.service.InventoryService;
 import com.tyrael.kharazim.application.pharmacy.service.OutboundOrderService;
 import com.tyrael.kharazim.application.pharmacy.vo.inventory.InventoryChangeCommand;
+import com.tyrael.kharazim.application.pharmacy.vo.inventory.InventoryOutboundCommand;
 import com.tyrael.kharazim.application.pharmacy.vo.outboundorder.OutboundOrderVO;
 import com.tyrael.kharazim.application.pharmacy.vo.outboundorder.OutboundRequest;
 import com.tyrael.kharazim.application.pharmacy.vo.outboundorder.PageOutboundOrderRequest;
@@ -108,14 +108,15 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
 
         String serialCode = codeGenerator.dailyNext(BusinessCodeConstants.INVENTORY_OUTBOUND);
 
-        InventoryChangeCommand inventoryChangeCommand = new InventoryChangeCommand(
+        InventoryOutboundCommand outboundCommand = new InventoryOutboundCommand(
+                outboundOrder.getCode(),
                 serialCode,
                 outboundOrder.getClinicCode(),
-                InventoryChangeTypeEnum.SALE_OUT,
                 outboundItems,
                 operator.getNickName(),
-                operator.getCode());
-        inventoryService.outbound(inventoryChangeCommand);
+                operator.getCode(),
+                outboundOrder.getSourceBusinessCode());
+        inventoryService.outbound(outboundCommand);
     }
 
     private void save(OutboundOrder outboundOrder) {

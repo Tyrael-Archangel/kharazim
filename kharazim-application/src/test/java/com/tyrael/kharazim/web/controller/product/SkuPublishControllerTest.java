@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -46,6 +47,18 @@ class SkuPublishControllerTest extends BaseControllerTest<SkuPublishController> 
 
     @Test
     void publish() {
+        PublishSkuRequest publishRequest = new PublishSkuRequest();
+        publishRequest.setSkuCode("P240808000001");
+        publishRequest.setClinicCode("CL000001");
+        publishRequest.setPrice(new BigDecimal("69.88"));
+        publishRequest.setEffectBegin(LocalDateTime.now());
+        publishRequest.setEffectEnd(LocalDateTime.now().plusYears(5));
+
+        super.performWhenCall(mockController.publish(publishRequest));
+    }
+
+    @Test
+    void randomPublish() {
         PageProductSkuRequest pageSkuRequest = new PageProductSkuRequest();
         pageSkuRequest.setPageSize(PageCommand.MAX_PAGE_SIZE);
         List<String> skuCodes = productSkuService.page(pageSkuRequest)
