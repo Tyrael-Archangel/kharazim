@@ -51,6 +51,9 @@
       </el-form-item>
     </el-form>
   </div>
+  <router-link to="/create-product-publish">
+    <el-button type="primary">发布商品</el-button>
+  </router-link>
   <div class="pagination-block">
     <el-pagination
       v-model:current-page="pageInfo.currentPage"
@@ -65,7 +68,7 @@
   </div>
   <div>
     <el-table :data="skuPublishPageData" border style="width: 100%">
-      <el-table-column label="发布编码" prop="code" width="220"/>
+      <el-table-column label="发布编码" prop="code" width="220" />
       <el-table-column align="center" label="发布状态" width="100">
         <template v-slot="{ row }">
           <el-tag :type="statusTagType(row.publishStatus)" effect="dark"

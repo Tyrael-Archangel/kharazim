@@ -73,6 +73,8 @@ public interface SkuPublishMapper extends BaseMapper<SkuPublish> {
             queryWrapper.eq(SkuPublish::getCanceled, Boolean.TRUE);
         }
 
+        queryWrapper.orderByDesc(SkuPublish::getCode);
+
         Page<SkuPublish> page = new Page<>(pageRequest.getPageNum(), pageRequest.getPageSize());
         Page<SkuPublish> pageData = selectPage(page, queryWrapper);
 

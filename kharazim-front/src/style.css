@@ -5,6 +5,13 @@
     justify-content: flex-end;
 }
 
+.pagination-block-center {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    display: flex;
+    justify-content: center;
+}
+
 .page-form-block .el-input {
     --el-input-width: 300px;
 }

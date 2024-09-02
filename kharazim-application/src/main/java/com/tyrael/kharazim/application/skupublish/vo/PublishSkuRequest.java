@@ -1,8 +1,10 @@
 package com.tyrael.kharazim.application.skupublish.vo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -25,6 +27,8 @@ public class PublishSkuRequest {
 
     @Schema(description = "单价")
     @NotNull(message = "请指定单价")
+    @Positive(message = "单价必须大于0")
+    @Max(value = 999999, message = "单价太高")
     private BigDecimal price;
 
     @Schema(description = "生效时间")

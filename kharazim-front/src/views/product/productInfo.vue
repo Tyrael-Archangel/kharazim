@@ -234,7 +234,7 @@ interface Attribute {
   value: string;
 }
 
-interface ProductInfo {
+export interface ProductInfo {
   code: string;
   name: string;
   categoryCode: string;
@@ -292,7 +292,7 @@ function loadProducts() {
     });
 }
 
-interface ProductCategory {
+export interface ProductCategory {
   id: number;
   parentId: number | null;
   children: ProductCategory[] | null;
@@ -310,7 +310,7 @@ function loadCategories() {
     });
 }
 
-interface SupplierOption {
+export interface SupplierOption {
   code: string;
   name: string;
 }

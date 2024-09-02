@@ -157,6 +157,15 @@ const navs: Nav[] = [
         component: "product/productPublish.vue",
         path: "/product-publish",
         icon: "/icons/product_publish.svg",
+        children: [
+          {
+            name: "发布商品",
+            component: "product/createProductPublish.vue",
+            path: "/create-product-publish",
+            icon: "/icons/product_publish.svg",
+            hiddenMenu: true,
+          },
+        ],
       },
       {
         name: "商品分类",
