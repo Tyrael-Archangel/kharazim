@@ -34,7 +34,7 @@ public class GlobalExceptionHandler {
     @ResponseBody
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ExceptionResponse handleException(Exception e, HttpServletRequest httpServletRequest) {
-        log.error(httpServletRequest.getMethod() + " " + httpServletRequest.getRequestURI() + " " + e.getMessage(), e);
+        log.error("{} {} {}", httpServletRequest.getMethod(), httpServletRequest.getRequestURI(), e.getMessage(), e);
         return new ExceptionResponse(e, HttpStatus.INTERNAL_SERVER_ERROR.value(), systemGlobalConfig.isEnablePrintExceptionStackTrace());
     }
 
@@ -42,7 +42,7 @@ public class GlobalExceptionHandler {
     @ResponseBody
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
     public ExceptionResponse handleHttpMethodNotSupportedException(HttpRequestMethodNotSupportedException e, HttpServletRequest httpServletRequest) {
-        log.error(httpServletRequest.getMethod() + " " + httpServletRequest.getRequestURI() + " " + e.getMessage());
+        log.error("{} {} {}", httpServletRequest.getMethod(), httpServletRequest.getRequestURI(), e.getMessage());
         return new ExceptionResponse(e, HttpStatus.METHOD_NOT_ALLOWED.value(), systemGlobalConfig.isEnablePrintExceptionStackTrace());
     }
 
@@ -77,7 +77,7 @@ public class GlobalExceptionHandler {
     @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ExceptionResponse handleDomainNotFoundException(DomainNotFoundException e, HttpServletRequest httpServletRequest) {
-        log.warn(httpServletRequest.getMethod() + " " + httpServletRequest.getRequestURI() + " NOT FOUND: " + e.getSearchWord());
+        log.warn("{} {} NOT FOUND: {}", httpServletRequest.getMethod(), httpServletRequest.getRequestURI(), e.getSearchWord());
         return new ExceptionResponse(e, HttpStatus.NOT_FOUND.value(), systemGlobalConfig.isEnablePrintExceptionStackTrace());
     }
 

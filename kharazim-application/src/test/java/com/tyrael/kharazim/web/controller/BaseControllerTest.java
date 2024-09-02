@@ -24,6 +24,7 @@ import org.springframework.core.DefaultParameterNameDiscoverer;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.core.io.InputStreamSource;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
@@ -40,17 +41,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
+import java.lang.reflect.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -276,20 +271,43 @@ public abstract class BaseControllerTest<T> {
         private MultiValueMap<String, String> getParamsFromNormalBean(Class<?> parameterType, Object argument) throws IllegalAccessException {
             MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
             for (Field field : parameterType.getDeclaredFields()) {
-                String fieldName = field.getName();
+                if (Modifier.isStatic(field.getModifiers())) {
+                    continue;
+                }
+
                 field.setAccessible(true);
                 Object fieldValue = field.get(argument);
+                String fieldName = field.getName();
                 if (fieldValue != null) {
                     if (field.getType().isArray()) {
                         params.put(fieldName, this.getParamsFromArray(fieldValue));
                     } else if (isCollection(field.getType())) {
                         params.put(fieldName, this.getParamsFromCollection(fieldValue));
+                    } else if (isTemporalAccessor(field.getType())) {
+                        params.put(fieldName, Lists.newArrayList(this.getTemporalAccessorValue(field, fieldValue)));
                     } else {
                         params.put(fieldName, Lists.newArrayList(String.valueOf(fieldValue)));
                     }
                 }
             }
             return params;
+        }
+
+        private String getTemporalAccessorValue(Field field, Object fieldValue) {
+            String format = Optional.ofNullable(field.getAnnotation(Schema.class))
+                    .map(Schema::format)
+                    .orElse(null);
+            if (!StringUtils.hasText(format)) {
+                format = Optional.ofNullable(field.getAnnotation(DateTimeFormat.class))
+                        .map(DateTimeFormat::pattern)
+                        .orElse(null);
+            }
+
+            if (StringUtils.hasText(format)) {
+                return DateTimeFormatter.ofPattern(format).format((TemporalAccessor) fieldValue);
+            } else {
+                return String.valueOf(fieldValue);
+            }
         }
 
         private boolean ignoreParam(Parameter parameter, Object argument) {

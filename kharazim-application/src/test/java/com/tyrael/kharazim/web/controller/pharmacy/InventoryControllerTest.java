@@ -7,6 +7,7 @@ import com.tyrael.kharazim.application.pharmacy.vo.inventory.PageInventoryReques
 import com.tyrael.kharazim.web.controller.BaseControllerTest;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 
 /**
@@ -36,6 +37,7 @@ class InventoryControllerTest extends BaseControllerTest<InventoryController> {
     @Test
     void pageLog() {
         PageInventoryLogRequest pageRequest = new PageInventoryLogRequest();
+        pageRequest.setEndTime(LocalDateTime.now());
         this.performWhenCall(mockController.pageLog(pageRequest));
     }
 
