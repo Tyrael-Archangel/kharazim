@@ -26,7 +26,9 @@ spring:
         instance:
           service-host-type: ip
         enabled: false
-
+  mvc:
+    format:
+      date-time: yyyy-MM-dd HH:mm:ss
 mybatis-plus:
   global-config:
     banner: false
