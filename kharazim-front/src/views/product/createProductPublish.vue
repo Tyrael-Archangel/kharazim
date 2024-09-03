@@ -381,7 +381,7 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/deep/ .el-input__inner {
+:deep(.el-input__inner) {
   text-align: left;
 }
 </style>
