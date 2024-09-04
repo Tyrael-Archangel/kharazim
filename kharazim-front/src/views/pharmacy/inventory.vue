@@ -61,11 +61,6 @@
           label="可用库存"
           prop="usableQuantity"
         />
-        <el-table-column
-          align="center"
-          label="预占数量"
-          prop="occupiedQuantity"
-        />
         <el-table-column align="center" label="预占数量">
           <template v-slot="{ row }">
             <el-button link type="primary" @click="showSkuOccupyRecord(row)">
