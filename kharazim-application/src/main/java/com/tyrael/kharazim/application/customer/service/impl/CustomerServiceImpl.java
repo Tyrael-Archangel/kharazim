@@ -20,7 +20,6 @@ import com.tyrael.kharazim.application.system.service.DictService;
 import com.tyrael.kharazim.application.user.domain.User;
 import com.tyrael.kharazim.application.user.mapper.UserMapper;
 import com.tyrael.kharazim.common.dto.PageResponse;
-import com.tyrael.kharazim.common.excel.ExcelMergeStrategy;
 import com.tyrael.kharazim.common.exception.BusinessException;
 import com.tyrael.kharazim.common.exception.DomainNotFoundException;
 import com.tyrael.kharazim.common.util.CollectionUtils;
@@ -29,11 +28,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.DateTimeException;
 import java.time.LocalDate;
@@ -82,7 +82,6 @@ public class CustomerServiceImpl implements CustomerService {
     public void export(PageCustomerRequest pageRequest, HttpServletResponse response) throws IOException {
         WriteSheet writeSheet = EasyExcelFactory.writerSheet("会员数据")
                 .head(CustomerExportVO.class)
-                .registerWriteHandler(new ExcelMergeStrategy())
                 .build();
         int pageSize = 200;
         int pageNum = 1;
@@ -98,8 +97,10 @@ public class CustomerServiceImpl implements CustomerService {
                 pageNum++;
             } while (!exports.isEmpty());
 
-            response.addHeader("Content-disposition", "attachment;filename="
-                    + URLEncoder.encode("会员数据.xlsx", StandardCharsets.UTF_8));
+            ContentDisposition contentDisposition = ContentDisposition.attachment()
+                    .filename("会员数据.xlsx", StandardCharsets.UTF_8)
+                    .build();
+            response.addHeader(HttpHeaders.CONTENT_DISPOSITION, contentDisposition.toString());
             response.setContentType("application/vnd.ms-excel;charset=UTF-8");
         }
     }

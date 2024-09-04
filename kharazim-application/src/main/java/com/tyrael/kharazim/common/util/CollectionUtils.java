@@ -1,6 +1,5 @@
 package com.tyrael.kharazim.common.util;
 
-
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 

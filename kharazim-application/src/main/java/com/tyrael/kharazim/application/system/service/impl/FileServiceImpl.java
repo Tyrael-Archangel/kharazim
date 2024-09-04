@@ -16,12 +16,12 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
-import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.NotDirectoryException;
 import java.time.LocalDateTime;
@@ -169,8 +169,10 @@ public class FileServiceImpl implements FileService {
         File targetFile = new File(root, fileDO.getPath());
         try (FileInputStream fileInputStream = new FileInputStream(targetFile)) {
 
-            httpServletResponse.setHeader("Content-disposition", "attachment;filename="
-                    + URLEncoder.encode(fileDO.getName(), StandardCharsets.UTF_8));
+            ContentDisposition contentDisposition = ContentDisposition.inline()
+                    .filename(fileDO.getName(), StandardCharsets.UTF_8)
+                    .build();
+            httpServletResponse.setHeader(HttpHeaders.CONTENT_DISPOSITION, contentDisposition.toString());
             String contentType = fileDO.getContentType();
             if (StringUtils.isNotBlank(contentType)) {
                 httpServletResponse.setContentType(contentType);

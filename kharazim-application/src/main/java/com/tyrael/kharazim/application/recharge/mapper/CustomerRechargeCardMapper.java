@@ -67,8 +67,7 @@ public interface CustomerRechargeCardMapper extends BaseMapper<CustomerRechargeC
                 .geIfPresent(CustomerRechargeCard::getRechargeDate, pageRequest.getRechargeStartDate())
                 .leIfPresent(CustomerRechargeCard::getRechargeDate, pageRequest.getRechargeEndDate());
 
-        queryWrapper.orderByDesc(CustomerRechargeCard::getRechargeDate);
-        queryWrapper.orderByAsc(CustomerRechargeCard::getCreateTime);
+        queryWrapper.orderByDesc(CustomerRechargeCard::getCode);
 
         Page<CustomerRechargeCard> page = new Page<>(pageRequest.getPageNum(), pageRequest.getPageSize());
         Page<CustomerRechargeCard> pageResponse = selectPage(page, queryWrapper);
