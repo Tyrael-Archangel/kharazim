@@ -30,12 +30,16 @@ public class GlobalExceptionHandler {
 
     private final SystemGlobalConfig systemGlobalConfig;
 
+    private boolean enablePrintException() {
+        return systemGlobalConfig.isEnablePrintExceptionStackTrace();
+    }
+
     @ExceptionHandler
     @ResponseBody
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ExceptionResponse handleException(Exception e, HttpServletRequest httpServletRequest) {
         log.error("{} {} {}", httpServletRequest.getMethod(), httpServletRequest.getRequestURI(), e.getMessage(), e);
-        return new ExceptionResponse(e, HttpStatus.INTERNAL_SERVER_ERROR.value(), systemGlobalConfig.isEnablePrintExceptionStackTrace());
+        return new ExceptionResponse(e, HttpStatus.INTERNAL_SERVER_ERROR.value(), enablePrintException());
     }
 
     @ExceptionHandler
@@ -43,7 +47,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
     public ExceptionResponse handleHttpMethodNotSupportedException(HttpRequestMethodNotSupportedException e, HttpServletRequest httpServletRequest) {
         log.error("{} {} {}", httpServletRequest.getMethod(), httpServletRequest.getRequestURI(), e.getMessage());
-        return new ExceptionResponse(e, HttpStatus.METHOD_NOT_ALLOWED.value(), systemGlobalConfig.isEnablePrintExceptionStackTrace());
+        return new ExceptionResponse(e, HttpStatus.METHOD_NOT_ALLOWED.value(), enablePrintException());
     }
 
     @ExceptionHandler
@@ -53,16 +57,16 @@ public class GlobalExceptionHandler {
         BindingResult bindingResult = e.getBindingResult();
         if (bindingResult.hasErrors()) {
             ObjectError objectError = bindingResult.getAllErrors().get(0);
-            return new ExceptionResponse(e, HttpStatus.BAD_REQUEST.value(), objectError.getDefaultMessage(), systemGlobalConfig.isEnablePrintExceptionStackTrace());
+            return new ExceptionResponse(e, HttpStatus.BAD_REQUEST.value(), objectError.getDefaultMessage(), enablePrintException());
         }
-        return new ExceptionResponse(e, HttpStatus.BAD_REQUEST.value(), systemGlobalConfig.isEnablePrintExceptionStackTrace());
+        return new ExceptionResponse(e, HttpStatus.BAD_REQUEST.value(), enablePrintException());
     }
 
     @ExceptionHandler
     @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ExceptionResponse handleMethodArgumentNotValidException(MethodArgumentTypeMismatchException e) {
-        return new ExceptionResponse(e, HttpStatus.BAD_REQUEST.value(), systemGlobalConfig.isEnablePrintExceptionStackTrace());
+        return new ExceptionResponse(e, HttpStatus.BAD_REQUEST.value(), enablePrintException());
     }
 
     @ExceptionHandler
@@ -70,7 +74,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ExceptionResponse handleBusinessException(BusinessException e) {
         log.debug(e.getMsg(), e);
-        return new ExceptionResponse(e, Response.BUSINESS_ERROR_CODE, e.getMsg(), systemGlobalConfig.isEnablePrintExceptionStackTrace());
+        return new ExceptionResponse(e, Response.BUSINESS_ERROR_CODE, e.getMsg(), enablePrintException());
     }
 
     @ExceptionHandler
@@ -78,28 +82,28 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ExceptionResponse handleDomainNotFoundException(DomainNotFoundException e, HttpServletRequest httpServletRequest) {
         log.warn("{} {} NOT FOUND: {}", httpServletRequest.getMethod(), httpServletRequest.getRequestURI(), e.getSearchWord());
-        return new ExceptionResponse(e, HttpStatus.NOT_FOUND.value(), systemGlobalConfig.isEnablePrintExceptionStackTrace());
+        return new ExceptionResponse(e, HttpStatus.NOT_FOUND.value(), enablePrintException());
     }
 
     @ExceptionHandler
     @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ExceptionResponse handleLoginFailedException(LoginFailedException e) {
-        return new ExceptionResponse(e, HttpStatus.BAD_REQUEST.value(), systemGlobalConfig.isEnablePrintExceptionStackTrace());
+        return new ExceptionResponse(e, HttpStatus.BAD_REQUEST.value(), enablePrintException());
     }
 
     @ExceptionHandler
     @ResponseBody
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ExceptionResponse handleUnauthorizedException(UnauthorizedException e) {
-        return new ExceptionResponse(e, HttpStatus.UNAUTHORIZED.value(), systemGlobalConfig.isEnablePrintExceptionStackTrace());
+        return new ExceptionResponse(e, HttpStatus.UNAUTHORIZED.value(), enablePrintException());
     }
 
     @ExceptionHandler
     @ResponseBody
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ExceptionResponse handleUnauthorizedException(ForbiddenException e) {
-        return new ExceptionResponse(e, HttpStatus.FORBIDDEN.value(), systemGlobalConfig.isEnablePrintExceptionStackTrace());
+        return new ExceptionResponse(e, HttpStatus.FORBIDDEN.value(), enablePrintException());
     }
 
 }
