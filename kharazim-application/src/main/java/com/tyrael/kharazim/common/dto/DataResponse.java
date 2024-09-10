@@ -9,6 +9,7 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
+@SuppressWarnings("unused")
 public class DataResponse<T> extends Response {
 
     protected T data;

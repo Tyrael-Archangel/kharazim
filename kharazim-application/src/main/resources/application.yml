@@ -115,3 +115,6 @@ management:
   info:
     env:
       enabled: true
+file:
+  home-path: ${FILE_HOME:}
+  root-dir: ${FILE_ROOT_DIR:.kharazim_files}

@@ -11,10 +11,10 @@ import java.nio.charset.StandardCharsets;
  * @author Tyrael Archangel
  * @since 2023/12/22
  */
+@Getter
 @EqualsAndHashCode(callSuper = true)
 public class ExceptionResponse extends Response {
 
-    @Getter
     private final String exception;
 
     public ExceptionResponse(Exception e, int code, String msg, Boolean enablePrintExceptionStackTrace) {

@@ -8,9 +8,9 @@ import java.io.Serializable;
  * @author Tyrael Archangel
  * @since 2023/12/22
  */
+@Getter
 public class DomainNotFoundException extends RuntimeException {
 
-    @Getter
     private final Serializable searchWord;
 
     public DomainNotFoundException(Serializable searchWord) {

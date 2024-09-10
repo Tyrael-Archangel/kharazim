@@ -17,7 +17,7 @@ public class ShouldNotHappenException extends RuntimeException {
         super(cause);
     }
 
-    public static <T> void assertNull(T t) {
+    public static <T> void assertNotNull(T t) {
         if (t == null) {
             throw new ShouldNotHappenException();
         }
