@@ -52,7 +52,7 @@ class CustomerRechargeCardControllerTest extends BaseControllerTest<CustomerRech
         List<CustomerSimpleVO> customers = customerService.listSimpleInfo(new ListCustomerRequest());
         List<RechargeCardTypeVO> cardTypes = rechargeCardTypeService.list(new ListRechargeCardTypeRequest());
 
-        int totalCount = random.nextInt(20) + 10;
+        int totalCount = random.nextInt(500) + 200;
         for (int i = 0; i < totalCount; i++) {
             CustomerSimpleVO customer = CollectionUtils.random(customers);
             UserDTO user = CollectionUtils.random(users);

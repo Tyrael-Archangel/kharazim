@@ -53,7 +53,6 @@ create table `purchase_order_receive_record`
     `serial_code`         varchar(32)    not null comment '流水号',
     `purchase_order_code` varchar(32)    not null comment '采购单号',
     `tracking_number`     varchar(64)    not null comment '物流跟踪号',
-    `amount`              decimal(10, 2) not null comment '商品项金额（元）',
     `receive_time`        datetime       not null comment '收货时间',
     `receive_user`        varchar(64)    not null comment '收货人',
     `receive_user_code`   varchar(32)    not null comment '收货人编码',

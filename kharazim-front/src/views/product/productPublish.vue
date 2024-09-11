@@ -13,6 +13,13 @@
           placeholder="商品名称"
         />
       </el-form-item>
+      <el-form-item label="商品编码">
+        <el-input
+          v-model="pageRequest.skuCode"
+          clearable
+          placeholder="商品编码"
+        />
+      </el-form-item>
       <el-form-item label="发布状态">
         <el-select
           v-model="pageRequest.publishStatus"
@@ -45,8 +52,11 @@
       </el-form-item>
       <el-form-item class="page-form-block-search-block">
         <el-button type="primary" @click="loadProductPublish">查询</el-button>
-        <el-button type="primary" @click="clearPageRequestAndLoadProductPublish"
-          >重置
+        <el-button
+          type="primary"
+          @click="clearPageRequestAndLoadProductPublish"
+        >
+          重置
         </el-button>
       </el-form-item>
     </el-form>
@@ -56,8 +66,8 @@
   </router-link>
   <div class="pagination-block">
     <el-pagination
-      v-model:current-page="pageInfo.currentPage"
-      v-model:page-size="pageInfo.pageSize"
+      v-model:current-page="pageRequest.pageNum"
+      v-model:page-size="pageRequest.pageSize"
       :page-sizes="pageInfo.pageSizes"
       :total="pageInfo.totalCount"
       background
@@ -76,7 +86,7 @@
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="商品编码" prop="skuCode" width="160">
+      <el-table-column label="商品编码" prop="skuCode" width="150">
         <template v-slot="{ row }">
           <el-link
             :href="'/#/product-info?skuCode=' + row.skuCode"
@@ -85,8 +95,8 @@
           </el-link>
         </template>
       </el-table-column>
-      <el-table-column label="商品名称" prop="skuName" />
-      <el-table-column align="center" label="商品主图" width="120">
+      <el-table-column label="商品名称" prop="skuName" width="160" />
+      <el-table-column align="center" label="商品主图" width="110">
         <template v-slot="{ row }">
           <el-image
             v-if="row.defaultImageUrl"
@@ -102,10 +112,10 @@
         prop="price"
         width="120"
       />
-      <el-table-column label="诊所名称" prop="clinicName" width="200" />
-      <el-table-column label="商品分类" prop="categoryFullName" width="240" />
+      <el-table-column label="诊所名称" prop="clinicName" width="180" />
+      <el-table-column label="商品分类" prop="categoryFullName" width="220" />
       <el-table-column label="供应商" prop="supplierName" width="130" />
-      <el-table-column align="center" label="生效时间范围" width="200">
+      <el-table-column align="center" label="生效时间范围" min-width="200">
         <template v-slot="{ row }">
           {{ row.effectBegin + " ~ " + row.effectEnd }}
         </template>
@@ -129,8 +139,8 @@
   </div>
   <div class="pagination-block">
     <el-pagination
-      v-model:current-page="pageInfo.currentPage"
-      v-model:page-size="pageInfo.pageSize"
+      v-model:current-page="pageRequest.pageNum"
+      v-model:page-size="pageRequest.pageSize"
       :page-sizes="pageInfo.pageSizes"
       :total="pageInfo.totalCount"
       background
@@ -172,13 +182,14 @@ interface SkuPublish {
 const skuPublishPageData = ref<SkuPublish[]>([]);
 const pageRequest = reactive({
   skuName: "",
+  skuCode: "",
   publishStatus: "",
   clinicCodes: [],
   description: "",
+  pageSize: 10,
+  pageNum: 1,
 });
 const pageInfo = reactive({
-  currentPage: 1,
-  pageSize: 10,
   totalCount: 0,
   pageSizes: [10, 20, 50, 100],
 });
@@ -198,20 +209,18 @@ function statusTagType(publishStatus: string) {
 
 function clearPageRequestAndLoadProductPublish() {
   pageRequest.skuName = "";
+  pageRequest.skuCode = "";
   pageRequest.publishStatus = "";
   pageRequest.clinicCodes = [];
   pageRequest.description = "";
+  pageRequest.pageSize = 10;
+  pageRequest.pageNum = 1;
   loadProductPublish();
 }
 
 function loadProductPublish() {
   axios
-    .get(
-      `/kharazim-api/product/publish/page?pageSize=${pageInfo.pageSize}&pageNum=${pageInfo.currentPage}`,
-      {
-        params: pageRequest,
-      },
-    )
+    .get("/kharazim-api/product/publish/page", { params: pageRequest })
     .then((response: AxiosResponse) => {
       skuPublishPageData.value = response.data.data;
       pageInfo.totalCount = response.data.totalCount;

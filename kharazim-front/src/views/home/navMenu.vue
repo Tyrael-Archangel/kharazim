@@ -2,6 +2,7 @@
   <el-menu
     :background-color="navBackgroundColor"
     :default-active="currentActiveMenu"
+    :unique-opened="true"
     router
   >
     <SubNavMenu :menu-data="navs"></SubNavMenu>

@@ -46,30 +46,36 @@ class ProductCategoryControllerTest extends BaseControllerTest<ProductCategoryCo
         String categories = """
                 name: null
                 children:
-                  - name: 中药
+                  - name: 控制技能
                     children:
-                      - name: 解表药
-                      - name: 清热药
-                      - name: 止血药
-                      - name: 安神药
-                  - name: 西药
+                      - name: 击晕
+                      - name: 沉默
+                      - name: 定身
+                      - name: 昏迷
+                      - name: 减速
+                      - name: 强制位移
+                  - name: 伤害技能
                     children:
-                      - name: 抗感染类
-                        children:
-                          - name: 抗生素
-                          - name: 抗病毒
-                          - name: 抗结核
-                      - name: 消化类
-                        children:
-                          - name: 抗酸药
-                          - name: 促胃肠动力药
-                          - name: 胃肠解痉药
-                      - name: 神经类
-                        children:
-                          - name: 中枢兴奋药
-                          - name: 非甾体抗炎药
-                          - name: 镇静催眠药
-                                """;
+                      - name: 指向性伤害
+                      - name: 非指向性伤害
+                      - name: 持续性伤害
+                      - name: 延迟伤害
+                  - name: 保护技能
+                    children:
+                      - name: 恢复血量
+                      - name: 护盾
+                      - name: 盾墙
+                  - name: 位移技能
+                    children:
+                      - name: 闪现
+                      - name: 翻滚
+                      - name: 埋地移动
+                  - name: 支援技能
+                    children:
+                      - name: 视野
+                      - name: 传送门
+                      - name: 激素
+                """;
         Yaml yaml = new Yaml();
         yaml.setBeanAccess(BeanAccess.FIELD);
         PrivateCategory category = yaml.loadAs(categories, PrivateCategory.class);
