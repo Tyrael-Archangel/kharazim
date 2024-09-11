@@ -31,3 +31,7 @@
 .el-form-item__label {
     width: 100px;
 }
+
+body {
+    margin: 0;
+}

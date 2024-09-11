@@ -1,9 +1,9 @@
 <template>
-  <div id="module">
-    <el-container>
+  <div id="module" style="height: 100vh">
+    <el-container style="height: 100%">
       <NavMenu />
       <el-container>
-        <el-header>
+        <el-header style="margin-top: 10px">
           <Bread />
           <div class="header-right">
             <el-text>{{ currentUser.nickName }}</el-text>
@@ -58,9 +58,7 @@
         />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="submitForm(changePasswordFormRef)">
-          确认
-        </el-button>
+        <el-button type="primary" @click="submitForm"> 确认</el-button>
         <el-button @click="changePasswordVisible = false">取消</el-button>
       </el-form-item>
     </el-form>
@@ -75,8 +73,8 @@ import { useRouter } from "vue-router";
 import { onMounted, reactive, ref } from "vue";
 import axios from "@/utils/http.js";
 import { AxiosResponse } from "axios";
-import { ElMessage, FormInstance } from "element-plus";
 import type { FormRules } from "element-plus";
+import { ElMessage, FormInstance } from "element-plus";
 
 const router = useRouter();
 

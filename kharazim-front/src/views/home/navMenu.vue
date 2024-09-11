@@ -1,12 +1,14 @@
 <template>
-  <el-menu
-    :background-color="navBackgroundColor"
-    :default-active="currentActiveMenu"
-    :unique-opened="true"
-    router
-  >
-    <SubNavMenu :menu-data="navs"></SubNavMenu>
-  </el-menu>
+  <aside :style="'background-color:' + navBackgroundColor" class="nav-aside">
+    <el-menu
+      :background-color="navBackgroundColor"
+      :default-active="currentActiveMenu"
+      :unique-opened="true"
+      router
+    >
+      <SubNavMenu :menu-data="navs"></SubNavMenu>
+    </el-menu>
+  </aside>
 </template>
 
 <script lang="ts" setup>
@@ -18,7 +20,7 @@ import axios from "@/utils/http.js";
 import { AxiosResponse } from "axios";
 
 const navBackgroundColors = ref({
-  default: "#e1f3d8",
+  default: "#ffffff",
   dev: "#e1f3d8",
   test: "#8bbdf8",
   beta: "#e1aad2",
@@ -45,3 +47,11 @@ function loadProfile() {
   });
 }
 </script>
+<style scoped>
+.nav-aside {
+  flex-shrink: 0;
+  overflow-y: auto;
+  scrollbar-width: none;
+  width: 190px;
+}
+</style>
