@@ -3,10 +3,14 @@
     <el-container style="height: 100%">
       <NavMenu />
       <el-container>
-        <el-header style="margin-top: 10px">
-          <Bread />
+        <el-header style="margin-top: 15px; height: 30px">
+          <div style="width: 500px; display: inline-block">
+            <Bread />
+          </div>
           <div class="header-right">
-            <el-text>{{ currentUser.nickName }}</el-text>
+            <div>
+              <el-text>{{ currentUser.nickName }}</el-text>
+            </div>
             <div class="current-user-avatar">
               <el-avatar
                 v-if="currentUser && currentUser.avatarUrl"
@@ -21,7 +25,7 @@
             <el-button class="logout" @click="logout">注销</el-button>
           </div>
         </el-header>
-        <el-divider />
+        <el-divider style="margin: 16px 0 6px" />
         <el-main>
           <router-view />
         </el-main>
