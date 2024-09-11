@@ -90,23 +90,9 @@ public class LambdaQueryWrapperX<T> extends LambdaQueryWrapper<T> {
         return this;
     }
 
-    public LambdaQueryWrapperX<T> betweenIfPresent(SFunction<T, ?> column, Object val1, Object val2) {
-        if (val1 != null && val2 != null) {
-            return (LambdaQueryWrapperX<T>) super.between(column, val1, val2);
-        }
-        if (val1 != null) {
-            return (LambdaQueryWrapperX<T>) ge(column, val1);
-        }
-        if (val2 != null) {
-            return (LambdaQueryWrapperX<T>) le(column, val2);
-        }
+    public LambdaQueryWrapperX<T> orderBy(boolean isAsc, SFunction<T, ?> column) {
+        super.orderBy(true,isAsc, column);
         return this;
-    }
-
-    public LambdaQueryWrapperX<T> betweenIfPresent(SFunction<T, ?> column, Object[] values) {
-        Object val1 = get(values, 0);
-        Object val2 = get(values, 1);
-        return betweenIfPresent(column, val1, val2);
     }
 
     private <R> R get(R[] array, int index) {

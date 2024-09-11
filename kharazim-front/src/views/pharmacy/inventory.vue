@@ -37,10 +37,39 @@
           />
         </el-select>
       </el-form-item>
+      <el-form-item label="排序方式">
+        <el-button
+          :type="getSortButtonType('QUANTITY')"
+          @click="switchSort('QUANTITY')"
+        >
+          在库库存
+          <el-icon>
+            <component :is="getSortDirectionIcon('QUANTITY')" />
+          </el-icon>
+        </el-button>
+        <el-button
+          :type="getSortButtonType('USABLE_QUANTITY')"
+          @click="switchSort('USABLE_QUANTITY')"
+        >
+          可用库存
+          <el-icon>
+            <component :is="getSortDirectionIcon('USABLE_QUANTITY')" />
+          </el-icon>
+        </el-button>
+        <el-button
+          :type="getSortButtonType('OCCUPIED_QUANTITY')"
+          @click="switchSort('OCCUPIED_QUANTITY')"
+        >
+          预占库存
+          <el-icon>
+            <component :is="getSortDirectionIcon('OCCUPIED_QUANTITY')" />
+          </el-icon>
+        </el-button>
+      </el-form-item>
       <el-form-item class="page-form-block-search-block">
         <el-button type="primary" @click="loadInventories">查询</el-button>
-        <el-button type="primary" @click="resetAndLoadInventories"
-          >重置
+        <el-button type="primary" @click="resetAndLoadInventories">
+          重置
         </el-button>
       </el-form-item>
     </el-form>
@@ -129,6 +158,8 @@ const pageRequest = reactive({
   skuCode: "",
   skuName: "",
   clinicCodes: [],
+  sortBy: "QUANTITY",
+  sortDirection: "DESC",
 });
 
 const pageInfo = reactive({
@@ -137,6 +168,35 @@ const pageInfo = reactive({
   totalCount: 0,
   pageSizes: [10, 20, 50, 100],
 });
+
+function switchSort(btn: string) {
+  if (btn === pageRequest.sortBy) {
+    pageRequest.sortDirection =
+      pageRequest.sortDirection === "ASC" ? "DESC" : "ASC";
+  } else {
+    pageRequest.sortBy = btn;
+    pageRequest.sortDirection = "DESC";
+  }
+  loadInventories();
+}
+
+function getSortButtonType(btn: string) {
+  if (btn === pageRequest.sortBy) {
+    return "primary";
+  } else {
+    return "";
+  }
+}
+
+function getSortDirectionIcon(btn: string) {
+  if (btn === pageRequest.sortBy) {
+    // 当前按钮为排序字段
+    return "DESC" === pageRequest.sortDirection ? "CaretBottom" : "CaretTop";
+  } else {
+    // 当前按钮非排序字段
+    return "DCaret";
+  }
+}
 
 function loadInventories() {
   axios
@@ -147,6 +207,8 @@ function loadInventories() {
         clinicCodes: pageRequest.clinicCodes,
         pageSize: pageInfo.pageSize,
         pageNum: pageInfo.currentPage,
+        sortBy: pageRequest.sortBy,
+        sortDirection: pageRequest.sortDirection,
       },
     })
     .then((response: AxiosResponse) => {
@@ -162,6 +224,8 @@ function resetAndLoadInventories() {
   pageInfo.currentPage = 1;
   pageInfo.pageSize = 10;
   pageInfo.totalCount = 0;
+  pageRequest.sortBy = "QUANTITY";
+  pageRequest.sortDirection = "DESC";
   loadInventories();
 }
 

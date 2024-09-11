@@ -1,6 +1,8 @@
 package com.tyrael.kharazim.application.pharmacy.domain;
 
+import com.baomidou.mybatisplus.annotation.FieldStrategy;
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
@@ -35,10 +37,9 @@ public class Inventory {
     private Integer occupiedQuantity;
 
     /**
-     * 可用库存数量
+     * 可用库存数量，数据库虚拟字段
      */
-    public int getUsableQuantity() {
-        return quantity - occupiedQuantity;
-    }
+    @TableField(insertStrategy = FieldStrategy.NEVER, updateStrategy = FieldStrategy.NEVER)
+    private Integer usableQuantity;
 
 }

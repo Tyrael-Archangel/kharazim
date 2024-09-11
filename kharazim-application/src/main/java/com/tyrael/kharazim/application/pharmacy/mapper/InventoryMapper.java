@@ -1,13 +1,13 @@
 package com.tyrael.kharazim.application.pharmacy.mapper;
 
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.tyrael.kharazim.application.base.BasePageMapper;
 import com.tyrael.kharazim.application.base.LambdaQueryWrapperX;
 import com.tyrael.kharazim.application.pharmacy.domain.Inventory;
 import com.tyrael.kharazim.application.pharmacy.vo.inventory.ListInventoryOfClinicRequest;
 import com.tyrael.kharazim.application.pharmacy.vo.inventory.PageInventoryRequest;
 import com.tyrael.kharazim.application.product.mapper.ProductSkuMapper;
+import com.tyrael.kharazim.common.dto.PageCommand;
 import com.tyrael.kharazim.common.dto.PageResponse;
 import com.tyrael.kharazim.common.util.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -23,7 +23,7 @@ import java.util.List;
  * @since 2024/6/3
  */
 @Mapper
-public interface InventoryMapper extends BaseMapper<Inventory> {
+public interface InventoryMapper extends BasePageMapper<Inventory> {
 
     /**
      * find by unique key
@@ -62,15 +62,17 @@ public interface InventoryMapper extends BaseMapper<Inventory> {
         queryWrapper.inIfPresent(Inventory::getClinicCode, pageRequest.getClinicCodes());
         queryWrapper.eqIfHasText(Inventory::getSkuCode, pageRequest.getSkuCode());
 
-        queryWrapper.orderByDesc(Inventory::getId);
+        PageInventoryRequest.SortBy sortBy = pageRequest.getSortByOrDefault();
+        boolean isAsc = PageCommand.SortDirection.ASC.equals(pageRequest.getSortDirection());
 
-        Page<Inventory> pageCondition = new Page<>(pageRequest.getPageNum(), pageRequest.getPageSize());
-        Page<Inventory> pageData = selectPage(pageCondition, queryWrapper);
-        return PageResponse.success(
-                pageData.getRecords(),
-                pageData.getTotal(),
-                (int) pageCondition.getSize(),
-                (int) pageCondition.getCurrent());
+        switch (sortBy) {
+            case QUANTITY -> queryWrapper.orderBy(isAsc, Inventory::getQuantity);
+            case OCCUPIED_QUANTITY -> queryWrapper.orderBy(isAsc, Inventory::getOccupiedQuantity);
+            case USABLE_QUANTITY -> queryWrapper.orderBy(isAsc, Inventory::getUsableQuantity);
+        }
+        queryWrapper.orderBy(isAsc, Inventory::getId);
+
+        return selectPage(pageRequest, queryWrapper);
     }
 
     /**

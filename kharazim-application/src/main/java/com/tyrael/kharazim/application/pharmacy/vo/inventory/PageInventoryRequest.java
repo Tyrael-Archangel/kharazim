@@ -23,4 +23,33 @@ public class PageInventoryRequest extends PageCommand {
     @ArraySchema(arraySchema = @Schema(description = "诊所编码"))
     private List<String> clinicCodes;
 
+    @Schema(description = "排序方式, " + SortBy.DESCRIPTION, implementation = SortBy.class)
+    private SortBy sortBy = SortBy.QUANTITY;
+
+    @Schema(description = "排序方向, " + SortDirection.DESCRIPTION, implementation = SortDirection.class)
+    private SortDirection sortDirection = SortDirection.DESC;
+
+    @Schema(hidden = true)
+    public SortBy getSortByOrDefault() {
+        return sortBy == null ? SortBy.QUANTITY : sortBy;
+    }
+
+    public enum SortBy {
+        /**
+         * 在库库存
+         */
+        QUANTITY,
+        /**
+         * 预占库存
+         */
+        OCCUPIED_QUANTITY,
+        /**
+         * 可用库存
+         */
+        USABLE_QUANTITY;
+
+        public static final String DESCRIPTION = "QUANTITY-在库库存，OCCUPIED_QUANTITY-预占库存，USABLE_QUANTITY-可用库存";
+
+    }
+
 }
