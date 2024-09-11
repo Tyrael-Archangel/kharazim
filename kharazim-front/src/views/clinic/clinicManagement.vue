@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-form :inline="true" :model="pageRequest" class="page-condition-form">
+    <el-form :inline="true" :model="pageRequest" class="page-form-block">
       <el-form-item label="名称" prop="name">
         <el-input v-model="pageRequest.name" clearable placeholder="名称" />
       </el-form-item>
@@ -120,14 +120,6 @@ onMounted(() => loadClinic());
 </script>
 
 <style scoped>
-.page-condition-form .el-input {
-  --el-input-width: 220px;
-}
-
-.page-condition-form .el-select {
-  --el-select-width: 220px;
-}
-
 .clinic-card-area {
   display: flex;
   flex-wrap: wrap;
@@ -135,12 +127,12 @@ onMounted(() => loadClinic());
 }
 
 .clinic-card {
-  width: 425px;
+  width: 320px;
   margin: 12px;
 }
 
 .clinic-image-block {
-  height: 200px;
+  height: 150px;
   align-content: center;
 }
 </style>

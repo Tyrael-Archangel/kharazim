@@ -4,25 +4,29 @@
       <NavMenu />
       <el-container>
         <el-header style="margin-top: 15px; height: 30px">
-          <div style="width: 500px; display: inline-block">
-            <Bread />
-          </div>
-          <div class="header-right">
-            <div>
-              <el-text>{{ currentUser.nickName }}</el-text>
+          <div style="display: flex">
+            <div style="flex: 2">
+              <Bread />
             </div>
-            <div class="current-user-avatar">
-              <el-avatar
-                v-if="currentUser && currentUser.avatarUrl"
-                :src="currentUser.avatarUrl"
-              />
+            <div style="flex: 3">
+              <div class="header-right">
+                <div>
+                  <el-text>{{ currentUser.nickName }}</el-text>
+                </div>
+                <div class="current-user-avatar">
+                  <el-avatar
+                    v-if="currentUser && currentUser.avatarUrl"
+                    :src="currentUser.avatarUrl"
+                  />
+                </div>
+                <el-button
+                  class="change-password"
+                  @click="showChangeCurrentUserPassword"
+                  >修改密码
+                </el-button>
+                <el-button class="logout" @click="logout">注销</el-button>
+              </div>
             </div>
-            <el-button
-              class="change-password"
-              @click="showChangeCurrentUserPassword"
-              >修改密码
-            </el-button>
-            <el-button class="logout" @click="logout">注销</el-button>
           </div>
         </el-header>
         <el-divider style="margin: 16px 0 6px" />
