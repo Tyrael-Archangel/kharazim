@@ -102,7 +102,7 @@ public class FileServiceImpl implements FileService {
         return root;
     }
 
-    private File nextDir(File root) throws IOException {
+    private synchronized File nextDir(File root) throws IOException {
         File dir = root;
         for (int i = 0; i < fileConfig.getMaxDirLevel(); i++) {
             dir = lastSubDirOrCreate(dir);
