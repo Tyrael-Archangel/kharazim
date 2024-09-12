@@ -28,7 +28,7 @@
   </div>
   <div></div>
   <div class="clinic-card-area">
-    <el-card v-for="clinic in clinicPageData" class="clinic-card">
+    <el-card v-for="clinic in clinicPageResponse.data" class="clinic-card">
       <template #header>
         <el-text size="large" tag="b">{{ clinic.name }}</el-text>
         <el-text size="default">{{ " " + clinic.englishName }}</el-text>
@@ -59,10 +59,10 @@
   </div>
   <div class="pagination-block">
     <el-pagination
-      v-model:current-page="pageInfo.currentPage"
-      v-model:page-size="pageInfo.pageSize"
-      :page-sizes="pageInfo.pageSizes"
-      :total="pageInfo.totalCount"
+      v-model:current-page="pageRequest.pageNum"
+      v-model:page-size="pageRequest.pageSize"
+      :page-sizes="[10, 20, 50, 100]"
+      :total="clinicPageResponse.totalCount"
       background
       layout="total, sizes, prev, pager, next, jumper"
       @size-change="loadClinic"
@@ -72,7 +72,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, reactive, ref } from "vue";
+import { onMounted, reactive, ref, toRaw } from "vue";
 import axios from "@/utils/http.js";
 import { ACCESS_TOKEN, getToken } from "@/utils/auth.js";
 import { AxiosResponse } from "axios";
@@ -87,32 +87,23 @@ interface ClinicData {
   statusName: string;
 }
 
-const clinicPageData = ref<ClinicData[]>([]);
-const pageInfo = reactive({
-  currentPage: 1,
-  pageSize: 20,
+const clinicPageResponse = ref({
+  data: [] as ClinicData[],
   totalCount: 0,
-  pageSizes: [10, 20, 50, 100],
 });
 
-const pageRequest = ref({
+const pageRequest = reactive({
   name: "",
   status: "",
+  pageNum: 1,
+  pageSize: 20,
 });
 
 function loadClinic() {
   axios
-    .get("/kharazim-api/clinic/page", {
-      params: {
-        name: pageRequest.value.name,
-        status: pageRequest.value.status,
-        pageSize: pageInfo.pageSize,
-        pageNum: pageInfo.currentPage,
-      },
-    })
+    .get("/kharazim-api/clinic/page", { params: toRaw(pageRequest) })
     .then((response: AxiosResponse) => {
-      clinicPageData.value = response.data.data;
-      pageInfo.totalCount = response.data.totalCount;
+      clinicPageResponse.value = response.data;
     });
 }
 

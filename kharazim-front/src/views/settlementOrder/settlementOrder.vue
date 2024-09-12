@@ -13,6 +13,13 @@
           placeholder="结算单编码"
         />
       </el-form-item>
+      <el-form-item label="来源处方编码">
+        <el-input
+          v-model="pageRequest.sourcePrescriptionCode"
+          clearable
+          placeholder="来源处方编码"
+        />
+      </el-form-item>
       <el-form-item label="会员">
         <el-select
           v-model="pageRequest.customerCode"
@@ -291,6 +298,7 @@ const pageInfo = reactive({
 
 const pageRequest = reactive({
   settlementOrderCode: "",
+  sourcePrescriptionCode: "",
   customerCode: "",
   clinicCodes: [],
   status: "",

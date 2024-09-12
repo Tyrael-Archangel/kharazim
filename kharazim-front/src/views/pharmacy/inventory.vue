@@ -77,7 +77,7 @@
   <div>
     <div>
       <el-table
-        :data="inventoryPageData"
+        :data="inventoryPageData.data"
         border
         style="width: 100%; margin-top: 10px"
       >
@@ -112,10 +112,10 @@
     </div>
     <div class="pagination-block">
       <el-pagination
-        v-model:current-page="pageInfo.currentPage"
-        v-model:page-size="pageInfo.pageSize"
-        :page-sizes="pageInfo.pageSizes"
-        :total="pageInfo.totalCount"
+        v-model:current-page="pageRequest.pageNum"
+        v-model:page-size="pageRequest.pageSize"
+        :page-sizes="[10, 20, 50, 100]"
+        :total="inventoryPageData.totalCount"
         background
         layout="total, sizes, prev, pager, next, jumper"
         @size-change="loadInventories"
@@ -123,7 +123,7 @@
       />
     </div>
   </div>
-  <el-dialog v-model="skuOccupyRecordVisible" title="商品预占情况" width="50%">
+  <el-dialog v-model="skuOccupyRecordVisible" title="商品预占情况" width="30%">
     <el-table
       :data="skuOccupyRecordPageData"
       border
@@ -148,26 +148,23 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, reactive, ref } from "vue";
+import { onMounted, reactive, ref, toRaw } from "vue";
 import axios from "@/utils/http.js";
 import { AxiosResponse } from "axios";
 
-const inventoryPageData = ref([]);
+const inventoryPageData = ref({ totalCount: 0, data: [] });
 
-const pageRequest = reactive({
+const initPageRequest = {
   skuCode: "",
   skuName: "",
   clinicCodes: [],
   sortBy: "QUANTITY",
   sortDirection: "DESC",
-});
-
-const pageInfo = reactive({
-  currentPage: 1,
+  pageNum: 1,
   pageSize: 10,
-  totalCount: 0,
-  pageSizes: [10, 20, 50, 100],
-});
+};
+
+const pageRequest = reactive({ ...initPageRequest });
 
 function switchSort(btn: string) {
   if (btn === pageRequest.sortBy) {
@@ -189,43 +186,24 @@ function getSortButtonType(btn: string) {
 }
 
 function getSortDirectionIcon(btn: string) {
-  if (btn === pageRequest.sortBy) {
-    // 当前按钮为排序字段
-    return "DESC" === pageRequest.sortDirection ? "CaretBottom" : "CaretTop";
-  } else {
+  if (btn !== pageRequest.sortBy) {
     // 当前按钮非排序字段
     return "DCaret";
   }
+  // 当前按钮为排序字段
+  return "DESC" === pageRequest.sortDirection ? "CaretBottom" : "CaretTop";
 }
 
 function loadInventories() {
   axios
-    .get("/kharazim-api/inventory/page", {
-      params: {
-        skuCode: pageRequest.skuCode,
-        skuName: pageRequest.skuName,
-        clinicCodes: pageRequest.clinicCodes,
-        pageSize: pageInfo.pageSize,
-        pageNum: pageInfo.currentPage,
-        sortBy: pageRequest.sortBy,
-        sortDirection: pageRequest.sortDirection,
-      },
-    })
+    .get("/kharazim-api/inventory/page", { params: toRaw(pageRequest) })
     .then((response: AxiosResponse) => {
-      inventoryPageData.value = response.data.data;
-      pageInfo.totalCount = response.data.totalCount;
+      inventoryPageData.value = response.data;
     });
 }
 
 function resetAndLoadInventories() {
-  pageRequest.skuCode = "";
-  pageRequest.skuName = "";
-  pageRequest.clinicCodes = [];
-  pageInfo.currentPage = 1;
-  pageInfo.pageSize = 10;
-  pageInfo.totalCount = 0;
-  pageRequest.sortBy = "QUANTITY";
-  pageRequest.sortDirection = "DESC";
+  Object.assign(pageRequest, initPageRequest);
   loadInventories();
 }
 

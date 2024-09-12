@@ -18,6 +18,9 @@ public class PageSettlementOrderRequest extends PageCommand {
     @Schema(description = "结算单编码")
     private String settlementOrderCode;
 
+    @Schema(description = "来源处方编码")
+    private String sourcePrescriptionCode;
+
     @ArraySchema(arraySchema = @Schema(description = "机构（诊所）编码"))
     private Set<String> clinicCodes;
 
