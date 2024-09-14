@@ -38,7 +38,12 @@
         />
       </el-form-item>
       <div
-        style="display: flex; justify-content: space-around; flex-wrap: nowrap; padding-top: 2%"
+        style="
+          display: flex;
+          justify-content: space-around;
+          flex-wrap: nowrap;
+          padding-top: 2%;
+        "
       >
         <el-form-item style="width: 60%">
           <div style="width: 50%; padding: 5px; box-sizing: border-box">
@@ -64,7 +69,7 @@
 </template>
 
 <script setup>
-import { reactive, ref } from "vue";
+import { onMounted, reactive, ref } from "vue";
 import axios from "@/utils/http.js";
 import { ElMessage } from "element-plus";
 import { useRouter } from "vue-router";
@@ -100,6 +105,17 @@ function doLogin(fromEl) {
     }
   });
 }
+
+onMounted(() => {
+  axios
+    .get("/kharazim-api/user/current-user", {
+      disablePrintGlobalError: true,
+      disableCheck401: true,
+    })
+    .then(() => {
+      router.push("/dashboard");
+    });
+});
 </script>
 
 <style scoped>

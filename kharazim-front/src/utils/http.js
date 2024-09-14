@@ -28,7 +28,7 @@ service.interceptors.response.use(
         ElMessage.error(error.message);
       }
     }
-    if (code === 401) {
+    if (code === 401 && !error.config?.disableCheck401) {
       window.location.href = "/";
     }
     return Promise.reject(error);
