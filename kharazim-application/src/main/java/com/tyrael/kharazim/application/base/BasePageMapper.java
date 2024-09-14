@@ -15,20 +15,27 @@ public interface BasePageMapper<T> extends BaseMapper<T> {
     /**
      * select page data
      *
-     * @param pageCommand  {@link PageCommand}
-     * @param queryWrapper {@link Wrapper}
+     * @param pageCondition pageCondition
+     * @param queryWrapper  {@link Wrapper}
      * @return page data
      */
-    default PageResponse<T> selectPage(PageCommand pageCommand, Wrapper<T> queryWrapper) {
-
-        Page<T> pageCondition = new Page<>(pageCommand.getPageNum(), pageCommand.getPageSize());
+    default PageResponse<T> page(Page<T> pageCondition, Wrapper<T> queryWrapper) {
         Page<T> pageData = selectPage(pageCondition, queryWrapper);
-
         return PageResponse.success(pageData.getRecords(),
                 pageData.getTotal(),
                 (int) pageCondition.getSize(),
                 (int) pageCondition.getCurrent());
+    }
 
+    /**
+     * select page data
+     *
+     * @param pageCommand  {@link PageCommand}
+     * @param queryWrapper {@link Wrapper}
+     * @return page data
+     */
+    default PageResponse<T> page(PageCommand pageCommand, Wrapper<T> queryWrapper) {
+        return this.page(new Page<>(pageCommand.getPageNum(), pageCommand.getPageSize()), queryWrapper);
     }
 
 }

@@ -1,9 +1,9 @@
 package com.tyrael.kharazim.application.prescription.mapper;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.tyrael.kharazim.application.base.BasePageMapper;
 import com.tyrael.kharazim.application.base.LambdaQueryWrapperX;
 import com.tyrael.kharazim.application.prescription.domain.Prescription;
 import com.tyrael.kharazim.application.prescription.vo.PagePrescriptionRequest;
@@ -18,7 +18,7 @@ import org.apache.ibatis.cursor.Cursor;
  * @since 2024/3/14
  */
 @Mapper
-public interface PrescriptionMapper extends BaseMapper<Prescription> {
+public interface PrescriptionMapper extends BasePageMapper<Prescription> {
 
     /**
      * find all with cursor
@@ -59,11 +59,7 @@ public interface PrescriptionMapper extends BaseMapper<Prescription> {
 
         queryWrapper.orderByDesc(Prescription::getCode);
 
-        Page<Prescription> pageData = selectPage(pageCondition, queryWrapper);
-        return PageResponse.success(pageData.getRecords(),
-                pageData.getTotal(),
-                (int) pageCondition.getSize(),
-                (int) pageCondition.getCurrent());
+        return page(pageCondition, queryWrapper);
     }
 
 }

@@ -2,9 +2,8 @@ package com.tyrael.kharazim.application.user.mapper;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.tyrael.kharazim.application.base.BasePageMapper;
 import com.tyrael.kharazim.application.user.domain.User;
 import com.tyrael.kharazim.application.user.dto.user.request.ListUserRequest;
 import com.tyrael.kharazim.application.user.dto.user.request.PageUserRequest;
@@ -26,7 +25,7 @@ import java.util.stream.Collectors;
  * @since 2023/12/25
  */
 @Mapper
-public interface UserMapper extends BaseMapper<User> {
+public interface UserMapper extends BasePageMapper<User> {
 
     /**
      * find by code
@@ -141,13 +140,7 @@ public interface UserMapper extends BaseMapper<User> {
         }
         queryWrapper.orderByAsc(User::getCode);
 
-        Page<User> page = new Page<>(pageCommand.getPageNum(), pageCommand.getPageSize());
-        Page<User> userPage = selectPage(page, queryWrapper);
-
-        return PageResponse.success(userPage.getRecords(),
-                userPage.getTotal(),
-                pageCommand.getPageSize(),
-                pageCommand.getPageNum());
+        return page(pageCommand, queryWrapper);
     }
 
     /**

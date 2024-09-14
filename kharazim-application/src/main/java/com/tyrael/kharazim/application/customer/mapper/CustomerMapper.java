@@ -1,9 +1,9 @@
 package com.tyrael.kharazim.application.customer.mapper;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.tyrael.kharazim.application.base.BasePageMapper;
 import com.tyrael.kharazim.application.base.LambdaQueryWrapperX;
 import com.tyrael.kharazim.application.customer.domain.Customer;
 import com.tyrael.kharazim.application.customer.vo.customer.ListCustomerRequest;
@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
  * @since 2024/1/7
  */
 @Mapper
-public interface CustomerMapper extends BaseMapper<Customer> {
+public interface CustomerMapper extends BasePageMapper<Customer> {
 
     /**
      * find by code
@@ -76,11 +76,8 @@ public interface CustomerMapper extends BaseMapper<Customer> {
         queryWrapper.eqIfHasText(Customer::getCode, pageRequest.getCode());
         queryWrapper.likeIfPresent(Customer::getName, pageRequest.getName());
         queryWrapper.orderByAsc(Customer::getCode);
-        Page<Customer> pageData = selectPage(pageCondition, queryWrapper);
-        return PageResponse.success(pageData.getRecords(),
-                pageData.getTotal(),
-                (int) pageCondition.getSize(),
-                (int) pageCondition.getCurrent());
+
+        return page(pageCondition, queryWrapper);
     }
 
     /**

@@ -1,9 +1,9 @@
 package com.tyrael.kharazim.application.clinic.mapper;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.tyrael.kharazim.application.base.BasePageMapper;
 import com.tyrael.kharazim.application.base.LambdaQueryWrapperX;
 import com.tyrael.kharazim.application.clinic.domain.Clinic;
 import com.tyrael.kharazim.application.clinic.vo.ListClinicRequest;
@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
  * @since 2023/12/30
  */
 @Mapper
-public interface ClinicMapper extends BaseMapper<Clinic> {
+public interface ClinicMapper extends BasePageMapper<Clinic> {
 
     /**
      * find by code
@@ -71,11 +71,7 @@ public interface ClinicMapper extends BaseMapper<Clinic> {
         queryWrapper.eqIfPresent(Clinic::getStatus, pageRequest.getStatus());
         queryWrapper.orderByAsc(Clinic::getCode);
 
-        Page<Clinic> pageResponse = selectPage(pageCondition, queryWrapper);
-        return PageResponse.success(pageResponse.getRecords(),
-                pageResponse.getTotal(),
-                (int) pageCondition.getSize(),
-                (int) pageCondition.getCurrent());
+        return page(pageCondition, queryWrapper);
     }
 
     /**

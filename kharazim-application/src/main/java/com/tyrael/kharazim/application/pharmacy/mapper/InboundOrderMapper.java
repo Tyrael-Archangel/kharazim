@@ -1,8 +1,7 @@
 package com.tyrael.kharazim.application.pharmacy.mapper;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.tyrael.kharazim.application.base.BasePageMapper;
 import com.tyrael.kharazim.application.base.LambdaQueryWrapperX;
 import com.tyrael.kharazim.application.pharmacy.domain.InboundOrder;
 import com.tyrael.kharazim.application.pharmacy.vo.inboundorder.PageInboundOrderRequest;
@@ -14,7 +13,7 @@ import org.apache.ibatis.annotations.Mapper;
  * @since 2024/7/12
  */
 @Mapper
-public interface InboundOrderMapper extends BaseMapper<InboundOrder> {
+public interface InboundOrderMapper extends BasePageMapper<InboundOrder> {
 
     /**
      * find by code FOR UPDATE
@@ -45,13 +44,7 @@ public interface InboundOrderMapper extends BaseMapper<InboundOrder> {
 
         queryWrapper.orderByDesc(InboundOrder::getCode);
 
-        Page<InboundOrder> pageCondition = new Page<>(pageRequest.getPageNum(), pageRequest.getPageSize());
-        Page<InboundOrder> pageData = selectPage(pageCondition, queryWrapper);
-        return PageResponse.success(
-                pageData.getRecords(),
-                pageData.getTotal(),
-                (int) pageCondition.getSize(),
-                (int) pageCondition.getCurrent());
+        return page(pageRequest, queryWrapper);
     }
 
 }

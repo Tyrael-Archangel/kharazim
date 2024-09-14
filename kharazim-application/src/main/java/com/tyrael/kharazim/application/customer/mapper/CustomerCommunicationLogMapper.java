@@ -1,7 +1,6 @@
 package com.tyrael.kharazim.application.customer.mapper;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.tyrael.kharazim.application.base.BasePageMapper;
 import com.tyrael.kharazim.application.base.LambdaQueryWrapperX;
 import com.tyrael.kharazim.application.customer.domain.CustomerCommunicationLog;
 import com.tyrael.kharazim.application.customer.vo.communication.CustomerCommunicationLogPageRequest;
@@ -13,7 +12,7 @@ import org.apache.ibatis.annotations.Mapper;
  * @since 2024/1/24
  */
 @Mapper
-public interface CustomerCommunicationLogMapper extends BaseMapper<CustomerCommunicationLog> {
+public interface CustomerCommunicationLogMapper extends BasePageMapper<CustomerCommunicationLog> {
 
     /**
      * page
@@ -29,12 +28,7 @@ public interface CustomerCommunicationLogMapper extends BaseMapper<CustomerCommu
         queryWrapper.orderByDesc(CustomerCommunicationLog::getCreateTime);
         queryWrapper.orderByDesc(CustomerCommunicationLog::getId);
 
-        Page<CustomerCommunicationLog> page = new Page<>(pageRequest.getPageNum(), pageRequest.getPageSize());
-        Page<CustomerCommunicationLog> communicationLogPage = selectPage(page, queryWrapper);
-        return PageResponse.success(communicationLogPage.getRecords(),
-                communicationLogPage.getTotal(),
-                pageRequest.getPageSize(),
-                pageRequest.getPageNum());
+        return page(pageRequest, queryWrapper);
     }
 
 }

@@ -1,8 +1,7 @@
 package com.tyrael.kharazim.application.purchase.mapper;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.tyrael.kharazim.application.base.BasePageMapper;
 import com.tyrael.kharazim.application.base.LambdaQueryWrapperX;
 import com.tyrael.kharazim.application.purchase.domain.PurchaseOrder;
 import com.tyrael.kharazim.application.purchase.vo.request.PagePurchaseOrderRequest;
@@ -16,7 +15,7 @@ import org.apache.ibatis.annotations.Mapper;
  * @since 2024/6/3
  */
 @Mapper
-public interface PurchaseOrderMapper extends BaseMapper<PurchaseOrder> {
+public interface PurchaseOrderMapper extends BasePageMapper<PurchaseOrder> {
     /**
      * find by code
      *
@@ -52,12 +51,7 @@ public interface PurchaseOrderMapper extends BaseMapper<PurchaseOrder> {
 
         queryWrapper.orderByDesc(PurchaseOrder::getCode);
 
-        Page<PurchaseOrder> pageCondition = new Page<>(pageRequest.getPageNum(), pageRequest.getPageSize());
-        Page<PurchaseOrder> pageData = this.selectPage(pageCondition, queryWrapper);
-        return PageResponse.success(pageData.getRecords(),
-                pageData.getTotal(),
-                (int) pageCondition.getSize(),
-                (int) pageCondition.getCurrent());
+        return this.page(pageRequest, queryWrapper);
     }
 
 }

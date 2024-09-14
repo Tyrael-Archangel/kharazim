@@ -2,9 +2,8 @@ package com.tyrael.kharazim.application.user.mapper;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.tyrael.kharazim.application.base.BasePageMapper;
 import com.tyrael.kharazim.application.user.domain.Role;
 import com.tyrael.kharazim.application.user.dto.user.request.PageRoleRequest;
 import com.tyrael.kharazim.common.dto.PageResponse;
@@ -21,7 +20,7 @@ import java.util.List;
  * @since 2023/12/25
  */
 @Mapper
-public interface RoleMapper extends BaseMapper<Role> {
+public interface RoleMapper extends BasePageMapper<Role> {
 
     /**
      * list by IDs
@@ -57,12 +56,7 @@ public interface RoleMapper extends BaseMapper<Role> {
 
         queryWrapper.orderByAsc(Role::getSort);
 
-        Page<Role> page = new Page<>(pageRoleRequest.getPageNum(), pageRoleRequest.getPageSize());
-        Page<Role> userPage = selectPage(page, queryWrapper);
-        return PageResponse.success(userPage.getRecords(),
-                userPage.getTotal(),
-                pageRoleRequest.getPageSize(),
-                pageRoleRequest.getPageNum());
+        return page(pageRoleRequest, queryWrapper);
     }
 
     /**

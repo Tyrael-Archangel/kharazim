@@ -67,7 +67,7 @@ public class ClinicServiceImpl implements ClinicService {
         try (ExcelWriter excelWriter = EasyExcelFactory.write(response.getOutputStream()).build()) {
             List<ClinicExportVO> exports;
             do {
-                Page<Clinic> pageCondition = new Page<>(pageNum, pageSize);
+                Page<Clinic> pageCondition = new Page<>(pageNum, pageSize, false);
                 PageResponse<Clinic> pageData = clinicMapper.page(request, pageCondition);
 
                 exports = clinicExports(pageData.getData());

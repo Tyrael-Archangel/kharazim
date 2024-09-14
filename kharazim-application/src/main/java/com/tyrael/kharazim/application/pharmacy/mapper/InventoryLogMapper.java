@@ -1,7 +1,6 @@
 package com.tyrael.kharazim.application.pharmacy.mapper;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.tyrael.kharazim.application.base.BasePageMapper;
 import com.tyrael.kharazim.application.base.LambdaQueryWrapperX;
 import com.tyrael.kharazim.application.pharmacy.domain.InventoryLog;
 import com.tyrael.kharazim.application.pharmacy.vo.inventory.PageInventoryLogRequest;
@@ -13,7 +12,7 @@ import org.apache.ibatis.annotations.Mapper;
  * @since 2024/8/9
  */
 @Mapper
-public interface InventoryLogMapper extends BaseMapper<InventoryLog> {
+public interface InventoryLogMapper extends BasePageMapper<InventoryLog> {
 
     /**
      * 库存流水日志分页
@@ -33,13 +32,7 @@ public interface InventoryLogMapper extends BaseMapper<InventoryLog> {
         queryWrapper.orderByDesc(InventoryLog::getOperateTime);
         queryWrapper.orderByDesc(InventoryLog::getId);
 
-        Page<InventoryLog> pageCondition = new Page<>(pageRequest.getPageNum(), pageRequest.getPageSize());
-        Page<InventoryLog> pageData = selectPage(pageCondition, queryWrapper);
-        return PageResponse.success(
-                pageData.getRecords(),
-                pageData.getTotal(),
-                (int) pageCondition.getSize(),
-                (int) pageCondition.getCurrent());
+        return page(pageRequest, queryWrapper);
     }
 
 }

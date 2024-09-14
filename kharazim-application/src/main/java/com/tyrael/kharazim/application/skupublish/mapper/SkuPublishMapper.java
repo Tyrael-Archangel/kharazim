@@ -2,9 +2,8 @@ package com.tyrael.kharazim.application.skupublish.mapper;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.tyrael.kharazim.application.base.BasePageMapper;
 import com.tyrael.kharazim.application.base.LambdaQueryWrapperX;
 import com.tyrael.kharazim.application.product.mapper.ProductSkuMapper;
 import com.tyrael.kharazim.application.skupublish.domain.SkuPublish;
@@ -25,7 +24,7 @@ import java.util.List;
  * @since 2024/3/16
  */
 @Mapper
-public interface SkuPublishMapper extends BaseMapper<SkuPublish> {
+public interface SkuPublishMapper extends BasePageMapper<SkuPublish> {
 
     /**
      * 商品发布数据分页
@@ -75,13 +74,7 @@ public interface SkuPublishMapper extends BaseMapper<SkuPublish> {
 
         queryWrapper.orderByDesc(SkuPublish::getCode);
 
-        Page<SkuPublish> page = new Page<>(pageRequest.getPageNum(), pageRequest.getPageSize());
-        Page<SkuPublish> pageData = selectPage(page, queryWrapper);
-
-        return PageResponse.success(pageData.getRecords(),
-                pageData.getTotal(),
-                pageRequest.getPageSize(),
-                pageRequest.getPageNum());
+        return page(pageRequest, queryWrapper);
     }
 
     /**

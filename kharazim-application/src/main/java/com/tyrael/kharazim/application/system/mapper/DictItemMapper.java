@@ -2,9 +2,8 @@ package com.tyrael.kharazim.application.system.mapper;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.tyrael.kharazim.application.base.BasePageMapper;
 import com.tyrael.kharazim.application.system.domain.DictItem;
 import com.tyrael.kharazim.application.system.dto.dict.PageDictItemRequest;
 import com.tyrael.kharazim.common.dto.PageResponse;
@@ -20,7 +19,7 @@ import java.util.List;
  * @since 2023/12/25
  */
 @Mapper
-public interface DictItemMapper extends BaseMapper<DictItem> {
+public interface DictItemMapper extends BasePageMapper<DictItem> {
 
     /**
      * update dictCode
@@ -108,13 +107,7 @@ public interface DictItemMapper extends BaseMapper<DictItem> {
         queryWrapper.orderByAsc(DictItem::getSort)
                 .orderByAsc(DictItem::getId);
 
-        Page<DictItem> page = new Page<>(pageRequest.getPageNum(), pageRequest.getPageSize());
-        Page<DictItem> dictItemPage = selectPage(page, queryWrapper);
-
-        return PageResponse.success(dictItemPage.getRecords(),
-                dictItemPage.getTotal(),
-                pageRequest.getPageSize(),
-                pageRequest.getPageNum());
+        return page(pageRequest, queryWrapper);
     }
 
 }

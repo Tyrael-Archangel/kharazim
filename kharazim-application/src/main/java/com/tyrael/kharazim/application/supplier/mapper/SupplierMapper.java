@@ -1,9 +1,8 @@
 package com.tyrael.kharazim.application.supplier.mapper;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.tyrael.kharazim.application.base.BasePageMapper;
 import com.tyrael.kharazim.application.base.LambdaQueryWrapperX;
 import com.tyrael.kharazim.application.supplier.domain.SupplierDO;
 import com.tyrael.kharazim.application.supplier.vo.ListSupplierRequest;
@@ -25,7 +24,7 @@ import java.util.stream.Collectors;
  * @since 2024/2/22
  */
 @Mapper
-public interface SupplierMapper extends BaseMapper<SupplierDO> {
+public interface SupplierMapper extends BasePageMapper<SupplierDO> {
 
     /**
      * find by code
@@ -49,12 +48,7 @@ public interface SupplierMapper extends BaseMapper<SupplierDO> {
         LambdaQueryWrapperX<SupplierDO> queryWrapper = new LambdaQueryWrapperX<>();
         queryWrapper.likeIfPresent(SupplierDO::getName, pageRequest.getName());
         queryWrapper.orderByAsc(SupplierDO::getCode);
-        Page<SupplierDO> page = new Page<>(pageRequest.getPageNum(), pageRequest.getPageSize());
-        Page<SupplierDO> pageResponse = selectPage(page, queryWrapper);
-        return PageResponse.success(pageResponse.getRecords(),
-                pageResponse.getTotal(),
-                pageRequest.getPageSize(),
-                pageRequest.getPageNum());
+        return page(pageRequest, queryWrapper);
     }
 
     /**

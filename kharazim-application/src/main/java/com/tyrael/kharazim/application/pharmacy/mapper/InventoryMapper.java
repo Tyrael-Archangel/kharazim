@@ -72,7 +72,7 @@ public interface InventoryMapper extends BasePageMapper<Inventory> {
         }
         queryWrapper.orderBy(isAsc, Inventory::getId);
 
-        return selectPage(pageRequest, queryWrapper);
+        return page(pageRequest, queryWrapper);
     }
 
     /**

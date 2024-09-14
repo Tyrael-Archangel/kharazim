@@ -1,9 +1,8 @@
 package com.tyrael.kharazim.application.customer.mapper;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.tyrael.kharazim.application.base.BasePageMapper;
 import com.tyrael.kharazim.application.base.LambdaQueryWrapperX;
 import com.tyrael.kharazim.application.customer.domain.Family;
 import com.tyrael.kharazim.application.customer.vo.family.PageFamilyRequest;
@@ -20,7 +19,7 @@ import java.util.List;
  * @since 2024/1/19
  */
 @Mapper
-public interface FamilyMapper extends BaseMapper<Family> {
+public interface FamilyMapper extends BasePageMapper<Family> {
 
     /**
      * find by code
@@ -61,11 +60,6 @@ public interface FamilyMapper extends BaseMapper<Family> {
         queryWrapper.eqIfHasText(Family::getCode, pageRequest.getFamilyCode())
                 .eqIfHasText(Family::getName, pageRequest.getFamilyName());
 
-        Page<Family> page = new Page<>(pageRequest.getPageNum(), pageRequest.getPageSize());
-        Page<Family> familyPage = selectPage(page, queryWrapper);
-        return PageResponse.success(familyPage.getRecords(),
-                familyPage.getTotal(),
-                pageRequest.getPageSize(),
-                pageRequest.getPageNum());
+        return page(pageRequest, queryWrapper);
     }
 }

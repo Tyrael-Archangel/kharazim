@@ -1,9 +1,8 @@
 package com.tyrael.kharazim.application.product.mapper;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.tyrael.kharazim.application.base.BasePageMapper;
 import com.tyrael.kharazim.application.base.LambdaQueryWrapperX;
 import com.tyrael.kharazim.application.product.domain.ProductUnitDO;
 import com.tyrael.kharazim.application.product.vo.unit.ListProductUnitRequest;
@@ -25,7 +24,7 @@ import java.util.stream.Collectors;
  * @since 2024/2/20
  */
 @Mapper
-public interface ProductUnitMapper extends BaseMapper<ProductUnitDO> {
+public interface ProductUnitMapper extends BasePageMapper<ProductUnitDO> {
 
     /**
      * 商品单位分页查询
@@ -43,12 +42,7 @@ public interface ProductUnitMapper extends BaseMapper<ProductUnitDO> {
         }
         queryWrapper.orderByAsc(ProductUnitDO::getCode);
 
-        Page<ProductUnitDO> page = new Page<>(pageRequest.getPageNum(), pageRequest.getPageSize());
-        Page<ProductUnitDO> pageResponse = selectPage(page, queryWrapper);
-        return PageResponse.success(pageResponse.getRecords(),
-                pageResponse.getTotal(),
-                pageRequest.getPageSize(),
-                pageRequest.getPageNum());
+        return page(pageRequest, queryWrapper);
     }
 
     /**

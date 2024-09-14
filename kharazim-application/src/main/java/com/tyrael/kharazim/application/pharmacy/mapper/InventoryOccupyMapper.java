@@ -31,7 +31,7 @@ public interface InventoryOccupyMapper extends BasePageMapper<InventoryOccupy> {
         queryWrapper.orderByDesc(InventoryOccupy::getQuantity);
         queryWrapper.orderByDesc(InventoryOccupy::getId);
 
-        return selectPage(pageRequest, queryWrapper);
+        return page(pageRequest, queryWrapper);
     }
 
     /**

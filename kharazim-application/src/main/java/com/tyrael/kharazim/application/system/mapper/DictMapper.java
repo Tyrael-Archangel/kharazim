@@ -2,10 +2,9 @@ package com.tyrael.kharazim.application.system.mapper;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.collect.Sets;
+import com.tyrael.kharazim.application.base.BasePageMapper;
 import com.tyrael.kharazim.application.system.domain.Dict;
 import com.tyrael.kharazim.application.system.dto.dict.PageDictRequest;
 import com.tyrael.kharazim.common.dto.PageResponse;
@@ -24,7 +23,7 @@ import java.util.Set;
  * @since 2023/12/25
  */
 @Mapper
-public interface DictMapper extends BaseMapper<Dict> {
+public interface DictMapper extends BasePageMapper<Dict> {
 
     /**
      * list by codes
@@ -76,13 +75,7 @@ public interface DictMapper extends BaseMapper<Dict> {
                     .or()
                     .like(Dict::getName, keywords);
         }
-        Page<Dict> page = new Page<>(pageDictRequest.getPageNum(), pageDictRequest.getPageSize());
-        Page<Dict> dictPage = selectPage(page, queryWrapper);
-
-        return PageResponse.success(dictPage.getRecords(),
-                dictPage.getTotal(),
-                pageDictRequest.getPageSize(),
-                pageDictRequest.getPageNum());
+        return page(pageDictRequest, queryWrapper);
     }
 
     /**

@@ -1,10 +1,9 @@
 package com.tyrael.kharazim.application.product.mapper;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
+import com.tyrael.kharazim.application.base.BasePageMapper;
 import com.tyrael.kharazim.application.base.LambdaQueryWrapperX;
 import com.tyrael.kharazim.application.product.domain.ProductSku;
 import com.tyrael.kharazim.application.product.vo.sku.PageProductSkuRequest;
@@ -21,7 +20,7 @@ import java.util.stream.Collectors;
  * @since 2024/3/4
  */
 @Mapper
-public interface ProductSkuMapper extends BaseMapper<ProductSku> {
+public interface ProductSkuMapper extends BasePageMapper<ProductSku> {
 
     /**
      * filter codes by name
@@ -114,12 +113,7 @@ public interface ProductSkuMapper extends BaseMapper<ProductSku> {
         queryWrapper.inIfPresent(ProductSku::getSupplierCode, pageRequest.getSupplierCodes());
         queryWrapper.orderByAsc(ProductSku::getCode);
 
-        Page<ProductSku> page = new Page<>(pageRequest.getPageNum(), pageRequest.getPageSize());
-        Page<ProductSku> pageResponse = selectPage(page, queryWrapper);
-        return PageResponse.success(pageResponse.getRecords(),
-                pageResponse.getTotal(),
-                pageRequest.getPageSize(),
-                pageRequest.getPageNum());
+        return page(pageRequest, queryWrapper);
     }
 
 }

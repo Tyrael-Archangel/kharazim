@@ -1,9 +1,8 @@
 package com.tyrael.kharazim.application.recharge.mapper;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.tyrael.kharazim.application.base.BasePageMapper;
 import com.tyrael.kharazim.application.base.LambdaQueryWrapperX;
 import com.tyrael.kharazim.application.recharge.domain.RechargeCardType;
 import com.tyrael.kharazim.application.recharge.vo.ListRechargeCardTypeRequest;
@@ -23,7 +22,7 @@ import java.util.stream.Collectors;
  * @since 2024/1/25
  */
 @Mapper
-public interface RechargeCardTypeMapper extends BaseMapper<RechargeCardType> {
+public interface RechargeCardTypeMapper extends BasePageMapper<RechargeCardType> {
 
     /**
      * find by code
@@ -49,12 +48,7 @@ public interface RechargeCardTypeMapper extends BaseMapper<RechargeCardType> {
                 .eqIfPresent(RechargeCardType::getCanCreateNewCard, pageRequest.getCanCreateNewCard());
         queryWrapper.orderByAsc(RechargeCardType::getId);
 
-        Page<RechargeCardType> page = new Page<>(pageRequest.getPageNum(), pageRequest.getPageSize());
-        Page<RechargeCardType> cardTypePage = selectPage(page, queryWrapper);
-        return PageResponse.success(cardTypePage.getRecords(),
-                cardTypePage.getTotal(),
-                pageRequest.getPageSize(),
-                pageRequest.getPageNum());
+        return page(pageRequest, queryWrapper);
     }
 
     /**
