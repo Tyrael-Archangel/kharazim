@@ -80,7 +80,7 @@ const pageInfo = reactive({
 function loadSupplier() {
   axios
     .get(
-      `/kharazim-api/supplier/page?pageSize=${pageInfo.pageSize}&pageNum=${pageInfo.currentPage}`,
+      `/kharazim-api/supplier/page?pageSize=${pageInfo.pageSize}&pageIndex=${pageInfo.currentPage}`,
     )
     .then((response: AxiosResponse) => {
       supplierPageData.value = response.data.data;

@@ -54,7 +54,7 @@ class SettlementControllerTest extends BaseControllerTest<SettlementController> 
 
         PageResponse<SettlementOrderVO> pageResponse;
         do {
-            pageRequest.setPageNum(pageIndex++);
+            pageRequest.setPageIndex(pageIndex++);
             pageResponse = settlementOrderService.page(pageRequest);
 
             List<SettlementOrderVO> unpaidOrders = pageResponse.getData()

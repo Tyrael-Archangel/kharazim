@@ -162,7 +162,7 @@
     </div>
     <div class="pagination-block">
       <el-pagination
-        v-model:current-page="pageRequest.pageNum"
+        v-model:current-page="pageRequest.pageIndex"
         v-model:page-size="pageRequest.pageSize"
         :page-sizes="pageInfo.pageSizes"
         :total="pageInfo.totalCount"
@@ -303,7 +303,7 @@ const pageRequest = reactive({
   clinicCodes: [],
   status: "",
   pageSize: 10,
-  pageNum: 1,
+  pageIndex: 1,
 });
 
 function loadSettlementOrders() {

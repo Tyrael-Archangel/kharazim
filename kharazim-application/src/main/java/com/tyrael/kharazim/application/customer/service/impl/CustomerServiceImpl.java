@@ -71,10 +71,10 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     @Transactional(readOnly = true)
     public PageResponse<CustomerBaseVO> page(PageCustomerRequest pageRequest) {
-        Page<Customer> pageCondition = new Page<>(pageRequest.getPageNum(), pageRequest.getPageSize());
+        Page<Customer> pageCondition = new Page<>(pageRequest.getPageIndex(), pageRequest.getPageSize());
         PageResponse<Customer> pageData = customerMapper.page(pageRequest, pageCondition);
         return PageResponse.success(customerConverter.customerBaseVOs(pageData.getData()),
-                pageData.getTotalCount(), pageRequest.getPageSize(), pageRequest.getPageNum());
+                pageData.getTotalCount(), pageRequest.getPageSize(), pageRequest.getPageIndex());
     }
 
     @Override

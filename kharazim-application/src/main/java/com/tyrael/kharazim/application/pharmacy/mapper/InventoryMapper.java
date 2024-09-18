@@ -54,7 +54,7 @@ public interface InventoryMapper extends BasePageMapper<Inventory> {
                 return PageResponse.success(new ArrayList<>(),
                         0L,
                         pageRequest.getPageSize(),
-                        pageRequest.getPageNum());
+                        pageRequest.getPageIndex());
             } else {
                 queryWrapper.in(Inventory::getSkuCode, skuCodes);
             }

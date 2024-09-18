@@ -43,7 +43,7 @@ public class ClinicServiceImpl implements ClinicService {
 
     @Override
     public PageResponse<ClinicVO> page(PageClinicRequest pageRequest) {
-        Page<Clinic> pageCondition = new Page<>(pageRequest.getPageNum(), pageRequest.getPageSize());
+        Page<Clinic> pageCondition = new Page<>(pageRequest.getPageIndex(), pageRequest.getPageSize());
         PageResponse<Clinic> pageData = clinicMapper.page(pageRequest, pageCondition);
 
         List<ClinicVO> clinics = pageData.getData()

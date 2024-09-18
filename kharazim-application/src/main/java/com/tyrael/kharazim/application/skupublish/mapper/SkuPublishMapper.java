@@ -45,7 +45,7 @@ public interface SkuPublishMapper extends BasePageMapper<SkuPublish> {
                 return PageResponse.success(new ArrayList<>(),
                         0L,
                         pageRequest.getPageSize(),
-                        pageRequest.getPageNum());
+                        pageRequest.getPageIndex());
             }
         }
 

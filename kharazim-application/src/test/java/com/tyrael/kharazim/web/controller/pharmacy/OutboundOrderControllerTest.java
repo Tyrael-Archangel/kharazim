@@ -37,7 +37,7 @@ class OutboundOrderControllerTest extends BaseControllerTest<OutboundOrderContro
 
         PageResponse<OutboundOrderVO> pageResponse;
         do {
-            pageRequest.setPageNum(pageIndex++);
+            pageRequest.setPageIndex(pageIndex++);
             pageResponse = outboundOrderService.page(pageRequest);
 
             for (OutboundOrderVO outboundOrder : pageResponse.getData()) {

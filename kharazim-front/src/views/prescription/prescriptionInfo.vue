@@ -125,7 +125,7 @@
     </div>
     <div class="pagination-block">
       <el-pagination
-        v-model:current-page="pageRequest.pageNum"
+        v-model:current-page="pageRequest.pageIndex"
         v-model:page-size="pageRequest.pageSize"
         :page-sizes="[10, 20, 50, 100]"
         :total="prescriptionPageData.totalCount"
@@ -156,7 +156,7 @@ const initPageRequest = {
   createDateMin: "",
   createDateMax: "",
   createDate: [] as Date[],
-  pageNum: 1,
+  pageIndex: 1,
   pageSize: 10,
 };
 
@@ -191,7 +191,7 @@ function formatPageUrlQuery() {
       `createDateMin=${createDateMin}`,
       `createDateMax=${createDateMax}`,
       `pageSize=${pageRequest.pageSize}`,
-      `pageNum=${pageRequest.pageNum}`,
+      `pageIndex=${pageRequest.pageIndex}`,
       `${ACCESS_TOKEN}=${getToken()}`,
     ],
     "&",

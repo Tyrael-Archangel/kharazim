@@ -35,7 +35,7 @@ public interface BasePageMapper<T> extends BaseMapper<T> {
      * @return page data
      */
     default PageResponse<T> page(PageCommand pageCommand, Wrapper<T> queryWrapper) {
-        return this.page(new Page<>(pageCommand.getPageNum(), pageCommand.getPageSize()), queryWrapper);
+        return this.page(new Page<>(pageCommand.getPageIndex(), pageCommand.getPageSize()), queryWrapper);
     }
 
 }

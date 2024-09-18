@@ -74,7 +74,7 @@ const pageInfo = reactive({
 function loadRechargeCardType() {
   axios
     .get(
-      `/kharazim-api/recharge-card-type/page?pageSize=${pageInfo.pageSize}&pageNum=${pageInfo.currentPage}`,
+      `/kharazim-api/recharge-card-type/page?pageSize=${pageInfo.pageSize}&pageIndex=${pageInfo.currentPage}`,
     )
     .then((response: AxiosResponse) => {
       rechargeCardTypePageData.value = response.data.data;

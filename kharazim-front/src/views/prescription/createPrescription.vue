@@ -346,7 +346,7 @@ function loadProductPublish() {
   }
   axios
     .get(
-      `/kharazim-api/product/publish/page?pageSize=${pageInfo.pageSize}&pageNum=${pageInfo.currentPage}`,
+      `/kharazim-api/product/publish/page?pageSize=${pageInfo.pageSize}&pageIndex=${pageInfo.currentPage}`,
       {
         params: pagePublishSkuRequest,
       },

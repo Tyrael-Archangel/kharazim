@@ -301,7 +301,7 @@ function loadInboundOrders() {
         supplierCodes: pageRequest.supplierCodes,
         status: pageRequest.status,
         pageSize: pageInfo.pageSize,
-        pageNum: pageInfo.currentPage,
+        pageIndex: pageInfo.currentPage,
       },
     })
     .then((response: AxiosResponse) => {

@@ -194,7 +194,7 @@
     </div>
     <div class="pagination-block">
       <el-pagination
-        v-model:current-page="pageRequest.pageNum"
+        v-model:current-page="pageRequest.pageIndex"
         v-model:page-size="pageRequest.pageSize"
         :page-sizes="[10, 20, 50, 100]"
         :total="customerRechargeCardPageData.totalCount"
@@ -222,7 +222,7 @@
     </div>
     <div class="pagination-block">
       <el-pagination
-        v-model:current-page="logPageInfo.pageNum"
+        v-model:current-page="logPageInfo.pageIndex"
         v-model:page-size="logPageInfo.pageSize"
         :page-sizes="[10, 20, 50, 100]"
         :total="customerRechargeCardLogData.totalCount"
@@ -386,7 +386,7 @@ const initPageRequest = {
   rechargeDate: [] as Date[],
   rechargeStartDate: "",
   rechargeEndDate: "",
-  pageNum: 1,
+  pageIndex: 1,
   pageSize: 10,
 };
 
@@ -527,7 +527,7 @@ function chargeback(row: CustomerRechargeCard) {
 const logTableVisible = ref(false);
 const currentLogRow = ref<CustomerRechargeCard>();
 const logPageInfo = reactive({
-  pageNum: 1,
+  pageIndex: 1,
   pageSize: 10,
 });
 const customerRechargeCardLogData = ref({ totalCount: 0, data: [] });
@@ -535,7 +535,7 @@ const customerRechargeCardLogData = ref({ totalCount: 0, data: [] });
 function showLog(row: CustomerRechargeCard) {
   currentLogRow.value = row;
   customerRechargeCardLogData.value = { totalCount: 0, data: [] };
-  logPageInfo.pageNum = 1;
+  logPageInfo.pageIndex = 1;
   logPageInfo.pageSize = 10;
   logTableVisible.value = true;
   loadCustomerRechargeCardLog();

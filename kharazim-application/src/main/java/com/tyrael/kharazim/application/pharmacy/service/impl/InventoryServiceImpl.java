@@ -42,7 +42,7 @@ public class InventoryServiceImpl implements InventoryService {
                 inventoryConverter.inventories(pageData.getData()),
                 pageData.getTotalCount(),
                 pageRequest.getPageSize(),
-                pageRequest.getPageNum());
+                pageRequest.getPageIndex());
     }
 
     @Override

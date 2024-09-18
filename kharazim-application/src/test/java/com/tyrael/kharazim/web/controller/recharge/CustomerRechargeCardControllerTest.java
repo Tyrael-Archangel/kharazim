@@ -84,7 +84,7 @@ class CustomerRechargeCardControllerTest extends BaseControllerTest<CustomerRech
         request.setPageSize(PageCommand.MAX_PAGE_SIZE);
         Collection<CustomerRechargeCardVO> customerRechargeCards;
         do {
-            request.setPageNum(pageNum++);
+            request.setPageIndex(pageNum++);
             customerRechargeCards = customerRechargeCardService.page(request).getData();
             for (CustomerRechargeCardVO customerRechargeCard : customerRechargeCards) {
                 if (random.nextInt(100) > 15

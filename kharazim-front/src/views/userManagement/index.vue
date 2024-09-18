@@ -128,7 +128,7 @@ const pageRequest = reactive({
 function loadUser() {
   axios
     .get(
-      `/kharazim-api/user/page?pageSize=${pageInfo.pageSize}&pageNum=${pageInfo.currentPage}` +
+      `/kharazim-api/user/page?pageSize=${pageInfo.pageSize}&pageIndex=${pageInfo.currentPage}` +
         `${pageRequest.keywords ? "&keywords=" + pageRequest.keywords : ""}` +
         `&status=${pageRequest.status ? "&status=" + pageRequest.status : ""}`,
     )

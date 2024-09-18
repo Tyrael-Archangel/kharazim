@@ -40,7 +40,7 @@ class InboundOrderControllerTest extends BaseControllerTest<InboundOrderControll
 
         PageResponse<InboundOrderVO> pageResponse;
         do {
-            pageRequest.setPageNum(pageIndex++);
+            pageRequest.setPageIndex(pageIndex++);
             pageResponse = inboundOrderService.page(pageRequest);
 
             List<InboundOrderVO> waitInboundOrders = pageResponse.getData()

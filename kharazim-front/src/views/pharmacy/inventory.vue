@@ -112,7 +112,7 @@
     </div>
     <div class="pagination-block">
       <el-pagination
-        v-model:current-page="pageRequest.pageNum"
+        v-model:current-page="pageRequest.pageIndex"
         v-model:page-size="pageRequest.pageSize"
         :page-sizes="[10, 20, 50, 100]"
         :total="inventoryPageData.totalCount"
@@ -160,7 +160,7 @@ const initPageRequest = {
   clinicCodes: [],
   sortBy: "QUANTITY",
   sortDirection: "DESC",
-  pageNum: 1,
+  pageIndex: 1,
   pageSize: 10,
 };
 
@@ -248,7 +248,7 @@ function loadSkuOccupyRecords() {
         skuCode: currentSkuOccupyRow.value.skuCode,
         clinicCode: currentSkuOccupyRow.value.clinicCode,
         pageSize: skuOccupyRecordPageInfo.pageSize,
-        pageNum: skuOccupyRecordPageInfo.currentPage,
+        pageIndex: skuOccupyRecordPageInfo.currentPage,
       },
     })
     .then((res: AxiosResponse) => {

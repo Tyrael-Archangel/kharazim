@@ -256,7 +256,7 @@ function confirmAddFamilyMember() {
 function loadFamily() {
   axios
     .get(
-      `/kharazim-api/customer/family/page?pageSize=${pageInfo.pageSize}&pageNum=${pageInfo.currentPage}`,
+      `/kharazim-api/customer/family/page?pageSize=${pageInfo.pageSize}&pageIndex=${pageInfo.currentPage}`,
     )
     .then((response: AxiosResponse) => {
       familyPageData.value = response.data.data;

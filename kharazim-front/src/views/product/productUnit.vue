@@ -48,7 +48,7 @@ const pageInfo = reactive({
 function loadUnit() {
   axios
     .get(
-      `/kharazim-api/product/unit/page?pageSize=${pageInfo.pageSize}&pageNum=${pageInfo.currentPage}`,
+      `/kharazim-api/product/unit/page?pageSize=${pageInfo.pageSize}&pageIndex=${pageInfo.currentPage}`,
     )
     .then((response: AxiosResponse) => {
       unitPageData.value = response.data.data;

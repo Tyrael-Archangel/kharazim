@@ -66,7 +66,7 @@
   </router-link>
   <div class="pagination-block">
     <el-pagination
-      v-model:current-page="pageRequest.pageNum"
+      v-model:current-page="pageRequest.pageIndex"
       v-model:page-size="pageRequest.pageSize"
       :page-sizes="[10, 20, 50, 100]"
       :total="pageInfo.totalCount"
@@ -139,7 +139,7 @@
   </div>
   <div class="pagination-block">
     <el-pagination
-      v-model:current-page="pageRequest.pageNum"
+      v-model:current-page="pageRequest.pageIndex"
       v-model:page-size="pageRequest.pageSize"
       :page-sizes="[10, 20, 50, 100]"
       :total="pageInfo.totalCount"
@@ -188,7 +188,7 @@ const initPageRequest = {
   clinicCodes: [],
   description: "",
   pageSize: 10,
-  pageNum: 1,
+  pageIndex: 1,
 };
 
 const pageRequest = reactive({ ...initPageRequest });

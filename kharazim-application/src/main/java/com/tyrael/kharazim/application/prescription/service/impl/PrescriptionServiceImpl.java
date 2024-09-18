@@ -176,7 +176,7 @@ public class PrescriptionServiceImpl implements PrescriptionService {
     @Transactional(readOnly = true)
     public PageResponse<PrescriptionVO> page(PagePrescriptionRequest pageRequest) {
 
-        Page<Prescription> pageCondition = new Page<>(pageRequest.getPageNum(), pageRequest.getPageSize());
+        Page<Prescription> pageCondition = new Page<>(pageRequest.getPageIndex(), pageRequest.getPageSize());
         PageResponse<Prescription> pageData = prescriptionMapper.page(pageRequest, pageCondition);
 
         Collection<Prescription> prescriptions = pageData.getData();

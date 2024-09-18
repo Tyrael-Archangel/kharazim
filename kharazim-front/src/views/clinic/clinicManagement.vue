@@ -59,7 +59,7 @@
   </div>
   <div class="pagination-block">
     <el-pagination
-      v-model:current-page="pageRequest.pageNum"
+      v-model:current-page="pageRequest.pageIndex"
       v-model:page-size="pageRequest.pageSize"
       :page-sizes="[10, 20, 50, 100]"
       :total="clinicPageResponse.totalCount"
@@ -95,7 +95,7 @@ const clinicPageResponse = ref({
 const pageRequest = reactive({
   name: "",
   status: "",
-  pageNum: 1,
+  pageIndex: 1,
   pageSize: 20,
 });
 

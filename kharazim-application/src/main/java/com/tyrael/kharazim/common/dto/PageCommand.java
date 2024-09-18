@@ -20,7 +20,7 @@ public class PageCommand {
     protected Integer pageSize;
 
     @Schema(description = "分页-页码，默认1", example = "1")
-    protected Integer pageNum;
+    protected Integer pageIndex;
 
     @NonNull
     public Integer getPageSize() {
@@ -34,8 +34,8 @@ public class PageCommand {
     }
 
     @NonNull
-    public Integer getPageNum() {
-        return pageNum == null ? DEFAULT_PAGE_NUM : pageNum;
+    public Integer getPageIndex() {
+        return pageIndex == null ? DEFAULT_PAGE_NUM : pageIndex;
     }
 
     public enum SortDirection {

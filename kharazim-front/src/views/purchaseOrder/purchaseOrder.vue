@@ -169,7 +169,7 @@
     </div>
     <div class="pagination-block">
       <el-pagination
-        v-model:current-page="pageRequest.pageNum"
+        v-model:current-page="pageRequest.pageIndex"
         v-model:page-size="pageRequest.pageSize"
         :page-sizes="[10, 20, 50, 100]"
         :total="purchaseOrderPageData.totalCount"
@@ -197,7 +197,7 @@ const initPageRequest = {
   receiveStatuses: [],
   paymentStatuses: [],
   createDate: [] as Date[],
-  pageNum: 1,
+  pageIndex: 1,
   pageSize: 10,
 };
 
@@ -251,7 +251,7 @@ function loadPurchaseOrders() {
         receiveStatuses: pageRequest.receiveStatuses,
         paymentStatuses: pageRequest.paymentStatuses,
         pageSize: pageRequest.pageSize,
-        pageNum: pageRequest.pageNum,
+        pageIndex: pageRequest.pageIndex,
         createDateMin: createDateMin,
         createDateMax: createDateMax,
       },

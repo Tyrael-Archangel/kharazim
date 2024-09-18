@@ -235,7 +235,7 @@ function loadCustomer() {
     .get("/kharazim-api/customer/page", {
       params: {
         pageSize: pageInfo.pageSize,
-        pageNum: pageInfo.currentPage,
+        pageIndex: pageInfo.currentPage,
         code: pageRequest.value.code,
         name: pageRequest.value.name,
       },

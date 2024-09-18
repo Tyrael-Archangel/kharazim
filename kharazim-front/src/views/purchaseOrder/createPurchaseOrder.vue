@@ -343,7 +343,7 @@ function loadProductSku() {
   }
   axios
     .get(
-      `/kharazim-api/product/sku/page?pageSize=${pageInfo.pageSize}&pageNum=${pageInfo.currentPage}`,
+      `/kharazim-api/product/sku/page?pageSize=${pageInfo.pageSize}&pageIndex=${pageInfo.currentPage}`,
       {
         params: pageProductSkuRequest,
       },
