@@ -104,7 +104,7 @@
   <div>
     <div>
       <el-table
-        :data="purchaseOrderPageData"
+        :data="purchaseOrderPageData.data"
         border
         style="width: 100%; margin-top: 10px"
       >
@@ -169,10 +169,10 @@
     </div>
     <div class="pagination-block">
       <el-pagination
-        v-model:current-page="pageInfo.currentPage"
-        v-model:page-size="pageInfo.pageSize"
-        :page-sizes="pageInfo.pageSizes"
-        :total="pageInfo.totalCount"
+        v-model:current-page="pageRequest.pageNum"
+        v-model:page-size="pageRequest.pageSize"
+        :page-sizes="[10, 20, 50, 100]"
+        :total="purchaseOrderPageData.totalCount"
         background
         layout="total, sizes, prev, pager, next, jumper"
         @size-change="loadPurchaseOrders"
@@ -188,22 +188,20 @@ import { AxiosResponse } from "axios";
 import axios from "@/utils/http.js";
 import { dateFormat } from "@/utils/DateUtil";
 
-const purchaseOrderPageData = ref([]);
+const purchaseOrderPageData = ref({ totalCount: 0, data: [] });
 
-const pageRequest = reactive({
+const initPageRequest = {
   purchaseOrderCode: "",
   clinicCodes: [],
   supplierCodes: [],
   receiveStatuses: [],
   paymentStatuses: [],
   createDate: [] as Date[],
-});
-const pageInfo = reactive({
-  currentPage: 1,
+  pageNum: 1,
   pageSize: 10,
-  totalCount: 0,
-  pageSizes: [10, 20, 50, 100],
-});
+};
+
+const pageRequest = reactive({ ...initPageRequest });
 
 interface ClinicOption {
   code: string;
@@ -232,12 +230,9 @@ function loadSupplierOptions() {
 }
 
 function resetAndReloadPurchaseOrders() {
-  pageRequest.purchaseOrderCode = "";
-  pageRequest.clinicCodes = [];
-  pageRequest.supplierCodes = [];
-  pageRequest.receiveStatuses = [];
-  pageRequest.paymentStatuses = [];
-  pageRequest.createDate = [] as Date[];
+  console.log(pageRequest);
+  Object.assign(pageRequest, initPageRequest);
+  console.log(pageRequest);
   loadPurchaseOrders();
 }
 
@@ -257,15 +252,14 @@ function loadPurchaseOrders() {
         supplierCodes: pageRequest.supplierCodes,
         receiveStatuses: pageRequest.receiveStatuses,
         paymentStatuses: pageRequest.paymentStatuses,
-        pageSize: pageInfo.pageSize,
-        pageNum: pageInfo.currentPage,
+        pageSize: pageRequest.pageSize,
+        pageNum: pageRequest.pageNum,
         createDateMin: createDateMin,
         createDateMax: createDateMax,
       },
     })
     .then((response: AxiosResponse) => {
-      purchaseOrderPageData.value = response.data.data;
-      pageInfo.totalCount = response.data.totalCount;
+      purchaseOrderPageData.value = response.data;
     });
 }
 

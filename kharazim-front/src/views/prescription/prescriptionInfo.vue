@@ -83,7 +83,7 @@
   <div>
     <div>
       <el-table
-        :data="prescriptionPageData"
+        :data="prescriptionPageData.data"
         border
         style="width: 100%; margin-top: 10px"
       >
@@ -125,10 +125,10 @@
     </div>
     <div class="pagination-block">
       <el-pagination
-        v-model:current-page="pageInfo.currentPage"
-        v-model:page-size="pageInfo.pageSize"
-        :page-sizes="pageInfo.pageSizes"
-        :total="pageInfo.totalCount"
+        v-model:current-page="pageRequest.pageNum"
+        v-model:page-size="pageRequest.pageSize"
+        :page-sizes="[10, 20, 50, 100]"
+        :total="prescriptionPageData.totalCount"
         background
         layout="total, sizes, prev, pager, next, jumper"
         @size-change="loadPrescriptions"
@@ -144,32 +144,26 @@ import { AxiosResponse } from "axios";
 import axios from "@/utils/http.js";
 import { ACCESS_TOKEN, getToken } from "@/utils/auth.js";
 import { dateFormat } from "@/utils/DateUtil.js";
-import { join } from "@/utils/StringUtil.ts";
+import { ifNullEmpty, join } from "@/utils/StringUtil.ts";
 import { useRouter } from "vue-router";
 
-const prescriptionPageData = ref([]);
-const pageRequest = reactive({
+const prescriptionPageData = ref({ totalCount: 0, data: [] });
+
+const initPageRequest = {
   prescriptionCode: "",
   customerCode: "",
   clinicCodes: [],
   createDateMin: "",
   createDateMax: "",
   createDate: [] as Date[],
-});
-const pageInfo = reactive({
-  currentPage: 1,
+  pageNum: 1,
   pageSize: 10,
-  totalCount: 0,
-  pageSizes: [10, 20, 50, 100],
-});
+};
+
+const pageRequest = reactive({ ...initPageRequest });
 
 function resetAndReloadPrescriptions() {
-  pageRequest.prescriptionCode = "";
-  pageRequest.customerCode = "";
-  pageRequest.clinicCodes = [];
-  pageRequest.createDateMin = "";
-  pageRequest.createDateMax = "";
-  pageRequest.createDate = [] as Date[];
+  Object.assign(pageRequest, initPageRequest);
   loadPrescriptions();
 }
 
@@ -177,8 +171,7 @@ function loadPrescriptions() {
   axios
     .get("/kharazim-api/prescription/page" + formatPageUrlQuery())
     .then((response: AxiosResponse) => {
-      prescriptionPageData.value = response.data.data;
-      pageInfo.totalCount = response.data.totalCount;
+      prescriptionPageData.value = response.data;
     });
 }
 
@@ -192,13 +185,13 @@ function formatPageUrlQuery() {
 
   return join(
     [
-      `prescriptionCode=${pageRequest.prescriptionCode ? pageRequest.prescriptionCode : ""}`,
-      `customerCode=${pageRequest.customerCode ? pageRequest.customerCode : ""}`,
-      `clinicCodes=${pageRequest.clinicCodes ? pageRequest.clinicCodes : ""}`,
+      `prescriptionCode=${ifNullEmpty(pageRequest.prescriptionCode)}`,
+      `customerCode=${ifNullEmpty(pageRequest.customerCode)}`,
+      `clinicCodes=${ifNullEmpty(pageRequest.clinicCodes)}`,
       `createDateMin=${createDateMin}`,
       `createDateMax=${createDateMax}`,
-      `pageSize=${pageInfo.pageSize}`,
-      `pageNum=${pageInfo.currentPage}`,
+      `pageSize=${pageRequest.pageSize}`,
+      `pageNum=${pageRequest.pageNum}`,
       `${ACCESS_TOKEN}=${getToken()}`,
     ],
     "&",

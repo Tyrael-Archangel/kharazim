@@ -158,7 +158,7 @@
     </div>
     <div>
       <el-table
-        :data="productPageData"
+        :data="productPageData.data"
         border
         highlight-current-row
         style="width: 100%; margin-top: 10px"
@@ -189,10 +189,10 @@
     </div>
     <div class="pagination-block-center">
       <el-pagination
-        v-model:current-page="pageInfo.currentPage"
-        v-model:page-size="pageInfo.pageSize"
-        :page-sizes="pageInfo.pageSizes"
-        :total="pageInfo.totalCount"
+        v-model:current-page="pageRequest.pageNum"
+        v-model:page-size="pageRequest.pageSize"
+        :page-sizes="[5, 10, 20, 50]"
+        :total="productPageData.totalCount"
         background
         layout="total, sizes, prev, pager, next, jumper"
         @size-change="loadProducts"
@@ -215,7 +215,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, reactive, ref } from "vue";
+import { onMounted, reactive, ref, toRaw } from "vue";
 import { AxiosResponse } from "axios";
 import axios from "@/utils/http.js";
 import { ElMessage, ElTable } from "element-plus";
@@ -308,50 +308,35 @@ const selectedProduct = ref<ProductInfo[]>([]);
 const selectProductVisible = ref(false);
 
 function showSelectProduct() {
-  pageInfo.currentPage = 1;
-  pageInfo.pageSize = 10;
-  pageInfo.totalCount = 0;
-  pageInfo.pageSizes = [5, 10, 20, 50];
+  Object.assign(pageRequest, initPageRequest);
   selectedAtTable.value = null;
 
   loadProducts();
   selectProductVisible.value = true;
 }
 
-const pageRequest = reactive({
+const initPageRequest = {
   code: "",
   name: "",
   categoryCodes: [],
   supplierCodes: [],
-});
-
-const productPageData = ref<ProductInfo[]>([]);
-const pageInfo = reactive({
-  currentPage: 1,
+  pageNum: 1,
   pageSize: 10,
-  totalCount: 0,
-  pageSizes: [5, 10, 20, 50],
-});
+};
+const pageRequest = reactive({ ...initPageRequest });
+
+const productPageData = ref({ totalCount: 0, data: [] });
 
 function loadProducts() {
   axios
-    .get(
-      `/kharazim-api/product/sku/page?pageSize=${pageInfo.pageSize}&pageNum=${pageInfo.currentPage}`,
-      {
-        params: pageRequest,
-      },
-    )
+    .get("/kharazim-api/product/sku/page", { params: toRaw(pageRequest) })
     .then((response: AxiosResponse) => {
-      productPageData.value = response.data.data;
-      pageInfo.totalCount = response.data.totalCount;
+      productPageData.value = response.data;
     });
 }
 
 function clearPageRequestAndLoadProducts() {
-  pageRequest.code = "";
-  pageRequest.name = "";
-  pageRequest.categoryCodes = [];
-  pageRequest.supplierCodes = [];
+  Object.assign(pageRequest, initPageRequest);
   loadProducts();
 }
 

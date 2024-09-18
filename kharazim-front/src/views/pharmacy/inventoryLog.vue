@@ -70,7 +70,7 @@
   <div>
     <div>
       <el-table
-        :data="inventoryLogPageData"
+        :data="inventoryLogPageData.data"
         border
         style="width: 100%; margin-top: 10px"
       >
@@ -141,10 +141,10 @@
     </div>
     <div class="pagination-block">
       <el-pagination
-        v-model:current-page="pageInfo.currentPage"
-        v-model:page-size="pageInfo.pageSize"
-        :page-sizes="pageInfo.pageSizes"
-        :total="pageInfo.totalCount"
+        v-model:current-page="pageRequest.pageNum"
+        v-model:page-size="pageRequest.pageSize"
+        :page-sizes="[10, 20, 50, 100]"
+        :total="inventoryLogPageData.totalCount"
         background
         layout="total, sizes, prev, pager, next, jumper"
         @size-change="loadInventoryLogs"
@@ -155,64 +155,46 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, reactive, ref } from "vue";
+import { onMounted, reactive, ref, toRaw } from "vue";
 import axios from "@/utils/http.js";
 import { AxiosResponse } from "axios";
 import { dateTimeFormat } from "@/utils/DateUtil";
 
-const inventoryLogPageData = ref([]);
+const inventoryLogPageData = ref({ totalCount: 0, data: [] });
 
-const pageRequest = reactive({
+const initPageRequest = {
   skuCode: "",
   businessCode: "",
   changeTypes: [],
   clinicCode: "",
   timeRange: [] as Date[],
-});
-
-const pageInfo = reactive({
-  currentPage: 1,
+  startTime: "",
+  endTime: "",
+  pageNum: 1,
   pageSize: 10,
-  totalCount: 0,
-  pageSizes: [10, 20, 50, 100],
-});
+};
+
+const pageRequest = reactive({ ...initPageRequest });
 
 function loadInventoryLogs() {
-  let startTime = "";
-  let endTime = "";
+  let pageParams = toRaw(pageRequest);
   if (pageRequest.timeRange && pageRequest.timeRange.length === 2) {
-    startTime = dateTimeFormat(pageRequest.timeRange[0]);
-    endTime = dateTimeFormat(pageRequest.timeRange[1]);
+    pageParams.startTime = dateTimeFormat(pageRequest.timeRange[0]);
+    pageParams.endTime = dateTimeFormat(pageRequest.timeRange[1]);
+  } else {
+    pageParams.startTime = "";
+    pageParams.endTime = "";
   }
 
   axios
-    .get("/kharazim-api/inventory/page-log", {
-      params: {
-        skuCode: pageRequest.skuCode,
-        clinicCode: pageRequest.clinicCode,
-        businessCode: pageRequest.businessCode,
-        changeTypes: pageRequest.changeTypes,
-        startTime: startTime,
-        endTime: endTime,
-        pageSize: pageInfo.pageSize,
-        pageNum: pageInfo.currentPage,
-      },
-    })
+    .get("/kharazim-api/inventory/page-log", { params: pageParams })
     .then((response: AxiosResponse) => {
-      inventoryLogPageData.value = response.data.data;
-      pageInfo.totalCount = response.data.totalCount;
+      inventoryLogPageData.value = response.data;
     });
 }
 
 function resetAndLoadInventoryLogs() {
-  pageRequest.skuCode = "";
-  pageRequest.businessCode = "";
-  pageRequest.changeTypes = [];
-  pageRequest.clinicCode = "";
-  pageRequest.timeRange = [] as Date[];
-  pageInfo.currentPage = 1;
-  pageInfo.pageSize = 10;
-  pageInfo.totalCount = 0;
+  Object.assign(pageRequest, initPageRequest);
   loadInventoryLogs();
 }
 

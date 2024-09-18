@@ -23,3 +23,7 @@ export function join(
   }
   return result;
 }
+
+export function ifNullEmpty(str: string): string {
+  return str ? str : "";
+}

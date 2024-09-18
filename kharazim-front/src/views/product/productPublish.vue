@@ -68,7 +68,7 @@
     <el-pagination
       v-model:current-page="pageRequest.pageNum"
       v-model:page-size="pageRequest.pageSize"
-      :page-sizes="pageInfo.pageSizes"
+      :page-sizes="[10, 20, 50, 100]"
       :total="pageInfo.totalCount"
       background
       layout="total, sizes, prev, pager, next, jumper"
@@ -77,7 +77,7 @@
     />
   </div>
   <div>
-    <el-table :data="skuPublishPageData" border style="width: 100%">
+    <el-table :data="skuPublishPageData.data" border style="width: 100%">
       <el-table-column label="发布编码" prop="code" width="220" />
       <el-table-column align="center" label="发布状态" width="100">
         <template v-slot="{ row }">
@@ -141,7 +141,7 @@
     <el-pagination
       v-model:current-page="pageRequest.pageNum"
       v-model:page-size="pageRequest.pageSize"
-      :page-sizes="pageInfo.pageSizes"
+      :page-sizes="[10, 20, 50, 100]"
       :total="pageInfo.totalCount"
       background
       layout="total, sizes, prev, pager, next, jumper"
@@ -152,7 +152,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, reactive, ref } from "vue";
+import { onMounted, reactive, ref, toRaw } from "vue";
 import axios from "@/utils/http.js";
 import { AxiosResponse } from "axios";
 import { ElMessage, ElMessageBox } from "element-plus";
@@ -179,8 +179,9 @@ interface SkuPublish {
   effectEnd: string;
 }
 
-const skuPublishPageData = ref<SkuPublish[]>([]);
-const pageRequest = reactive({
+const skuPublishPageData = ref({ totalCount: 0, data: [] as SkuPublish[] });
+
+const initPageRequest = {
   skuName: "",
   skuCode: "",
   publishStatus: "",
@@ -188,7 +189,10 @@ const pageRequest = reactive({
   description: "",
   pageSize: 10,
   pageNum: 1,
-});
+};
+
+const pageRequest = reactive({ ...initPageRequest });
+
 const pageInfo = reactive({
   totalCount: 0,
   pageSizes: [10, 20, 50, 100],
@@ -208,22 +212,15 @@ function statusTagType(publishStatus: string) {
 }
 
 function clearPageRequestAndLoadProductPublish() {
-  pageRequest.skuName = "";
-  pageRequest.skuCode = "";
-  pageRequest.publishStatus = "";
-  pageRequest.clinicCodes = [];
-  pageRequest.description = "";
-  pageRequest.pageSize = 10;
-  pageRequest.pageNum = 1;
+  Object.assign(pageRequest, initPageRequest);
   loadProductPublish();
 }
 
 function loadProductPublish() {
   axios
-    .get("/kharazim-api/product/publish/page", { params: pageRequest })
+    .get("/kharazim-api/product/publish/page", { params: toRaw(pageRequest) })
     .then((response: AxiosResponse) => {
-      skuPublishPageData.value = response.data.data;
-      pageInfo.totalCount = response.data.totalCount;
+      skuPublishPageData.value = response.data;
     });
 }
 
