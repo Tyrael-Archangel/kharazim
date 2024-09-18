@@ -230,9 +230,7 @@ function loadSupplierOptions() {
 }
 
 function resetAndReloadPurchaseOrders() {
-  console.log(pageRequest);
   Object.assign(pageRequest, initPageRequest);
-  console.log(pageRequest);
   loadPurchaseOrders();
 }
 

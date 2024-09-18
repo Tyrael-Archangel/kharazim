@@ -110,7 +110,7 @@
   <div>
     <div>
       <el-table
-        :data="customerRechargeCardPageData"
+        :data="customerRechargeCardPageData.data"
         border
         style="width: 100%; margin-top: 10px"
       >
@@ -194,10 +194,10 @@
     </div>
     <div class="pagination-block">
       <el-pagination
-        v-model:current-page="pageInfo.currentPage"
-        v-model:page-size="pageInfo.pageSize"
-        :page-sizes="pageInfo.pageSizes"
-        :total="pageInfo.totalCount"
+        v-model:current-page="pageRequest.pageNum"
+        v-model:page-size="pageRequest.pageSize"
+        :page-sizes="[10, 20, 50, 100]"
+        :total="customerRechargeCardPageData.totalCount"
         background
         layout="total, sizes, prev, pager, next, jumper"
         @size-change="loadCustomerRechargeCard"
@@ -211,7 +211,7 @@
     width="1400"
   >
     <div>
-      <el-table :data="customerRechargeCardLogData">
+      <el-table :data="customerRechargeCardLogData.data">
         <el-table-column label="操作类型" prop="logTypeName" />
         <el-table-column label="金额" prop="amount" />
         <el-table-column label="关联业务单号" prop="sourceBusinessCode" />
@@ -222,10 +222,10 @@
     </div>
     <div class="pagination-block">
       <el-pagination
-        v-model:current-page="logPageInfo.currentPage"
+        v-model:current-page="logPageInfo.pageNum"
         v-model:page-size="logPageInfo.pageSize"
-        :page-sizes="logPageInfo.pageSizes"
-        :total="logPageInfo.totalCount"
+        :page-sizes="[10, 20, 50, 100]"
+        :total="customerRechargeCardLogData.totalCount"
         background
         layout="total, sizes, prev, pager, next, jumper"
         @size-change="loadCustomerRechargeCard"
@@ -343,7 +343,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, reactive, ref } from "vue";
+import { onMounted, reactive, ref, toRaw } from "vue";
 import { AxiosResponse } from "axios";
 import axios from "@/utils/http.js";
 import { ElMessage, ElMessageBox } from "element-plus";
@@ -372,40 +372,41 @@ interface CustomerRechargeCard {
   chargebackUserName: string;
 }
 
-const customerRechargeCardPageData = ref<CustomerRechargeCard[]>([]);
-const pageInfo = reactive({
-  currentPage: 1,
-  pageSize: 10,
+const customerRechargeCardPageData = ref({
   totalCount: 0,
-  pageSizes: [10, 20, 50, 100],
+  data: [] as CustomerRechargeCard[],
 });
 
-const pageRequest = reactive({
+const initPageRequest = {
   code: "",
   customerCode: "",
   traderUserCode: "",
   statuses: [] as string[],
   rechargeCardTypes: [],
   rechargeDate: [] as Date[],
-});
+  rechargeStartDate: "",
+  rechargeEndDate: "",
+  pageNum: 1,
+  pageSize: 10,
+};
+
+const pageRequest = reactive({ ...initPageRequest });
 
 const addCustomerRechargeCardVisible = ref(false);
-const addCustomerRechargeCardData = ref({
+const initAddCustomerRechargeCardData = {
   customerCode: "",
   traderUserCode: "",
   cardTypeCode: "",
   rechargeDate: null as Date | null,
   amount: null as number | null,
   remark: "",
+};
+const addCustomerRechargeCardData = reactive({
+  ...initAddCustomerRechargeCardData,
 });
 
 function showAddCustomerRechargeCardDialog() {
-  addCustomerRechargeCardData.value.customerCode = "";
-  addCustomerRechargeCardData.value.traderUserCode = "";
-  addCustomerRechargeCardData.value.cardTypeCode = "";
-  addCustomerRechargeCardData.value.rechargeDate = null;
-  addCustomerRechargeCardData.value.amount = null;
-  addCustomerRechargeCardData.value.remark = "";
+  Object.assign(addCustomerRechargeCardData, initAddCustomerRechargeCardData);
   addCustomerRechargeCardVisible.value = true;
 }
 
@@ -415,14 +416,10 @@ function closeAddCustomerRechargeCardDialog() {
 
 function confirmAddCustomerRechargeCard() {
   axios
-    .post("kharazim-api/recharge-card/recharge", {
-      customerCode: addCustomerRechargeCardData.value.customerCode,
-      cardTypeCode: addCustomerRechargeCardData.value.cardTypeCode,
-      rechargeDate: dateFormat(addCustomerRechargeCardData.value.rechargeDate),
-      amount: addCustomerRechargeCardData.value.amount,
-      traderUserCode: addCustomerRechargeCardData.value.traderUserCode,
-      remark: addCustomerRechargeCardData.value.remark,
-    })
+    .post(
+      "kharazim-api/recharge-card/recharge",
+      toRaw(addCustomerRechargeCardData),
+    )
     .then(() => {
       ElMessage({
         showClose: true,
@@ -435,42 +432,25 @@ function confirmAddCustomerRechargeCard() {
 }
 
 function clearAndLoadCustomerRechargeCard() {
-  pageRequest.code = "";
-  pageRequest.customerCode = "";
-  pageRequest.traderUserCode = "";
-  pageRequest.statuses = [] as string[];
-  pageRequest.rechargeCardTypes = [];
-  pageRequest.rechargeDate = [] as Date[];
-  pageInfo.currentPage = 1;
-  pageInfo.pageSize = 10;
+  Object.assign(pageRequest, initPageRequest);
   loadCustomerRechargeCard();
 }
 
 function loadCustomerRechargeCard() {
-  let rechargeStartDate = "";
-  let rechargeEndDate = "";
+  const pageParams = toRaw(pageRequest);
   if (pageRequest.rechargeDate && pageRequest.rechargeDate.length === 2) {
-    rechargeStartDate = dateFormat(pageRequest.rechargeDate[0]);
-    rechargeEndDate = dateFormat(pageRequest.rechargeDate[1]);
+    pageParams.rechargeStartDate = dateFormat(pageRequest.rechargeDate[0]);
+    pageParams.rechargeEndDate = dateFormat(pageRequest.rechargeDate[1]);
+  } else {
+    pageParams.rechargeStartDate = "";
+    pageParams.rechargeEndDate = "";
   }
   axios
-    .get("/kharazim-api/recharge-card/page", {
-      params: {
-        rechargeStartDate: rechargeStartDate,
-        rechargeEndDate: rechargeEndDate,
-        code: pageRequest.code,
-        customerCode: pageRequest.customerCode,
-        traderUserCode: pageRequest.traderUserCode,
-        rechargeCardTypes: pageRequest.rechargeCardTypes,
-        statuses: pageRequest.statuses,
-        pageSize: pageInfo.pageSize,
-        pageNum: pageInfo.currentPage,
-      },
-    })
-    .then((response: AxiosResponse) => {
-      customerRechargeCardPageData.value = response.data.data;
-      pageInfo.totalCount = response.data.totalCount;
-    });
+    .get("/kharazim-api/recharge-card/page", { params: pageParams })
+    .then(
+      (response: AxiosResponse) =>
+        (customerRechargeCardPageData.value = response.data),
+    );
 }
 
 function expireDate(row: CustomerRechargeCard) {
@@ -547,19 +527,16 @@ function chargeback(row: CustomerRechargeCard) {
 const logTableVisible = ref(false);
 const currentLogRow = ref<CustomerRechargeCard>();
 const logPageInfo = reactive({
-  currentPage: 1,
+  pageNum: 1,
   pageSize: 10,
-  totalCount: 0,
-  pageSizes: [10, 20, 50, 100],
 });
-const customerRechargeCardLogData = ref([]);
+const customerRechargeCardLogData = ref({ totalCount: 0, data: [] });
 
 function showLog(row: CustomerRechargeCard) {
   currentLogRow.value = row;
-  customerRechargeCardLogData.value = [];
-  logPageInfo.currentPage = 1;
+  customerRechargeCardLogData.value = { totalCount: 0, data: [] };
+  logPageInfo.pageNum = 1;
   logPageInfo.pageSize = 10;
-  logPageInfo.totalCount = 0;
   logTableVisible.value = true;
   loadCustomerRechargeCardLog();
 }
@@ -569,16 +546,10 @@ function loadCustomerRechargeCardLog() {
     axios
       .get(
         `/kharazim-api/recharge-card/page-log/${currentLogRow.value?.code}`,
-        {
-          params: {
-            pageSize: logPageInfo.pageSize,
-            pageNum: logPageInfo.currentPage,
-          },
-        },
+        { params: toRaw(logPageInfo) },
       )
       .then((response: AxiosResponse) => {
-        customerRechargeCardLogData.value = response.data.data;
-        logPageInfo.totalCount = response.data.totalCount;
+        customerRechargeCardLogData.value = response.data;
       });
   }
 }

@@ -71,7 +71,7 @@
   </div>
   <div>
     <el-table
-      :data="productPageData"
+      :data="productPageData.data"
       border
       style="width: 100%; margin-top: 10px"
     >
@@ -98,10 +98,10 @@
   </div>
   <div class="pagination-block">
     <el-pagination
-      v-model:current-page="pageInfo.currentPage"
-      v-model:page-size="pageInfo.pageSize"
-      :page-sizes="pageInfo.pageSizes"
-      :total="pageInfo.totalCount"
+      v-model:current-page="pageRequest.pageNum"
+      v-model:page-size="pageRequest.pageSize"
+      :page-sizes="[10, 20, 50, 100]"
+      :total="productPageData.totalCount"
       background
       layout="total, sizes, prev, pager, next, jumper"
       @size-change="loadProducts"
@@ -221,7 +221,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, reactive, ref } from "vue";
+import { onMounted, reactive, ref, toRaw } from "vue";
 import { AxiosResponse } from "axios";
 import axios from "@/utils/http.js";
 import MultiImageUpload from "@/components/upload/MultiImageUpload.vue";
@@ -253,43 +253,29 @@ export interface ProductInfo {
   attributesDesc: string;
 }
 
-const productPageData = ref<ProductInfo[]>([]);
-const pageInfo = reactive({
-  currentPage: 1,
-  pageSize: 10,
-  totalCount: 0,
-  pageSizes: [10, 20, 50, 100],
-});
+const productPageData = ref({ totalCount: 0, data: [] as ProductInfo[] });
 
-const pageRequest = reactive({
+const initPageRequest = {
   code: "",
   name: "",
   categoryCodes: [],
   supplierCodes: [],
   description: "",
-});
+  pageNum: 1,
+  pageSize: 10,
+};
+
+const pageRequest = reactive({ ...initPageRequest });
 
 function clearPageRequestAndLoadProducts() {
-  pageRequest.code = "";
-  pageRequest.name = "";
-  pageRequest.categoryCodes = [];
-  pageRequest.supplierCodes = [];
-  pageRequest.description = "";
+  Object.assign(pageRequest, initPageRequest);
   loadProducts();
 }
 
 function loadProducts() {
   axios
-    .get(
-      `/kharazim-api/product/sku/page?pageSize=${pageInfo.pageSize}&pageNum=${pageInfo.currentPage}`,
-      {
-        params: pageRequest,
-      },
-    )
-    .then((response: AxiosResponse) => {
-      productPageData.value = response.data.data;
-      pageInfo.totalCount = response.data.totalCount;
-    });
+    .get("/kharazim-api/product/sku/page", { params: toRaw(pageRequest) })
+    .then((response: AxiosResponse) => (productPageData.value = response.data));
 }
 
 export interface ProductCategory {
