@@ -1,27 +1,26 @@
 <template>
   <div>
     <el-form
-      ref="pageRequestFormRef"
       :inline="true"
       :model="pageRequest"
       class="page-form-block"
       @keyup.enter="loadInboundOrders"
     >
-      <el-form-item label="入库单编码" prop="code">
+      <el-form-item label="入库单编码">
         <el-input
           v-model="pageRequest.code"
           clearable
           placeholder="入库单编码"
         />
       </el-form-item>
-      <el-form-item label="来源单据编码" prop="sourceBusinessCode">
+      <el-form-item label="来源单据编码">
         <el-input
           v-model="pageRequest.sourceBusinessCode"
           clearable
           placeholder="来源单据编码"
         />
       </el-form-item>
-      <el-form-item label="诊所" prop="clinicCodes">
+      <el-form-item label="诊所">
         <el-select
           v-model="pageRequest.clinicCodes"
           clearable
@@ -38,7 +37,7 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="供应商" prop="supplierCodes">
+      <el-form-item label="供应商">
         <el-select
           v-model="pageRequest.supplierCodes"
           clearable
@@ -55,7 +54,7 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="入库状态" prop="status">
+      <el-form-item label="入库状态">
         <el-select
           v-model="pageRequest.status"
           clearable
@@ -83,7 +82,7 @@
   <div>
     <div>
       <el-table
-        :data="inboundOrderPageData"
+        :data="inboundOrderPageData.data"
         border
         style="width: 100%; margin-top: 10px"
       >
@@ -170,10 +169,10 @@
     </div>
     <div class="pagination-block">
       <el-pagination
-        v-model:current-page="pageInfo.currentPage"
-        v-model:page-size="pageInfo.pageSize"
-        :page-sizes="pageInfo.pageSizes"
-        :total="pageInfo.totalCount"
+        v-model:current-page="pageRequest.pageIndex"
+        v-model:page-size="pageRequest.pageSize"
+        :page-sizes="[10, 20, 50, 100]"
+        :total="inboundOrderPageData.totalCount"
         background
         layout="total, sizes, prev, pager, next, jumper"
         @size-change="loadInboundOrders"
@@ -243,27 +242,22 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, reactive, ref } from "vue";
+import { onMounted, reactive, ref, toRaw } from "vue";
 import { AxiosResponse } from "axios";
 import axios from "@/utils/http.js";
-import { ElMessage, FormInstance } from "element-plus";
+import { ElMessage } from "element-plus";
 
-const inboundOrderPageData = ref([]);
-
-const pageRequestFormRef = ref<FormInstance>();
-const pageRequest = reactive({
+const inboundOrderPageData = ref({ totalCount: 0, data: [] });
+const initPageRequest = {
   code: "",
   sourceBusinessCode: "",
   clinicCodes: [],
   supplierCodes: [],
   status: "",
-});
-const pageInfo = reactive({
-  currentPage: 1,
+  pageIndex: 1,
   pageSize: 10,
-  totalCount: 0,
-  pageSizes: [10, 20, 50, 100],
-});
+};
+const pageRequest = reactive({ ...initPageRequest });
 
 interface ClinicOption {
   code: string;
@@ -293,27 +287,14 @@ function loadSupplierOptions() {
 
 function loadInboundOrders() {
   axios
-    .get("/kharazim-api/inbound-order/page", {
-      params: {
-        code: pageRequest.code,
-        sourceBusinessCode: pageRequest.sourceBusinessCode,
-        clinicCodes: pageRequest.clinicCodes,
-        supplierCodes: pageRequest.supplierCodes,
-        status: pageRequest.status,
-        pageSize: pageInfo.pageSize,
-        pageIndex: pageInfo.currentPage,
-      },
-    })
+    .get("/kharazim-api/inbound-order/page", { params: toRaw(pageRequest) })
     .then((response: AxiosResponse) => {
-      inboundOrderPageData.value = response.data.data;
-      pageInfo.totalCount = response.data.totalCount;
+      inboundOrderPageData.value = response.data;
     });
 }
 
 function resetAndLoadInboundOrders() {
-  if (pageRequestFormRef.value) {
-    pageRequestFormRef.value.resetFields();
-  }
+  Object.assign(pageRequest, initPageRequest);
   loadInboundOrders();
 }
 
