@@ -88,7 +88,7 @@ public class RequestLogPrepareFilter implements Filter {
             CurrentRequestLogHolder.prepare(systemRequestLog);
 
         } catch (Exception e) {
-            log.warn("prepare request log error: " + e.getMessage(), e);
+            log.warn("prepare request log error: {}", e.getMessage(), e);
         }
     }
 
@@ -128,7 +128,7 @@ public class RequestLogPrepareFilter implements Filter {
             try {
                 return MediaType.parseMediaType(contentType);
             } catch (Exception e) {
-                log.warn("not supported contentType: " + contentType);
+                log.warn("not supported contentType: {}", contentType);
             }
         }
         return null;

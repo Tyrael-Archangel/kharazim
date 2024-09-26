@@ -114,9 +114,8 @@ class CodeGeneratorTest {
                 return;
             }
             long current = count.get();
-            log.info("got " + ((current - lastCount) / seconds) + " codes per second "
-                    + "with cache: " + defaultStep
-                    + ", thread count: " + threadCount);
+            long codesPerSec = (current - lastCount) / seconds;
+            log.info("got {} codes per second with cache: {}, thread count: {}", codesPerSec, defaultStep, threadCount);
             lastCount = current;
         }
         for (Thread thread : threads) {

@@ -84,7 +84,7 @@ public class RequestLogWriteAdvice implements ResponseBodyAdvice<Object> {
             systemRequestLogService.save(systemRequestLog);
 
         } catch (Exception e) {
-            log.error("save system request log error: " + e.getMessage(), e);
+            log.error("save system request log error: {}", e.getMessage(), e);
         } finally {
             CurrentRequestLogHolder.clear();
         }
@@ -107,7 +107,7 @@ public class RequestLogWriteAdvice implements ResponseBodyAdvice<Object> {
                 try {
                     ((HttpMessageConverter) converter).write(body, selectedMediaType, outputMessage);
                 } catch (IOException e) {
-                    log.warn("write response message error: " + e.getMessage(), e);
+                    log.warn("write response message error: {}", e.getMessage(), e);
                     return null;
                 }
                 return outputMessage.getContent();

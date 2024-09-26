@@ -168,7 +168,7 @@ public class CustomerFamilyServiceImpl implements CustomerFamilyService {
         try {
             familyMemberMapper.insert(familyMember);
         } catch (DuplicateKeyException e) {
-            log.error("save family member error: " + e.getMessage());
+            log.error("save family member error: {}", e.getMessage());
             throw new BusinessException("会员已经属于该家庭，请勿重复加入");
         }
     }

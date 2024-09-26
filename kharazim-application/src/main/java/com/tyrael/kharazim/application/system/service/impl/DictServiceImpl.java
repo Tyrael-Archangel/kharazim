@@ -80,7 +80,7 @@ public class DictServiceImpl implements DictService {
         try {
             dictMapper.insert(dict);
         } catch (DuplicateKeyException e) {
-            log.warn("save dict error: " + e.getMessage(), e);
+            log.warn("save dict error: {}", e.getMessage(), e);
             throw new BusinessException("字典编码已存在", e);
         }
     }
@@ -126,7 +126,7 @@ public class DictServiceImpl implements DictService {
         try {
             dictMapper.updateById(dict);
         } catch (DuplicateKeyException e) {
-            log.warn("update dict error: " + e.getMessage(), e);
+            log.warn("update dict error: {}", e.getMessage(), e);
             throw new BusinessException("字典编码已存在", e);
         }
 

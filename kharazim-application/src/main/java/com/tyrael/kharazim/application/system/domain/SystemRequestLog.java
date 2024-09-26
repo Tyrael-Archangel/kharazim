@@ -4,10 +4,8 @@ import com.baomidou.mybatisplus.annotation.*;
 import com.tyrael.kharazim.application.system.dto.requestlog.NameAndValue;
 import com.tyrael.kharazim.application.system.typehandler.ListNameValueTypeHandler;
 import lombok.Data;
-import org.checkerframework.checker.units.qual.N;
 
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 /**
@@ -59,13 +57,6 @@ public class SystemRequestLog {
     private LocalDateTime endTime;
 
     @TableField(insertStrategy = FieldStrategy.NEVER)
-    public Long costMills;
-
-//    public Long getCostMills() {
-//        if (endTime == null || startTime == null) {
-//            return null;
-//        }
-//        return startTime.until(endTime, ChronoUnit.MILLIS);
-//    }
+    private Long costMills;
 
 }

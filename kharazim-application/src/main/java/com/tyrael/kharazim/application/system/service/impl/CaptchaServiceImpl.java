@@ -92,7 +92,7 @@ public class CaptchaServiceImpl implements CaptchaService {
 
     private void sendCaptchaSms(String captcha, String trimmedPhoneNumber) {
         // 发送短信验证码
-        log.info("send captcha [" + captcha + "] to " + trimmedPhoneNumber);
+        log.info("send captcha [{}] to {}", captcha, trimmedPhoneNumber);
     }
 
     @Override

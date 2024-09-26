@@ -9,6 +9,7 @@ import java.nio.file.Files;
  * @author Tyrael Archangel
  * @since 2023/12/27
  */
+@SuppressWarnings("unused")
 public class MockMultipartFile extends org.springframework.mock.web.MockMultipartFile {
 
     public MockMultipartFile(File file) throws IOException {

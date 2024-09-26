@@ -25,14 +25,14 @@ public class InheritableThreadLocalDemoTest {
         Thread childThread = new Thread(() -> {
             try {
                 childSemaphore.acquire();
-                log.info("get value: " + current.get());
+                log.info("get value: {}", current.get());
 
                 childSemaphore.acquire();
                 current.set("child");
                 log.info("set value: child");
 
                 childSemaphore.acquire();
-                log.info("get value: " + current.get());
+                log.info("get value: {}", current.get());
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -62,7 +62,7 @@ public class InheritableThreadLocalDemoTest {
         controller.start();
 
         parentSemaphore.acquire();
-        log.info("get value: " + current.get());
+        log.info("get value: {}", current.get());
 
         parentSemaphore.acquire();
         current.set("parent-update");

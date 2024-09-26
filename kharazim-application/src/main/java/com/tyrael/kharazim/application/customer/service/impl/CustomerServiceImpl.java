@@ -637,7 +637,7 @@ public class CustomerServiceImpl implements CustomerService {
             try {
                 customerTagMapper.insert(customerTag);
             } catch (DuplicateKeyException e) {
-                log.warn("会员[" + customerCode + "]标签重复: " + tagDict);
+                log.warn("会员[{}]标签重复: {}", customerCode, tagDict);
             }
         }
     }
