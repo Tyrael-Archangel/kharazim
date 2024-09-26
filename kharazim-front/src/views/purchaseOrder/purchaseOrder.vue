@@ -187,6 +187,11 @@ import { onMounted, reactive, ref } from "vue";
 import { AxiosResponse } from "axios";
 import axios from "@/utils/http.js";
 import { dateFormat } from "@/utils/DateUtil";
+import { loadSupplierOptions, SupplierVO } from "@/views/supplier/supplier.vue";
+import {
+  ClinicVO,
+  loadClinicOptions,
+} from "@/views/clinic/clinicManagement.vue";
 
 const purchaseOrderPageData = ref({ totalCount: 0, data: [] });
 
@@ -203,31 +208,8 @@ const initPageRequest = {
 
 const pageRequest = reactive({ ...initPageRequest });
 
-interface ClinicOption {
-  code: string;
-  name: string;
-}
-
-const clinicOptions = ref<ClinicOption[]>([]);
-
-function loadClinicOptions() {
-  axios.get("/kharazim-api/clinic/list").then((res: AxiosResponse) => {
-    clinicOptions.value = res.data.data;
-  });
-}
-
-interface SupplierOption {
-  code: string;
-  name: string;
-}
-
-const supplierOptions = ref<SupplierOption[]>([]);
-
-function loadSupplierOptions() {
-  axios.get("/kharazim-api/supplier/list").then((res: AxiosResponse) => {
-    supplierOptions.value = res.data.data;
-  });
-}
+const clinicOptions = ref<ClinicVO[]>([]);
+const supplierOptions = ref<SupplierVO[]>([]);
 
 function resetAndReloadPurchaseOrders() {
   Object.assign(pageRequest, initPageRequest);
@@ -261,10 +243,10 @@ function loadPurchaseOrders() {
     });
 }
 
-onMounted(() => {
+onMounted(async () => {
+  clinicOptions.value = await loadClinicOptions();
+  supplierOptions.value = await loadSupplierOptions();
   loadPurchaseOrders();
-  loadClinicOptions();
-  loadSupplierOptions();
 });
 </script>
 

@@ -159,6 +159,10 @@ import { onMounted, reactive, ref, toRaw } from "vue";
 import axios from "@/utils/http.js";
 import { AxiosResponse } from "axios";
 import { dateTimeFormat } from "@/utils/DateUtil";
+import {
+  ClinicVO,
+  loadClinicOptions,
+} from "@/views/clinic/clinicManagement.vue";
 
 const inventoryLogPageData = ref({ totalCount: 0, data: [] });
 
@@ -198,22 +202,11 @@ function resetAndLoadInventoryLogs() {
   loadInventoryLogs();
 }
 
-interface ClinicOption {
-  code: string;
-  name: string;
-}
+const clinicOptions = ref<ClinicVO[]>([]);
 
-const clinicOptions = ref<ClinicOption[]>([]);
-
-function loadClinicOptions() {
-  axios.get("/kharazim-api/clinic/list").then((res: AxiosResponse) => {
-    clinicOptions.value = res.data.data;
-  });
-}
-
-onMounted(() => {
+onMounted(async () => {
   loadInventoryLogs();
-  loadClinicOptions();
+  clinicOptions.value = await loadClinicOptions();
 });
 </script>
 

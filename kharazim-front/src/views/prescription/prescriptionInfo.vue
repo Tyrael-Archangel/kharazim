@@ -146,6 +146,10 @@ import { ACCESS_TOKEN, getToken } from "@/utils/auth.js";
 import { dateFormat } from "@/utils/DateUtil.js";
 import { ifNullEmpty, join } from "@/utils/StringUtil.ts";
 import { useRouter } from "vue-router";
+import {
+  ClinicVO,
+  loadClinicOptions,
+} from "@/views/clinic/clinicManagement.vue";
 
 const prescriptionPageData = ref({ totalCount: 0, data: [] });
 
@@ -215,29 +219,18 @@ function loadCustomers(query: string) {
     });
 }
 
-interface ClinicOption {
-  code: string;
-  name: string;
-}
-
-const clinicOptions = ref<ClinicOption[]>([]);
-
-function loadClinicOptions() {
-  axios.get("/kharazim-api/clinic/list").then((res: AxiosResponse) => {
-    clinicOptions.value = res.data.data;
-  });
-}
+const clinicOptions = ref<ClinicVO[]>([]);
 
 const router = useRouter();
 
-onMounted(() => {
+onMounted(async () => {
   const query = router.currentRoute.value.query;
   const prescriptionCode = query.prescriptionCode as string;
   if (prescriptionCode) {
     pageRequest.prescriptionCode = prescriptionCode;
   }
+  clinicOptions.value = await loadClinicOptions();
   loadPrescriptions();
-  loadClinicOptions();
 });
 </script>
 

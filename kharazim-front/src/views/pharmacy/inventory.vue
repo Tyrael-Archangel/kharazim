@@ -151,6 +151,10 @@
 import { onMounted, reactive, ref, toRaw } from "vue";
 import axios from "@/utils/http.js";
 import { AxiosResponse } from "axios";
+import {
+  ClinicVO,
+  loadClinicOptions,
+} from "@/views/clinic/clinicManagement.vue";
 
 const inventoryPageData = ref({ totalCount: 0, data: [] });
 
@@ -207,18 +211,7 @@ function resetAndLoadInventories() {
   loadInventories();
 }
 
-interface ClinicOption {
-  code: string;
-  name: string;
-}
-
-const clinicOptions = ref<ClinicOption[]>([]);
-
-function loadClinicOptions() {
-  axios.get("/kharazim-api/clinic/list").then((res: AxiosResponse) => {
-    clinicOptions.value = res.data.data;
-  });
-}
+const clinicOptions = ref<ClinicVO[]>([]);
 
 function showSkuOccupyRecord(row: any) {
   currentSkuOccupyRow.value = row;
@@ -257,9 +250,9 @@ function loadSkuOccupyRecords() {
     });
 }
 
-onMounted(() => {
+onMounted(async () => {
   loadInventories();
-  loadClinicOptions();
+  clinicOptions.value = await loadClinicOptions();
 });
 </script>
 

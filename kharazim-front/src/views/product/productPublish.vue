@@ -156,6 +156,10 @@ import { onMounted, reactive, ref, toRaw } from "vue";
 import axios from "@/utils/http.js";
 import { AxiosResponse } from "axios";
 import { ElMessage, ElMessageBox } from "element-plus";
+import {
+  ClinicVO,
+  loadClinicOptions,
+} from "@/views/clinic/clinicManagement.vue";
 
 interface SkuPublish {
   code: string;
@@ -245,22 +249,11 @@ function cancelPublish(row: SkuPublish) {
     .catch(() => {});
 }
 
-interface ClinicOption {
-  code: string;
-  name: string;
-}
+const clinicOptions = ref<ClinicVO[]>([]);
 
-const clinicOptions = ref<ClinicOption[]>([]);
-
-function loadClinicOptions() {
-  axios.get("/kharazim-api/clinic/list").then((res: AxiosResponse) => {
-    clinicOptions.value = res.data.data;
-  });
-}
-
-onMounted(() => {
+onMounted(async () => {
+  clinicOptions.value = await loadClinicOptions();
   loadProductPublish();
-  loadClinicOptions();
 });
 </script>
 

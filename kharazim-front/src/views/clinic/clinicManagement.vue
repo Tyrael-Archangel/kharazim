@@ -73,22 +73,11 @@
 
 <script lang="ts" setup>
 import { onMounted, reactive, ref, toRaw } from "vue";
-import axios from "@/utils/http.js";
 import { ACCESS_TOKEN, getToken } from "@/utils/auth.js";
 import { AxiosResponse } from "axios";
 
-interface ClinicData {
-  code: string;
-  name: string;
-  englishName: string;
-  image: string;
-  imageUrl: string;
-  status: string;
-  statusName: string;
-}
-
 const clinicPageResponse = ref({
-  data: [] as ClinicData[],
+  data: [] as ClinicVO[],
   totalCount: 0,
 });
 
@@ -108,6 +97,25 @@ function loadClinic() {
 }
 
 onMounted(() => loadClinic());
+</script>
+
+<script lang="ts">
+import axios from "@/utils/http.js";
+
+export interface ClinicVO {
+  code: string;
+  name: string;
+  englishName: string;
+  image: string;
+  imageUrl: string;
+  status: string;
+  statusName: string;
+}
+
+export async function loadClinicOptions() {
+  let res = await axios.get("/kharazim-api/clinic/list");
+  return res.data.data;
+}
 </script>
 
 <style scoped>

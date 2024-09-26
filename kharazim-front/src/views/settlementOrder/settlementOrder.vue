@@ -259,6 +259,10 @@ import axios from "@/utils/http.js";
 import { CircleCheck, Warning } from "@element-plus/icons-vue";
 import Decimal from "decimal.js";
 import { ElMessage, ElTable } from "element-plus";
+import {
+  ClinicVO,
+  loadClinicOptions,
+} from "@/views/clinic/clinicManagement.vue";
 
 interface SettlementOrderItem {
   skuCode: string;
@@ -333,18 +337,7 @@ function loadCustomers(query: string) {
     });
 }
 
-interface ClinicOption {
-  code: string;
-  name: string;
-}
-
-const clinicOptions = ref<ClinicOption[]>([]);
-
-function loadClinicOptions() {
-  axios.get("/kharazim-api/clinic/list").then((res: AxiosResponse) => {
-    clinicOptions.value = res.data.data;
-  });
-}
+const clinicOptions = ref<ClinicVO[]>([]);
 
 const customerRechargeCardTableRef = ref<InstanceType<typeof ElTable>>();
 const settlementOrderPayVisible = ref(false);
@@ -496,9 +489,9 @@ function submitPay() {
     });
 }
 
-onMounted(() => {
+onMounted(async () => {
+  clinicOptions.value = await loadClinicOptions();
   loadSettlementOrders();
-  loadClinicOptions();
 });
 </script>
 

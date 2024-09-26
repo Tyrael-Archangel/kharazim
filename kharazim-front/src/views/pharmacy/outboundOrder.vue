@@ -171,6 +171,10 @@ import { onMounted, reactive, ref, toRaw } from "vue";
 import { AxiosResponse } from "axios";
 import axios from "@/utils/http.js";
 import { ElMessage, ElMessageBox } from "element-plus";
+import {
+  ClinicVO,
+  loadClinicOptions,
+} from "@/views/clinic/clinicManagement.vue";
 
 const outboundOrderPageData = ref({ totalCount: 0, data: [] });
 
@@ -215,18 +219,7 @@ function loadCustomers(query: string) {
     });
 }
 
-interface ClinicOption {
-  code: string;
-  name: string;
-}
-
-const clinicOptions = ref<ClinicOption[]>([]);
-
-function loadClinicOptions() {
-  axios.get("/kharazim-api/clinic/list").then((res: AxiosResponse) => {
-    clinicOptions.value = res.data.data;
-  });
-}
+const clinicOptions = ref<ClinicVO[]>([]);
 
 function markOutboundFinished(row: any) {
   ElMessageBox.confirm("确认已收货？", "提示", {
@@ -251,8 +244,8 @@ function markOutboundFinished(row: any) {
   console.log(row);
 }
 
-onMounted(() => {
-  loadClinicOptions();
+onMounted(async () => {
+  clinicOptions.value = await loadClinicOptions();
   loadOutboundOrders();
 });
 </script>

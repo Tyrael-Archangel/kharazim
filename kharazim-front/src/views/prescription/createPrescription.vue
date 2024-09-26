@@ -209,6 +209,10 @@ import { ElMessage, ElTable } from "element-plus";
 import { Delete } from "@element-plus/icons-vue";
 import Decimal from "decimal.js";
 import { useRouter } from "vue-router";
+import {
+  ClinicVO,
+  loadClinicOptions,
+} from "@/views/clinic/clinicManagement.vue";
 
 const router = useRouter();
 
@@ -247,18 +251,7 @@ function loadCustomers(query: string) {
     });
 }
 
-interface ClinicOption {
-  code: string;
-  name: string;
-}
-
-const clinicOptions = ref<ClinicOption[]>([]);
-
-function loadClinicOptions() {
-  axios.get("/kharazim-api/clinic/list").then((res: AxiosResponse) => {
-    clinicOptions.value = res.data.data;
-  });
-}
+const clinicOptions = ref<ClinicVO[]>([]);
 
 interface SkuPublish {
   code: string;
@@ -457,7 +450,9 @@ function submitCreatePrescription() {
     });
 }
 
-onMounted(() => loadClinicOptions());
+onMounted(async () => {
+  clinicOptions.value = await loadClinicOptions();
+});
 </script>
 
 <style scoped>

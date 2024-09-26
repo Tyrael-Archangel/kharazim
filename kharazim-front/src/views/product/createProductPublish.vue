@@ -220,12 +220,13 @@ import { AxiosResponse } from "axios";
 import axios from "@/utils/http.js";
 import { ElMessage, ElTable } from "element-plus";
 import { dateTimeFormat } from "@/utils/DateUtil.js";
-import {
-  ProductCategory,
-  ProductInfo,
-  SupplierOption,
-} from "./productInfo.vue";
+import { ProductCategory, ProductInfo } from "./productInfo.vue";
 import { useRouter } from "vue-router";
+import { loadSupplierOptions, SupplierVO } from "@/views/supplier/supplier.vue";
+import {
+  ClinicVO,
+  loadClinicOptions,
+} from "@/views/clinic/clinicManagement.vue";
 
 const router = useRouter();
 
@@ -272,19 +273,7 @@ function confirmCreateProductPublish() {
     });
 }
 
-interface ClinicOption {
-  code: string;
-  name: string;
-}
-
-const clinicOptions = ref<ClinicOption[]>([]);
-
-function loadClinicOptions() {
-  axios.get("/kharazim-api/clinic/list").then((res: AxiosResponse) => {
-    clinicOptions.value = res.data.data;
-  });
-}
-
+const clinicOptions = ref<ClinicVO[]>([]);
 const selectedAtTable = ref<ProductInfo | null>();
 
 function changeSelected(row: ProductInfo) {
@@ -340,13 +329,7 @@ function clearPageRequestAndLoadProducts() {
   loadProducts();
 }
 
-const supplierOptions = ref<SupplierOption[]>([]);
-
-function loadSupplierOptions() {
-  axios.get("/kharazim-api/supplier/list").then((res: AxiosResponse) => {
-    supplierOptions.value = res.data.data;
-  });
-}
+const supplierOptions = ref<SupplierVO[]>([]);
 
 const categoryData = ref<ProductCategory[]>([]);
 
@@ -358,9 +341,9 @@ function loadCategories() {
     });
 }
 
-onMounted(() => {
-  loadClinicOptions();
-  loadSupplierOptions();
+onMounted(async () => {
+  clinicOptions.value = await loadClinicOptions();
+  supplierOptions.value = await loadSupplierOptions();
   loadCategories();
 });
 </script>

@@ -214,6 +214,11 @@ import { ElMessage, ElTable } from "element-plus";
 import { Delete } from "@element-plus/icons-vue";
 import Decimal from "decimal.js";
 import { useRouter } from "vue-router";
+import { loadSupplierOptions, SupplierVO } from "@/views/supplier/supplier.vue";
+import {
+  ClinicVO,
+  loadClinicOptions,
+} from "@/views/clinic/clinicManagement.vue";
 
 const router = useRouter();
 
@@ -237,31 +242,8 @@ const createPurchaseOrderRequest = ref<CreatePurchaseOrderRequest>({
   items: [],
 });
 
-interface ClinicOption {
-  code: string;
-  name: string;
-}
-
-const clinicOptions = ref<ClinicOption[]>([]);
-
-function loadClinicOptions() {
-  axios.get("/kharazim-api/clinic/list").then((res: AxiosResponse) => {
-    clinicOptions.value = res.data.data;
-  });
-}
-
-interface SupplierOption {
-  code: string;
-  name: string;
-}
-
-const supplierOptions = ref<SupplierOption[]>([]);
-
-function loadSupplierOptions() {
-  axios.get("/kharazim-api/supplier/list").then((res: AxiosResponse) => {
-    supplierOptions.value = res.data.data;
-  });
-}
+const clinicOptions = ref<ClinicVO[]>([]);
+const supplierOptions = ref<SupplierVO[]>([]);
 
 interface ProductSku {
   code: string;
@@ -428,9 +410,9 @@ function submitCreatePurchaseOrder() {
     });
 }
 
-onMounted(() => {
-  loadClinicOptions();
-  loadSupplierOptions();
+onMounted(async () => {
+  clinicOptions.value = await loadClinicOptions();
+  supplierOptions.value = await loadSupplierOptions();
 });
 </script>
 

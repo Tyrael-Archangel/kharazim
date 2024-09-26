@@ -58,18 +58,8 @@
 <script lang="ts" setup>
 import { onMounted, reactive, ref } from "vue";
 import { AxiosResponse } from "axios";
-import axios from "@/utils/http.js";
 
-interface Supplier {
-  code: string;
-  name: string;
-  remark: string;
-  creator: string;
-  creatorCode: string;
-  createTime: string;
-}
-
-const supplierPageData = ref<Supplier[]>([]);
+const supplierPageData = ref<SupplierVO[]>([]);
 const pageInfo = reactive({
   currentPage: 1,
   pageSize: 10,
@@ -89,7 +79,7 @@ function loadSupplier() {
 }
 
 const addSupplierVisible = ref(false);
-const addSupplierData = ref<Supplier>();
+const addSupplierData = ref<SupplierVO>();
 
 function closeAddSupplierDialog() {
   addSupplierVisible.value = false;
@@ -122,4 +112,24 @@ function confirmAddSupplier() {
 onMounted(() => loadSupplier());
 </script>
 
+<script lang="ts">
+import axios from "@/utils/http.js";
+
+export interface SupplierVO {
+  code: string;
+  name: string;
+  remark: string;
+  creator: string;
+  creatorCode: string;
+  createTime: string;
+}
+
+/**
+ * supplier options
+ */
+export async function loadSupplierOptions() {
+  let res = await axios.get("/kharazim-api/supplier/list");
+  return res.data.data;
+}
+</script>
 <style scoped></style>

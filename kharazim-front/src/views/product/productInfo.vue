@@ -228,6 +228,7 @@ import MultiImageUpload from "@/components/upload/MultiImageUpload.vue";
 import SingleImageUpload from "@/components/upload/SingleImageUpload.vue";
 import { UploadFileObj } from "@/components/upload/UploadFileObj";
 import { useRouter } from "vue-router";
+import { loadSupplierOptions, SupplierVO } from "@/views/supplier/supplier.vue";
 
 interface Attribute {
   name: string;
@@ -296,18 +297,7 @@ function loadCategories() {
     });
 }
 
-export interface SupplierOption {
-  code: string;
-  name: string;
-}
-
-const supplierOptions = ref<SupplierOption[]>([]);
-
-function loadSupplierOptions() {
-  axios.get("/kharazim-api/supplier/list").then((res: AxiosResponse) => {
-    supplierOptions.value = res.data.data;
-  });
-}
+const supplierOptions = ref<SupplierVO[]>([]);
 
 interface ProductUnitOption {
   code: string;
@@ -411,7 +401,7 @@ onMounted(() => {
   }
   loadProducts();
   loadCategories();
-  loadSupplierOptions();
+  supplierOptions.value = loadSupplierOptions();
   loadProductUnitOptions();
 });
 </script>
