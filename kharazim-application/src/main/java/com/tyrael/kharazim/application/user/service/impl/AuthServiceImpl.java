@@ -149,7 +149,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public void logoutByUser(Long userId) {
         if (userId != null) {
-            tokenManager.removeByUserCode(userId);
+            tokenManager.removeByUser(userId);
         }
     }
 

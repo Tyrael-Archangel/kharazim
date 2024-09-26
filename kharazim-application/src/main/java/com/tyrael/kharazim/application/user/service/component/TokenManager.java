@@ -16,6 +16,8 @@ import com.tyrael.kharazim.common.util.CollectionUtils;
 import com.tyrael.kharazim.common.util.RandomStringUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.Cursor;
+import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -50,7 +52,7 @@ public class TokenManager {
     public String create(User user, Role role) {
 
         if (!authConfig.isAllowMultiLogin()) {
-            this.removeByUserCode(user.getId());
+            this.removeByUser(user.getId());
         }
 
         String token = RandomStringUtil.make(32);
@@ -88,7 +90,7 @@ public class TokenManager {
                     tokenKeyAndUserTokenKey.add(this.userTokenCacheKey(authUser.getId(), token));
                 }
             } catch (Exception e) {
-                log.warn("resolve AuthUser from authUserJson error: " + e.getMessage(), e);
+                log.warn("resolve AuthUser from authUserJson error: {}", e.getMessage(), e);
             }
         }
         redisTemplate.delete(tokenKeyAndUserTokenKey);
@@ -97,9 +99,13 @@ public class TokenManager {
     /**
      * remove by userId
      */
-    public void removeByUserCode(Long userId) {
+    public void removeByUser(Long userId) {
         String matchUserTokenCachePattern = this.userTokenCacheKeyPrefix(userId) + "*";
-        Set<String> keys = redisTemplate.keys(matchUserTokenCachePattern);
+        ScanOptions scanOptions = ScanOptions.scanOptions().match(matchUserTokenCachePattern).build();
+        Set<String> keys;
+        try (Cursor<String> cursor = redisTemplate.scan(scanOptions)) {
+            keys = cursor.stream().collect(Collectors.toSet());
+        }
         if (CollectionUtils.isEmpty(keys)) {
             return;
         }
@@ -167,7 +173,7 @@ public class TokenManager {
         try {
             return LocalDateTime.parse(lastAuthTime);
         } catch (Exception e) {
-            log.warn("parse last auth time error: " + e.getMessage(), e);
+            log.warn("parse last auth time error: {}", e.getMessage(), e);
             return null;
         }
     }
