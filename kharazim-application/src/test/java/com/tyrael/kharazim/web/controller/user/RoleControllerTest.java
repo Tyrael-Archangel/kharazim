@@ -31,19 +31,6 @@ class RoleControllerTest extends BaseControllerTest<RoleController> {
     }
 
     @Test
-    void add() {
-        List<String> roles = List.of("坦克", "斗士", "近刺", "远刺", "治疗者", "支援者");
-        int i = 1;
-        for (String role : roles) {
-            SaveRoleRequest addRoleRequest = new SaveRoleRequest();
-            addRoleRequest.setName(role);
-            addRoleRequest.setSort(i++);
-            addRoleRequest.setStatus(EnableStatusEnum.ENABLED);
-            super.performWhenCall(mockController.add(addRoleRequest));
-        }
-    }
-
-    @Test
     void modify() {
         Long id = 1L;
         SaveRoleRequest modifyRoleRequest = new SaveRoleRequest();

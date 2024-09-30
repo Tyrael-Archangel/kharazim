@@ -51,7 +51,7 @@ public class ExcelMergeStrategy implements RowWriteHandler {
 
         Integer fromIndex = mergeUnique.fromIndex;
         if (!StringUtils.equals(mergeUnique.uniqueValue, currentRowUniqueValue)) {
-            if (rowIndex - 1 > fromIndex) {
+            if (rowIndex - fromIndex > 1) {
                 for (Integer mergeColumnIndex : mergeInfo.getMergeColumnIndices()) {
                     CellRangeAddress cellRangeAddress = new CellRangeAddress(
                             fromIndex, rowIndex - 1, mergeColumnIndex, mergeColumnIndex);

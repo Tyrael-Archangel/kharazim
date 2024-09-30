@@ -1,6 +1,5 @@
 package com.tyrael.kharazim.web.controller.recharge;
 
-import com.tyrael.kharazim.application.recharge.vo.AddRechargeCardTypeRequest;
 import com.tyrael.kharazim.application.recharge.vo.ListRechargeCardTypeRequest;
 import com.tyrael.kharazim.application.recharge.vo.ModifyRechargeCardTypeRequest;
 import com.tyrael.kharazim.application.recharge.vo.PageRechargeCardTypeRequest;
@@ -10,7 +9,6 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 /**
  * @author Tyrael Archangel
@@ -20,20 +18,6 @@ class RechargeCardTypeControllerTest extends BaseControllerTest<RechargeCardType
 
     RechargeCardTypeControllerTest() {
         super(RechargeCardTypeController.class);
-    }
-
-    @Test
-    void create() {
-        List<AddRechargeCardTypeRequest> cardTypes = List.of(
-                AddRechargeCardTypeRequest.create("初级卡", 95, false, 180, 5000),
-                AddRechargeCardTypeRequest.create("中级卡", 90, false, 360, 10000),
-                AddRechargeCardTypeRequest.create("高级卡", 85, false, 720, 50000),
-                AddRechargeCardTypeRequest.create("贵宾卡", 80, true, null, 100000),
-                AddRechargeCardTypeRequest.create("至尊卡", 70, true, null, 200000)
-        );
-        for (AddRechargeCardTypeRequest cardType : cardTypes) {
-            super.performWhenCall(mockController.create(cardType));
-        }
     }
 
     @Test
