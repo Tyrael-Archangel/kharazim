@@ -108,7 +108,7 @@ function closeCreateCategory() {
   createCategoryVisible.value = false;
 }
 
-function showCreateCategory(row: ProductCategory) {
+function showCreateCategory(row: ProductCategory | null) {
   if (row) {
     createNewCategory.value = {
       parentId: row.id,
