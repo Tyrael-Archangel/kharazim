@@ -132,7 +132,7 @@ function confirmCreateCategory() {
         name: createNewCategory.value.name,
         remark: createNewCategory.value.remark,
       })
-      .then((res: AxiosResponse) => {
+      .then(() => {
         loadCategories();
         closeCreateCategory();
       });
