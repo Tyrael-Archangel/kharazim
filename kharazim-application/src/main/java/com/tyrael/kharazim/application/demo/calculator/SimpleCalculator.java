@@ -34,7 +34,8 @@ public class SimpleCalculator {
 
     }
 
-    private Expression analysis(String expression) {
+    private Expression analysis(String originalExpression) {
+        String expression = originalExpression.replaceAll("\\s+", "");
 
         Expression.VirtualHeadExpression headPrev = new Expression.VirtualHeadExpression();
         Expression node = headPrev;
