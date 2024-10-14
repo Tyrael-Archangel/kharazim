@@ -10,6 +10,7 @@ import com.tyrael.kharazim.application.user.mapper.RoleMapper;
 import com.tyrael.kharazim.common.dto.Pair;
 import com.tyrael.kharazim.common.dto.Pairs;
 import com.tyrael.kharazim.common.exception.ShouldNotHappenException;
+import com.tyrael.kharazim.common.util.CollectionUtils;
 import com.tyrael.kharazim.mock.MockMultipartFile;
 import com.tyrael.kharazim.web.controller.BaseControllerTest;
 import lombok.Getter;
@@ -25,7 +26,6 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -96,12 +96,11 @@ public class AddUserTest extends BaseControllerTest<UserController> {
             super.performWhenCall(mockController.add(addUserRequest));
         };
 
-        List<Hero> heroes = new ArrayList<>(allHeroes());
+        List<Hero> allHeroes = allHeroes();
+        List<Hero> heroes = CollectionUtils.randomSubList(allHeroes, 20);
         Collections.shuffle(heroes);
         for (Hero hero : heroes) {
-            if (random.nextInt(100) > 80) {
-                threadPoolExecutor.execute(() -> addHero.accept(hero));
-            }
+            threadPoolExecutor.execute(() -> addHero.accept(hero));
         }
 
         threadPoolExecutor.shutdown();

@@ -17,7 +17,7 @@ public class CollectionUtils {
     private static final Random RANDOM = new Random();
 
     public static <T> T random(Collection<T> c) {
-        if (c == null || c.isEmpty()) {
+        if (isEmpty(c)) {
             return null;
         }
         int size = c.size();
@@ -31,6 +31,23 @@ public class CollectionUtils {
             }
         }
         throw new IllegalStateException("Will not happen");
+    }
+
+    public static <T> List<T> randomSubList(Collection<T> c, int percent) {
+        if (percent < 1 || percent > 100) {
+            throw new IllegalArgumentException("percent must be between 1 and 100");
+        }
+        List<T> subList = new ArrayList<>();
+        if (isEmpty(c)) {
+            return subList;
+        }
+        Random random = new Random();
+        for (T t : c) {
+            if (random.nextInt(100) < percent) {
+                subList.add(t);
+            }
+        }
+        return subList;
     }
 
     public static boolean isEmpty(final Collection<?> coll) {
