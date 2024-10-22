@@ -3,7 +3,7 @@ package com.tyrael.kharazim.common.util;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * @author Tyrael Archangel
@@ -12,7 +12,7 @@ import java.util.Random;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class RandomStringUtil {
 
-    private static final Random RANDOM = new Random();
+    private static final ThreadLocalRandom RANDOM = ThreadLocalRandom.current();
     private static final char[] SYMBOL;
     private static final char[] DIGIT_SYMBOL;
 
