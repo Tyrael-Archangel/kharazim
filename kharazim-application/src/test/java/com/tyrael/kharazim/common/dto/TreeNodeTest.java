@@ -1,8 +1,12 @@
 package com.tyrael.kharazim.common.dto;
 
 import lombok.Data;
+import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.introspector.BeanAccess;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * @author Tyrael Archangel
@@ -11,60 +15,85 @@ import java.util.ArrayList;
 public class TreeNodeTest {
 
     public static void main(String[] args) {
-        long id = 0L;
-        Dept root = new Dept(++id, null, "总经办");
-        root.appendChild(++id, "投资部");
-        Dept finance = root.appendChild(++id, "财务部");
-        finance.appendChild(++id, "核算组");
-        finance.appendChild(++id, "资金组");
-        finance.appendChild(++id, "财务BP组");
-        finance.appendChild(++id, "税务组");
 
-        root.appendChild(++id, "法务风控部")
-                .appendChild(++id, "法务组");
+        String str = """
+                name: 总经办
+                children:
+                  - name: 投资部
+                  - name: 财务部
+                    children:
+                      - name: 核算组
+                      - name: 资金组
+                      - name: 财务BP组
+                      - name: 税务组
+                  - name: 法务风控部
+                    children:
+                      - name: 法务组
+                  - name: 商品中心
+                    children:
+                      - name: 质量组
+                        children:
+                          - name: 商品质量
+                          - name: 产线
+                          - name: 食品安全
+                      - name: 计调组
+                      - name: 商品部
+                        children:
+                          - name: 商品组
+                          - name: 品牌组
+                          - name: 采购组
+                      - name: 售后组
+                      - name: 产品部
+                        children:
+                          - name: 应用组
+                          - name: 支持组
+                          - name: 转化组
+                          - name: 研发组
+                  - name: 营销中心
+                    children:
+                      - name: 直销事业部
+                      - name: 职能BP
+                        children:
+                          - name: HR组
+                          - name: 财务BP组
+                      - name: 电商部
+                        children:
+                          - name: 渠道
+                          - name: 内容
+                          - name: 直播
+                      - name: 大客户组
+                      - name: 大宗贸易部
+                  - name: 行政人事部
+                    children:
+                      - name: 行政组
+                      - name: 人力资源组
+                  - name: 信息技术部
+                    children:
+                      - name: 产品组
+                      - name: 实施组
+                      - name: 研发组
+                      - name: 测试组
+                      - name: 运维组
+                """;
 
-        Dept productCenter = root.appendChild(++id, "商品中心");
-        Dept productQuality = productCenter.appendChild(++id, "质量组");
-        productQuality.appendChild(++id, "商品质量");
-        productQuality.appendChild(++id, "产线");
-        productQuality.appendChild(++id, "食品安全");
-        productCenter.appendChild(++id, "计调组");
-        Dept productDept = productCenter.appendChild(++id, "商品部");
-        productDept.appendChild(++id, "商品组");
-        productDept.appendChild(++id, "品牌组");
-        productDept.appendChild(++id, "采购组");
-        productCenter.appendChild(++id, "售后组");
-        Dept pdm = productCenter.appendChild(++id, "产品部");
-        pdm.appendChild(++id, "应用组");
-        pdm.appendChild(++id, "支持组");
-        pdm.appendChild(++id, "转化组");
-        pdm.appendChild(++id, "研发组");
+        Yaml yaml = new Yaml();
+        yaml.setBeanAccess(BeanAccess.FIELD);
+        @SuppressWarnings("VulnerableCodeUsages")
+        PrivateDept privateDept = yaml.loadAs(str, PrivateDept.class);
 
-        Dept saleCenter = root.appendChild(++id, "营销中心");
-        saleCenter.appendChild(++id, "直销事业部");
-        Dept functionBP = saleCenter.appendChild(++id, "职能BP");
-        functionBP.appendChild(++id, "HR组");
-        functionBP.appendChild(++id, "财务BP组");
-        Dept eCommerce = saleCenter.appendChild(++id, "电商部");
-        eCommerce.appendChild(++id, "渠道");
-        eCommerce.appendChild(++id, "内容");
-        eCommerce.appendChild(++id, "直播");
-        saleCenter.appendChild(++id, "大客户组");
-        saleCenter.appendChild(++id, "大宗贸易部");
+        Dept root = recursiveBuild(privateDept, new AtomicLong(), null);
+        System.out.println(TreeNode.pretty(root));
 
-        Dept administrative = root.appendChild(++id, "行政人事部");
-        administrative.appendChild(++id, "行政组");
-        administrative.appendChild(++id, "人力资源组");
+    }
 
-        Dept it = root.appendChild(++id, "信息技术部");
-        it.appendChild(++id, "产品组");
-        it.appendChild(++id, "实施组");
-        it.appendChild(++id, "研发组");
-        it.appendChild(++id, "测试组");
-        it.appendChild(++id, "运维组");
-
-        String pretty = TreeNode.pretty(root);
-        System.out.println(pretty);
+    private static Dept recursiveBuild(PrivateDept privateDept, AtomicLong id, Dept parent) {
+        Dept dept = new Dept(id.incrementAndGet(), parent == null ? null : parent.getId(), privateDept.getName());
+        List<Dept> children = new ArrayList<>();
+        for (PrivateDept privateChild : privateDept.getChildren()) {
+            children.add(recursiveBuild(privateChild, id, dept));
+        }
+        dept.setChildren(children);
+        return dept;
     }
 
     @Data
@@ -77,19 +106,16 @@ public class TreeNodeTest {
             this.name = name;
         }
 
-        public Dept appendChild(Long id, String name) {
-            if (this.getChildren() == null) {
-                this.children = new ArrayList<>();
-            }
-            Dept child = new Dept(id, this.id, name);
-            this.children.add(child);
-            return child;
-        }
-
         @Override
         public String toString() {
             return name + "(" + id + ")";
         }
+    }
+
+    @Data
+    private static class PrivateDept {
+        private String name;
+        private List<PrivateDept> children = new ArrayList<>();
     }
 
 }
