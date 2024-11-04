@@ -38,7 +38,6 @@ public class CurrentUserHolder {
         AUTH_USER_THREAD_LOCAL.remove();
     }
 
-}
-
-record AuthUserAndToken(AuthUser authUser, String token) {
+    record AuthUserAndToken(AuthUser authUser, String token) {
+    }
 }

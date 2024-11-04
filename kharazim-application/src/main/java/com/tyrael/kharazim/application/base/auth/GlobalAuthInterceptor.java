@@ -37,13 +37,7 @@ public class GlobalAuthInterceptor implements HandlerInterceptor {
     public boolean preHandle(@NonNull HttpServletRequest request,
                              @NonNull HttpServletResponse response,
                              @NonNull Object handler) throws IOException {
-        String token = getTokenFromHeader(request);
-        if (!StringUtils.hasText(token)) {
-            token = getTokenFromParam(request);
-        }
-        if (!StringUtils.hasText(token)) {
-            token = getTokenFromCookie(request);
-        }
+        String token = getToken(request);
 
         ExceptionResponse exceptionResponse;
         try {
@@ -68,6 +62,17 @@ public class GlobalAuthInterceptor implements HandlerInterceptor {
 
             return false;
         }
+    }
+
+    private String getToken(HttpServletRequest request) {
+        String token = getTokenFromHeader(request);
+        if (!StringUtils.hasText(token)) {
+            token = getTokenFromParam(request);
+        }
+        if (!StringUtils.hasText(token)) {
+            token = getTokenFromCookie(request);
+        }
+        return token;
     }
 
     private String getTokenFromHeader(HttpServletRequest request) {

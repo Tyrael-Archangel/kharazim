@@ -67,13 +67,12 @@ public class RequestLogWriteAdvice implements ResponseBodyAdvice<Object> {
                                  Class<? extends HttpMessageConverter<?>> selectedConverterType,
                                  ServerHttpResponse response) {
 
+        SystemRequestLog systemRequestLog = CurrentRequestLogHolder.get();
+        if (systemRequestLog == null) {
+            return;
+        }
+
         try {
-
-            SystemRequestLog systemRequestLog = CurrentRequestLogHolder.get();
-            if (systemRequestLog == null) {
-                return;
-            }
-
             AuthUser currentUser = CurrentUserHolder.getCurrentUser();
             systemRequestLog.setUserName(currentUser == null ? null : currentUser.getName());
             systemRequestLog.setResponseHeaders(this.responseHeaders(response));
@@ -114,7 +113,12 @@ public class RequestLogWriteAdvice implements ResponseBodyAdvice<Object> {
             }
         }
 
-        return null;
+        try {
+            return body.toString();
+        } catch (Exception e) {
+            log.warn("build response body message error: {}", e.getMessage(), e);
+            return "[error when build response body message: " + e.getMessage() + ", class: " + body.getClass() + "]";
+        }
     }
 
     private int responseStatus(ServerHttpResponse response) {
