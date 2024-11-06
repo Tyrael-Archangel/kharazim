@@ -6,9 +6,11 @@ import com.tyrael.kharazim.application.base.LambdaQueryWrapperX;
 import com.tyrael.kharazim.application.purchase.domain.PurchaseOrder;
 import com.tyrael.kharazim.application.purchase.vo.request.PagePurchaseOrderRequest;
 import com.tyrael.kharazim.common.dto.PageResponse;
-import com.tyrael.kharazim.common.util.DateTimeUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.annotations.Mapper;
+
+import static com.tyrael.kharazim.common.util.DateTimeUtil.endTimeOfDate;
+import static com.tyrael.kharazim.common.util.DateTimeUtil.startTimeOfDate;
 
 /**
  * @author Tyrael Archangel
@@ -44,10 +46,8 @@ public interface PurchaseOrderMapper extends BasePageMapper<PurchaseOrder> {
         queryWrapper.inIfPresent(PurchaseOrder::getSupplierCode, pageRequest.getSupplierCodes());
         queryWrapper.inIfPresent(PurchaseOrder::getReceiveStatus, pageRequest.getReceiveStatuses());
         queryWrapper.inIfPresent(PurchaseOrder::getPaymentStatus, pageRequest.getPaymentStatuses());
-        queryWrapper.geIfPresent(PurchaseOrder::getCreateTime,
-                DateTimeUtil.startTimeOfDate(pageRequest.getCreateDateMin()));
-        queryWrapper.leIfPresent(PurchaseOrder::getCreateTime,
-                DateTimeUtil.endTimeOfDate(pageRequest.getCreateDateMax()));
+        queryWrapper.geIfPresent(PurchaseOrder::getCreateTime, startTimeOfDate(pageRequest.getCreateDateMin()));
+        queryWrapper.leIfPresent(PurchaseOrder::getCreateTime, endTimeOfDate(pageRequest.getCreateDateMax()));
 
         queryWrapper.orderByDesc(PurchaseOrder::getCode);
 

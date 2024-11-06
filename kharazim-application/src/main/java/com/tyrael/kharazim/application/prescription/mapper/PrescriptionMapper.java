@@ -8,10 +8,12 @@ import com.tyrael.kharazim.application.base.LambdaQueryWrapperX;
 import com.tyrael.kharazim.application.prescription.domain.Prescription;
 import com.tyrael.kharazim.application.prescription.vo.PagePrescriptionRequest;
 import com.tyrael.kharazim.common.dto.PageResponse;
-import com.tyrael.kharazim.common.util.DateTimeUtil;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.cursor.Cursor;
+
+import static com.tyrael.kharazim.common.util.DateTimeUtil.endTimeOfDate;
+import static com.tyrael.kharazim.common.util.DateTimeUtil.startTimeOfDate;
 
 /**
  * @author Tyrael Archangel
@@ -52,10 +54,8 @@ public interface PrescriptionMapper extends BasePageMapper<Prescription> {
         queryWrapper.eqIfHasText(Prescription::getCode, pageRequest.getPrescriptionCode());
         queryWrapper.eqIfHasText(Prescription::getCustomerCode, pageRequest.getCustomerCode());
         queryWrapper.inIfPresent(Prescription::getClinicCode, pageRequest.getClinicCodes());
-        queryWrapper.geIfPresent(Prescription::getCreateTime,
-                DateTimeUtil.startTimeOfDate(pageRequest.getCreateDateMin()));
-        queryWrapper.leIfPresent(Prescription::getCreateTime,
-                DateTimeUtil.endTimeOfDate(pageRequest.getCreateDateMax()));
+        queryWrapper.geIfPresent(Prescription::getCreateTime, startTimeOfDate(pageRequest.getCreateDateMin()));
+        queryWrapper.leIfPresent(Prescription::getCreateTime, endTimeOfDate(pageRequest.getCreateDateMax()));
 
         queryWrapper.orderByDesc(Prescription::getCode);
 
