@@ -25,9 +25,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -70,9 +68,7 @@ public class JacksonConfig {
 
     public static class BaseNameAndValueEnumSerializer extends JsonSerializer<BaseNameAndValueEnum> {
 
-        // 缓存，减少执行反射
-        private final Map<Class<?>, Set<String>> ignoreWriteNameEnumCache = new ConcurrentHashMap<>();
-        private final Map<Class<?>, Set<String>> writeNameEnumCache = new ConcurrentHashMap<>();
+        private final Map<Map.Entry<Class<?>, String>, Boolean> canWriteNameEnumCache = new ConcurrentHashMap<>();
 
         @Override
         public void serialize(BaseNameAndValueEnum value,
@@ -86,23 +82,24 @@ public class JacksonConfig {
             JsonStreamContext outputContext = gen.getOutputContext();
             Class<?> currentClass = outputContext.getCurrentValue().getClass();
             String currentName = outputContext.getCurrentName();
+            String enumNameField = currentName + "Name";
 
-            Set<String> ignoreWriteNameEnums = ignoreWriteNameEnumCache.computeIfAbsent(currentClass, k -> new HashSet<>());
-            if (ignoreWriteNameEnums.contains(currentName)) {
-                return;
-            }
-            Set<String> writeNameEnums = writeNameEnumCache.computeIfAbsent(currentClass, k -> new HashSet<>());
-            if (writeNameEnums.contains(currentName)) {
-                gen.writeStringField(currentName + "Name", value.getName());
-                return;
-            }
+            boolean canWriteNameEnum = canWriteNameEnumCache.computeIfAbsent(Map.entry(currentClass, currentName), k -> {
 
-            try {
-                currentClass.getDeclaredField(currentName + "Name");
-                ignoreWriteNameEnums.add(currentName);
-            } catch (NoSuchFieldException e) {
-                writeNameEnums.add(currentName);
-                gen.writeStringField(currentName + "Name", value.getName());
+                Class<?> clazz = currentClass;
+                while (clazz != null && clazz != Object.class) {
+                    try {
+                        clazz.getDeclaredField(enumNameField);
+                        return false;
+                    } catch (NoSuchFieldException e) {
+                        clazz = clazz.getSuperclass();
+                    }
+                }
+                return true;
+            });
+
+            if (canWriteNameEnum) {
+                gen.writeStringField(enumNameField, value.getName());
             }
         }
 
