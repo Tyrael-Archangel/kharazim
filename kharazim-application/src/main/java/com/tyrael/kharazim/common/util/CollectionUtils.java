@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Stream;
 
 /**
@@ -14,7 +15,7 @@ import java.util.stream.Stream;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CollectionUtils {
 
-    private static final Random RANDOM = new Random();
+    private static final Random RANDOM = ThreadLocalRandom.current();
 
     public static <T> T random(Collection<T> c) {
         if (isEmpty(c)) {
@@ -41,9 +42,8 @@ public class CollectionUtils {
         if (isEmpty(c)) {
             return subList;
         }
-        Random random = new Random();
         for (T t : c) {
-            if (random.nextInt(100) < percent) {
+            if (RANDOM.nextInt(100) < percent) {
                 subList.add(t);
             }
         }

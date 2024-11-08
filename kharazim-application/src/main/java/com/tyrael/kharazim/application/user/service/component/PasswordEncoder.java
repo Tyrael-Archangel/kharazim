@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * @author Tyrael Archangel
@@ -26,7 +27,7 @@ public class PasswordEncoder {
             throw new ShouldNotHappenException(e);
         }
         saltLength = 16;
-        random = new Random();
+        random = ThreadLocalRandom.current();
         byteEncoder = new ByteEncoder();
     }
 
