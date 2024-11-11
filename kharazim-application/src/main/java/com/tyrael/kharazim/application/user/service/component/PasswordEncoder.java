@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -67,7 +68,7 @@ public class PasswordEncoder {
 
             byte[] encodedBytes = encode(rawPassword, analyticSaltBytes);
 
-            return bytesEquals(analyticEncodedBytes, encodedBytes);
+            return Arrays.equals(analyticEncodedBytes, encodedBytes);
 
         } catch (Exception e) {
             return false;
@@ -85,18 +86,6 @@ public class PasswordEncoder {
         System.arraycopy(a, 0, encodedPasswordBytes, 0, a.length);
         System.arraycopy(b, 0, encodedPasswordBytes, a.length, b.length);
         return encodedPasswordBytes;
-    }
-
-    private boolean bytesEquals(byte[] a, byte[] b) {
-        if (a.length != b.length) {
-            return false;
-        }
-        for (int i = 0; i < a.length; i++) {
-            if (a[i] != b[i]) {
-                return false;
-            }
-        }
-        return true;
     }
 
     private static class ByteEncoder {
