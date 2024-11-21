@@ -4,6 +4,8 @@ import com.tyrael.kharazim.common.dto.PageCommand;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 /**
  * @author Tyrael Archangel
  * @since 2024/1/24
@@ -16,5 +18,11 @@ public class CustomerCommunicationLogPageRequest extends PageCommand {
 
     @Schema(description = "客服人员编码")
     private String serviceUserCode;
+
+    @Schema(description = "创建开始时间")
+    private LocalDateTime createdBegin;
+
+    @Schema(description = "创建结束时间")
+    private LocalDateTime createdEnd;
 
 }

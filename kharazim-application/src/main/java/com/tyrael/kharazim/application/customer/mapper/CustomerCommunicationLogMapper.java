@@ -23,7 +23,9 @@ public interface CustomerCommunicationLogMapper extends BasePageMapper<CustomerC
     default PageResponse<CustomerCommunicationLog> page(CustomerCommunicationLogPageRequest pageRequest) {
         LambdaQueryWrapperX<CustomerCommunicationLog> queryWrapper = new LambdaQueryWrapperX<>();
         queryWrapper.eqIfHasText(CustomerCommunicationLog::getCustomerCode, pageRequest.getCustomerCode())
-                .eqIfHasText(CustomerCommunicationLog::getServiceUserCode, pageRequest.getServiceUserCode());
+                .eqIfHasText(CustomerCommunicationLog::getServiceUserCode, pageRequest.getServiceUserCode())
+                .geIfPresent(CustomerCommunicationLog::getCreateTime, pageRequest.getCreatedBegin())
+                .leIfPresent(CustomerCommunicationLog::getCreateTime, pageRequest.getCreatedEnd());
 
         queryWrapper.orderByDesc(CustomerCommunicationLog::getCreateTime);
         queryWrapper.orderByDesc(CustomerCommunicationLog::getId);
