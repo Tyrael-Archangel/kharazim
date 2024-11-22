@@ -9,12 +9,17 @@ spring:
   application:
     name: kharazim
   datasource:
-    url: jdbc:mysql://${MYSQL_SERVER:localhost}:${MYSQL_PORT:3306}/${DB_NAME:kharazim_db}?useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true
+    url: jdbc:mysql://${MYSQL_SERVER:localhost}:${MYSQL_PORT:3306}/${DB_NAME:kharazim}?useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true
     username: ${MYSQL_USER:root}
     password: ${MYSQL_PASSWORD:123456}
     hikari:
       maximum-pool-size: 200
       minimum-idle: 10
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
 
   servlet:
     multipart:
