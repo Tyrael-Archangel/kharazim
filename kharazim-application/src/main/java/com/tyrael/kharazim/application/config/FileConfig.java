@@ -38,6 +38,11 @@ public class FileConfig {
      */
     private int maxDirCountEveryLevel = 5;
 
+    /**
+     * 文件服务器schema
+     */
+    private String schema = "http://localhost:9408/kharazim-api";
+
     public String getHomePathOrDefault() {
         if (homePath == null || homePath.trim().isEmpty()) {
             return System.getProperty("user.home");

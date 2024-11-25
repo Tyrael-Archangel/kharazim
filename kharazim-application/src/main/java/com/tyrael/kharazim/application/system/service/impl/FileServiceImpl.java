@@ -202,8 +202,8 @@ public class FileServiceImpl implements FileService {
             return null;
         }
 
-        // TODO @Tyrael Archangel
-        String url = "http://localhost:9408/kharazim-api/system/file/" + fileId;
+//      String url = "http://localhost:9408/kharazim-api/system/file/" + fileId;
+        String url = fileConfig.getSchema() + "/system/file/" + fileId;
         String currentUserToken = CurrentUserHolder.getCurrentUserToken();
         if (StringUtils.isNotBlank(currentUserToken)) {
             url += "?" + SystemGlobalConfig.TOKEN_HEADER + "=" + currentUserToken;
