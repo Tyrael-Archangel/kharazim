@@ -8,7 +8,7 @@ import java.util.Random;
  */
 public class BytesUtil {
 
-    private static final int BYTE_SIZE = 4;
+    public static final int BYTE_SIZE = 4;
 
     public static byte[] toBytes(int i) {
         byte[] bytes = new byte[BYTE_SIZE];

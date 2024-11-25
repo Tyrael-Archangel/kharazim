@@ -26,7 +26,7 @@ public class SendAndReadMsgUtil {
     }
 
     public static MsgBody readBody(InputStream inputStream) throws IOException {
-        byte[] bodySizeBytes = new byte[4];
+        byte[] bodySizeBytes = new byte[BytesUtil.BYTE_SIZE];
         int read = inputStream.read(bodySizeBytes);
         if (read == -1) {
             return null;
