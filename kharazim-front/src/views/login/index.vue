@@ -1,6 +1,6 @@
 <template>
   <div class="login-block" style="padding-top: 10%; padding-bottom: 2%">
-    <el-image src="/kh.svg" style="width: 100px"></el-image>
+    <el-image :src="formatUrl('/kh.svg')" style="width: 100px"></el-image>
     <el-text style="font-size: x-large; font-weight: bolder"
       >Kharazim项目
     </el-text>
@@ -82,6 +82,15 @@ const loginData = reactive({
   userName: "",
   password: "",
 });
+
+function formatUrl(url) {
+  const basePath = import.meta.env.VITE_BASE_PATH;
+  if (basePath) {
+    return "/" + basePath + "/" + url;
+  } else {
+    return url;
+  }
+}
 
 function forgetPwd() {
   ElMessage({

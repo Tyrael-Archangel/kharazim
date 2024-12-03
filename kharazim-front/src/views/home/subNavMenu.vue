@@ -6,14 +6,14 @@
       :index="menuItem.path"
     >
       <template #title>
-        <el-image :src="menuItem.icon" class="menu-icon" />
+        <el-image :src="formatImgUrl(menuItem.icon)" class="menu-icon" />
         <span style="font-size: medium">{{ menuItem.name }}</span>
       </template>
       <SubMenu :menu-data="filterNav(menuItem.children)"></SubMenu>
     </el-sub-menu>
     <el-menu-item v-else :key="menuItem.path" :index="menuItem.path">
       <template #title>
-        <el-image :src="menuItem.icon" class="menu-icon" />
+        <el-image :src="formatImgUrl(menuItem.icon)" class="menu-icon" />
         <span style="font-size: medium">{{ menuItem.name }}</span>
       </template>
     </el-menu-item>
@@ -31,6 +31,14 @@ export default {
       }
       return menuData;
     },
+    formatImgUrl: (url) => {
+      const basePath = import.meta.env.VITE_BASE_PATH;
+      if (basePath) {
+        return "/" + basePath + "/" + url;
+      } else {
+        return url;
+      }
+    }
   },
 };
 </script>

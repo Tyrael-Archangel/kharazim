@@ -38,7 +38,7 @@ onMounted(() => {
 });
 
 function loadProfile() {
-  axios.get("kharazim-api/").then((res: AxiosResponse) => {
+  axios.get("/kharazim-api/").then((res: AxiosResponse) => {
     const profile = res.data.profile as keyof typeof navBackgroundColors.value;
     const color = navBackgroundColors.value[profile];
     if (color) {

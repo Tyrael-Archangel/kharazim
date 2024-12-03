@@ -6,6 +6,7 @@ import * as path from "path";
 export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
   const env = loadEnv(mode, process.cwd());
   return {
+    base: env.VITE_BASE_PATH,
     server: {
       open: true,
       port: Number(env.VITE_APP_PORT),
@@ -26,6 +27,9 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
       alias: {
         "@": path.resolve(__dirname, "./src"),
       },
+    },
+    define: {
+      "process.env": env,
     },
   };
 });
