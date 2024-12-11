@@ -1,14 +1,15 @@
 package com.tyrael.kharazim.application.system.service;
 
 import com.tyrael.kharazim.application.base.auth.AuthUser;
-import com.tyrael.kharazim.application.config.DictCodeConstants;
-import com.tyrael.kharazim.application.system.domain.DictItem;
-import com.tyrael.kharazim.application.system.dto.dict.*;
+import com.tyrael.kharazim.application.system.domain.DictConstant;
+import com.tyrael.kharazim.application.system.dto.dict.DictDTO;
+import com.tyrael.kharazim.application.system.dto.dict.DictItemDTO;
+import com.tyrael.kharazim.application.system.dto.dict.PageDictRequest;
+import com.tyrael.kharazim.application.system.dto.dict.SaveDictItemRequest;
 import com.tyrael.kharazim.common.dto.MultiResponse;
 import com.tyrael.kharazim.common.dto.PageResponse;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -27,159 +28,55 @@ public interface DictService {
     PageResponse<DictDTO> pageDict(PageDictRequest pageDictRequest);
 
     /**
-     * 字典详情
-     *
-     * @param id 字典ID
-     * @return 字典详情
-     */
-    DictDTO dictDetail(Long id);
-
-    /**
-     * 新增字典
-     *
-     * @param addDictRequest SaveDictRequest
-     * @param currentUser    操作人
-     */
-    void addDict(SaveDictRequest addDictRequest, AuthUser currentUser);
-
-    /**
-     * 修改字典
-     *
-     * @param dictId            字典ID
-     * @param modifyDictRequest SaveDictRequest
-     * @param currentUser       操作人
-     */
-    void modify(Long dictId, SaveDictRequest modifyDictRequest, AuthUser currentUser);
-
-    /**
-     * 删除字典
-     *
-     * @param ids 字典ID
-     */
-    void delete(List<Long> ids);
-
-    /**
      * 字典项列表
      *
      * @param dictCode 字典编码
      * @return 字典项列表数据
      */
-    MultiResponse<DictItemOptionDTO> listDictItem(String dictCode);
+    MultiResponse<DictItemDTO> listItems(String dictCode);
 
     /**
-     * find items by dictCode
+     * 字典项 key -> value
      *
-     * @param dictCode dictCode
-     * @return DictItems
+     * @param dictConstant {@link DictConstant}
+     * @return 字典项 key -> value
      */
-    List<DictItem> findByDictCode(String dictCode);
+    Map<String, String> dictItemMap(DictConstant dictConstant);
 
     /**
-     * find items by dictCode
+     * 查询字典项值
      *
-     * @param dictCodeConstant {@link DictCodeConstants}
-     * @return DictItems
-     */
-    List<DictItem> findByDict(DictCodeConstants dictCodeConstant);
-
-    /**
-     * 字典项 value -> name
-     *
-     * @param dictCodeConstant {@link DictCodeConstants}
-     * @return 字典项 value -> name
-     */
-    Map<String, String> dictItemMap(DictCodeConstants dictCodeConstant);
-
-    /**
-     * 查询字典项名称
-     *
-     * @param dictCode      字典
-     * @param dictItemValue 字典项值
+     * @param dictConstant {@link DictConstant}
+     * @param dictItemKey  字典项键
      * @return 字典项名称
      */
-    String findItemName(String dictCode, String dictItemValue);
-
-    /**
-     * 查询字典项
-     *
-     * @param dictCode      字典
-     * @param dictItemValue 字典项值
-     * @return 字典项
-     */
-    DictItem findItem(String dictCode, String dictItemValue);
-
-    /**
-     * 查询字典项名称
-     *
-     * @param dictCodeConstants {@link DictCodeConstants}
-     * @param dictItemValue     字典项值
-     * @return 字典项名称
-     */
-    String findItemName(DictCodeConstants dictCodeConstants, String dictItemValue);
-
-    /**
-     * list dict item values by dictCode
-     *
-     * @param dictCode dictCode
-     * @return dict item codes
-     */
-    Set<String> findEnabledItems(String dictCode);
+    String findItemValue(DictConstant dictConstant, String dictItemKey);
 
     /**
      * list dict item values by dictCodeConstants
      *
-     * @param dictCodeConstants {@link DictCodeConstants}
+     * @param dictConstant {@link DictConstant}
      * @return dict item codes
      */
-    Set<String> findEnabledItems(DictCodeConstants dictCodeConstants);
+    default Set<String> dictItemKeys(DictConstant dictConstant) {
+        return Set.copyOf(dictItemMap(dictConstant).values());
+    }
 
     /**
      * 验证字典值是否有效
      *
-     * @param dictCode       字典编码
-     * @param dictItemValues 字典值
+     * @param dictConstant {@link DictConstant}
+     * @param dictItemKeys 字典值
      */
-    void ensureDictItemEnable(String dictCode, Collection<String> dictItemValues);
+    void ensureDictItemEnable(DictConstant dictConstant, Collection<String> dictItemKeys);
 
     /**
      * 验证字典值是否有效
      *
-     * @param dictCode      字典编码
-     * @param dictItemValue 字典值
+     * @param dictConstant {@link DictConstant}
+     * @param dictItemKey  字典键
      */
-    void ensureDictItemEnable(String dictCode, String dictItemValue);
-
-    /**
-     * 验证字典值是否有效
-     *
-     * @param dictCodeConstants {@link DictCodeConstants}
-     * @param dictItemValues    字典值
-     */
-    void ensureDictItemEnable(DictCodeConstants dictCodeConstants, Collection<String> dictItemValues);
-
-    /**
-     * 验证字典值是否有效
-     *
-     * @param dictCodeConstants {@link DictCodeConstants}
-     * @param dictItemValue     字典值
-     */
-    void ensureDictItemEnable(DictCodeConstants dictCodeConstants, String dictItemValue);
-
-    /**
-     * 字典项分页
-     *
-     * @param pageDictItemRequest PageDictItemRequest
-     * @return 字典项分页数据
-     */
-    PageResponse<DictItemDTO> pageDictItem(PageDictItemRequest pageDictItemRequest);
-
-    /**
-     * 字典项详情
-     *
-     * @param dictItemId 字典项ID
-     * @return 字典项详情
-     */
-    DictItemDTO dictItemDetail(Long dictItemId);
+    void ensureDictItemEnable(DictConstant dictConstant, String dictItemKey);
 
     /**
      * 添加字典项
@@ -197,13 +94,5 @@ public interface DictService {
      * @param currentUser           操作人
      */
     void modifyDictItem(Long dictItemId, SaveDictItemRequest modifyDictItemRequest, AuthUser currentUser);
-
-    /**
-     * 删除字典项
-     *
-     * @param dictItemIds 字典项ID
-     * @param currentUser 操作人
-     */
-    void deleteItem(List<Long> dictItemIds, AuthUser currentUser);
 
 }

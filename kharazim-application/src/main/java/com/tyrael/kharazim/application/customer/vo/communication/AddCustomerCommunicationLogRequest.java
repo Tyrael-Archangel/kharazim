@@ -16,14 +16,14 @@ public class AddCustomerCommunicationLogRequest {
     @NotBlank(message = "请指定会员")
     private String customerCode;
 
-    @Schema(description = "沟通类型字典值，字典编码：communication_type")
-    private String typeDictValue;
+    @Schema(description = "沟通类型字典key")
+    private String typeDictKey;
 
     @Schema(description = "沟通内容", maxLength = 1024)
     @Size(max = 1024, message = "沟通内容超长")
     private String content;
 
-    @Schema(description = "沟通评价字典值，字典编码：communication_evaluate")
-    private String evaluateDictValue;
+    @Schema(description = "沟通评价字典key")
+    private String evaluateDictKey;
 
 }

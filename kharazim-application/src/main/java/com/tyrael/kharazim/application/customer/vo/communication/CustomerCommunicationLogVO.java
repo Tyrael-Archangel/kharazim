@@ -21,8 +21,8 @@ public class CustomerCommunicationLogVO {
     @Schema(description = "沟通类型")
     private String type;
 
-    @Schema(description = "沟通类型字典值")
-    private String typeDictValue;
+    @Schema(description = "沟通类型字典键")
+    private String typeDictKey;
 
     @Schema(description = "会员编码")
     private String customerCode;
@@ -42,8 +42,8 @@ public class CustomerCommunicationLogVO {
     @Schema(description = "沟通评价")
     private String evaluate;
 
-    @Schema(description = "沟通评价字典值")
-    private String evaluateDictValue;
+    @Schema(description = "沟通评价字典键")
+    private String evaluateDictKey;
 
     @Schema(description = "沟通时间")
     private LocalDateTime communicationTime;

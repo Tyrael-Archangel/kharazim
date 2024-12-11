@@ -1,7 +1,7 @@
 package com.tyrael.kharazim.application.recharge.enums;
 
 import com.baomidou.mybatisplus.annotation.EnumValue;
-import com.tyrael.kharazim.common.dto.BaseNameAndValueEnum;
+import com.tyrael.kharazim.common.dto.BaseHasNameEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -11,7 +11,7 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
-public enum CustomerRechargeCardLogType implements BaseNameAndValueEnum {
+public enum CustomerRechargeCardLogType implements BaseHasNameEnum<CustomerRechargeCardLogType> {
 
     RECHARGE(1, "充值"),
 

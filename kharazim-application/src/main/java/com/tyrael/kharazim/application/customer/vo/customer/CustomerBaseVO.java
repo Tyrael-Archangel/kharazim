@@ -50,8 +50,8 @@ public class CustomerBaseVO {
     @Schema(description = "备注")
     private String remark;
 
-    @Schema(description = "会员来源渠道字典值")
-    private String sourceChannelDictValue;
+    @Schema(description = "会员来源渠道字典键")
+    private String sourceChannelDictKey;
 
     @Schema(description = "会员来源渠道")
     private String sourceChannel;

@@ -7,13 +7,12 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.collect.Lists;
 import com.tyrael.kharazim.application.base.auth.AuthUser;
 import com.tyrael.kharazim.application.config.BusinessCodeConstants;
-import com.tyrael.kharazim.application.config.DictCodeConstants;
+import com.tyrael.kharazim.application.system.domain.DictConstants;
 import com.tyrael.kharazim.application.customer.converter.CustomerConverter;
 import com.tyrael.kharazim.application.customer.domain.*;
 import com.tyrael.kharazim.application.customer.mapper.*;
 import com.tyrael.kharazim.application.customer.service.CustomerService;
 import com.tyrael.kharazim.application.customer.vo.customer.*;
-import com.tyrael.kharazim.application.system.domain.DictItem;
 import com.tyrael.kharazim.application.system.service.CaptchaService;
 import com.tyrael.kharazim.application.system.service.CodeGenerator;
 import com.tyrael.kharazim.application.system.service.DictService;
@@ -260,9 +259,9 @@ public class CustomerServiceImpl implements CustomerService {
             customerMapper.ensureCustomerExist(sourceCustomerCode);
         }
 
-        String sourceChannelDict = request.getSourceChannelDictValue();
+        String sourceChannelDict = request.getSourceChannelDictKey();
         if (StringUtils.isNotBlank(sourceChannelDict)) {
-            dictService.ensureDictItemEnable(DictCodeConstants.CUSTOMER_SOURCE_CHANNEL, sourceChannelDict);
+            dictService.ensureDictItemEnable(DictConstants.CUSTOMER_SOURCE_CHANNEL, sourceChannelDict);
         }
 
         checkBirthday(request.getBirthYear(), request.getBirthMonth(), request.getBirthDayOfMonth());
@@ -466,8 +465,8 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     private CustomerInsurance createCustomerInsurance(AddCustomerInsuranceRequest addCustomerInsuranceRequest) {
-        String insuranceCompany = addCustomerInsuranceRequest.getCompanyDictValue();
-        dictService.ensureDictItemEnable(DictCodeConstants.INSURANCE_COMPANY, insuranceCompany);
+        String insuranceCompany = addCustomerInsuranceRequest.getCompanyDictKey();
+        dictService.ensureDictItemEnable(DictConstants.INSURANCE_COMPANY, insuranceCompany);
 
         CustomerInsurance customerInsurance = new CustomerInsurance();
         customerInsurance.setCustomerCode(addCustomerInsuranceRequest.getCustomerCode());
@@ -504,10 +503,10 @@ public class CustomerServiceImpl implements CustomerService {
         Long customerInsuranceId = modifyCustomerInsuranceRequest.getCustomerInsuranceId();
         CustomerInsurance customerInsurance = customerInsuranceMapper.selectById(customerInsuranceId);
 
-        String companyDictValue = modifyCustomerInsuranceRequest.getCompanyDictValue();
-        if (!StringUtils.equalsIgnoreCase(customerInsurance.getCompanyDict(), companyDictValue)) {
-            dictService.ensureDictItemEnable(DictCodeConstants.INSURANCE_COMPANY, companyDictValue);
-            customerInsurance.setCompanyDict(companyDictValue);
+        String companyDictKey = modifyCustomerInsuranceRequest.getCompanyDictKey();
+        if (!StringUtils.equalsIgnoreCase(customerInsurance.getCompanyDict(), companyDictKey)) {
+            dictService.ensureDictItemEnable(DictConstants.INSURANCE_COMPANY, companyDictKey);
+            customerInsurance.setCompanyDict(companyDictKey);
         }
 
         customerInsurance.setPolicyNumber(modifyCustomerInsuranceRequest.getPolicyNumber());
@@ -605,15 +604,13 @@ public class CustomerServiceImpl implements CustomerService {
         if (customerTags.isEmpty()) {
             return Lists.newArrayList();
         }
-        List<DictItem> dictItems = dictService.findByDict(DictCodeConstants.CUSTOMER_TAG);
-        Map<String, String> dictItemValueToNameMap = dictItems.stream()
-                .collect(Collectors.toMap(DictItem::getValue, DictItem::getName));
+        Map<String, String> dictItemValueToNameMap = dictService.dictItemMap(DictConstants.CUSTOMER_TAG);
 
         return customerTags.stream()
                 .map(customerTag -> {
                     CustomerTagVO customerTagVO = new CustomerTagVO();
                     customerTagVO.setTagName(dictItemValueToNameMap.get(customerTag.getTagDict()));
-                    customerTagVO.setTagDictValue(customerTag.getTagDict());
+                    customerTagVO.setTagDictKey(customerTag.getTagDict());
                     return customerTagVO;
                 })
                 .filter(e -> StringUtils.isNotBlank(e.getTagName()))
@@ -626,10 +623,10 @@ public class CustomerServiceImpl implements CustomerService {
         String customerCode = addCustomerTagRequest.getCustomerCode();
         customerMapper.ensureCustomerExist(customerCode);
 
-        Set<String> tagDictValues = addCustomerTagRequest.getTagDictValues();
-        dictService.ensureDictItemEnable(DictCodeConstants.CUSTOMER_TAG, tagDictValues);
+        Set<String> tagDictKeys = addCustomerTagRequest.getTagDictKeys();
+        dictService.ensureDictItemEnable(DictConstants.CUSTOMER_TAG, tagDictKeys);
 
-        for (String tagDict : tagDictValues) {
+        for (String tagDict : tagDictKeys) {
             CustomerTag customerTag = new CustomerTag();
             customerTag.setCustomerCode(customerCode);
             customerTag.setTagDict(tagDict);
@@ -644,9 +641,9 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void removeCustomerTag(String code, String tagDictValue) {
+    public void removeCustomerTag(String code, String tagDictKey) {
         customerMapper.ensureCustomerExist(code);
-        customerTagMapper.deleteCustomerTag(code, tagDictValue);
+        customerTagMapper.deleteCustomerTag(code, tagDictKey);
     }
 
 }

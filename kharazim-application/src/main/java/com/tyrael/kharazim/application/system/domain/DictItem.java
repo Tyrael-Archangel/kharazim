@@ -16,20 +16,12 @@ public class DictItem {
     @TableId(type = IdType.AUTO)
     private Long id;
 
-    private String name;
+    private String dictCode;
+
+    private String key;
 
     private String value;
 
-    private String dictCode;
-
     private Integer sort;
-
-    private Boolean enabled;
-
-    private String remark;
-
-    public boolean enable() {
-        return Boolean.TRUE.equals(enabled);
-    }
 
 }

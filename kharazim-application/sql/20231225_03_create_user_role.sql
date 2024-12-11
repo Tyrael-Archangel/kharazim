@@ -71,18 +71,3 @@ VALUES ('SUPER_ADMIN', 1, '超级管理员', 0, 1, now(), now());
 
 insert into `user_role`(`user_id`, `role_id`)
 VALUES (1, 1);
-
-
-insert into `dict`(`code`, `name`, remark, system_dict, allow_modify_item)
-values ('user_gender', '用户性别', '系统用户性别', 1, 0);
-insert into `dict_item`(`name`, `value`, `dict_code`, `sort`)
-values ('男', 'MALE', 'user_gender', 1),
-       ('女', 'FEMALE', 'user_gender', 2),
-       ('未知', 'UNKNOWN', 'user_gender', 3);
-
-insert into `dict`(`code`, `name`, remark, system_dict, allow_modify_item)
-values ('certificate_code', '证件类型', '客户、用户证件类型', 1, 0);
-insert into `dict_item`(`name`, `value`, `dict_code`, `sort`)
-values ('身份证', 'ID_CARD', 'certificate_code', 1),
-       ('护照', 'PASSPORT', 'certificate_code', 2),
-       ('军人证', 'MILITARY_CARD', 'certificate_code', 3);

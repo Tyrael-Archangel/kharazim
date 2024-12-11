@@ -20,8 +20,8 @@ public class CustomerInsuranceVO {
     @Schema(description = "保险公司名称")
     private String companyName;
 
-    @Schema(description = "保险公司字典值，字典编码：insurance_company")
-    private String companyDictValue;
+    @Schema(description = "保险公司字典键，字典编码：insurance_company")
+    private String companyDictKey;
 
     @Schema(description = "保单号")
     private String policyNumber;

@@ -1,7 +1,7 @@
 package com.tyrael.kharazim.application.skupublish.enums;
 
 import com.baomidou.mybatisplus.annotation.EnumValue;
-import com.tyrael.kharazim.common.dto.BaseNameAndValueEnum;
+import com.tyrael.kharazim.common.dto.BaseHasNameEnum;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
  */
 @Getter
 @RequiredArgsConstructor
-public enum SkuPublishStatus implements BaseNameAndValueEnum {
+public enum SkuPublishStatus implements BaseHasNameEnum<SkuPublishStatus> {
 
     WAIT_EFFECT(1, "待生效"),
 

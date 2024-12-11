@@ -1,9 +1,8 @@
 package com.tyrael.kharazim.web.controller.customer;
 
-import com.google.common.collect.Sets;
-import com.tyrael.kharazim.application.config.DictCodeConstants;
 import com.tyrael.kharazim.application.customer.service.CustomerService;
 import com.tyrael.kharazim.application.customer.vo.customer.*;
+import com.tyrael.kharazim.application.system.domain.DictConstants;
 import com.tyrael.kharazim.application.system.dto.address.AddressTreeNodeDTO;
 import com.tyrael.kharazim.application.system.dto.dict.SaveDictItemRequest;
 import com.tyrael.kharazim.application.system.service.AddressQueryService;
@@ -123,21 +122,21 @@ class CustomerControllerTest extends BaseControllerTest<CustomerController> {
     @Test
     void addInsurance() {
 
-        Set<String> companyItems = dictService.findEnabledItems(DictCodeConstants.INSURANCE_COMPANY);
+        Set<String> companyItems = dictService.dictItemKeys(DictConstants.INSURANCE_COMPANY);
         if (companyItems.isEmpty()) {
             companyItems = addInsuranceCompanyDict();
         }
-        List<String> companyDictValues = new ArrayList<>(companyItems);
+        List<String> companyDictKeys = new ArrayList<>(companyItems);
 
         String customerCode = "CU0000000001";
         for (int i = 0; i < 5; i++) {
-            String companyDictValue = companyDictValues.get(random.nextInt(companyDictValues.size()));
-            String policyNumber = companyDictValue.toLowerCase() + i + System.currentTimeMillis();
+            String companyDictKey = companyDictKeys.get(random.nextInt(companyDictKeys.size()));
+            String policyNumber = companyDictKey.toLowerCase() + i + System.currentTimeMillis();
             LocalDate duration = LocalDate.now().plusDays(1000 + random.nextInt(5000));
             String benefits = "福利：" + UUID.randomUUID();
             AddCustomerInsuranceRequest addCustomerInsuranceRequest = new AddCustomerInsuranceRequest();
             addCustomerInsuranceRequest.setCustomerCode(customerCode);
-            addCustomerInsuranceRequest.setCompanyDictValue(companyDictValue);
+            addCustomerInsuranceRequest.setCompanyDictKey(companyDictKey);
             addCustomerInsuranceRequest.setPolicyNumber(policyNumber);
             addCustomerInsuranceRequest.setDuration(duration);
             addCustomerInsuranceRequest.setBenefits(benefits);
@@ -157,7 +156,7 @@ class CustomerControllerTest extends BaseControllerTest<CustomerController> {
                 .append("MSH | 万欣和", "MSH")
                 .append("PINGAN | 中国平安", "PINGAN");
 
-        return addDictItems(DictCodeConstants.INSURANCE_COMPANY.getDictCode(), insuranceCompanies);
+        return addDictItems(DictConstants.INSURANCE_COMPANY.getCode(), insuranceCompanies);
     }
 
     @Test
@@ -208,7 +207,7 @@ class CustomerControllerTest extends BaseControllerTest<CustomerController> {
 
     @Test
     void addCustomerTag() {
-        Set<String> customerTagDictItems = dictService.findEnabledItems(DictCodeConstants.CUSTOMER_TAG);
+        Set<String> customerTagDictItems = dictService.dictItemKeys(DictConstants.CUSTOMER_TAG);
         if (customerTagDictItems.isEmpty()) {
             customerTagDictItems = addCustomerTagDict();
         }
@@ -217,18 +216,11 @@ class CustomerControllerTest extends BaseControllerTest<CustomerController> {
 
         List<CustomerSimpleVO> customers = customerService.listSimpleInfo(new ListCustomerRequest());
         for (CustomerSimpleVO customer : customers) {
-
-            int tagCount = random.nextInt(customerTags.size());
-            if (tagCount > 0) {
-                Set<String> tagDictValues = Sets.newLinkedHashSet();
-                for (int i = 0; i < tagCount; i++) {
-                    String customerTag = CollectionUtils.random(customerTags);
-                    tagDictValues.add(customerTag);
-                }
+            Set<String> tagDictKeys = new LinkedHashSet<>(CollectionUtils.randomSubList(customerTags, 60));
+            if (!tagDictKeys.isEmpty()) {
                 AddCustomerTagRequest addCustomerTagRequest = new AddCustomerTagRequest();
                 addCustomerTagRequest.setCustomerCode(customer.getCode());
-                addCustomerTagRequest.setTagDictValues(tagDictValues);
-
+                addCustomerTagRequest.setTagDictKeys(tagDictKeys);
                 super.performWhenCall(mockController.addCustomerTag(addCustomerTagRequest, super.mockAdmin()));
             }
         }
@@ -255,14 +247,14 @@ class CustomerControllerTest extends BaseControllerTest<CustomerController> {
                 .append("家庭妇女", "housewife")
                 .append("退休人员", "retiree")
                 .append("消费能力强", "strong_spending_power");
-        return addDictItems(DictCodeConstants.CUSTOMER_TAG.getDictCode(), customerTags);
+        return addDictItems(DictConstants.CUSTOMER_TAG.getCode(), customerTags);
     }
 
     @Test
     void removeCustomerTag() {
         String customerCode = "CU0000000001";
-        String tagDictValue = "common_laborer";
-        super.performWhenCall(mockController.removeCustomerTag(customerCode, tagDictValue));
+        String tagDictKey = "common_laborer";
+        super.performWhenCall(mockController.removeCustomerTag(customerCode, tagDictKey));
     }
 
     private Set<String> addDictItems(String dictCode, Pairs<String, String> dictItems) {
@@ -270,11 +262,10 @@ class CustomerControllerTest extends BaseControllerTest<CustomerController> {
         for (int i = 0; i < dictItems.size(); i++) {
             Pair<String, String> dictItem = dictItems.get(i);
             SaveDictItemRequest addDictItemRequest = new SaveDictItemRequest();
-            addDictItemRequest.setTypeCode(dictCode);
+            addDictItemRequest.setDictCode(dictCode);
             addDictItemRequest.setValue(dictItem.right());
-            addDictItemRequest.setName(dictItem.left());
+            addDictItemRequest.setKey(dictItem.left());
             addDictItemRequest.setSort(i + 1);
-            addDictItemRequest.setEnable(Boolean.TRUE);
             dictService.addDictItem(addDictItemRequest, super.mockAdmin());
             dictItemValues.add(dictItem.right());
         }

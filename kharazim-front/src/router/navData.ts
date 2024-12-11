@@ -32,6 +32,12 @@ const navs: Nav[] = [
         path: "/system-setting/role-management",
         icon: "/icons/role.svg",
       },
+      {
+        name: "字典管理",
+        component: "dict/dictManagement.vue",
+        path: "/system-setting/dict-management",
+        icon: "/icons/dict_management.svg",
+      },
     ],
   },
   {

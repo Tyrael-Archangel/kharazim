@@ -46,14 +46,6 @@ create table `customer_recharge_card`
     index idx_customer (`customer_code`)
 ) comment '会员储值单';
 
-insert into `dict`(`code`, `name`, remark, system_dict, allow_modify_item)
-values ('recharge_card_status', '储值单状态', '会员储值单状态', 1, 0);
-insert into `dict_item`(`name`, `value`, `dict_code`, `sort`)
-values ('未收款', 'UNPAID', 'recharge_card_status', 1),
-       ('已收款', 'PAID', 'recharge_card_status', 2),
-       ('未退款', 'WAIT_REFUND', 'recharge_card_status', 3),
-       ('已退款', 'REFUNDED', 'recharge_card_status', 4);
-
 create table `customer_recharge_card_log`
 (
     `id`                   bigint         not null auto_increment primary key,

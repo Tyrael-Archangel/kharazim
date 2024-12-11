@@ -1,13 +1,11 @@
 package com.tyrael.kharazim.application.system.mapper;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.tyrael.kharazim.application.base.BasePageMapper;
 import com.tyrael.kharazim.application.system.domain.DictItem;
 import com.tyrael.kharazim.application.system.dto.dict.PageDictItemRequest;
 import com.tyrael.kharazim.common.dto.PageResponse;
-import com.tyrael.kharazim.common.util.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -21,66 +19,25 @@ import java.util.List;
 @Mapper
 public interface DictItemMapper extends BasePageMapper<DictItem> {
 
-    /**
-     * update dictCode
-     *
-     * @param oldDictCode 旧的字典编码
-     * @param newDictCode 新的字典编码
-     */
-    default void updateDictCode(String oldDictCode, String newDictCode) {
-        if (StringUtils.equals(oldDictCode, newDictCode)) {
-            return;
-        }
-
-        LambdaUpdateWrapper<DictItem> updateWrapper = Wrappers.lambdaUpdate();
-        updateWrapper.eq(DictItem::getDictCode, newDictCode);
-        updateWrapper.set(DictItem::getDictCode, oldDictCode);
-
-        this.update(null, updateWrapper);
-    }
-
-    /**
-     * delete by dictCodes
-     *
-     * @param dictCodes 字典编码
-     */
-    default void deleteByDictCodes(List<String> dictCodes) {
-        if (CollectionUtils.isEmpty(dictCodes)) {
-            return;
-        }
+    default DictItem finByDictCodeAndItemValue(String dictCode, String itemValue) {
         LambdaQueryWrapper<DictItem> queryWrapper = Wrappers.lambdaQuery();
-        queryWrapper.in(DictItem::getDictCode, dictCodes);
-        this.delete(queryWrapper);
+        queryWrapper.eq(DictItem::getDictCode, dictCode)
+                .eq(DictItem::getValue, itemValue);
+        return selectOne(queryWrapper);
     }
 
     /**
-     * find by dictCode
+     * list by dictCode
      *
      * @param dictCode 字典编码
      * @return entities
      */
-    default List<DictItem> findByDictCode(String dictCode) {
+    default List<DictItem> listByDictCode(String dictCode) {
         if (StringUtils.isBlank(dictCode)) {
             return Collections.emptyList();
         }
         LambdaQueryWrapper<DictItem> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper.eq(DictItem::getDictCode, dictCode);
-        return this.selectList(queryWrapper);
-    }
-
-    /**
-     * find enabled dictItems by dictCode
-     *
-     * @param dictCode 字典编码
-     * @return DictItems
-     */
-    default List<DictItem> findEnabledByDictCode(String dictCode) {
-        if (StringUtils.isBlank(dictCode)) {
-            return Collections.emptyList();
-        }
-        LambdaQueryWrapper<DictItem> queryWrapper = Wrappers.lambdaQuery();
-        queryWrapper.eq(DictItem::getDictCode, dictCode)
-                .eq(DictItem::getEnabled, Boolean.TRUE);
         return this.selectList(queryWrapper);
     }
 
@@ -99,7 +56,7 @@ public interface DictItemMapper extends BasePageMapper<DictItem> {
 
         String keywords = pageRequest.getKeywords();
         if (StringUtils.isNotBlank(keywords)) {
-            queryWrapper.and(q -> q.like(DictItem::getName, keywords)
+            queryWrapper.and(q -> q.like(DictItem::getKey, keywords)
                     .or()
                     .like(DictItem::getValue, keywords));
         }

@@ -6,7 +6,7 @@ import com.alibaba.excel.metadata.GlobalConfiguration;
 import com.alibaba.excel.metadata.data.ReadCellData;
 import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
-import com.tyrael.kharazim.common.dto.BaseNameAndValueEnum;
+import com.tyrael.kharazim.common.dto.BaseHasNameEnum;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
@@ -15,7 +15,7 @@ import java.util.Arrays;
  * @author Tyrael Archangel
  * @since 2024/5/22
  */
-public interface BaseNameAndValueEnumConverter<T extends Enum<T> & BaseNameAndValueEnum> extends Converter<T> {
+public interface BaseNameAndValueEnumConverter<T extends Enum<T> & BaseHasNameEnum<T>> extends Converter<T> {
 
     @Override
     Class<T> supportJavaTypeKey();
@@ -36,8 +36,7 @@ public interface BaseNameAndValueEnumConverter<T extends Enum<T> & BaseNameAndVa
 
         T[] enumConstants = supportJavaTypeKey().getEnumConstants();
         for (T enumConstant : enumConstants) {
-            if (StringUtils.equalsAnyIgnoreCase(stringValue,
-                    enumConstant.getName(), String.valueOf(enumConstant.getValue()), enumConstant.name())) {
+            if (StringUtils.equalsAnyIgnoreCase(stringValue, enumConstant.getName(), enumConstant.name())) {
                 return enumConstant;
             }
         }

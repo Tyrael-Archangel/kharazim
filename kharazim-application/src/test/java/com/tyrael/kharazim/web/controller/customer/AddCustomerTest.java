@@ -1,6 +1,6 @@
 package com.tyrael.kharazim.web.controller.customer;
 
-import com.tyrael.kharazim.application.config.DictCodeConstants;
+import com.tyrael.kharazim.application.system.domain.DictConstants;
 import com.tyrael.kharazim.application.customer.vo.customer.AddCustomerAddressRequest;
 import com.tyrael.kharazim.application.customer.vo.customer.AddCustomerInsuranceRequest;
 import com.tyrael.kharazim.application.customer.vo.customer.AddCustomerRequest;
@@ -53,7 +53,7 @@ public class AddCustomerTest extends BaseControllerTest<CustomerController> {
                 .stream()
                 .map(UserDTO::getCode)
                 .toList();
-        Set<String> companyItems = dictService.findEnabledItems(DictCodeConstants.INSURANCE_COMPANY);
+        Set<String> companyItems = dictService.dictItemKeys(DictConstants.INSURANCE_COMPANY);
         if (companyItems.isEmpty()) {
             companyItems = addInsuranceCompanyDict();
         }
@@ -76,7 +76,7 @@ public class AddCustomerTest extends BaseControllerTest<CustomerController> {
             addCustomerRequest.setPhone(phone);
             addCustomerRequest.setCertificateType(UserCertificateTypeEnum.ID_CARD);
             addCustomerRequest.setCertificateCode("510123111122334444");
-            addCustomerRequest.setSourceChannelDictValue("OFFLINE");
+            addCustomerRequest.setSourceChannelDictKey("OFFLINE");
             addCustomerRequest.setRemark(MockRandomPoetry.random());
             addCustomerRequest.setServiceUserCode(CollectionUtils.random(serviceUserCodes));
             addCustomerRequest.setSalesConsultantCode(CollectionUtils.random(serviceUserCodes));
@@ -199,18 +199,18 @@ public class AddCustomerTest extends BaseControllerTest<CustomerController> {
         return mockAddresses;
     }
 
-    private List<AddCustomerInsuranceRequest> mockInsurances(List<String> companyDictValues) {
+    private List<AddCustomerInsuranceRequest> mockInsurances(List<String> companyDictKeys) {
 
         List<AddCustomerInsuranceRequest> mockInsurances = new ArrayList<>();
 
         int count = (int) random.nextExponential() + 1;
         for (int i = 0; i < count; i++) {
-            String companyDictValue = CollectionUtils.random(companyDictValues);
-            String policyNumber = companyDictValue.toLowerCase() + i + System.currentTimeMillis();
+            String companyDictKey = CollectionUtils.random(companyDictKeys);
+            String policyNumber = companyDictKey.toLowerCase() + i + System.currentTimeMillis();
             LocalDate duration = LocalDate.now().plusDays(1000 + random.nextInt(5000));
             String benefits = "福利：" + MockRandomPoetry.random();
             AddCustomerInsuranceRequest insurance = new AddCustomerInsuranceRequest();
-            insurance.setCompanyDictValue(companyDictValue);
+            insurance.setCompanyDictKey(companyDictKey);
             insurance.setPolicyNumber(policyNumber);
             insurance.setDuration(duration);
             insurance.setBenefits(benefits);
@@ -271,7 +271,7 @@ public class AddCustomerTest extends BaseControllerTest<CustomerController> {
                 .append("MSH | 万欣和", "MSH")
                 .append("PINGAN | 中国平安", "PINGAN");
 
-        return addDictItems(DictCodeConstants.INSURANCE_COMPANY.getDictCode(), insuranceCompanies);
+        return addDictItems(DictConstants.INSURANCE_COMPANY.getCode(), insuranceCompanies);
     }
 
     private Set<String> addDictItems(String dictCode, Pairs<String, String> dictItems) {
@@ -279,11 +279,10 @@ public class AddCustomerTest extends BaseControllerTest<CustomerController> {
         for (int i = 0; i < dictItems.size(); i++) {
             Pair<String, String> dictItem = dictItems.get(i);
             SaveDictItemRequest addDictItemRequest = new SaveDictItemRequest();
-            addDictItemRequest.setTypeCode(dictCode);
+            addDictItemRequest.setDictCode(dictCode);
             addDictItemRequest.setValue(dictItem.right());
-            addDictItemRequest.setName(dictItem.left());
+            addDictItemRequest.setKey(dictItem.left());
             addDictItemRequest.setSort(i + 1);
-            addDictItemRequest.setEnable(Boolean.TRUE);
             dictService.addDictItem(addDictItemRequest, super.mockAdmin());
             dictItemValues.add(dictItem.right());
         }

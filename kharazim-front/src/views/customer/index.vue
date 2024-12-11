@@ -262,7 +262,7 @@ const detailCustomerData = ref<CustomerData>({
   sourceChannel: "",
   createTime: "",
 });
-const detailCustomerTags = ref([{ tagName: "", tagDictValue: "" }]);
+const detailCustomerTags = ref([{ tagName: "", tagDictKey: "" }]);
 
 const detailCustomerVisible = ref(false);
 
@@ -342,7 +342,7 @@ function concatAddress(address: CustomerAddress) {
 interface CustomerInsurance {
   customerInsuranceId: number;
   companyName: string;
-  companyDictValue: string;
+  companyDictKey: string;
   policyNumber: string;
   duration: string;
   benefits: string;

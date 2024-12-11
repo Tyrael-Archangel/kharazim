@@ -16,14 +16,6 @@ create table `menu`
     unique index udx_name (`name`, `parent_id`)
 ) comment '系统菜单表';
 
-insert into `dict`(`code`, `name`, remark, system_dict, allow_modify_item)
-values ('menu_type', '菜单类型', '系统菜单类型', 1, 0);
-insert into `dict_item`(`name`, `value`, `dict_code`, `sort`)
-values ('菜单', 'MENU', 'menu_type', 1),
-       ('目录', 'CATALOG', 'menu_type', 2),
-       ('外链', 'EXTLINK', 'menu_type', 3),
-       ('按钮', 'BUTTON', 'menu_type', 4);
-
 create table `role_menu`
 (
     `id`      bigint not null auto_increment primary key,

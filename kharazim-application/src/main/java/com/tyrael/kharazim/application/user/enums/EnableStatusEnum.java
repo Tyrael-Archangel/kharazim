@@ -1,7 +1,7 @@
 package com.tyrael.kharazim.application.user.enums;
 
 import com.baomidou.mybatisplus.annotation.EnumValue;
-import com.tyrael.kharazim.common.dto.BaseNameAndValueEnum;
+import com.tyrael.kharazim.common.dto.BaseHasNameEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -11,7 +11,7 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
-public enum EnableStatusEnum implements BaseNameAndValueEnum {
+public enum EnableStatusEnum implements BaseHasNameEnum<EnableStatusEnum> {
 
     /**
      * 已启用
@@ -26,14 +26,5 @@ public enum EnableStatusEnum implements BaseNameAndValueEnum {
     @EnumValue
     private final Integer value;
     private final String name;
-
-    public static EnableStatusEnum ofValueDefaultEnable(Integer value) {
-        for (EnableStatusEnum enableStatusEnum : values()) {
-            if (enableStatusEnum.getValue().equals(value)) {
-                return enableStatusEnum;
-            }
-        }
-        return EnableStatusEnum.ENABLED;
-    }
 
 }

@@ -30,24 +30,9 @@ create table `customer`
     index idx_phone (`phone`)
 ) comment '会员';
 
-insert into `dict`(`code`, `name`, remark, system_dict, allow_modify_item)
-values ('customer_source_channel', '会员来源渠道', '会员来源渠道', 1, 1);
-insert into `dict_item`(`name`, `value`, `dict_code`, `sort`)
-values ('线下', 'OFFLINE', 'customer_source_channel', 1),
-       ('其他', 'OTHER', 'customer_source_channel', 100);
-
-insert into `dict`(`code`, `name`, remark, system_dict, allow_modify_item)
-values ('phone_bind_status', '手机号绑定状态', '手机号绑定状态', 1, 0);
-insert into `dict_item`(`name`, `value`, `dict_code`, `sort`)
-values ('已绑定', '1', 'phone_bind_status', 1),
-       ('未绑定', '2', 'phone_bind_status', 2);
-
-insert into `dict`(`code`, `name`, remark, system_dict, allow_modify_item)
-values ('search_customer_condition', '筛选用户条件', '筛选用户条件', 1, 0);
-insert into `dict_item`(`name`, `value`, `dict_code`, `sort`)
-values ('证件号码', 'CERTIFICATE', 'search_customer_condition', 1),
-       ('姓名', 'NAME', 'search_customer_condition', 2),
-       ('手机号', 'PHONE', 'search_customer_condition', 3);
+insert into `dict_item`(`key`, `value`, `dict_code`, `sort`)
+values ('OFFLINE', '线下', 'customer_source_channel', 1),
+       ('OTHER', '其他', 'customer_source_channel', 100);
 
 create table `customer_address`
 (
@@ -92,9 +77,6 @@ create table `customer_insurance`
     `deleted_timestamp` bigint      not null default 0 comment '删除时间戳',
     unique index udx_customer_policy (`customer_code`, `policy_number`, `deleted_timestamp`)
 ) comment '会员保险';
-
-insert into `dict`(`code`, `name`, remark, system_dict, allow_modify_item)
-values ('insurance_company', '保险公司', '保险公司', 1, 1);
 
 create table `customer_service_user`
 (
@@ -144,9 +126,6 @@ create table `customer_tag`
     unique index udx_customer_tag (`customer_code`, `tag_dict`, `deleted_timestamp`)
 ) comment '会员标签';
 
-insert into `dict`(`code`, `name`, remark, system_dict, allow_modify_item)
-values ('customer_tag', '会员标签', '会员标签', 1, 1);
-
 create table `customer_communication_log`
 (
     `id`                 bigint      not null auto_increment primary key,
@@ -162,10 +141,6 @@ create table `customer_communication_log`
     index idx_customer_code (`customer_code`),
     index idx_create_time (`create_time`)
 ) comment '会员沟通记录';
-
-insert into `dict`(`code`, `name`, remark, system_dict, allow_modify_item)
-values ('communication_type', '会员沟通记录-类型', '会员沟通记录沟通类型', 1, 1),
-       ('communication_evaluate', '会员沟通记录-评价', '会员沟通记录沟通类型', 1, 1);
 
 create table `family`
 (

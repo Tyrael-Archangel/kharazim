@@ -1,7 +1,7 @@
 package com.tyrael.kharazim.application.pharmacy.enums;
 
 import com.baomidou.mybatisplus.annotation.EnumValue;
-import com.tyrael.kharazim.common.dto.BaseNameAndValueEnum;
+import com.tyrael.kharazim.common.dto.BaseHasNameEnum;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
  */
 @Getter
 @RequiredArgsConstructor
-public enum OutboundOrderStatus implements BaseNameAndValueEnum {
+public enum OutboundOrderStatus implements BaseHasNameEnum<OutboundOrderStatus> {
 
     WAIT_OUTBOUND(1, "待出库"),
     OUTBOUND_FINISHED(2, "已出库");

@@ -32,12 +32,12 @@ public interface CustomerTagMapper extends BaseMapper<CustomerTag> {
      * 删除会员标签
      *
      * @param customerCode 会员编码
-     * @param tagDictValue 会员标签字典值
+     * @param tagDictKey   会员标签字典键
      */
-    default void deleteCustomerTag(String customerCode, String tagDictValue) {
+    default void deleteCustomerTag(String customerCode, String tagDictKey) {
         LambdaUpdateWrapper<CustomerTag> updateWrapper = Wrappers.lambdaUpdate();
         updateWrapper.eq(CustomerTag::getCustomerCode, customerCode)
-                .eq(CustomerTag::getTagDict, tagDictValue)
+                .eq(CustomerTag::getTagDict, tagDictKey)
                 .set(CustomerTag::getDeleted, Boolean.TRUE)
                 .set(CustomerTag::getDeletedTimestamp, System.currentTimeMillis());
         this.update(null, updateWrapper);

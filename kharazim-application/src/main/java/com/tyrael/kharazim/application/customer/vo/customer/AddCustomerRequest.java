@@ -63,8 +63,8 @@ public class AddCustomerRequest {
     @Size(max = 64, message = "证件号码超长")
     private String certificateCode;
 
-    @Schema(description = "来源渠道字典值，字典编码：customer_source_channel")
-    private String sourceChannelDictValue;
+    @Schema(description = "来源渠道字典键，字典编码：customer_source_channel")
+    private String sourceChannelDictKey;
 
     @Schema(description = "推荐（引导）来源会员编码")
     private String sourceCustomerCode;

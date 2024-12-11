@@ -222,9 +222,9 @@ public interface CustomerService {
     /**
      * 删除会员的标签
      *
-     * @param code         会员编码
-     * @param tagDictValue 会员标签字典值
+     * @param code       会员编码
+     * @param tagDictKey 会员标签字典键
      */
-    void removeCustomerTag(String code, String tagDictValue);
+    void removeCustomerTag(String code, String tagDictKey);
 
 }

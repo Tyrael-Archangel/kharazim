@@ -12,7 +12,7 @@ import com.fasterxml.jackson.databind.deser.DeserializerFactory;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
-import com.tyrael.kharazim.common.dto.BaseNameAndValueEnum;
+import com.tyrael.kharazim.common.dto.BaseHasNameEnum;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.boot.autoconfigure.jackson.JacksonProperties;
 import org.springframework.context.annotation.Bean;
@@ -66,19 +66,19 @@ public class JacksonConfig {
                 .serializerByType(Enum.class, baseNameAndValueEnumSerializer);
     }
 
-    public static class BaseNameAndValueEnumSerializer extends JsonSerializer<BaseNameAndValueEnum> {
+    public static class BaseNameAndValueEnumSerializer extends JsonSerializer<BaseHasNameEnum<?>> {
 
         private final Map<Map.Entry<Class<?>, String>, Boolean> canWriteNameEnumCache = new ConcurrentHashMap<>();
 
         @Override
-        public void serialize(BaseNameAndValueEnum value,
+        public void serialize(BaseHasNameEnum<?> value,
                               JsonGenerator gen,
                               SerializerProvider serializers) throws IOException {
             gen.writeString(value.toString());
             writeEnumName(value, gen);
         }
 
-        private void writeEnumName(BaseNameAndValueEnum value, JsonGenerator gen) throws IOException {
+        private void writeEnumName(BaseHasNameEnum<?> value, JsonGenerator gen) throws IOException {
             JsonStreamContext outputContext = gen.getOutputContext();
             Class<?> currentClass = outputContext.getCurrentValue().getClass();
             String currentName = outputContext.getCurrentName();

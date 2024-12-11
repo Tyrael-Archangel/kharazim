@@ -9,13 +9,6 @@ create table `address`
     unique index udx_code (`code`)
 ) comment '地址库';
 
-insert into `dict`(`code`, `name`, remark, system_dict, allow_modify_item)
-values ('system_address_level', '地址行政等级', '地址行政等级', 1, 0);
-insert into `dict_item`(`name`, `value`, `dict_code`, `sort`)
-values ('省', 'PROVINCE', 'system_address_level', 1),
-       ('市', 'CITY', 'system_address_level', 2),
-       ('县（区）', 'COUNTY', 'system_address_level', 3);
-
 INSERT INTO `address` (`id`, `code`, `name`, `parent_id`, `level`)
 VALUES (1, '1', '北京', null, 1),
        (2, '2', '上海', null, 1),

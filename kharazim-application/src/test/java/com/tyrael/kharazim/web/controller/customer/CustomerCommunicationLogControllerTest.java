@@ -1,6 +1,6 @@
 package com.tyrael.kharazim.web.controller.customer;
 
-import com.tyrael.kharazim.application.config.DictCodeConstants;
+import com.tyrael.kharazim.application.system.domain.DictConstants;
 import com.tyrael.kharazim.application.customer.vo.communication.AddCustomerCommunicationLogRequest;
 import com.tyrael.kharazim.application.customer.vo.communication.CustomerCommunicationLogPageRequest;
 import com.tyrael.kharazim.application.system.dto.dict.SaveDictItemRequest;
@@ -40,11 +40,11 @@ class CustomerCommunicationLogControllerTest extends BaseControllerTest<Customer
     @Test
     void add() {
 
-        Set<String> customerCommunicationTypes = dictService.findEnabledItems(DictCodeConstants.CUSTOMER_COMMUNICATION_TYPE);
+        Set<String> customerCommunicationTypes = dictService.dictItemKeys(DictConstants.CUSTOMER_COMMUNICATION_TYPE);
         if (customerCommunicationTypes.isEmpty()) {
             customerCommunicationTypes = addCustomerCommunicationTypeDict();
         }
-        Set<String> customerCommunicationEvaluates = dictService.findEnabledItems(DictCodeConstants.CUSTOMER_COMMUNICATION_EVALUATE);
+        Set<String> customerCommunicationEvaluates = dictService.dictItemKeys(DictConstants.CUSTOMER_COMMUNICATION_EVALUATE);
         if (customerCommunicationEvaluates.isEmpty()) {
             customerCommunicationEvaluates = addCustomerCommunicationEvaluateDict();
         }
@@ -52,9 +52,9 @@ class CustomerCommunicationLogControllerTest extends BaseControllerTest<Customer
         for (int i = 0; i < 5; i++) {
             AddCustomerCommunicationLogRequest addRequest = new AddCustomerCommunicationLogRequest();
             addRequest.setCustomerCode("CU0000000001");
-            addRequest.setTypeDictValue(CollectionUtils.random(customerCommunicationTypes));
+            addRequest.setTypeDictKey(CollectionUtils.random(customerCommunicationTypes));
             addRequest.setContent("content--" + UUID.randomUUID() + "--" + RandomStringUtil.make(random.nextInt(300)));
-            addRequest.setEvaluateDictValue(CollectionUtils.random(customerCommunicationEvaluates));
+            addRequest.setEvaluateDictKey(CollectionUtils.random(customerCommunicationEvaluates));
             super.performWhenCall(mockController.add(addRequest, super.mockAdmin()));
         }
     }
@@ -66,7 +66,7 @@ class CustomerCommunicationLogControllerTest extends BaseControllerTest<Customer
                 .append("充值", "recharge")
                 .append("回访", "revisit")
                 .append("拜访", "visit");
-        return addDictItems(DictCodeConstants.CUSTOMER_COMMUNICATION_TYPE.getDictCode(), customerTags);
+        return addDictItems(DictConstants.CUSTOMER_COMMUNICATION_TYPE.getCode(), customerTags);
     }
 
     private Set<String> addCustomerCommunicationEvaluateDict() {
@@ -76,7 +76,7 @@ class CustomerCommunicationLogControllerTest extends BaseControllerTest<Customer
                 .append("不错", "good")
                 .append("沟通容易", "easy")
                 .append("差", "bad");
-        return addDictItems(DictCodeConstants.CUSTOMER_COMMUNICATION_EVALUATE.getDictCode(), customerTags);
+        return addDictItems(DictConstants.CUSTOMER_COMMUNICATION_EVALUATE.getCode(), customerTags);
     }
 
     private Set<String> addDictItems(String dictCode, Pairs<String, String> dictItems) {
@@ -84,11 +84,10 @@ class CustomerCommunicationLogControllerTest extends BaseControllerTest<Customer
         for (int i = 0; i < dictItems.size(); i++) {
             Pair<String, String> dictItem = dictItems.get(i);
             SaveDictItemRequest addDictItemRequest = new SaveDictItemRequest();
-            addDictItemRequest.setTypeCode(dictCode);
+            addDictItemRequest.setDictCode(dictCode);
             addDictItemRequest.setValue(dictItem.right());
-            addDictItemRequest.setName(dictItem.left());
+            addDictItemRequest.setKey(dictItem.left());
             addDictItemRequest.setSort(i + 1);
-            addDictItemRequest.setEnable(Boolean.TRUE);
             dictService.addDictItem(addDictItemRequest, super.mockAdmin());
             dictItemValues.add(dictItem.right());
         }

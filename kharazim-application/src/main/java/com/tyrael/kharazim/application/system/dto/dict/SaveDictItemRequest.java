@@ -14,20 +14,17 @@ public class SaveDictItemRequest {
 
     @Schema(description = "字典编码")
     @NotBlank(message = "字典编码不能为空")
-    private String typeCode;
+    private String dictCode;
 
-    @Schema(description = "字典项名", maxLength = 64)
+    @Schema(description = "字典项键", maxLength = 64)
     @NotBlank(message = "字典项名不能为空")
     @Size(max = 64, message = "字典项名超长")
-    private String name;
+    private String key;
 
     @Schema(description = "字典项值", maxLength = 64)
     @NotBlank(message = "字典项值不能为空")
     @Size(max = 64, message = "字典项值超长")
     private String value;
-
-    @Schema(description = "是否启用")
-    private Boolean enable = Boolean.TRUE;
 
     @Schema(description = "排序")
     private Integer sort;

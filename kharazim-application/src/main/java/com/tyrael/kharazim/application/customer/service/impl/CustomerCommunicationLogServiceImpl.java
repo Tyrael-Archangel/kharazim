@@ -2,7 +2,7 @@ package com.tyrael.kharazim.application.customer.service.impl;
 
 import com.google.common.collect.Sets;
 import com.tyrael.kharazim.application.base.auth.AuthUser;
-import com.tyrael.kharazim.application.config.DictCodeConstants;
+import com.tyrael.kharazim.application.system.domain.DictConstants;
 import com.tyrael.kharazim.application.customer.domain.Customer;
 import com.tyrael.kharazim.application.customer.domain.CustomerCommunicationLog;
 import com.tyrael.kharazim.application.customer.mapper.CustomerCommunicationLogMapper;
@@ -54,8 +54,8 @@ public class CustomerCommunicationLogServiceImpl implements CustomerCommunicatio
         Map<String, User> userMap = userMapper.mapByCodes(serviceUserCodes);
         Map<String, Customer> customerMap = customerMapper.mapByCodes(customerCodes);
 
-        Map<String, String> typeDictItemMap = dictService.dictItemMap(DictCodeConstants.CUSTOMER_COMMUNICATION_TYPE);
-        Map<String, String> evaluateDictItemMap = dictService.dictItemMap(DictCodeConstants.CUSTOMER_COMMUNICATION_EVALUATE);
+        Map<String, String> typeDictItemMap = dictService.dictItemMap(DictConstants.CUSTOMER_COMMUNICATION_TYPE);
+        Map<String, String> evaluateDictItemMap = dictService.dictItemMap(DictConstants.CUSTOMER_COMMUNICATION_EVALUATE);
 
         List<CustomerCommunicationLogVO> logs = pageLogs.stream()
                 .map(e -> {
@@ -74,13 +74,13 @@ public class CustomerCommunicationLogServiceImpl implements CustomerCommunicatio
                                                           Map<String, String> evaluateDictItemMap) {
         return CustomerCommunicationLogVO.builder()
                 .type(typeDictItemMap.get(customerCommunicationLog.getTypeDict()))
-                .typeDictValue(customerCommunicationLog.getTypeDict())
+                .typeDictKey(customerCommunicationLog.getTypeDict())
                 .customerCode(customerCommunicationLog.getCustomerCode())
                 .customerName(customer == null ? null : customer.getName())
                 .serviceUserCode(customerCommunicationLog.getServiceUserCode())
                 .serviceUserName(user == null ? null : user.getNickName())
                 .content(customerCommunicationLog.getContent())
-                .evaluateDictValue(customerCommunicationLog.getEvaluateDict())
+                .evaluateDictKey(customerCommunicationLog.getEvaluateDict())
                 .evaluate(evaluateDictItemMap.get(customerCommunicationLog.getEvaluateDict()))
                 .communicationTime(customerCommunicationLog.getCommunicationTime())
                 .creator(customerCommunicationLog.getCreator())
@@ -92,15 +92,15 @@ public class CustomerCommunicationLogServiceImpl implements CustomerCommunicatio
     @Transactional(rollbackFor = Exception.class)
     public Long add(AddCustomerCommunicationLogRequest addRequest, AuthUser currentUser) {
         customerMapper.ensureCustomerExist(addRequest.getCustomerCode());
-        dictService.ensureDictItemEnable(DictCodeConstants.CUSTOMER_COMMUNICATION_TYPE, addRequest.getTypeDictValue());
-        dictService.ensureDictItemEnable(DictCodeConstants.CUSTOMER_COMMUNICATION_EVALUATE, addRequest.getEvaluateDictValue());
+        dictService.ensureDictItemEnable(DictConstants.CUSTOMER_COMMUNICATION_TYPE, addRequest.getTypeDictKey());
+        dictService.ensureDictItemEnable(DictConstants.CUSTOMER_COMMUNICATION_EVALUATE, addRequest.getEvaluateDictKey());
 
         CustomerCommunicationLog customerCommunicationLog = new CustomerCommunicationLog();
-        customerCommunicationLog.setTypeDict(addRequest.getTypeDictValue());
+        customerCommunicationLog.setTypeDict(addRequest.getTypeDictKey());
         customerCommunicationLog.setCustomerCode(addRequest.getCustomerCode());
         customerCommunicationLog.setServiceUserCode(currentUser.getCode());
         customerCommunicationLog.setContent(addRequest.getContent());
-        customerCommunicationLog.setEvaluateDict(addRequest.getEvaluateDictValue());
+        customerCommunicationLog.setEvaluateDict(addRequest.getEvaluateDictKey());
         customerCommunicationLog.setCommunicationTime(LocalDateTime.now());
         customerCommunicationLog.setCreator(currentUser.getNickName());
         customerCommunicationLog.setCreatorCode(currentUser.getCode());

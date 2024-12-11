@@ -1,8 +1,8 @@
 package com.tyrael.kharazim.application.customer.converter;
 
-import com.tyrael.kharazim.application.config.DictCodeConstants;
 import com.tyrael.kharazim.application.customer.domain.*;
 import com.tyrael.kharazim.application.customer.vo.customer.*;
+import com.tyrael.kharazim.application.system.domain.DictConstants;
 import com.tyrael.kharazim.application.system.service.DictService;
 import com.tyrael.kharazim.application.system.service.FileService;
 import com.tyrael.kharazim.application.user.domain.User;
@@ -36,7 +36,7 @@ public class CustomerConverter {
         }
 
         Map<String, String> sourceChannelValueToName = dictService.dictItemMap(
-                DictCodeConstants.CUSTOMER_SOURCE_CHANNEL);
+                DictConstants.CUSTOMER_SOURCE_CHANNEL);
 
         return customers.stream()
                 .map(customer -> {
@@ -56,7 +56,7 @@ public class CustomerConverter {
                             .wechatCode(customer.getWechatCode())
                             .wechatName(customer.getWechatName())
                             .remark(customer.getRemark())
-                            .sourceChannelDictValue(sourceChannelDict)
+                            .sourceChannelDictKey(sourceChannelDict)
                             .sourceChannel(sourceChannel)
                             .createTime(customer.getCreateTime())
                             .build();
@@ -110,12 +110,12 @@ public class CustomerConverter {
     public CustomerInsuranceVO customerInsuranceVO(CustomerInsurance customerInsurance) {
 
         String companyDict = customerInsurance.getCompanyDict();
-        String companyName = dictService.findItemName(DictCodeConstants.INSURANCE_COMPANY, companyDict);
+        String companyName = dictService.findItemValue(DictConstants.INSURANCE_COMPANY, companyDict);
 
         return CustomerInsuranceVO.builder()
                 .customerInsuranceId(customerInsurance.getId())
                 .companyName(companyName)
-                .companyDictValue(companyDict)
+                .companyDictKey(companyDict)
                 .policyNumber(customerInsurance.getPolicyNumber())
                 .duration(customerInsurance.getDuration())
                 .benefits(customerInsurance.getBenefits())
@@ -161,7 +161,7 @@ public class CustomerConverter {
         }
 
         Map<String, String> sourceChannelValueToName = dictService.dictItemMap(
-                DictCodeConstants.CUSTOMER_SOURCE_CHANNEL);
+                DictConstants.CUSTOMER_SOURCE_CHANNEL);
 
         return customers.stream()
                 .map(customer -> CustomerExportVO.builder()

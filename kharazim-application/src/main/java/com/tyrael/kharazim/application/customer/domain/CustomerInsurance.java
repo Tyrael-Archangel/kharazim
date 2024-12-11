@@ -3,6 +3,7 @@ package com.tyrael.kharazim.application.customer.domain;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.tyrael.kharazim.application.base.BaseDO;
+import com.tyrael.kharazim.application.system.domain.DictConstants;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -23,8 +24,8 @@ public class CustomerInsurance extends BaseDO {
     private String customerCode;
 
     /**
-     * 保险公司字典值
-     * {@link com.tyrael.kharazim.application.config.DictCodeConstants#INSURANCE_COMPANY}
+     * 保险公司字典键
+     * {@link DictConstants#INSURANCE_COMPANY}
      */
     private String companyDict;
 

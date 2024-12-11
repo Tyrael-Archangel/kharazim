@@ -14,6 +14,6 @@ public class CustomerTagVO {
     private String tagName;
 
     @Schema(description = "会员标签字典值")
-    private String tagDictValue;
+    private String tagDictKey;
 
 }

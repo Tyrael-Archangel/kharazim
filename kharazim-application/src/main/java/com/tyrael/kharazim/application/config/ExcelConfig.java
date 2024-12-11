@@ -5,7 +5,7 @@ import com.alibaba.excel.converters.ConverterKeyBuild;
 import com.alibaba.excel.converters.DefaultConverterLoader;
 import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.tyrael.kharazim.KharazimApplication;
-import com.tyrael.kharazim.common.dto.BaseNameAndValueEnum;
+import com.tyrael.kharazim.common.dto.BaseHasNameEnum;
 import com.tyrael.kharazim.common.excel.converter.*;
 import jakarta.annotation.PostConstruct;
 import org.reflections.Reflections;
@@ -35,8 +35,8 @@ public class ExcelConfig {
     @SuppressWarnings({"rawtypes", "unchecked"})
     private void registerBaseNameAndValueEnumConverter() {
         Reflections reflections = new Reflections(KharazimApplication.class.getPackageName());
-        Set<Class<? extends BaseNameAndValueEnum>> subTypes = reflections.getSubTypesOf(BaseNameAndValueEnum.class);
-        for (Class<? extends BaseNameAndValueEnum> subType : subTypes) {
+        Set<Class<? extends BaseHasNameEnum>> subTypes = reflections.getSubTypesOf(BaseHasNameEnum.class);
+        for (Class<? extends BaseHasNameEnum> subType : subTypes) {
             if (subType.isEnum()) {
                 registerConverter((BaseNameAndValueEnumConverter) () -> subType);
             }

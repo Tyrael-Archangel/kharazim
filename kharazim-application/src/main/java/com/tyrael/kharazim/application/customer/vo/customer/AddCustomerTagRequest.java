@@ -17,8 +17,8 @@ public class AddCustomerTagRequest {
     @NotEmpty(message = "会员编码不能为空")
     private String customerCode;
 
-    @Schema(description = "会员标签字典值，字典编码：customer_tag", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "会员标签字典键，字典编码：customer_tag", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotEmpty(message = "请选择会员标签")
-    private Set<String> tagDictValues;
+    private Set<String> tagDictKeys;
 
 }

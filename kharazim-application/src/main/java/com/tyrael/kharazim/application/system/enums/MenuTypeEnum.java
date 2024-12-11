@@ -1,7 +1,7 @@
 package com.tyrael.kharazim.application.system.enums;
 
 import com.baomidou.mybatisplus.annotation.EnumValue;
-import com.tyrael.kharazim.common.dto.BaseNameAndValueEnum;
+import com.tyrael.kharazim.common.dto.BaseHasNameEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -11,7 +11,7 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
-public enum MenuTypeEnum implements BaseNameAndValueEnum {
+public enum MenuTypeEnum implements BaseHasNameEnum<MenuTypeEnum> {
 
     /**
      * 菜单

@@ -24,9 +24,9 @@ public class AddCustomerInsuranceRequest {
     @NotBlank(message = "会员编码不能为空")
     private String customerCode;
 
-    @Schema(description = "保险公司字典值，字典编码：insurance_company")
+    @Schema(description = "保险公司字典键，字典编码：insurance_company")
     @NotBlank(message = "请选择保险公司")
-    private String companyDictValue;
+    private String companyDictKey;
 
     @Schema(description = "保单号", maxLength = 64)
     @Size(max = 64, message = "保单号超长")
