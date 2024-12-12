@@ -72,11 +72,15 @@
     v-model="dictItemsVisible"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
-    title="字典项"
+    :title="'字典项 - ' + currentViewDict?.code"
     width="800"
   >
     <div>
-      <el-button size="small" style="float: right" @click="startAddDictItem"
+      <el-button
+        v-if="currentViewDict && currentViewDict.allowModifyItem"
+        size="small"
+        style="float: right"
+        @click="startAddDictItem"
         >添加字典项
       </el-button>
     </div>
