@@ -7,6 +7,7 @@ import com.tyrael.kharazim.application.system.dto.dict.DictItemDTO;
 import com.tyrael.kharazim.application.system.dto.dict.PageDictRequest;
 import com.tyrael.kharazim.application.system.dto.dict.SaveDictItemRequest;
 import com.tyrael.kharazim.application.system.service.DictService;
+import com.tyrael.kharazim.common.dto.DataResponse;
 import com.tyrael.kharazim.common.dto.MultiResponse;
 import com.tyrael.kharazim.common.dto.PageResponse;
 import com.tyrael.kharazim.common.dto.Response;
@@ -46,10 +47,9 @@ public class DictController {
 
     @PostMapping("/item")
     @Operation(summary = "添加字典项")
-    public Response addDictItem(@RequestBody @Valid SaveDictItemRequest addDictItemRequest,
-                                @Schema(hidden = true) @CurrentUser AuthUser currentUser) {
-        dictService.addDictItem(addDictItemRequest, currentUser);
-        return Response.success();
+    public DataResponse<Long> addDictItem(@RequestBody @Valid SaveDictItemRequest addDictItemRequest,
+                                          @Schema(hidden = true) @CurrentUser AuthUser currentUser) {
+        return DataResponse.ok(dictService.addDictItem(addDictItemRequest, currentUser));
     }
 
     @PutMapping("/item/{itemId}")

@@ -90,6 +90,7 @@ public class DictServiceImpl implements DictService {
 
             return dictItemMapper.listByDictCode(dictConstant.getCode())
                     .stream()
+                    .sorted(Comparator.comparing(DictItem::getSort).thenComparing(DictItem::getId))
                     .map(e -> DictItemDTO.builder()
                             .id(e.getId())
                             .dictCode(e.getDictCode())
@@ -166,7 +167,7 @@ public class DictServiceImpl implements DictService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void addDictItem(SaveDictItemRequest addDictItemRequest, AuthUser currentUser) {
+    public Long addDictItem(SaveDictItemRequest addDictItemRequest, AuthUser currentUser) {
         String dictCode = addDictItemRequest.getDictCode();
         DictConstant dictConstant = DictConstants.getDictConstant(dictCode);
         DomainNotFoundException.assertFound(dictConstant, dictCode);
@@ -177,6 +178,7 @@ public class DictServiceImpl implements DictService {
         DictItem dictItem = createDictItem(addDictItemRequest);
         try {
             dictItemMapper.insert(dictItem);
+            return dictItem.getId();
         } catch (DuplicateKeyException e) {
             throw new BusinessException("字典项键重复", e);
         }

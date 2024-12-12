@@ -1,9 +1,9 @@
 package com.tyrael.kharazim.web.controller.customer;
 
-import com.tyrael.kharazim.application.system.domain.DictConstants;
 import com.tyrael.kharazim.application.customer.vo.customer.AddCustomerAddressRequest;
 import com.tyrael.kharazim.application.customer.vo.customer.AddCustomerInsuranceRequest;
 import com.tyrael.kharazim.application.customer.vo.customer.AddCustomerRequest;
+import com.tyrael.kharazim.application.system.domain.DictConstants;
 import com.tyrael.kharazim.application.system.dto.address.AddressTreeNodeDTO;
 import com.tyrael.kharazim.application.system.dto.dict.SaveDictItemRequest;
 import com.tyrael.kharazim.application.system.service.AddressQueryService;
@@ -262,14 +262,14 @@ public class AddCustomerTest extends BaseControllerTest<CustomerController> {
     private Set<String> addInsuranceCompanyDict() {
 
         Pairs<String, String> insuranceCompanies = new Pairs<String, String>()
-                .append("AIA | 友邦", "AIA")
-                .append("Allianz | 安联", "ALLIANZ")
-                .append("AXA | 安盛", "AXA")
-                .append("Bupa | 保柏", "BUPA")
-                .append("Cigna | 信诺", "CIGNA")
-                .append("Cigna & CMB | 招商信诺", "CIGNACMB")
-                .append("MSH | 万欣和", "MSH")
-                .append("PINGAN | 中国平安", "PINGAN");
+                .append("AIA", "AIA | 友邦")
+                .append("ALLIANZ", "Allianz | 安联")
+                .append("AXA", "AXA | 安盛")
+                .append("BUPA", "Bupa | 保柏")
+                .append("CIGNA", "Cigna | 信诺")
+                .append("CIGNACMB", "Cigna & CMB | 招商信诺")
+                .append("MSH", "MSH | 万欣和")
+                .append("PINGAN", "PINGAN | 中国平安");
 
         return addDictItems(DictConstants.INSURANCE_COMPANY.getCode(), insuranceCompanies);
     }
@@ -280,8 +280,8 @@ public class AddCustomerTest extends BaseControllerTest<CustomerController> {
             Pair<String, String> dictItem = dictItems.get(i);
             SaveDictItemRequest addDictItemRequest = new SaveDictItemRequest();
             addDictItemRequest.setDictCode(dictCode);
-            addDictItemRequest.setValue(dictItem.right());
             addDictItemRequest.setKey(dictItem.left());
+            addDictItemRequest.setValue(dictItem.right());
             addDictItemRequest.setSort(i + 1);
             dictService.addDictItem(addDictItemRequest, super.mockAdmin());
             dictItemValues.add(dictItem.right());

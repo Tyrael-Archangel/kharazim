@@ -5,65 +5,18 @@
       :inline="true"
       :model="pageRequest"
       class="page-form-block"
-      @keyup.enter="loadPrescriptions"
+      @keyup.enter="loadDictionaries"
     >
-      <el-form-item label="处方编码">
+      <el-form-item label="关键字">
         <el-input
-          v-model="pageRequest.prescriptionCode"
+          v-model="pageRequest.keywords"
           clearable
-          placeholder="处方编码"
-        />
-      </el-form-item>
-      <el-form-item label="会员">
-        <el-select
-          v-model="pageRequest.customerCode"
-          :remote-method="loadCustomers"
-          clearable
-          filterable
-          placeholder="选择会员"
-          remote
-          width="500px"
-        >
-          <el-option
-            v-for="item in customers"
-            :key="item.code"
-            :label="item.name"
-            :value="item.code"
-          >
-            <span style="float: left">{{ item.name }}</span>
-            <span class="customer-select">{{ item.phone }}</span>
-          </el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="诊所">
-        <el-select
-          v-model="pageRequest.clinicCodes"
-          clearable
-          filterable
-          multiple
-          placeholder="选择诊所"
-          reserve-keyword
-        >
-          <el-option
-            v-for="item in clinicOptions"
-            :key="item.code"
-            :label="item.name"
-            :value="item.code"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="创建时间">
-        <el-date-picker
-          v-model="pageRequest.createDate"
-          end-placeholder="截止时间"
-          start-placeholder="开始时间"
-          style="width: 280px"
-          type="daterange"
+          placeholder="关键字"
         />
       </el-form-item>
       <el-form-item class="page-form-block-search-block">
-        <el-button type="primary" @click="loadPrescriptions">查询</el-button>
-        <el-button type="primary" @click="resetAndReloadPrescriptions">
+        <el-button type="primary" @click="loadDictionaries">查询</el-button>
+        <el-button type="primary" @click="resetAndReloadDictionaries">
           重置
         </el-button>
       </el-form-item>
@@ -72,44 +25,34 @@
   <div>
     <div>
       <el-table
-        :data="prescriptionPageData.data"
+        :data="dictPageData.data"
         border
         style="width: 100%; margin-top: 10px"
       >
-        <el-table-column type="expand">
-          <template v-slot="{ row }">
-            <div style="padding: 10px 50px 10px 50px">
-              <el-table :data="row.products" border>
-                <el-table-column align="center" type="index" width="50" />
-                <el-table-column align="center" label="商品主图" width="160">
-                  <template v-slot="{ row: product }">
-                    <el-image
-                      v-if="product.defaultImageUrl"
-                      :src="product.defaultImageUrl"
-                      style="width: 50px"
-                    >
-                    </el-image>
-                  </template>
-                </el-table-column>
-                <el-table-column label="商品编码" prop="skuCode" />
-                <el-table-column label="商品名称" prop="skuName" />
-                <el-table-column label="单位" prop="unitName" width="160" />
-                <el-table-column label="商品分类" prop="categoryName" />
-                <el-table-column label="供应商" prop="supplierName" />
-                <el-table-column align="center" label="单价" prop="price" />
-                <el-table-column align="center" label="数量" prop="quantity" />
-                <el-table-column align="center" label="小计" prop="amount" />
-              </el-table>
-            </div>
+        <el-table-column align="center" type="index" width="70" />
+        <el-table-column label="字典编码" prop="code" width="270" />
+        <el-table-column label="字典描述信息" prop="desc" />
+        <el-table-column align="center" label="是否允许编辑字典项" width="170">
+          <template v-slot="{ row: item }">
+            <el-icon v-if="item.allowModifyItem" color="green" size="20">
+              <CircleCheck />
+            </el-icon>
+            <el-icon v-else color="red" size="20">
+              <CircleClose />
+            </el-icon>
           </template>
         </el-table-column>
-        <el-table-column label="处方编码" prop="code" width="180" />
-        <el-table-column label="会员姓名" prop="customerName" width="150" />
-        <el-table-column label="诊所" prop="clinicName" width="160" />
-        <el-table-column label="总金额（元）" prop="totalAmount" width="160" />
-        <el-table-column label="创建人" prop="creator" width="160" />
-        <el-table-column label="创建时间" prop="createTime" width="180" />
-        <el-table-column label="备注" prop="remark" />
+        <el-table-column align="center" label="操作" width="200">
+          <template v-slot="{ row: item }">
+            <el-button
+              link
+              size="small"
+              type="primary"
+              @click="showDictItems(item)"
+              >字典项
+            </el-button>
+          </template>
+        </el-table-column>
       </el-table>
     </div>
     <div class="pagination-block">
@@ -117,23 +60,122 @@
         v-model:current-page="pageRequest.pageIndex"
         v-model:page-size="pageRequest.pageSize"
         :page-sizes="[10, 20, 50, 100]"
-        :total="prescriptionPageData.totalCount"
+        :total="dictPageData.totalCount"
         background
         layout="total, sizes, prev, pager, next, jumper"
-        @size-change="loadPrescriptions"
-        @current-change="loadPrescriptions"
+        @size-change="loadDictionaries"
+        @current-change="loadDictionaries"
       />
     </div>
   </div>
+  <el-dialog
+    v-model="dictItemsVisible"
+    :close-on-click-modal="false"
+    :close-on-press-escape="false"
+    title="字典项"
+    width="800"
+  >
+    <div>
+      <el-button size="small" style="float: right" @click="startAddDictItem"
+        >添加字典项
+      </el-button>
+    </div>
+    <el-table :data="dictItems">
+      <el-table-column label="字典项键" min-width="150" property="key">
+        <template v-slot="{ row: item }">
+          <el-input v-if="item.editing" v-model="item.key" />
+          <el-text v-else>{{ item.key }}</el-text>
+        </template>
+      </el-table-column>
+      <el-table-column label="字典项值" min-width="200" property="value">
+        <template v-slot="{ row: item }">
+          <el-input v-if="item.editing" v-model="item.value" />
+          <el-text v-else>{{ item.value }}</el-text>
+        </template>
+      </el-table-column>
+      <el-table-column
+        align="center"
+        label="排序"
+        min-width="100"
+        property="sort"
+      >
+        <template v-slot="{ row: item }">
+          <el-input-number
+            v-if="item.editing"
+            v-model="item.sort"
+            :controls="false"
+            min="1"
+            style="width: 80px"
+          />
+          <el-text v-else>{{ item.sort }}</el-text>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="操作" min-width="150">
+        <template v-slot="{ row: item }">
+          <el-button
+            v-if="
+              currentViewDict &&
+              currentViewDict.allowModifyItem &&
+              !item.editing
+            "
+            link
+            size="small"
+            type="primary"
+            @click="startEditDictItem(item)"
+          >
+            编辑
+          </el-button>
+          <el-button
+            v-if="item.editing"
+            size="small"
+            type="primary"
+            @click="saveEditDictItem(item)"
+          >
+            保存
+          </el-button>
+          <el-button
+            v-if="item.editing"
+            size="small"
+            @click="cancelEditDictItem(item)"
+          >
+            取消
+          </el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+  </el-dialog>
 </template>
 
 <script lang="ts" setup>
-
-import {reactive, ref} from "vue";
+import { onMounted, reactive, ref, toRaw } from "vue";
 import axios from "@/utils/http.js";
-import {AxiosResponse} from "axios";
+import { AxiosResponse } from "axios";
+import { CircleCheck, CircleClose } from "@element-plus/icons-vue";
 
-const dictPageData = ref({ totalCount: 0, data: [] });
+interface Dict {
+  code: string;
+  desc: string;
+  allowModifyItem: boolean;
+}
+
+interface DictItem {
+  id: number | null;
+  dictCode: string | undefined;
+  key: string;
+  value: string | null;
+  sort: number;
+}
+
+interface DictItemView extends DictItem {
+  id: number | null;
+  dictCode: string | undefined;
+  key: string;
+  value: string | null;
+  sort: number;
+  editing: boolean; // 是否正处于编辑状态
+}
+
+const dictPageData = ref({ totalCount: 0, data: [] as Dict[] });
 
 const initPageRequest = {
   keywords: "",
@@ -143,14 +185,109 @@ const initPageRequest = {
 
 const pageRequest = reactive({ ...initPageRequest });
 
-function loadPrescriptions() {
+function loadDictionaries() {
   axios
-    .get("/kharazim-api//system/dict/types/pages" + formatPageUrlQuery())
+    .get("/kharazim-api/system/dict/page", { params: toRaw(pageRequest) })
     .then((response: AxiosResponse) => {
-      prescriptionPageData.value = response.data;
+      dictPageData.value = response.data;
     });
 }
 
+function resetAndReloadDictionaries() {
+  Object.assign(pageRequest, initPageRequest);
+  loadDictionaries();
+}
+
+const currentViewDict = ref<Dict>();
+const dictItemsVisible = ref(false);
+const dictItems = ref<DictItemView[]>([]);
+
+function showDictItems(dict: Dict) {
+  currentViewDict.value = dict;
+  dictItems.value = [];
+  dictItemsVisible.value = true;
+  loadDictItems(dict);
+}
+
+function loadDictItems(dict: Dict) {
+  axios
+    .get(`/kharazim-api/system/dict/${dict.code}/items`)
+    .then((response: AxiosResponse) => {
+      const dictItemsData = (response.data.data || []) as DictItemView[];
+      dictItemsData.forEach((item: DictItemView) => (item.editing = false));
+      dictItems.value = dictItemsData;
+    });
+}
+
+const dictItemViewEditBackUp = new Map();
+
+function startEditDictItem(dictItem: DictItemView) {
+  dictItemViewEditBackUp.set(dictItem.id, {
+    key: dictItem.key,
+    value: dictItem.value,
+    sort: dictItem.sort,
+  });
+  dictItem.editing = true;
+}
+
+function saveEditDictItem(dictItem: DictItemView) {
+  let saveDictItemRequest = {
+    dictCode: dictItem.dictCode,
+    key: dictItem.key,
+    value: dictItem.value,
+    sort: dictItem.sort,
+  };
+  const itemId = dictItem.id as number | undefined | null;
+  if (itemId !== undefined && itemId !== null) {
+    axios
+      .put(`/kharazim-api/system/dict/item/${dictItem.id}`, saveDictItemRequest)
+      .then(() => {
+        dictItem.editing = false;
+      });
+  } else {
+    axios
+      .post(`/kharazim-api/system/dict/item`, saveDictItemRequest)
+      .then((response: AxiosResponse) => {
+        dictItem.id = response.data.data;
+        dictItem.editing = false;
+      });
+  }
+}
+
+function cancelEditDictItem(dictItem: DictItemView) {
+  const itemId = dictItem.id as number | undefined | null;
+  if (itemId !== undefined && itemId !== null) {
+    // 取消编辑
+    let { key, value, sort } = dictItemViewEditBackUp.get(itemId);
+    dictItem.key = key;
+    dictItem.value = value;
+    dictItem.sort = sort;
+    dictItem.editing = false;
+    dictItemViewEditBackUp.delete(itemId);
+  } else {
+    // 取消新增
+    dictItems.value = dictItems.value.filter((x) => x !== dictItem);
+  }
+}
+
+function startAddDictItem() {
+  let maxSort = Math.max(
+    ...dictItems.value.map((dictItem) => dictItem.sort),
+    0,
+  );
+  dictItems.value.push({
+    id: null,
+    dictCode: currentViewDict.value?.code,
+    key: "",
+    value: "",
+    sort: maxSort + 1,
+    editing: true,
+  });
+}
+
+onMounted(async () => {
+  loadDictionaries();
+});
 </script>
 
 <style scoped></style>

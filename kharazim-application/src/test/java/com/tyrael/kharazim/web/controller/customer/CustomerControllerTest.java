@@ -229,24 +229,24 @@ class CustomerControllerTest extends BaseControllerTest<CustomerController> {
 
     private Set<String> addCustomerTagDict() {
         Pairs<String, String> customerTags = new Pairs<String, String>()
-                .append("青铜", "bronze")
-                .append("白银", "silver")
-                .append("黄金", "gold")
-                .append("铂金", "platinum")
-                .append("钻石", "diamond")
-                .append("健身爱好者", "fitness_enthusiasts")
-                .append("注重保养", "pay_attention_to_maintenance")
-                .append("身材火辣", "hot_figure")
-                .append("高价值敏感", "high_value_sensitive")
-                .append("信用良好", "good_credit")
-                .append("南方人", "southerner")
-                .append("北方人", "northerner")
-                .append("外国人", "foreigner")
-                .append("企业高管", "enterprise_senior_manager")
-                .append("普通工人", "common_laborer")
-                .append("家庭妇女", "housewife")
-                .append("退休人员", "retiree")
-                .append("消费能力强", "strong_spending_power");
+                .append("bronze", "青铜")
+                .append("silver", "白银")
+                .append("gold", "黄金")
+                .append("platinum", "铂金")
+                .append("diamond", "钻石")
+                .append("fitness_enthusiasts", "健身爱好者")
+                .append("pay_attention_to_maintenance", "注重保养")
+                .append("hot_figure", "身材火辣")
+                .append("high_value_sensitive", "高价值敏感")
+                .append("good_credit", "信用良好")
+                .append("southerner", "南方人")
+                .append("northerner", "北方人")
+                .append("foreigner", "外国人")
+                .append("enterprise_senior_manager", "企业高管")
+                .append("common_laborer", "普通工人")
+                .append("housewife", "家庭妇女")
+                .append("retiree", "退休人员")
+                .append("strong_spending_power", "消费能力强");
         return addDictItems(DictConstants.CUSTOMER_TAG.getCode(), customerTags);
     }
 
@@ -263,8 +263,8 @@ class CustomerControllerTest extends BaseControllerTest<CustomerController> {
             Pair<String, String> dictItem = dictItems.get(i);
             SaveDictItemRequest addDictItemRequest = new SaveDictItemRequest();
             addDictItemRequest.setDictCode(dictCode);
-            addDictItemRequest.setValue(dictItem.right());
             addDictItemRequest.setKey(dictItem.left());
+            addDictItemRequest.setValue(dictItem.right());
             addDictItemRequest.setSort(i + 1);
             dictService.addDictItem(addDictItemRequest, super.mockAdmin());
             dictItemValues.add(dictItem.right());

@@ -1,8 +1,8 @@
 package com.tyrael.kharazim.web.controller.customer;
 
-import com.tyrael.kharazim.application.system.domain.DictConstants;
 import com.tyrael.kharazim.application.customer.vo.communication.AddCustomerCommunicationLogRequest;
 import com.tyrael.kharazim.application.customer.vo.communication.CustomerCommunicationLogPageRequest;
+import com.tyrael.kharazim.application.system.domain.DictConstants;
 import com.tyrael.kharazim.application.system.dto.dict.SaveDictItemRequest;
 import com.tyrael.kharazim.application.system.service.DictService;
 import com.tyrael.kharazim.common.dto.Pair;
@@ -61,21 +61,21 @@ class CustomerCommunicationLogControllerTest extends BaseControllerTest<Customer
 
     private Set<String> addCustomerCommunicationTypeDict() {
         Pairs<String, String> customerTags = new Pairs<String, String>()
-                .append("预约", "appointment")
-                .append("处理投诉", "handle_complaint")
-                .append("充值", "recharge")
-                .append("回访", "revisit")
-                .append("拜访", "visit");
+                .append("appointment", "预约")
+                .append("handle_complaint", "处理投诉")
+                .append("recharge", "充值")
+                .append("revisit", "回访")
+                .append("visit", "拜访");
         return addDictItems(DictConstants.CUSTOMER_COMMUNICATION_TYPE.getCode(), customerTags);
     }
 
     private Set<String> addCustomerCommunicationEvaluateDict() {
         Pairs<String, String> customerTags = new Pairs<String, String>()
-                .append("非常好", "perfect")
-                .append("沟通愉快", "happy")
-                .append("不错", "good")
-                .append("沟通容易", "easy")
-                .append("差", "bad");
+                .append("perfect", "非常好")
+                .append("happy", "沟通愉快")
+                .append("good", "不错")
+                .append("easy", "沟通容易")
+                .append("bad", "差");
         return addDictItems(DictConstants.CUSTOMER_COMMUNICATION_EVALUATE.getCode(), customerTags);
     }
 
@@ -85,8 +85,8 @@ class CustomerCommunicationLogControllerTest extends BaseControllerTest<Customer
             Pair<String, String> dictItem = dictItems.get(i);
             SaveDictItemRequest addDictItemRequest = new SaveDictItemRequest();
             addDictItemRequest.setDictCode(dictCode);
-            addDictItemRequest.setValue(dictItem.right());
             addDictItemRequest.setKey(dictItem.left());
+            addDictItemRequest.setValue(dictItem.right());
             addDictItemRequest.setSort(i + 1);
             dictService.addDictItem(addDictItemRequest, super.mockAdmin());
             dictItemValues.add(dictItem.right());

@@ -83,8 +83,9 @@ public interface DictService {
      *
      * @param addDictItemRequest SaveDictItemRequest
      * @param currentUser        操作人
+     * @return 新增的字典项ID
      */
-    void addDictItem(SaveDictItemRequest addDictItemRequest, AuthUser currentUser);
+    Long addDictItem(SaveDictItemRequest addDictItemRequest, AuthUser currentUser);
 
     /**
      * 修改字典项
