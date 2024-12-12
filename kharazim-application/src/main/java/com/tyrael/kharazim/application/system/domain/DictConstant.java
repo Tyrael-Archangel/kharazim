@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -41,7 +41,7 @@ public sealed class DictConstant permits DictConstant.EnumDictConstant {
         }
 
         public Map<String, String> getDictItemMap() {
-            return Collections.unmodifiableMap(itemMap);
+            return new LinkedHashMap<>(itemMap);
         }
     }
 

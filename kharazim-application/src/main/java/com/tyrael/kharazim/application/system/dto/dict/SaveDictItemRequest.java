@@ -17,8 +17,8 @@ public class SaveDictItemRequest {
     private String dictCode;
 
     @Schema(description = "字典项键", maxLength = 64)
-    @NotBlank(message = "字典项名不能为空")
-    @Size(max = 64, message = "字典项名超长")
+    @NotBlank(message = "字典项键不能为空")
+    @Size(max = 64, message = "字典项键超长")
     private String key;
 
     @Schema(description = "字典项值", maxLength = 64)

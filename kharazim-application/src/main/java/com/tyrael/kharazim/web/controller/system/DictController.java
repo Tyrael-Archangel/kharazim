@@ -2,7 +2,10 @@ package com.tyrael.kharazim.web.controller.system;
 
 import com.tyrael.kharazim.application.base.auth.AuthUser;
 import com.tyrael.kharazim.application.base.auth.CurrentUser;
-import com.tyrael.kharazim.application.system.dto.dict.*;
+import com.tyrael.kharazim.application.system.dto.dict.DictDTO;
+import com.tyrael.kharazim.application.system.dto.dict.DictItemDTO;
+import com.tyrael.kharazim.application.system.dto.dict.PageDictRequest;
+import com.tyrael.kharazim.application.system.dto.dict.SaveDictItemRequest;
 import com.tyrael.kharazim.application.system.service.DictService;
 import com.tyrael.kharazim.common.dto.MultiResponse;
 import com.tyrael.kharazim.common.dto.PageResponse;
@@ -38,7 +41,7 @@ public class DictController {
     @Operation(summary = "字典项列表", description = "根据字典编码查询字典项列表")
     public MultiResponse<DictItemDTO> listItems(
             @PathVariable("code") @Parameter(description = "字典编码", required = true) String code) {
-        return dictService.listItems(code);
+        return MultiResponse.success(dictService.listItems(code));
     }
 
     @PostMapping("/item")

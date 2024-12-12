@@ -4,8 +4,6 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.tyrael.kharazim.application.base.BasePageMapper;
 import com.tyrael.kharazim.application.system.domain.DictItem;
-import com.tyrael.kharazim.application.system.dto.dict.PageDictItemRequest;
-import com.tyrael.kharazim.common.dto.PageResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -19,10 +17,17 @@ import java.util.List;
 @Mapper
 public interface DictItemMapper extends BasePageMapper<DictItem> {
 
-    default DictItem finByDictCodeAndItemValue(String dictCode, String itemValue) {
+    /**
+     * find by dictCode and item key
+     *
+     * @param dictCode 字典编码
+     * @param itemKey  key
+     * @return DictItem
+     */
+    default DictItem finByDictCodeAndItemKey(String dictCode, String itemKey) {
         LambdaQueryWrapper<DictItem> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper.eq(DictItem::getDictCode, dictCode)
-                .eq(DictItem::getValue, itemValue);
+                .eq(DictItem::getKey, itemKey);
         return selectOne(queryWrapper);
     }
 
@@ -39,32 +44,6 @@ public interface DictItemMapper extends BasePageMapper<DictItem> {
         LambdaQueryWrapper<DictItem> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper.eq(DictItem::getDictCode, dictCode);
         return this.selectList(queryWrapper);
-    }
-
-    /**
-     * page
-     *
-     * @param pageRequest PageDictItemRequest
-     * @return entities
-     */
-    default PageResponse<DictItem> page(PageDictItemRequest pageRequest) {
-        LambdaQueryWrapper<DictItem> queryWrapper = Wrappers.lambdaQuery();
-        String dictCode = pageRequest.getTypeCode();
-        if (StringUtils.isNotBlank(dictCode)) {
-            queryWrapper.eq(DictItem::getDictCode, dictCode);
-        }
-
-        String keywords = pageRequest.getKeywords();
-        if (StringUtils.isNotBlank(keywords)) {
-            queryWrapper.and(q -> q.like(DictItem::getKey, keywords)
-                    .or()
-                    .like(DictItem::getValue, keywords));
-        }
-
-        queryWrapper.orderByAsc(DictItem::getSort)
-                .orderByAsc(DictItem::getId);
-
-        return page(pageRequest, queryWrapper);
     }
 
 }

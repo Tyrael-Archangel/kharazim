@@ -1,6 +1,7 @@
 package com.tyrael.kharazim.application.system.domain;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
@@ -18,6 +19,7 @@ public class DictItem {
 
     private String dictCode;
 
+    @TableField("`key`")
     private String key;
 
     private String value;

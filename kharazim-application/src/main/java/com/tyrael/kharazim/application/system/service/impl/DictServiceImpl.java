@@ -10,7 +10,6 @@ import com.tyrael.kharazim.application.system.dto.dict.PageDictRequest;
 import com.tyrael.kharazim.application.system.dto.dict.SaveDictItemRequest;
 import com.tyrael.kharazim.application.system.mapper.DictItemMapper;
 import com.tyrael.kharazim.application.system.service.DictService;
-import com.tyrael.kharazim.common.dto.MultiResponse;
 import com.tyrael.kharazim.common.dto.PageResponse;
 import com.tyrael.kharazim.common.exception.BusinessException;
 import com.tyrael.kharazim.common.exception.DomainNotFoundException;
@@ -72,12 +71,13 @@ public class DictServiceImpl implements DictService {
     }
 
     @Override
-    public MultiResponse<DictItemDTO> listItems(String dictCode) {
-        List<DictItemDTO> items;
+    public List<DictItemDTO> listItems(String dictCode) {
         DictConstant dictConstant = DictConstants.getDictConstant(dictCode);
+        DomainNotFoundException.assertFound(dictConstant, dictCode);
+
         if (dictConstant instanceof DictConstant.EnumDictConstant<?> enumDictConstant) {
             AtomicInteger sort = new AtomicInteger(1);
-            items = enumDictConstant.getDictItemMap().entrySet()
+            return enumDictConstant.getDictItemMap().entrySet()
                     .stream()
                     .map(itemValueToName -> DictItemDTO.builder()
                             .dictCode(dictCode)
@@ -87,7 +87,8 @@ public class DictServiceImpl implements DictService {
                             .build())
                     .toList();
         } else {
-            items = dictItemMapper.listByDictCode(dictConstant.getCode())
+
+            return dictItemMapper.listByDictCode(dictConstant.getCode())
                     .stream()
                     .map(e -> DictItemDTO.builder()
                             .id(e.getId())
@@ -98,7 +99,6 @@ public class DictServiceImpl implements DictService {
                             .build())
                     .toList();
         }
-        return MultiResponse.success(items);
     }
 
     @Override
@@ -116,7 +116,7 @@ public class DictServiceImpl implements DictService {
         if (dictConstant instanceof DictConstant.EnumDictConstant<?> enumDictConstant) {
             return enumDictConstant.getItemName(dictItemKey);
         } else {
-            DictItem dictItem = dictItemMapper.finByDictCodeAndItemValue(dictConstant.getCode(), dictItemKey);
+            DictItem dictItem = dictItemMapper.finByDictCodeAndItemKey(dictConstant.getCode(), dictItemKey);
             return dictItem == null ? null : dictItem.getKey();
         }
     }
@@ -178,7 +178,7 @@ public class DictServiceImpl implements DictService {
         try {
             dictItemMapper.insert(dictItem);
         } catch (DuplicateKeyException e) {
-            throw new BusinessException("字典项值重复", e);
+            throw new BusinessException("字典项键重复", e);
         }
 
     }
@@ -209,7 +209,11 @@ public class DictServiceImpl implements DictService {
         dictItem.setValue(modifyDictItemRequest.getValue());
         dictItem.setSort(modifyDictItemRequest.getSort());
 
-        dictItemMapper.updateById(dictItem);
+        try {
+            dictItemMapper.updateById(dictItem);
+        } catch (DuplicateKeyException e) {
+            throw new BusinessException("字典项键重复", e);
+        }
     }
 
 }

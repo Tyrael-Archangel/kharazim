@@ -63,7 +63,7 @@ public class JacksonConfig {
     public Jackson2ObjectMapperBuilderCustomizer baseNameAndValueEnumJsonCustomizer() {
         BaseNameAndValueEnumSerializer baseNameAndValueEnumSerializer = new BaseNameAndValueEnumSerializer();
         return jacksonObjectMapperBuilder -> jacksonObjectMapperBuilder
-                .serializerByType(Enum.class, baseNameAndValueEnumSerializer);
+                .serializerByType(BaseHasNameEnum.class, baseNameAndValueEnumSerializer);
     }
 
     public static class BaseNameAndValueEnumSerializer extends JsonSerializer<BaseHasNameEnum<?>> {

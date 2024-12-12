@@ -6,10 +6,10 @@ import com.tyrael.kharazim.application.system.dto.dict.DictDTO;
 import com.tyrael.kharazim.application.system.dto.dict.DictItemDTO;
 import com.tyrael.kharazim.application.system.dto.dict.PageDictRequest;
 import com.tyrael.kharazim.application.system.dto.dict.SaveDictItemRequest;
-import com.tyrael.kharazim.common.dto.MultiResponse;
 import com.tyrael.kharazim.common.dto.PageResponse;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -33,7 +33,7 @@ public interface DictService {
      * @param dictCode 字典编码
      * @return 字典项列表数据
      */
-    MultiResponse<DictItemDTO> listItems(String dictCode);
+    List<DictItemDTO> listItems(String dictCode);
 
     /**
      * 字典项 key -> value
