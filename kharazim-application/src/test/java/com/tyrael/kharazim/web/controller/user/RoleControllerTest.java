@@ -1,13 +1,10 @@
 package com.tyrael.kharazim.web.controller.user;
 
-import com.google.common.collect.Lists;
 import com.tyrael.kharazim.application.user.dto.role.request.SaveRoleRequest;
 import com.tyrael.kharazim.application.user.dto.user.request.PageRoleRequest;
 import com.tyrael.kharazim.application.user.enums.EnableStatusEnum;
 import com.tyrael.kharazim.web.controller.BaseControllerTest;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
 
 /**
  * @author Tyrael Archangel
@@ -56,19 +53,6 @@ class RoleControllerTest extends BaseControllerTest<RoleController> {
     void enable() {
         Long id = 1L;
         super.performWhenCall(mockController.enable(id));
-    }
-
-    @Test
-    void getRoleMenuIds() {
-        Long id = 0L;
-        super.performWhenCall(mockController.getRoleMenuIds(id));
-    }
-
-    @Test
-    void updateRoleMenus() {
-        Long id = 1L;
-        List<Long> menus = Lists.newArrayList(1L, 2L, 3L);
-        super.performWhenCall(mockController.updateRoleMenus(id, menus));
     }
 
 }

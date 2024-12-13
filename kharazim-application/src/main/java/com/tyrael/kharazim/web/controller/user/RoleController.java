@@ -6,7 +6,6 @@ import com.tyrael.kharazim.application.user.dto.role.response.RolePageDTO;
 import com.tyrael.kharazim.application.user.dto.user.request.PageRoleRequest;
 import com.tyrael.kharazim.application.user.service.RoleService;
 import com.tyrael.kharazim.common.dto.DataResponse;
-import com.tyrael.kharazim.common.dto.MultiResponse;
 import com.tyrael.kharazim.common.dto.PageResponse;
 import com.tyrael.kharazim.common.dto.Response;
 import io.swagger.v3.oas.annotations.Operation;
@@ -79,20 +78,6 @@ public class RoleController {
     @PutMapping(value = "/enable/{id}")
     public Response enable(@Schema(description = "角色ID") @PathVariable("id") Long id) {
         roleService.enable(id);
-        return Response.success();
-    }
-
-    @Operation(summary = "获取角色的菜单ID集合")
-    @GetMapping("/{id}/menuIds")
-    public MultiResponse<Long> getRoleMenuIds(@Schema(description = "角色ID") @PathVariable("id") Long id) {
-        return MultiResponse.success(roleService.getRoleMenuIds(id));
-    }
-
-    @Operation(summary = "分配角色的资源权限")
-    @PutMapping("/{id}/menus")
-    public Response updateRoleMenus(@Schema(description = "角色ID") @PathVariable("id") Long id,
-                                    @RequestBody List<Long> menuIds) {
-        roleService.updateRoleMenus(id, menuIds);
         return Response.success();
     }
 

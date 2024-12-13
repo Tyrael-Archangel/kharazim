@@ -1,7 +1,6 @@
 package com.tyrael.kharazim.application.system.domain;
 
 import com.tyrael.kharazim.application.system.enums.AddressLevelEnum;
-import com.tyrael.kharazim.application.system.enums.MenuTypeEnum;
 import com.tyrael.kharazim.application.user.enums.EnableStatusEnum;
 import com.tyrael.kharazim.application.user.enums.UserCertificateTypeEnum;
 import com.tyrael.kharazim.application.user.enums.UserGenderEnum;
@@ -29,7 +28,6 @@ public sealed interface DictConstants permits SealedDictConstants {
     DictConstant ENABLE_STATUS            = dict("enable_status",            EnableStatusEnum.class,         "启用禁用状态");
     DictConstant USER_GENDER              = dict("user_gender",              UserGenderEnum.class,           "性别");
     DictConstant CERTIFICATE_TYPE         = dict("certificate_type",         UserCertificateTypeEnum.class,  "证件类型");
-    DictConstant MENU_TYPE                = dict("menu_type",                MenuTypeEnum.class,             "系统菜单类型");
     DictConstant SYSTEM_ADDRESS_LEVEL     = dict("system_address_level",     AddressLevelEnum.class,         "地址行政等级");
 
     DictConstant CUSTOMER_SOURCE_CHANNEL  = dict("customer_source_channel", "会员来源渠道");

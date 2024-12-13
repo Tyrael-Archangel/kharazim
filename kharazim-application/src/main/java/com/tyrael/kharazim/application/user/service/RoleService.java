@@ -67,20 +67,4 @@ public interface RoleService {
      */
     void disable(Long id);
 
-    /**
-     * 获取角色的菜单ID
-     *
-     * @param id 角色ID
-     * @return 角色的菜单ID
-     */
-    List<Long> getRoleMenuIds(Long id);
-
-    /**
-     * 更新角色的菜单
-     *
-     * @param id      角色ID
-     * @param menuIds 菜单ID
-     */
-    void updateRoleMenus(Long id, List<Long> menuIds);
-
 }

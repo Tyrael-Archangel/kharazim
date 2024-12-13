@@ -7,8 +7,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 /**
  * @author Tyrael Archangel
  * @since 2024/1/4
@@ -34,8 +32,5 @@ public class RoleDetailDTO {
 
     @Schema(description = "启用状态，ENABLED-启用，DISABLED-禁用")
     private EnableStatusEnum status;
-
-    @Schema(description = "角色（岗位）菜单")
-    private List<Long> menuIds;
 
 }

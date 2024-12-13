@@ -1,18 +1,14 @@
 package com.tyrael.kharazim.application.user.service.impl;
 
 import com.tyrael.kharazim.application.config.BusinessCodeConstants;
-import com.tyrael.kharazim.application.system.domain.Menu;
-import com.tyrael.kharazim.application.system.mapper.MenuMapper;
 import com.tyrael.kharazim.application.system.service.CodeGenerator;
 import com.tyrael.kharazim.application.user.domain.Role;
-import com.tyrael.kharazim.application.user.domain.RoleMenu;
 import com.tyrael.kharazim.application.user.dto.role.request.SaveRoleRequest;
 import com.tyrael.kharazim.application.user.dto.role.response.RoleDetailDTO;
 import com.tyrael.kharazim.application.user.dto.role.response.RolePageDTO;
 import com.tyrael.kharazim.application.user.dto.user.request.PageRoleRequest;
 import com.tyrael.kharazim.application.user.enums.EnableStatusEnum;
 import com.tyrael.kharazim.application.user.mapper.RoleMapper;
-import com.tyrael.kharazim.application.user.mapper.RoleMenuMapper;
 import com.tyrael.kharazim.application.user.service.RoleService;
 import com.tyrael.kharazim.common.dto.PageResponse;
 import com.tyrael.kharazim.common.exception.BusinessException;
@@ -26,10 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import static com.tyrael.kharazim.application.config.CacheKeyConstants.CURRENT_USER_INFO;
 
@@ -42,8 +35,6 @@ import static com.tyrael.kharazim.application.config.CacheKeyConstants.CURRENT_U
 public class RoleServiceImpl implements RoleService {
 
     private final RoleMapper roleMapper;
-    private final RoleMenuMapper roleMenuMapper;
-    private final MenuMapper menuMapper;
     private final TransactionTemplate transactionTemplate;
     private final CodeGenerator codeGenerator;
 
@@ -71,19 +62,12 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public RoleDetailDTO roleDetail(Long id) {
         Role role = getById(id);
-
-        List<Long> menuIds = roleMenuMapper.listByRoleId(id)
-                .stream()
-                .map(RoleMenu::getMenuId)
-                .toList();
-
         return RoleDetailDTO.builder()
                 .id(role.getId())
                 .code(role.getCode())
                 .name(role.getName())
                 .sort(role.getSort())
                 .status(role.getStatus())
-                .menuIds(menuIds)
                 .build();
     }
 
@@ -166,38 +150,6 @@ public class RoleServiceImpl implements RoleService {
         role.setStatus(EnableStatusEnum.DISABLED);
         role.setUpdateTime(LocalDateTime.now());
         roleMapper.updateById(role);
-    }
-
-    @Override
-    public List<Long> getRoleMenuIds(Long id) {
-        Role role = getById(id);
-        List<Menu> menus;
-        if (role.isAdmin()) {
-            menus = menuMapper.listAll();
-        } else {
-            List<RoleMenu> roleMenus = roleMenuMapper.listByRoleId(id);
-            Set<Long> menuIds = roleMenus.stream()
-                    .map(RoleMenu::getMenuId)
-                    .collect(Collectors.toSet());
-            menus = menuIds.isEmpty()
-                    ? Collections.emptyList()
-                    : menuMapper.selectBatchIds(menuIds);
-        }
-        return menus
-                .stream()
-                .map(Menu::getId)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    @CacheEvict(cacheNames = {CURRENT_USER_INFO}, allEntries = true)
-    public void updateRoleMenus(Long id, List<Long> menuIds) {
-        Role role = getById(id);
-        if (role.isAdmin()) {
-            throw new ForbiddenException("超级管理员无法修改");
-        }
-        roleMenuMapper.save(id, menuIds);
     }
 
     private Role getById(Long id) {
