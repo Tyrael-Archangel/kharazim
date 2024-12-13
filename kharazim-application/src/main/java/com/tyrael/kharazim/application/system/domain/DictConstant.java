@@ -29,7 +29,7 @@ public sealed class DictConstant permits DictConstant.EnumDictConstant {
         private final Class<T> relatedEnum;
         private final Map<String, String> itemMap;
 
-        EnumDictConstant(String code, String desc, Class<T> relatedEnum) {
+        EnumDictConstant(String code, Class<T> relatedEnum, String desc) {
             super(code, desc);
             this.relatedEnum = relatedEnum;
             this.itemMap = Arrays.stream(relatedEnum.getEnumConstants())

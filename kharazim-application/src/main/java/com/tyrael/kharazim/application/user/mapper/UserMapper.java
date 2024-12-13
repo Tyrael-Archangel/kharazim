@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.tyrael.kharazim.application.base.BasePageMapper;
+import com.tyrael.kharazim.application.base.LambdaQueryWrapperX;
 import com.tyrael.kharazim.application.user.domain.User;
 import com.tyrael.kharazim.application.user.dto.user.request.ListUserRequest;
 import com.tyrael.kharazim.application.user.dto.user.request.PageUserRequest;
@@ -125,10 +126,10 @@ public interface UserMapper extends BasePageMapper<User> {
      */
     default PageResponse<User> page(PageUserRequest pageCommand) {
 
-        LambdaQueryWrapper<User> queryWrapper = Wrappers.lambdaQuery();
-        if (pageCommand.getStatus() != null) {
-            queryWrapper.eq(User::getStatus, pageCommand.getStatus());
-        }
+        LambdaQueryWrapperX<User> queryWrapper = new LambdaQueryWrapperX<>();
+        queryWrapper.eqIfPresent(User::getStatus, pageCommand.getStatus());
+        queryWrapper.eqIfPresent(User::getGender, pageCommand.getGender());
+
         String keywords = StringUtils.trim(pageCommand.getKeywords());
         if (StringUtils.isNotBlank(keywords)) {
             queryWrapper.and(

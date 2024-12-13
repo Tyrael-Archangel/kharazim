@@ -54,8 +54,8 @@ public class CustomerCommunicationLogServiceImpl implements CustomerCommunicatio
         Map<String, User> userMap = userMapper.mapByCodes(serviceUserCodes);
         Map<String, Customer> customerMap = customerMapper.mapByCodes(customerCodes);
 
-        Map<String, String> typeDictItemMap = dictService.dictItemMap(DictConstants.CUSTOMER_COMMUNICATION_TYPE);
-        Map<String, String> evaluateDictItemMap = dictService.dictItemMap(DictConstants.CUSTOMER_COMMUNICATION_EVALUATE);
+        Map<String, String> typeDictItemMap = dictService.dictItemMap(DictConstants.COMMUNICATION_TYPE);
+        Map<String, String> evaluateDictItemMap = dictService.dictItemMap(DictConstants.COMMUNICATION_EVALUATE);
 
         List<CustomerCommunicationLogVO> logs = pageLogs.stream()
                 .map(e -> {
@@ -92,8 +92,8 @@ public class CustomerCommunicationLogServiceImpl implements CustomerCommunicatio
     @Transactional(rollbackFor = Exception.class)
     public Long add(AddCustomerCommunicationLogRequest addRequest, AuthUser currentUser) {
         customerMapper.ensureCustomerExist(addRequest.getCustomerCode());
-        dictService.ensureDictItemEnable(DictConstants.CUSTOMER_COMMUNICATION_TYPE, addRequest.getTypeDictKey());
-        dictService.ensureDictItemEnable(DictConstants.CUSTOMER_COMMUNICATION_EVALUATE, addRequest.getEvaluateDictKey());
+        dictService.ensureDictItemEnable(DictConstants.COMMUNICATION_TYPE, addRequest.getTypeDictKey());
+        dictService.ensureDictItemEnable(DictConstants.COMMUNICATION_EVALUATE, addRequest.getEvaluateDictKey());
 
         CustomerCommunicationLog customerCommunicationLog = new CustomerCommunicationLog();
         customerCommunicationLog.setTypeDict(addRequest.getTypeDictKey());

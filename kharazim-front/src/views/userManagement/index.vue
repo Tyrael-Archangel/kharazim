@@ -9,32 +9,48 @@
     </el-form-item>
     <el-form-item label="状态">
       <el-select v-model="pageRequest.status" clearable placeholder="状态">
-        <el-option label="已启用" value="ENABLED" />
-        <el-option label="已禁用" value="DISABLED" />
+        <el-option
+          v-for="option in statusOptions"
+          :key="option.key"
+          :label="option.value"
+          :value="option.key"
+        />
+      </el-select>
+    </el-form-item>
+    <el-form-item label="性别">
+      <el-select v-model="pageRequest.gender" clearable placeholder="性别">
+        <el-option
+          v-for="option in genderOptions"
+          :key="option.key"
+          :label="option.value"
+          :value="option.key"
+        />
       </el-select>
     </el-form-item>
     <el-form-item>
       <el-button type="primary" @click="loadUser">查询</el-button>
+      <el-button type="primary" @click="resetAndLoadUser">重置</el-button>
     </el-form-item>
   </el-form>
 
   <div>
-    <el-table :data="userPageData" border style="width: 100%">
+    <el-table :data="userPageData.data" border style="width: 100%">
       <el-table-column label="用户编码" prop="code" width="100" />
-      <el-table-column label="用户名" prop="name" />
+      <el-table-column label="用户名" min-width="120" prop="name" />
       <el-table-column align="center" label="头像" width="80">
         <template v-slot="{ row }">
           <el-avatar v-if="row.avatarUrl" :src="row.avatarUrl" />
         </template>
       </el-table-column>
-      <el-table-column label="用户昵称" prop="nickName" />
-      <el-table-column label="性别" width="65">
+      <el-table-column label="用户昵称" min-width="120" prop="nickName" />
+      <el-table-column align="center" label="性别" width="58">
         <template v-slot="{ row }">
           <el-icon :color="'MALE' === row.gender ? 'blue' : 'red'" size="22">
             <component :is="'MALE' === row.gender ? 'Male' : 'Female'" />
           </el-icon>
         </template>
       </el-table-column>
+      <el-table-column label="电话号码" prop="phone" width="120" />
       <el-table-column label="出生日期" prop="birthday" width="120" />
       <el-table-column label="角色" prop="roleName" />
       <el-table-column label="状态" prop="status" width="65">
@@ -63,10 +79,10 @@
   </div>
   <div class="pagination-block">
     <el-pagination
-      v-model:current-page="pageInfo.currentPage"
-      v-model:page-size="pageInfo.pageSize"
-      :page-sizes="pageInfo.pageSizes"
-      :total="pageInfo.totalCount"
+      v-model:current-page="pageRequest.pageIndex"
+      v-model:page-size="pageRequest.pageSize"
+      :page-sizes="[10, 20, 50, 100]"
+      :total="userPageData.totalCount"
       background
       layout="total, sizes, prev, pager, next, jumper"
       @size-change="loadUser"
@@ -77,10 +93,14 @@
 
 <script lang="ts" setup>
 import axios from "@/utils/http.js";
+import { DictOption, loadDictOptions } from "@/views/dict/dict-item";
 
-import { onMounted, reactive, ref } from "vue";
+import { onMounted, reactive, ref, toRaw } from "vue";
 import { AxiosResponse } from "axios";
 import { ElMessageBox } from "element-plus";
+
+const statusOptions = ref<DictOption[]>([]);
+const genderOptions = ref<DictOption[]>([]);
 
 interface UserData {
   id: number;
@@ -106,13 +126,7 @@ interface UserData {
   updateTime: string;
 }
 
-const userPageData = ref<UserData[]>([]);
-const pageInfo = reactive({
-  currentPage: 1,
-  pageSize: 10,
-  totalCount: 0,
-  pageSizes: [10, 20, 50, 100],
-});
+const userPageData = ref({ totalCount: 0, data: [] as UserData[] });
 
 function switchStatus(user: UserData) {
   axios
@@ -120,22 +134,25 @@ function switchStatus(user: UserData) {
     .then(() => loadUser());
 }
 
-const pageRequest = reactive({
+const initPageRequest = {
   keywords: "",
   status: "",
-});
+  gender: "",
+  pageIndex: 1,
+  pageSize: 10,
+};
+
+const pageRequest = reactive({ ...initPageRequest });
 
 function loadUser() {
   axios
-    .get(
-      `/kharazim-api/user/page?pageSize=${pageInfo.pageSize}&pageIndex=${pageInfo.currentPage}` +
-        `${pageRequest.keywords ? "&keywords=" + pageRequest.keywords : ""}` +
-        `&status=${pageRequest.status ? "&status=" + pageRequest.status : ""}`,
-    )
-    .then((response: AxiosResponse) => {
-      userPageData.value = response.data.data;
-      pageInfo.totalCount = response.data.totalCount;
-    });
+    .get("/kharazim-api/user/page", { params: toRaw(pageRequest) })
+    .then((response: AxiosResponse) => (userPageData.value = response.data));
+}
+
+function resetAndLoadUser() {
+  Object.assign(pageRequest, initPageRequest);
+  loadUser();
 }
 
 function resetPwd(user: UserData) {
@@ -157,7 +174,11 @@ function resetPwd(user: UserData) {
     .catch(() => {});
 }
 
-onMounted(() => loadUser());
+onMounted(async () => {
+  statusOptions.value = await loadDictOptions("enable_status");
+  genderOptions.value = await loadDictOptions("user_gender");
+  loadUser();
+});
 </script>
 
 <style scoped></style>

@@ -40,11 +40,11 @@ class CustomerCommunicationLogControllerTest extends BaseControllerTest<Customer
     @Test
     void add() {
 
-        Set<String> customerCommunicationTypes = dictService.dictItemKeys(DictConstants.CUSTOMER_COMMUNICATION_TYPE);
+        Set<String> customerCommunicationTypes = dictService.dictItemKeys(DictConstants.COMMUNICATION_TYPE);
         if (customerCommunicationTypes.isEmpty()) {
             customerCommunicationTypes = addCustomerCommunicationTypeDict();
         }
-        Set<String> customerCommunicationEvaluates = dictService.dictItemKeys(DictConstants.CUSTOMER_COMMUNICATION_EVALUATE);
+        Set<String> customerCommunicationEvaluates = dictService.dictItemKeys(DictConstants.COMMUNICATION_EVALUATE);
         if (customerCommunicationEvaluates.isEmpty()) {
             customerCommunicationEvaluates = addCustomerCommunicationEvaluateDict();
         }
@@ -66,7 +66,7 @@ class CustomerCommunicationLogControllerTest extends BaseControllerTest<Customer
                 .append("recharge", "充值")
                 .append("revisit", "回访")
                 .append("visit", "拜访");
-        return addDictItems(DictConstants.CUSTOMER_COMMUNICATION_TYPE.getCode(), customerTags);
+        return addDictItems(DictConstants.COMMUNICATION_TYPE.getCode(), customerTags);
     }
 
     private Set<String> addCustomerCommunicationEvaluateDict() {
@@ -76,7 +76,7 @@ class CustomerCommunicationLogControllerTest extends BaseControllerTest<Customer
                 .append("good", "不错")
                 .append("easy", "沟通容易")
                 .append("bad", "差");
-        return addDictItems(DictConstants.CUSTOMER_COMMUNICATION_EVALUATE.getCode(), customerTags);
+        return addDictItems(DictConstants.COMMUNICATION_EVALUATE.getCode(), customerTags);
     }
 
     private Set<String> addDictItems(String dictCode, Pairs<String, String> dictItems) {
