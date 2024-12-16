@@ -26,7 +26,9 @@
       <el-form-item label="会员">
         <el-select
           v-model="pageRequest.customerCode"
-          :remote-method="loadCustomers"
+          :remote-method="
+            async (query: any) => (customers = await loadSimpleCustomers(query))
+          "
           clearable
           filterable
           placeholder="选择会员"
@@ -63,7 +65,9 @@
       <el-form-item label="成交员工">
         <el-select
           v-model="pageRequest.traderUserCode"
-          :remote-method="loadTraderUsers"
+          :remote-method="
+            async (query: any) => (traderUsers = await loadSimpleUsers(query))
+          "
           clearable
           filterable
           placeholder="选择员工"
@@ -242,7 +246,10 @@
       <el-form-item label="会员">
         <el-select
           v-model="addCustomerRechargeCardData.customerCode"
-          :remote-method="loadAddRechargeCardCustomers"
+          :remote-method="
+            async (query: any) =>
+              (addRechargeCardCustomers = await loadSimpleCustomers(query))
+          "
           filterable
           placeholder="选择会员"
           remote
@@ -299,7 +306,10 @@
       <el-form-item label="成交员工">
         <el-select
           v-model="addCustomerRechargeCardData.traderUserCode"
-          :remote-method="loadAddRechargeCardTraderUsers"
+          :remote-method="
+            async (query: any) =>
+              (addRechargeCardTraderUsers = await loadSimpleUsers(query))
+          "
           clearable
           filterable
           placeholder="选择员工"
@@ -348,6 +358,11 @@ import { AxiosResponse } from "axios";
 import axios from "@/utils/http.js";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { dateFormat } from "@/utils/DateUtil.js";
+import {
+  loadSimpleCustomers,
+  SimpleCustomer,
+} from "@/views/customer/customer-list";
+import { loadSimpleUsers, SimpleUser } from "@/views/user/user-list";
 
 interface CustomerRechargeCard {
   code: string;
@@ -554,66 +569,11 @@ function loadCustomerRechargeCardLog() {
   }
 }
 
-interface Customer {
-  code: string;
-  name: string;
-  phone: string;
-}
+const customers = ref<SimpleCustomer[]>([]);
+const addRechargeCardCustomers = ref<SimpleCustomer[]>([]);
 
-const customers = ref<Customer[]>([]);
-const addRechargeCardCustomers = ref<Customer[]>([]);
-
-function loadCustomers(query: string) {
-  axios
-    .get(`/kharazim-api/customer/list?conditionType=NAME&keyword=${query}`)
-    .then((res: AxiosResponse) => {
-      customers.value = res.data.data;
-    });
-}
-
-function loadAddRechargeCardCustomers(query: string) {
-  axios
-    .get(`/kharazim-api/customer/list?conditionType=NAME&keyword=${query}`)
-    .then((res: AxiosResponse) => {
-      addRechargeCardCustomers.value = res.data.data;
-    });
-}
-
-interface TraderUser {
-  code: string;
-  name: string;
-  nickName: string;
-  avatarUrl: string;
-}
-
-const traderUsers = ref<TraderUser[]>([]);
-const addRechargeCardTraderUsers = ref<TraderUser[]>([]);
-
-function executeLoadTraderUsers(
-  query: string,
-  callback: (traderUsers: TraderUser[]) => void,
-) {
-  axios
-    .get("/kharazim-api/user/list", {
-      params: {
-        keywords: query,
-      },
-    })
-    .then((res: AxiosResponse) => {
-      callback(res.data.data);
-    });
-}
-
-function loadTraderUsers(query: string) {
-  executeLoadTraderUsers(query, (result) => (traderUsers.value = result));
-}
-
-function loadAddRechargeCardTraderUsers(query: string) {
-  executeLoadTraderUsers(
-    query,
-    (result) => (addRechargeCardTraderUsers.value = result),
-  );
-}
+const traderUsers = ref<SimpleUser[]>([]);
+const addRechargeCardTraderUsers = ref<SimpleUser[]>([]);
 
 interface RechargeCardType {
   code: string;

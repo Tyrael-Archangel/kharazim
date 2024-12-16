@@ -57,7 +57,9 @@
       <el-form-item label="家庭户主">
         <el-select
           v-model="addFamilyData.leaderCustomerCode"
-          :remote-method="loadCustomers"
+          :remote-method="
+            async (query: any) => (customers = await loadSimpleCustomers(query))
+          "
           filterable
           placeholder="选择户主"
           remote
@@ -93,8 +95,10 @@
     <el-form :model="addFamilyMemberSelected" label-width="20%">
       <el-form-item label="选择成员">
         <el-select
-          v-model="addFamilyMemberSelected.customerCode"
-          :remote-method="loadCustomers"
+          v-model="addFamilyMemberSelected?.customerCode"
+          :remote-method="
+            async (query: any) => (customers = await loadSimpleCustomers(query))
+          "
           filterable
           placeholder="选择成员"
           remote
@@ -112,7 +116,7 @@
       </el-form-item>
       <el-form-item label="与户主关系">
         <el-input
-          v-model="addFamilyMemberSelected.relationToLeader"
+          v-model="addFamilyMemberSelected?.relationToLeader"
           autocomplete="off"
           placeholder="与户主关系"
         />
@@ -133,6 +137,10 @@
 import { onMounted, reactive, ref } from "vue";
 import axios from "@/utils/http.js";
 import { AxiosResponse } from "axios";
+import {
+  loadSimpleCustomers,
+  SimpleCustomer,
+} from "@/views/customer/customer-list";
 
 interface FamilyMember {
   name: string;
@@ -168,21 +176,7 @@ const addFamilyData = ref<CustomerFamily>({
   familyMembers: null,
 });
 
-interface Customer {
-  code: string;
-  name: string;
-  phone: string;
-}
-
-const customers = ref<Customer[]>([]);
-
-function loadCustomers(query: string) {
-  axios
-    .get(`/kharazim-api/customer/list?conditionType=NAME&keyword=${query}`)
-    .then((res: AxiosResponse) => {
-      customers.value = res.data.data;
-    });
-}
+const customers = ref<SimpleCustomer[]>([]);
 
 function showAddFamilyDialog() {
   addFamilyData.value = {
@@ -217,7 +211,7 @@ const familyMembersVisible = ref(false);
 const familyMembers = ref<FamilyMember[]>([]);
 
 function showFamilyMembers(family: CustomerFamily) {
-  familyMembers.value = family.familyMembers;
+  familyMembers.value = family.familyMembers || [];
   familyMembersVisible.value = true;
 }
 

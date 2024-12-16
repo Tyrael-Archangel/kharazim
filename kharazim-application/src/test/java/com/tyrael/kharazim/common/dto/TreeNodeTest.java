@@ -78,7 +78,6 @@ public class TreeNodeTest {
 
         Yaml yaml = new Yaml();
         yaml.setBeanAccess(BeanAccess.FIELD);
-        @SuppressWarnings("VulnerableCodeUsages")
         PrivateDept privateDept = yaml.loadAs(str, PrivateDept.class);
 
         Dept root = recursiveBuild(privateDept, new AtomicLong(), null);

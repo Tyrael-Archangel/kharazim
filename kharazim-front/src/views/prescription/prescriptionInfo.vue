@@ -16,7 +16,9 @@
       <el-form-item label="会员">
         <el-select
           v-model="pageRequest.customerCode"
-          :remote-method="loadCustomers"
+          :remote-method="
+            async (query: any) => (customers = await loadSimpleCustomers(query))
+          "
           clearable
           filterable
           placeholder="选择会员"
@@ -150,6 +152,10 @@ import {
   ClinicVO,
   loadClinicOptions,
 } from "@/views/clinic/clinicManagement.vue";
+import {
+  loadSimpleCustomers,
+  SimpleCustomer,
+} from "@/views/customer/customer-list";
 
 const prescriptionPageData = ref({ totalCount: 0, data: [] });
 
@@ -203,22 +209,7 @@ function formatPageUrlQuery() {
   );
 }
 
-interface Customer {
-  code: string;
-  name: string;
-  phone: string;
-}
-
-const customers = ref<Customer[]>([]);
-
-function loadCustomers(query: string) {
-  axios
-    .get(`/kharazim-api/customer/list?conditionType=NAME&keyword=${query}`)
-    .then((res: AxiosResponse) => {
-      customers.value = res.data.data;
-    });
-}
-
+const customers = ref<SimpleCustomer[]>([]);
 const clinicOptions = ref<ClinicVO[]>([]);
 
 const router = useRouter();

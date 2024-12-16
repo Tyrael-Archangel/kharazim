@@ -1,6 +1,5 @@
 // @ts-ignore
 import axios from "@/utils/http.js";
-import { AxiosResponse } from "axios";
 
 export interface SimpleUser {
   code: string;
@@ -14,17 +13,4 @@ export async function loadSimpleUsers(keywords: string): Promise<SimpleUser[]> {
     params: { keywords: keywords },
   });
   return (res.data.data || []) as SimpleUser[];
-}
-
-export function asyncLoadSimpleUsers(
-  keywords: string,
-  callback: (traderUsers: SimpleUser[]) => void,
-) {
-  axios
-    .get("/kharazim-api/user/list", {
-      params: { keywords: keywords },
-    })
-    .then((res: AxiosResponse) => {
-      callback((res.data.data || []) as SimpleUser[]);
-    });
 }

@@ -4,7 +4,9 @@
       <el-form-item label="会员">
         <el-select
           v-model="createPrescriptionRequest.customerCode"
-          :remote-method="loadCustomers"
+          :remote-method="
+            async (query: any) => (customers = await loadSimpleCustomers(query))
+          "
           filterable
           placeholder="选择会员"
           remote
@@ -213,6 +215,10 @@ import {
   ClinicVO,
   loadClinicOptions,
 } from "@/views/clinic/clinicManagement.vue";
+import {
+  loadSimpleCustomers,
+  SimpleCustomer,
+} from "@/views/customer/customer-list";
 
 const router = useRouter();
 
@@ -235,22 +241,7 @@ const createPrescriptionRequest = ref<CreatePrescriptionRequest>({
   products: [],
 });
 
-interface Customer {
-  code: string;
-  name: string;
-  phone: string;
-}
-
-const customers = ref<Customer[]>([]);
-
-function loadCustomers(query: string) {
-  axios
-    .get(`/kharazim-api/customer/list?conditionType=NAME&keyword=${query}`)
-    .then((res: AxiosResponse) => {
-      customers.value = res.data.data;
-    });
-}
-
+const customers = ref<SimpleCustomer[]>([]);
 const clinicOptions = ref<ClinicVO[]>([]);
 
 interface SkuPublish {
