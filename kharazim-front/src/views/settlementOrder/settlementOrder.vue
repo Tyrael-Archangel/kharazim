@@ -73,13 +73,16 @@
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="loadSettlementOrders">查询</el-button>
+        <el-button type="primary" @click="resetAndLoadSettlementOrders">
+          重置
+        </el-button>
       </el-form-item>
     </el-form>
   </div>
   <div>
     <div>
       <el-table
-        :data="settlementOrderPageData"
+        :data="settlementOrderPageData.data"
         border
         style="width: 100%; margin-top: 10px"
       >
@@ -134,13 +137,17 @@
         <el-table-column label="结算时间" prop="settlementTime" />
         <el-table-column align="center" label="结算状态">
           <template v-slot="{ row }">
-            <el-tag v-if="row.status === 'PAID'" type="success">
+            <el-tag
+              v-if="row.status === 'PAID'"
+              disable-transitions
+              type="success"
+            >
               <el-icon>
                 <CircleCheck />
               </el-icon>
               已结算
             </el-tag>
-            <el-tag v-else type="warning">
+            <el-tag v-else disable-transitions type="warning">
               <el-icon>
                 <Warning />
               </el-icon>
@@ -166,8 +173,8 @@
       <el-pagination
         v-model:current-page="pageRequest.pageIndex"
         v-model:page-size="pageRequest.pageSize"
-        :page-sizes="pageInfo.pageSizes"
-        :total="pageInfo.totalCount"
+        :page-sizes="[10, 20, 50, 100]"
+        :total="settlementOrderPageData.totalCount"
         background
         layout="total, sizes, prev, pager, next, jumper"
         @size-change="loadSettlementOrders"
@@ -255,7 +262,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, reactive, ref } from "vue";
+import { onMounted, reactive, ref, toRaw } from "vue";
 import { AxiosResponse } from "axios";
 import axios from "@/utils/http.js";
 import { CircleCheck, Warning } from "@element-plus/icons-vue";
@@ -300,13 +307,12 @@ interface SettlementOrder {
   items: SettlementOrderItem[];
 }
 
-const settlementOrderPageData = ref<SettlementOrder[]>([]);
-const pageInfo = reactive({
+const settlementOrderPageData = ref({
   totalCount: 0,
-  pageSizes: [10, 20, 50, 100],
+  data: [] as SettlementOrder[],
 });
 
-const pageRequest = reactive({
+const initPageRequest = {
   settlementOrderCode: "",
   sourcePrescriptionCode: "",
   customerCode: "",
@@ -314,17 +320,21 @@ const pageRequest = reactive({
   status: "",
   pageSize: 10,
   pageIndex: 1,
-});
+};
+
+const pageRequest = reactive({ ...initPageRequest });
 
 function loadSettlementOrders() {
   axios
-    .get("/kharazim-api/settlement-order/page", {
-      params: pageRequest,
-    })
+    .get("/kharazim-api/settlement-order/page", { params: toRaw(pageRequest) })
     .then((response: AxiosResponse) => {
-      settlementOrderPageData.value = response.data.data;
-      pageInfo.totalCount = response.data.totalCount;
+      settlementOrderPageData.value = response.data;
     });
+}
+
+function resetAndLoadSettlementOrders() {
+  Object.assign(pageRequest, initPageRequest);
+  loadSettlementOrders();
 }
 
 const customers = ref<SimpleCustomer[]>([]);
