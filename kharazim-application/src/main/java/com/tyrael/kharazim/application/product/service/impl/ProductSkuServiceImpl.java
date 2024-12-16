@@ -86,9 +86,7 @@ public class ProductSkuServiceImpl implements ProductSkuService {
         PageResponse<ProductSku> skuPage = productSkuMapper.page(pageRequest);
         return PageResponse.success(
                 productSkuConverter.skuVOs(skuPage.getData()),
-                skuPage.getTotalCount(),
-                skuPage.getPageSize(),
-                skuPage.getPageNum());
+                skuPage.getTotalCount());
     }
 
 }

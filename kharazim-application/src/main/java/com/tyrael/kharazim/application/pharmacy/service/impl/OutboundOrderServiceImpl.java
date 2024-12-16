@@ -81,9 +81,7 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
 
         return PageResponse.success(
                 outboundOrderConverter.outboundOrderVOs(outboundOrders, outboundOrderItems),
-                pageData.getTotalCount(),
-                pageData.getPageSize(),
-                pageData.getPageNum());
+                pageData.getTotalCount());
     }
 
     @Override

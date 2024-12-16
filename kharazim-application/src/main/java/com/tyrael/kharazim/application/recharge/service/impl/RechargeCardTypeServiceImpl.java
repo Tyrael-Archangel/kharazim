@@ -120,10 +120,7 @@ public class RechargeCardTypeServiceImpl implements RechargeCardTypeService {
                 .stream()
                 .map(this::cardTypeVO)
                 .collect(Collectors.toList());
-        return PageResponse.success(cardTypes,
-                cardTypePage.getTotalCount(),
-                cardTypePage.getPageSize(),
-                cardTypePage.getPageNum());
+        return PageResponse.success(cardTypes, cardTypePage.getTotalCount());
     }
 
     private RechargeCardTypeVO cardTypeVO(RechargeCardType cardType) {

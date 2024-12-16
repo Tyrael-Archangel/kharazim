@@ -101,11 +101,7 @@ public class CustomerFamilyServiceImpl implements CustomerFamilyService {
     @Override
     public PageResponse<CustomerFamilyVO> page(PageFamilyRequest pageRequest) {
         PageResponse<Family> familyPage = familyMapper.page(pageRequest);
-        return PageResponse.success(
-                this.customerFamilyVO(familyPage.getData()),
-                familyPage.getTotalCount(),
-                familyPage.getPageSize(),
-                familyPage.getPageNum());
+        return PageResponse.success(this.customerFamilyVO(familyPage.getData()), familyPage.getTotalCount());
     }
 
     private List<CustomerFamilyVO> customerFamilyVO(Collection<Family> families) {

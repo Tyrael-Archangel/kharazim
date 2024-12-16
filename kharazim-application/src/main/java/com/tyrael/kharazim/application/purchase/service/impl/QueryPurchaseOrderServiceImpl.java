@@ -44,11 +44,7 @@ public class QueryPurchaseOrderServiceImpl implements QueryPurchaseOrderService 
                 this.purchaseOrderItems(purchaseOrderCodes),
                 this.paymentRecords(purchaseOrderCodes),
                 this.receiveRecords(purchaseOrderCodes));
-        return PageResponse.success(
-                pageData,
-                purchaseOrderPage.getTotalCount(),
-                purchaseOrderPage.getPageSize(),
-                purchaseOrderPage.getPageNum());
+        return PageResponse.success(pageData, purchaseOrderPage.getTotalCount());
     }
 
     @Override

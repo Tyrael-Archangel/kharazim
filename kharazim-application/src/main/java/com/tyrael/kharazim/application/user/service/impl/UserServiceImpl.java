@@ -95,11 +95,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public PageResponse<UserDTO> page(PageUserRequest pageCommand) {
         PageResponse<User> userPage = userMapper.page(pageCommand);
-        return PageResponse.success(
-                convertUsers(userPage.getData()),
-                userPage.getTotalCount(),
-                userPage.getPageSize(),
-                userPage.getPageNum());
+        return PageResponse.success(convertUsers(userPage.getData()), userPage.getTotalCount());
     }
 
     @Override

@@ -49,7 +49,7 @@ public class DictServiceImpl implements DictService {
                 .limit(pageRequest.getPageSize())
                 .map(this::dictDTO)
                 .toList();
-        return PageResponse.success(dictPage, allMatchedDictConstants.size(), pageRequest.getPageSize(), pageRequest.getPageIndex());
+        return PageResponse.success(dictPage, allMatchedDictConstants.size());
     }
 
     private boolean matchQuery(PageDictRequest pageDictRequest, DictConstant dictConstant) {

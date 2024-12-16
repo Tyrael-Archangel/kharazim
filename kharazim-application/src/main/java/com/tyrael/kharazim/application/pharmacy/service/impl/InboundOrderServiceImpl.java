@@ -90,9 +90,7 @@ public class InboundOrderServiceImpl implements InboundOrderService {
 
         return PageResponse.success(
                 inboundOrderConverter.inboundOrderVOs(inboundOrders, inboundOrderItems),
-                pageData.getTotalCount(),
-                pageData.getPageSize(),
-                pageData.getPageNum());
+                pageData.getTotalCount());
     }
 
     @Override

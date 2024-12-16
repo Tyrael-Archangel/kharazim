@@ -14,7 +14,7 @@ import java.util.Collections;
 @EqualsAndHashCode(callSuper = true)
 public class MultiResponse<T> extends DataResponse<Collection<T>> {
 
-    private int totalCount;
+    protected int totalCount;
 
     public static <T> MultiResponse<T> success(Collection<T> data) {
         MultiResponse<T> response = new MultiResponse<>();

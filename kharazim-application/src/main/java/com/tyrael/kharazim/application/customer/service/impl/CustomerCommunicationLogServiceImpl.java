@@ -65,7 +65,7 @@ public class CustomerCommunicationLogServiceImpl implements CustomerCommunicatio
                     return this.communicationLogVO(e, user, customer, typeDictItemMap, evaluateDictItemMap);
                 })
                 .collect(Collectors.toList());
-        return PageResponse.success(logs, pageResponse.getTotalCount(), pageResponse.getPageSize(), pageResponse.getPageNum());
+        return PageResponse.success(logs, pageResponse.getTotalCount());
     }
 
     private CustomerCommunicationLogVO communicationLogVO(CustomerCommunicationLog customerCommunicationLog,

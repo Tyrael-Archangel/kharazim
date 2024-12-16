@@ -182,10 +182,9 @@ public class PrescriptionServiceImpl implements PrescriptionService {
         Collection<Prescription> prescriptions = pageData.getData();
         List<PrescriptionProduct> products = listPrescriptionProducts(prescriptions);
 
-        return PageResponse.success(prescriptionConverter.prescriptionVOs(prescriptions, products),
-                pageData.getTotalCount(),
-                pageData.getPageSize(),
-                pageData.getPageNum());
+        return PageResponse.success(
+                prescriptionConverter.prescriptionVOs(prescriptions, products),
+                pageData.getTotalCount());
     }
 
     @Override

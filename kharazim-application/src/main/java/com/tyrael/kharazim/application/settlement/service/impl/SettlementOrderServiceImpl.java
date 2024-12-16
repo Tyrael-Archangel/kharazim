@@ -89,9 +89,7 @@ public class SettlementOrderServiceImpl implements SettlementOrderService {
 
         return PageResponse.success(
                 settlementOrderConverter.settlementOrderVOs(settlementOrders, settlementOrderItems),
-                pageData.getTotalCount(),
-                pageData.getPageSize(),
-                pageData.getPageNum());
+                pageData.getTotalCount());
     }
 
 }

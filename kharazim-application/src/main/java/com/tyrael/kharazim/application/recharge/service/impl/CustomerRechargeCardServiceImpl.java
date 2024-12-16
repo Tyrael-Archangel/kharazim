@@ -222,11 +222,7 @@ public class CustomerRechargeCardServiceImpl implements CustomerRechargeCardServ
     @Transactional(readOnly = true)
     public PageResponse<CustomerRechargeCardVO> page(CustomerRechargeCardPageRequest pageRequest) {
         PageResponse<CustomerRechargeCard> pageData = customerRechargeCardMapper.page(pageRequest);
-        return PageResponse.success(
-                customerRechargeCards(pageData.getData()),
-                pageData.getTotalCount(),
-                pageData.getPageSize(),
-                pageData.getPageNum());
+        return PageResponse.success(customerRechargeCards(pageData.getData()), pageData.getTotalCount());
     }
 
     @Override
@@ -301,10 +297,7 @@ public class CustomerRechargeCardServiceImpl implements CustomerRechargeCardServ
     public PageResponse<CustomerRechargeCardLogVO> pageRechargeCardLog(String code,
                                                                        PageCustomerRechargeCardLogRequest pageCommand) {
         PageResponse<CustomerRechargeCardLog> pageResponse = rechargeCardLogMapper.page(code, pageCommand);
-        return PageResponse.success(this.rechargeCardLogs(pageResponse.getData()),
-                pageResponse.getTotalCount(),
-                pageResponse.getPageSize(),
-                pageResponse.getPageNum());
+        return PageResponse.success(this.rechargeCardLogs(pageResponse.getData()), pageResponse.getTotalCount());
     }
 
     private List<CustomerRechargeCardLogVO> rechargeCardLogs(Collection<CustomerRechargeCardLog> rechargeCardLogs) {

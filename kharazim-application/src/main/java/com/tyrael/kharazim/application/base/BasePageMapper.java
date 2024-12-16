@@ -21,10 +21,7 @@ public interface BasePageMapper<T> extends BaseMapper<T> {
      */
     default PageResponse<T> page(Page<T> pageCondition, Wrapper<T> queryWrapper) {
         Page<T> pageData = selectPage(pageCondition, queryWrapper);
-        return PageResponse.success(pageData.getRecords(),
-                pageData.getTotal(),
-                (int) pageCondition.getSize(),
-                (int) pageCondition.getCurrent());
+        return PageResponse.success(pageData.getRecords(), pageData.getTotal());
     }
 
     /**

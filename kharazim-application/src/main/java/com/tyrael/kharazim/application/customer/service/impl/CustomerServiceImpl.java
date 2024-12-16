@@ -7,12 +7,12 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.collect.Lists;
 import com.tyrael.kharazim.application.base.auth.AuthUser;
 import com.tyrael.kharazim.application.config.BusinessCodeConstants;
-import com.tyrael.kharazim.application.system.domain.DictConstants;
 import com.tyrael.kharazim.application.customer.converter.CustomerConverter;
 import com.tyrael.kharazim.application.customer.domain.*;
 import com.tyrael.kharazim.application.customer.mapper.*;
 import com.tyrael.kharazim.application.customer.service.CustomerService;
 import com.tyrael.kharazim.application.customer.vo.customer.*;
+import com.tyrael.kharazim.application.system.domain.DictConstants;
 import com.tyrael.kharazim.application.system.service.CaptchaService;
 import com.tyrael.kharazim.application.system.service.CodeGenerator;
 import com.tyrael.kharazim.application.system.service.DictService;
@@ -72,8 +72,9 @@ public class CustomerServiceImpl implements CustomerService {
     public PageResponse<CustomerBaseVO> page(PageCustomerRequest pageRequest) {
         Page<Customer> pageCondition = new Page<>(pageRequest.getPageIndex(), pageRequest.getPageSize());
         PageResponse<Customer> pageData = customerMapper.page(pageRequest, pageCondition);
-        return PageResponse.success(customerConverter.customerBaseVOs(pageData.getData()),
-                pageData.getTotalCount(), pageRequest.getPageSize(), pageRequest.getPageIndex());
+        return PageResponse.success(
+                customerConverter.customerBaseVOs(pageData.getData()),
+                pageData.getTotalCount());
     }
 
     @Override

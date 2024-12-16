@@ -53,10 +53,7 @@ public class RoleServiceImpl implements RoleService {
                         .updateTime(e.getUpdateTime())
                         .build())
                 .toList();
-        return PageResponse.success(roles,
-                rolePage.getTotalCount(),
-                rolePage.getPageSize(),
-                rolePage.getPageNum());
+        return PageResponse.success(roles, rolePage.getTotalCount());
     }
 
     @Override

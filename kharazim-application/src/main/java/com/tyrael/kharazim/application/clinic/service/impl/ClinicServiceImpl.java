@@ -51,10 +51,7 @@ public class ClinicServiceImpl implements ClinicService {
                 .map(this::clinicVO)
                 .collect(Collectors.toList());
 
-        return PageResponse.success(clinics,
-                pageData.getTotalCount(),
-                pageData.getPageSize(),
-                pageData.getPageNum());
+        return PageResponse.success(clinics, pageData.getTotalCount());
     }
 
     @Override

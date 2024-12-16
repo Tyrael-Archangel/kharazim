@@ -39,10 +39,7 @@ public class SupplierServiceImpl implements SupplierService {
                 .stream()
                 .map(this::supplierVO)
                 .collect(Collectors.toList());
-        return PageResponse.success(units,
-                pageData.getTotalCount(),
-                pageData.getPageSize(),
-                pageData.getPageNum());
+        return PageResponse.success(units, pageData.getTotalCount());
     }
 
     @Override

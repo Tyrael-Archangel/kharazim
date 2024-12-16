@@ -39,10 +39,9 @@ public class SkuPublishServiceImpl implements SkuPublishService {
     @Override
     public PageResponse<SkuPublishVO> page(PageSkuPublishRequest pageRequest) {
         PageResponse<SkuPublish> pageData = skuPublishMapper.page(pageRequest);
-        return PageResponse.success(skuPublishConverter.skuPublishVOs(pageData.getData()),
-                pageData.getTotalCount(),
-                pageData.getPageSize(),
-                pageData.getPageNum());
+        return PageResponse.success(
+                skuPublishConverter.skuPublishVOs(pageData.getData()),
+                pageData.getTotalCount());
     }
 
     @Override

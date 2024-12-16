@@ -39,10 +39,7 @@ public class ProductUnitServiceImpl implements ProductUnitService {
                 .stream()
                 .map(this::unitVO)
                 .collect(Collectors.toList());
-        return PageResponse.success(units,
-                pageData.getTotalCount(),
-                pageData.getPageSize(),
-                pageData.getPageNum());
+        return PageResponse.success(units, pageData.getTotalCount());
     }
 
     @Override

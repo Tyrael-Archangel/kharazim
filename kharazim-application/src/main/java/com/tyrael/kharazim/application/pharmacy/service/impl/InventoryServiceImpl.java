@@ -40,9 +40,7 @@ public class InventoryServiceImpl implements InventoryService {
         PageResponse<Inventory> pageData = inventoryMapper.page(pageRequest);
         return PageResponse.success(
                 inventoryConverter.inventories(pageData.getData()),
-                pageData.getTotalCount(),
-                pageRequest.getPageSize(),
-                pageRequest.getPageIndex());
+                pageData.getTotalCount());
     }
 
     @Override
@@ -58,9 +56,7 @@ public class InventoryServiceImpl implements InventoryService {
         PageResponse<InventoryLog> pageData = inventoryLogMapper.page(pageRequest);
         return PageResponse.success(
                 inventoryConverter.inventoryLogs(pageData.getData()),
-                pageData.getTotalCount(),
-                pageData.getPageSize(),
-                pageData.getPageNum());
+                pageData.getTotalCount());
     }
 
     @Override
@@ -77,11 +73,7 @@ public class InventoryServiceImpl implements InventoryService {
                         .clinicCode(e.getClinicCode())
                         .build())
                 .collect(Collectors.toList());
-        return PageResponse.success(
-                occupyPageData,
-                pageData.getTotalCount(),
-                pageData.getPageSize(),
-                pageData.getPageNum());
+        return PageResponse.success(occupyPageData, pageData.getTotalCount());
     }
 
     @Override

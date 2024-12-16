@@ -42,10 +42,7 @@ public interface SkuPublishMapper extends BasePageMapper<SkuPublish> {
             if (CollectionUtils.isNotEmpty(skuCodes)) {
                 queryWrapper.in(SkuPublish::getSkuCode, skuCodes);
             } else {
-                return PageResponse.success(new ArrayList<>(),
-                        0L,
-                        pageRequest.getPageSize(),
-                        pageRequest.getPageIndex());
+                return PageResponse.success(new ArrayList<>(), 0L);
             }
         }
 
