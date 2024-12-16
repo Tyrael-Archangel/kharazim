@@ -1,3 +1,4 @@
+// @ts-ignore
 import axios from "@/utils/http.js";
 
 export interface DictOption {

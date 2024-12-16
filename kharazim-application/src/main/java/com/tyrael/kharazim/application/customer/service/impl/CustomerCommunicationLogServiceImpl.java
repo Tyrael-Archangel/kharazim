@@ -2,7 +2,6 @@ package com.tyrael.kharazim.application.customer.service.impl;
 
 import com.google.common.collect.Sets;
 import com.tyrael.kharazim.application.base.auth.AuthUser;
-import com.tyrael.kharazim.application.system.domain.DictConstants;
 import com.tyrael.kharazim.application.customer.domain.Customer;
 import com.tyrael.kharazim.application.customer.domain.CustomerCommunicationLog;
 import com.tyrael.kharazim.application.customer.mapper.CustomerCommunicationLogMapper;
@@ -11,11 +10,13 @@ import com.tyrael.kharazim.application.customer.service.CustomerCommunicationLog
 import com.tyrael.kharazim.application.customer.vo.communication.AddCustomerCommunicationLogRequest;
 import com.tyrael.kharazim.application.customer.vo.communication.CustomerCommunicationLogPageRequest;
 import com.tyrael.kharazim.application.customer.vo.communication.CustomerCommunicationLogVO;
+import com.tyrael.kharazim.application.system.domain.DictConstants;
 import com.tyrael.kharazim.application.system.service.DictService;
 import com.tyrael.kharazim.application.user.domain.User;
 import com.tyrael.kharazim.application.user.mapper.UserMapper;
 import com.tyrael.kharazim.common.dto.PageResponse;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -92,16 +93,25 @@ public class CustomerCommunicationLogServiceImpl implements CustomerCommunicatio
     @Transactional(rollbackFor = Exception.class)
     public Long add(AddCustomerCommunicationLogRequest addRequest, AuthUser currentUser) {
         customerMapper.ensureCustomerExist(addRequest.getCustomerCode());
+        String serviceUserCode = addRequest.getServiceUserCode();
+        if (StringUtils.isNotBlank(serviceUserCode)) {
+            customerMapper.ensureCustomerExist(addRequest.getCustomerCode());
+        } else {
+            serviceUserCode = currentUser.getCode();
+        }
         dictService.ensureDictItemEnable(DictConstants.COMMUNICATION_TYPE, addRequest.getTypeDictKey());
         dictService.ensureDictItemEnable(DictConstants.COMMUNICATION_EVALUATE, addRequest.getEvaluateDictKey());
 
         CustomerCommunicationLog customerCommunicationLog = new CustomerCommunicationLog();
         customerCommunicationLog.setTypeDict(addRequest.getTypeDictKey());
         customerCommunicationLog.setCustomerCode(addRequest.getCustomerCode());
-        customerCommunicationLog.setServiceUserCode(currentUser.getCode());
+        customerCommunicationLog.setServiceUserCode(serviceUserCode);
         customerCommunicationLog.setContent(addRequest.getContent());
         customerCommunicationLog.setEvaluateDict(addRequest.getEvaluateDictKey());
-        customerCommunicationLog.setCommunicationTime(LocalDateTime.now());
+        customerCommunicationLog.setCommunicationTime(addRequest.getCommunicationTime());
+        if (customerCommunicationLog.getCommunicationTime() == null) {
+            customerCommunicationLog.setCommunicationTime(LocalDateTime.now());
+        }
         customerCommunicationLog.setCreator(currentUser.getNickName());
         customerCommunicationLog.setCreatorCode(currentUser.getCode());
         customerCommunicationLog.setCreateTime(LocalDateTime.now());

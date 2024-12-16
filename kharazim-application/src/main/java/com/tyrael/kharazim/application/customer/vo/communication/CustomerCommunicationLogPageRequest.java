@@ -19,10 +19,21 @@ public class CustomerCommunicationLogPageRequest extends PageCommand {
     @Schema(description = "客服人员编码")
     private String serviceUserCode;
 
+    @Schema(description = "沟通类型字典键，字典编码: communication_type")
+    private String typeDictKey;
+
+    @Schema(description = "沟通评价字典键，字典编码: communication_evaluate")
+    private String evaluateDictKey;
+
     @Schema(description = "创建开始时间")
     private LocalDateTime createdBegin;
 
     @Schema(description = "创建结束时间")
     private LocalDateTime createdEnd;
 
+    @Schema(description = "沟通开始时间")
+    private LocalDateTime communicationBegin;
+
+    @Schema(description = "沟通结束时间")
+    private LocalDateTime communicationEnd;
 }

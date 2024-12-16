@@ -89,13 +89,22 @@ public interface CustomerMapper extends BasePageMapper<Customer> {
      */
     default List<Customer> list(ListCustomerRequest request) {
         LambdaQueryWrapper<Customer> queryWrapper = Wrappers.lambdaQuery();
-        String keyword = StringUtils.trim(request.getKeyword());
+        String keyword = StringUtils.trim(request.getKeywords());
         if (StringUtils.isNotBlank(keyword)) {
-            queryWrapper = switch (request.getConditionType()) {
-                case NAME -> queryWrapper.like(Customer::getName, keyword);
-                case PHONE -> queryWrapper.eq(Customer::getPhone, keyword);
-                case CERTIFICATE -> queryWrapper.eq(Customer::getCertificateCode, keyword);
-            };
+            ListCustomerRequest.QueryConditionType conditionType = request.getConditionType();
+            if (conditionType == null) {
+                queryWrapper.and(q -> q.like(Customer::getName, keyword))
+                        .or()
+                        .eq(Customer::getPhone, keyword)
+                        .or()
+                        .eq(Customer::getCertificateCode, keyword);
+            } else {
+                queryWrapper = switch (conditionType) {
+                    case NAME -> queryWrapper.like(Customer::getName, keyword);
+                    case PHONE -> queryWrapper.eq(Customer::getPhone, keyword);
+                    case CERTIFICATE -> queryWrapper.eq(Customer::getCertificateCode, keyword);
+                };
+            }
         }
 
         return selectList(queryWrapper);

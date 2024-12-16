@@ -109,7 +109,7 @@ public class DictServiceImpl implements DictService {
         }
         return dictItemMapper.listByDictCode(dictConstant.getCode())
                 .stream()
-                .collect(Collectors.toMap(DictItem::getValue, DictItem::getKey));
+                .collect(Collectors.toMap(DictItem::getKey, DictItem::getValue));
     }
 
     @Override
@@ -118,7 +118,7 @@ public class DictServiceImpl implements DictService {
             return enumDictConstant.getItemName(dictItemKey);
         } else {
             DictItem dictItem = dictItemMapper.finByDictCodeAndItemKey(dictConstant.getCode(), dictItemKey);
-            return dictItem == null ? null : dictItem.getKey();
+            return dictItem == null ? null : dictItem.getValue();
         }
     }
 
@@ -146,8 +146,8 @@ public class DictServiceImpl implements DictService {
                 .orElse("");
         if (availableItemKeys.isEmpty()) {
             throw new BusinessException(constantsDesc
-                    + "字典值无效：" + String.join(",", dictItemKeys)
-                    + "，没有可用字典值");
+                    + "字典项键无效：" + String.join(",", dictItemKeys)
+                    + "，没有可用字典键值");
         }
 
         List<String> unavailableKeys = dictItemKeys.stream()
@@ -155,7 +155,7 @@ public class DictServiceImpl implements DictService {
                 .toList();
         if (!unavailableKeys.isEmpty()) {
             throw new BusinessException(constantsDesc
-                    + "字典值无效：" + String.join(",", unavailableKeys)
+                    + "字典项键无效：" + String.join(",", unavailableKeys)
                     + "，可用值：" + String.join(",", availableItemKeys));
         }
     }

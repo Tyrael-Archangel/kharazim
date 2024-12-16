@@ -50,6 +50,7 @@ public class CustomerCommunicationLogVO {
 
     @Schema(description = "创建人")
     private String creator;
+
     @Schema(description = "创建时间")
     private LocalDateTime createTime;
 

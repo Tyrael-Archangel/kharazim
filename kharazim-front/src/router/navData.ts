@@ -22,13 +22,13 @@ const navs: Nav[] = [
     children: [
       {
         name: "用户管理",
-        component: "userManagement/index.vue",
+        component: "user/userManagement.vue",
         path: "/system-setting/user-management",
         icon: "/icons/user.svg",
       },
       {
         name: "角色管理",
-        component: "roleManagement/index.vue",
+        component: "role/roleManagement.vue",
         path: "/system-setting/role-management",
         icon: "/icons/role.svg",
       },
@@ -47,13 +47,19 @@ const navs: Nav[] = [
     children: [
       {
         name: "会员管理",
-        component: "customer/index.vue",
+        component: "customer/customerManagement.vue",
         path: "/customer-info",
         icon: "/icons/customer.svg",
       },
       {
+        name: "会员沟通记录",
+        component: "customer/customerCommunicationLog.vue",
+        path: "/customer-communication-log",
+        icon: "/icons/customer_communication_log.svg",
+      },
+      {
         name: "家庭管理",
-        component: "customerFamily/index.vue",
+        component: "customer/customerFamily.vue",
         path: "/customer-family",
         icon: "/icons/family.svg",
       },

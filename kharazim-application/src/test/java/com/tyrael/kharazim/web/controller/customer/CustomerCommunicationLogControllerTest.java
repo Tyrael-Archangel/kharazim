@@ -9,6 +9,7 @@ import com.tyrael.kharazim.common.dto.Pair;
 import com.tyrael.kharazim.common.dto.Pairs;
 import com.tyrael.kharazim.common.util.CollectionUtils;
 import com.tyrael.kharazim.common.util.RandomStringUtil;
+import com.tyrael.kharazim.mock.MockRandomPoetry;
 import com.tyrael.kharazim.web.controller.BaseControllerTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
