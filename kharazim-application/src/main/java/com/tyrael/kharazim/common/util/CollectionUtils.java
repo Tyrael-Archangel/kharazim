@@ -19,7 +19,7 @@ public class CollectionUtils {
 
     public static <T> T random(Collection<T> c) {
         if (isEmpty(c)) {
-            return null;
+            throw new IllegalArgumentException("Collection is empty");
         }
         int size = c.size();
         int valueIndex = RANDOM.nextInt(size);

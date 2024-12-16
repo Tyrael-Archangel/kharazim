@@ -216,8 +216,8 @@ class CustomerControllerTest extends BaseControllerTest<CustomerController> {
 
         List<CustomerSimpleVO> customers = customerService.listSimpleInfo(new ListCustomerRequest());
         for (CustomerSimpleVO customer : customers) {
-            Set<String> tagDictKeys = new LinkedHashSet<>(CollectionUtils.randomSubList(customerTags, 60));
-            if (!tagDictKeys.isEmpty()) {
+            Set<String> tagDictKeys = new LinkedHashSet<>(CollectionUtils.randomSubList(customerTags, 20));
+            if (random.nextInt(100) > 50 && !tagDictKeys.isEmpty()) {
                 AddCustomerTagRequest addCustomerTagRequest = new AddCustomerTagRequest();
                 addCustomerTagRequest.setCustomerCode(customer.getCode());
                 addCustomerTagRequest.setTagDictKeys(tagDictKeys);
@@ -258,7 +258,7 @@ class CustomerControllerTest extends BaseControllerTest<CustomerController> {
     }
 
     private Set<String> addDictItems(String dictCode, Pairs<String, String> dictItems) {
-        Set<String> dictItemValues = new LinkedHashSet<>();
+        Set<String> dictItemKeys = new LinkedHashSet<>();
         for (int i = 0; i < dictItems.size(); i++) {
             Pair<String, String> dictItem = dictItems.get(i);
             SaveDictItemRequest addDictItemRequest = new SaveDictItemRequest();
@@ -267,9 +267,9 @@ class CustomerControllerTest extends BaseControllerTest<CustomerController> {
             addDictItemRequest.setValue(dictItem.right());
             addDictItemRequest.setSort(i + 1);
             dictService.addDictItem(addDictItemRequest, super.mockAdmin());
-            dictItemValues.add(dictItem.right());
+            dictItemKeys.add(dictItem.left());
         }
-        return dictItemValues;
+        return dictItemKeys;
     }
 
 }

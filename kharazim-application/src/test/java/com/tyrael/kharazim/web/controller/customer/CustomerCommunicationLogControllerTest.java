@@ -80,7 +80,7 @@ class CustomerCommunicationLogControllerTest extends BaseControllerTest<Customer
     }
 
     private Set<String> addDictItems(String dictCode, Pairs<String, String> dictItems) {
-        Set<String> dictItemValues = new LinkedHashSet<>();
+        Set<String> dictItemKeys = new LinkedHashSet<>();
         for (int i = 0; i < dictItems.size(); i++) {
             Pair<String, String> dictItem = dictItems.get(i);
             SaveDictItemRequest addDictItemRequest = new SaveDictItemRequest();
@@ -89,9 +89,9 @@ class CustomerCommunicationLogControllerTest extends BaseControllerTest<Customer
             addDictItemRequest.setValue(dictItem.right());
             addDictItemRequest.setSort(i + 1);
             dictService.addDictItem(addDictItemRequest, super.mockAdmin());
-            dictItemValues.add(dictItem.right());
+            dictItemKeys.add(dictItem.left());
         }
-        return dictItemValues;
+        return dictItemKeys;
     }
 
 }
