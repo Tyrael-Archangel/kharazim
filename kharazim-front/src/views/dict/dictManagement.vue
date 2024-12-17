@@ -108,7 +108,11 @@
             v-if="item.editing"
             v-model="item.sort"
             :controls="false"
-            min="1"
+            :max="9999"
+            :min="1"
+            :precision="0"
+            :step="1"
+            step-strictly
             style="width: 80px"
           />
           <el-text v-else>{{ item.sort }}</el-text>

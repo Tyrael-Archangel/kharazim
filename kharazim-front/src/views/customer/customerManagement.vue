@@ -48,9 +48,16 @@
       <el-table-column label="来源渠道" prop="sourceChannel" width="120" />
       <el-table-column label="创建时间" prop="createTime" width="170" />
       <el-table-column label="备注" prop="remark" />
-      <el-table-column align="center" label="操作" width="100">
+      <el-table-column align="center" label="操作" width="160">
         <template v-slot="{ row }">
           <el-button size="small" @click="handleEdit(row)">编辑</el-button>
+          <el-link
+            :href="`/#/customer-communication-log?customerCode=${row.code}`"
+            style="font-size: small; margin-left: 10px"
+            type="primary"
+          >
+            沟通记录
+          </el-link>
         </template>
       </el-table-column>
     </el-table>
@@ -74,7 +81,24 @@
     size="65%"
     title="会员详情"
   >
-    <h4>{{ detailCustomerData.code }}</h4>
+    <el-descriptions :column="4" border label-width="5%">
+      <el-descriptions-item label="会员名" width="10%">
+        {{ detailCustomerData.name }}
+      </el-descriptions-item>
+      <el-descriptions-item label="会员编码" width="10%">
+        {{ detailCustomerData.code }}
+      </el-descriptions-item>
+      <el-descriptions-item label="性别" width="10%">
+        {{ detailCustomerData.genderName }}
+      </el-descriptions-item>
+      <el-descriptions-item label="年龄" width="10%">
+        {{ detailCustomerData.age }}
+      </el-descriptions-item>
+      <el-descriptions-item label="备注">
+        {{ detailCustomerData.remark }}
+      </el-descriptions-item>
+    </el-descriptions>
+    <br />
     <div class="customer-tag-block">
       <div v-for="tag in detailCustomerTags" class="customer-tag">
         <el-tag closable effect="dark" @close="removeTag(tag)">
@@ -87,17 +111,6 @@
         </el-button>
       </div>
     </div>
-    <el-descriptions :column="2" border>
-      <el-descriptions-item label="会员名">
-        {{ detailCustomerData.name }}
-      </el-descriptions-item>
-      <el-descriptions-item label="性别">
-        {{ detailCustomerData.genderName }}
-      </el-descriptions-item>
-      <el-descriptions-item label="备注">
-        {{ detailCustomerData.remark }}
-      </el-descriptions-item>
-    </el-descriptions>
     <div class="customer-filed-block">
       <el-text class="customer-block-header">地址信息</el-text>
       <div>
@@ -241,6 +254,7 @@ interface CustomerData {
   birthYear: number | null;
   birthMonth: number | null;
   birthDayOfMonth: number | null;
+  age: number | null;
   remark: string;
   sourceChannel: string;
   createTime: string;
@@ -290,6 +304,7 @@ const detailCustomerData = ref<CustomerData>({
   birthYear: null,
   birthMonth: null,
   birthDayOfMonth: null,
+  age: null,
   remark: "",
   sourceChannel: "",
   createTime: "",
@@ -388,9 +403,11 @@ const editCustomerData = ref<CustomerData>({
   code: "",
   name: "",
   gender: "",
+  genderName: "",
   birthYear: null,
   birthMonth: null,
   birthDayOfMonth: null,
+  age: null,
   remark: "",
   sourceChannel: "",
   createTime: "",

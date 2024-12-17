@@ -11,11 +11,11 @@
         <el-table-column label="备注信息" prop="remark" />
         <el-table-column label="操作">
           <template v-slot="{ row }">
-            <el-button size="small" @click="showFamilyMembers(row)"
-              >查看成员
+            <el-button size="small" @click="showFamilyMembers(row)">
+              查看成员
             </el-button>
-            <el-button size="small" @click="showAddFamilyMembers(row)"
-              >添加成员
+            <el-button size="small" @click="showAddFamilyMembers(row)">
+              添加成员
             </el-button>
           </template>
         </el-table-column>

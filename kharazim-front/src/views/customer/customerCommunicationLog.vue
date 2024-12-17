@@ -6,34 +6,6 @@
       class="page-form-block"
       @keyup.enter="loadCommunicationLogs"
     >
-      <el-form-item label="沟通类型">
-        <el-select
-          v-model="pageRequest.typeDictKey"
-          clearable
-          placeholder="沟通类型"
-        >
-          <el-option
-            v-for="option in typeDictOptions"
-            :key="option.key"
-            :label="option.value"
-            :value="option.key"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="沟通评价">
-        <el-select
-          v-model="pageRequest.evaluateDictKey"
-          clearable
-          placeholder="沟通评价"
-        >
-          <el-option
-            v-for="option in evaluateDictOptions"
-            :key="option.key"
-            :label="option.value"
-            :value="option.key"
-          />
-        </el-select>
-      </el-form-item>
       <el-form-item label="会员">
         <el-select
           v-model="pageRequest.customerCode"
@@ -82,6 +54,34 @@
             />
             <span style="float: right">{{ item.nickName }}</span>
           </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="沟通类型">
+        <el-select
+          v-model="pageRequest.typeDictKey"
+          clearable
+          placeholder="沟通类型"
+        >
+          <el-option
+            v-for="option in typeDictOptions"
+            :key="option.key"
+            :label="option.value"
+            :value="option.key"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="沟通评价">
+        <el-select
+          v-model="pageRequest.evaluateDictKey"
+          clearable
+          placeholder="沟通评价"
+        >
+          <el-option
+            v-for="option in evaluateDictOptions"
+            :key="option.key"
+            :label="option.value"
+            :value="option.key"
+          />
         </el-select>
       </el-form-item>
       <el-form-item label="创建时间">
@@ -272,6 +272,7 @@ import {
 } from "@/views/customer/customer-list";
 import { dateTimeFormat } from "@/utils/DateUtil";
 import { ElMessage } from "element-plus";
+import { useRouter } from "vue-router";
 
 const communicationPageData = ref({ totalCount: 0, data: [] });
 
@@ -359,9 +360,19 @@ function confirmAddCommunicationLog() {
   });
 }
 
+const router = useRouter();
+
 onMounted(async () => {
   typeDictOptions.value = await loadDictOptions("communication_type");
   evaluateDictOptions.value = await loadDictOptions("communication_evaluate");
+
+  const query = router.currentRoute.value.query;
+  const customerCode = query.customerCode as string;
+  if (customerCode && customerCode.length > 0) {
+    customers.value = await loadSimpleCustomers("");
+    pageRequest.customerCode = customerCode;
+  }
+
   loadCommunicationLogs();
 });
 </script>
