@@ -1,8 +1,7 @@
 package com.tyrael.kharazim.web.controller.customer;
 
-import com.tyrael.kharazim.application.customer.vo.customer.AddCustomerAddressRequest;
-import com.tyrael.kharazim.application.customer.vo.customer.AddCustomerInsuranceRequest;
-import com.tyrael.kharazim.application.customer.vo.customer.AddCustomerRequest;
+import com.tyrael.kharazim.application.customer.service.CustomerService;
+import com.tyrael.kharazim.application.customer.vo.customer.*;
 import com.tyrael.kharazim.application.system.domain.DictConstants;
 import com.tyrael.kharazim.application.system.dto.address.AddressTreeNodeDTO;
 import com.tyrael.kharazim.application.system.dto.dict.SaveDictItemRequest;
@@ -18,6 +17,7 @@ import com.tyrael.kharazim.common.dto.Pairs;
 import com.tyrael.kharazim.common.util.CollectionUtils;
 import com.tyrael.kharazim.mock.MockRandomPoetry;
 import com.tyrael.kharazim.web.controller.BaseControllerTest;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -39,11 +39,15 @@ public class AddCustomerTest extends BaseControllerTest<CustomerController> {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private CustomerService customerService;
+
     public AddCustomerTest() {
         super(CustomerController.class);
     }
 
     @Test
+    @Order(1)
     void add() {
 
         List<AddressTreeNodeDTO> addressTree = addressQueryService.fullTree();
@@ -82,7 +86,7 @@ public class AddCustomerTest extends BaseControllerTest<CustomerController> {
             addCustomerRequest.setSalesConsultantCode(CollectionUtils.random(serviceUserCodes));
             addCustomerRequest.setCustomerAddresses(this.mockAddress(name, phone, addressTree, mockCommunityNames));
             addCustomerRequest.setCustomerInsurances(this.mockInsurances(companyItemValues));
-            super.performWhenCall(mockController.add(addCustomerRequest, super.mockAdmin()));
+            super.performWhenCall(mockController.add(addCustomerRequest, super.mockUser()));
         }
 
     }
@@ -274,6 +278,51 @@ public class AddCustomerTest extends BaseControllerTest<CustomerController> {
         return addDictItems(DictConstants.INSURANCE_COMPANY.getCode(), insuranceCompanies);
     }
 
+    @Test
+    @Order(2)
+    void addCustomerTag() {
+        Set<String> customerTagDictItems = dictService.dictItemKeys(DictConstants.CUSTOMER_TAG);
+        if (customerTagDictItems.isEmpty()) {
+            customerTagDictItems = addCustomerTagDict();
+        }
+
+        List<String> customerTags = new ArrayList<>(customerTagDictItems);
+
+        List<CustomerSimpleVO> customers = customerService.listSimpleInfo(new ListCustomerRequest());
+        for (CustomerSimpleVO customer : customers) {
+            Set<String> tagDictKeys = new LinkedHashSet<>(CollectionUtils.randomSubList(customerTags, 20));
+            if (random.nextInt(100) > 50 && !tagDictKeys.isEmpty()) {
+                AddCustomerTagRequest addCustomerTagRequest = new AddCustomerTagRequest();
+                addCustomerTagRequest.setCustomerCode(customer.getCode());
+                addCustomerTagRequest.setTagDictKeys(tagDictKeys);
+                super.performWhenCall(mockController.addCustomerTag(addCustomerTagRequest, super.mockUser()));
+            }
+        }
+    }
+
+    private Set<String> addCustomerTagDict() {
+        Pairs<String, String> customerTags = new Pairs<String, String>()
+                .append("bronze", "青铜")
+                .append("silver", "白银")
+                .append("gold", "黄金")
+                .append("platinum", "铂金")
+                .append("diamond", "钻石")
+                .append("fitness_enthusiasts", "健身爱好者")
+                .append("pay_attention_to_maintenance", "注重保养")
+                .append("hot_figure", "身材火辣")
+                .append("high_value_sensitive", "高价值敏感")
+                .append("good_credit", "信用良好")
+                .append("southerner", "南方人")
+                .append("northerner", "北方人")
+                .append("foreigner", "外国人")
+                .append("enterprise_senior_manager", "企业高管")
+                .append("common_laborer", "普通工人")
+                .append("housewife", "家庭妇女")
+                .append("retiree", "退休人员")
+                .append("strong_spending_power", "消费能力强");
+        return addDictItems(DictConstants.CUSTOMER_TAG.getCode(), customerTags);
+    }
+
     private Set<String> addDictItems(String dictCode, Pairs<String, String> dictItems) {
         Set<String> dictItemKeys = new LinkedHashSet<>();
         for (int i = 0; i < dictItems.size(); i++) {
@@ -283,7 +332,7 @@ public class AddCustomerTest extends BaseControllerTest<CustomerController> {
             addDictItemRequest.setKey(dictItem.left());
             addDictItemRequest.setValue(dictItem.right());
             addDictItemRequest.setSort(i + 1);
-            dictService.addDictItem(addDictItemRequest, super.mockAdmin());
+            dictService.addDictItem(addDictItemRequest, super.mockUser());
             dictItemKeys.add(dictItem.left());
         }
         return dictItemKeys;

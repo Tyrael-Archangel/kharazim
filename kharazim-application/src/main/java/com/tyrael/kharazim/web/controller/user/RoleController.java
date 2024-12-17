@@ -16,9 +16,6 @@ import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.stream.Stream;
-
 /**
  * @author Tyrael Archangel
  * @since 2024/1/4
@@ -57,13 +54,10 @@ public class RoleController {
         return Response.success();
     }
 
-    @DeleteMapping("/{ids}")
-    @Operation(description = "删除角色（岗位）多个以英文逗号(,)分割", summary = "删除角色（岗位）")
-    public Response delete(@PathVariable("ids") String ids) {
-        List<Long> idValues = Stream.of(ids.split(","))
-                .map(Long::parseLong)
-                .toList();
-        roleService.delete(idValues);
+    @DeleteMapping("/{id}")
+    @Operation(summary = "删除角色")
+    public Response delete(@PathVariable("id") Long id) {
+        roleService.delete(id);
         return Response.success();
     }
 

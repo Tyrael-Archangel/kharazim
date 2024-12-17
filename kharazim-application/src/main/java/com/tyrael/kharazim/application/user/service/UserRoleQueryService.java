@@ -23,9 +23,11 @@ public interface UserRoleQueryService {
     /**
      * 获取用户的角色
      *
-     * @param userCodes 用户编码
+     * @param userId 用户ID
      * @return 用户的角色
      */
-    List<UserRoleDTO> queryUserRolesByUserCodes(Collection<String> userCodes);
+    default List<UserRoleDTO> queryUserRoles(Long userId) {
+        return queryUserRoles(List.of(userId));
+    }
 
 }

@@ -49,6 +49,7 @@ public class CustomerConverter {
                             .birthYear(customer.getBirthYear())
                             .birthMonth(customer.getBirthMonth())
                             .birthDayOfMonth(customer.getBirthDayOfMonth())
+                            .age(customer.getAge())
                             .phone(customer.getPhone())
                             .phoneVerified(customer.getPhoneVerified())
                             .certificateType(customer.getCertificateType())

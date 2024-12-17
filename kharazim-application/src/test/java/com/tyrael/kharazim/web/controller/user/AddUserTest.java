@@ -29,6 +29,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -89,7 +90,7 @@ public class AddUserTest extends BaseControllerTest<UserController> {
 
             addUserRequest.setCertificateType(UserCertificateTypeEnum.ID_CARD);
             addUserRequest.setCertificateCode("510823202308010001");
-            addUserRequest.setRoleId(role.getId());
+            addUserRequest.setRoleCodes(Set.of(role.getCode()));
             addUserRequest.setRemark(hero.getRemark());
             addUserRequest.setBirthday(hero.getRelease());
 
@@ -310,7 +311,7 @@ public class AddUserTest extends BaseControllerTest<UserController> {
         uploadFileVO.setFileName(heroName + ".png");
         uploadFileVO.setFile(new MockMultipartFile(heroName, new ByteArrayInputStream(body)));
 
-        return fileService.upload(uploadFileVO, super.mockAdmin()).getFileId();
+        return fileService.upload(uploadFileVO, super.mockUser()).getFileId();
     }
 
     @Getter

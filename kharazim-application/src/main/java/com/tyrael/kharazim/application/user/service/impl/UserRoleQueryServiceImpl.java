@@ -4,7 +4,6 @@ import com.tyrael.kharazim.application.user.domain.Role;
 import com.tyrael.kharazim.application.user.domain.UserRole;
 import com.tyrael.kharazim.application.user.dto.user.response.UserRoleDTO;
 import com.tyrael.kharazim.application.user.mapper.RoleMapper;
-import com.tyrael.kharazim.application.user.mapper.UserMapper;
 import com.tyrael.kharazim.application.user.mapper.UserRoleMapper;
 import com.tyrael.kharazim.application.user.service.UserRoleQueryService;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +25,6 @@ public class UserRoleQueryServiceImpl implements UserRoleQueryService {
 
     private final UserRoleMapper userRoleMapper;
     private final RoleMapper roleMapper;
-    private final UserMapper userMapper;
 
     @Override
     public List<UserRoleDTO> queryUserRoles(Collection<Long> userIds) {
@@ -49,12 +47,6 @@ public class UserRoleQueryServiceImpl implements UserRoleQueryService {
                             .build();
                 })
                 .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<UserRoleDTO> queryUserRolesByUserCodes(Collection<String> userCodes) {
-        List<Long> userIds = userMapper.listIdByCode(userCodes);
-        return queryUserRoles(userIds);
     }
 
 }

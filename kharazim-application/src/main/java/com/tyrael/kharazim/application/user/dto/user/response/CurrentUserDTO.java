@@ -1,5 +1,6 @@
 package com.tyrael.kharazim.application.user.dto.user.response;
 
+import com.tyrael.kharazim.application.user.dto.role.response.RoleDTO;
 import com.tyrael.kharazim.application.user.enums.UserGenderEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -52,10 +53,7 @@ public class CurrentUserDTO {
     private String phone;
 
     @Schema(description = "角色（岗位）")
-    private String roleName;
-
-    @Schema(description = "角色（岗位）编码")
-    private List<String> roles;
+    private List<RoleDTO> roles;
 
     @Schema(description = "是否建议当前用户修改密码")
     private Boolean needChangePassword;

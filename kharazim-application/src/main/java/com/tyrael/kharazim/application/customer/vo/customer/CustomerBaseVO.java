@@ -31,6 +31,8 @@ public class CustomerBaseVO {
     private Integer birthMonth;
     @Schema(description = "生日日")
     private Integer birthDayOfMonth;
+    @Schema(description = "年龄")
+    private Integer age;
 
     @Schema(description = "手机号")
     private String phone;

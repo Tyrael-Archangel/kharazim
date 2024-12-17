@@ -6,8 +6,6 @@ import com.tyrael.kharazim.application.user.dto.role.response.RolePageDTO;
 import com.tyrael.kharazim.application.user.dto.user.request.PageRoleRequest;
 import com.tyrael.kharazim.common.dto.PageResponse;
 
-import java.util.List;
-
 /**
  * @author Tyrael Archangel
  * @since 2024/1/4
@@ -49,9 +47,9 @@ public interface RoleService {
     /**
      * 删除角色（岗位）
      *
-     * @param ids 角色（岗位）ID
+     * @param id 角色（岗位）ID
      */
-    void delete(List<Long> ids);
+    void delete(Long id);
 
     /**
      * 启用角色（岗位）

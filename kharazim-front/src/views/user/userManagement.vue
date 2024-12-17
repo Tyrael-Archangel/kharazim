@@ -52,8 +52,12 @@
       </el-table-column>
       <el-table-column label="电话号码" prop="phone" width="120" />
       <el-table-column label="出生日期" prop="birthday" width="120" />
-      <el-table-column label="角色" prop="roleName" />
-      <el-table-column label="状态" prop="status" width="65">
+      <el-table-column align="center" label="角色" width="160">
+        <template v-slot="{ row }">
+          {{ row.roles.map((r: RoleData) => r.name).join(", ") }}
+        </template>
+      </el-table-column>
+      <el-table-column label="状态" width="65">
         <template v-slot="{ row }">
           <el-switch
             v-model="row.status"
@@ -102,6 +106,11 @@ import { ElMessageBox } from "element-plus";
 const statusOptions = ref<DictOption[]>([]);
 const genderOptions = ref<DictOption[]>([]);
 
+interface RoleData {
+  code: string;
+  name: string;
+}
+
 interface UserData {
   id: number;
   code: string;
@@ -115,9 +124,7 @@ interface UserData {
   phone: string;
   status: string;
   remark: string;
-  roleId: number;
-  roleCode: string;
-  roleName: string;
+  roles: RoleData[];
   creator: string;
   creatorCode: string;
   createTime: string;

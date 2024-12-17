@@ -93,7 +93,7 @@ public class AddCustomerRechargeCardTest extends BaseControllerTest<CustomerRech
             for (CustomerRechargeCardVO customerRechargeCard : customerRechargeCards) {
                 if (random.nextInt(100) > 15
                         && CustomerRechargeCardStatus.UNPAID.equals(customerRechargeCard.getStatus())) {
-                    super.performWhenCall(mockController.markPaid(customerRechargeCard.getCode(), super.mockAdmin()));
+                    super.performWhenCall(mockController.markPaid(customerRechargeCard.getCode(), super.mockUser()));
                 }
             }
         } while (!customerRechargeCards.isEmpty());

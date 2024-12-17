@@ -11,6 +11,7 @@ import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 /**
  * @author Tyrael Archangel
@@ -58,8 +59,8 @@ public class AddUserRequest {
     @NotNull(message = "请选择生日")
     private LocalDate birthday;
 
-    @Schema(description = "用户角色（岗位）ID")
+    @Schema(description = "用户角色（岗位）编码")
     @NotNull(message = "请选择用户角色")
-    private Long roleId;
+    private Set<String> roleCodes;
 
 }

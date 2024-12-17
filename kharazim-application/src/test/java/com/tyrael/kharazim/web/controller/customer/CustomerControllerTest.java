@@ -1,7 +1,9 @@
 package com.tyrael.kharazim.web.controller.customer;
 
-import com.tyrael.kharazim.application.customer.service.CustomerService;
-import com.tyrael.kharazim.application.customer.vo.customer.*;
+import com.tyrael.kharazim.application.customer.vo.customer.AddCustomerAddressRequest;
+import com.tyrael.kharazim.application.customer.vo.customer.AddCustomerInsuranceRequest;
+import com.tyrael.kharazim.application.customer.vo.customer.ListCustomerRequest;
+import com.tyrael.kharazim.application.customer.vo.customer.PageCustomerRequest;
 import com.tyrael.kharazim.application.system.domain.DictConstants;
 import com.tyrael.kharazim.application.system.dto.address.AddressTreeNodeDTO;
 import com.tyrael.kharazim.application.system.dto.dict.SaveDictItemRequest;
@@ -9,7 +11,6 @@ import com.tyrael.kharazim.application.system.service.AddressQueryService;
 import com.tyrael.kharazim.application.system.service.DictService;
 import com.tyrael.kharazim.common.dto.Pair;
 import com.tyrael.kharazim.common.dto.Pairs;
-import com.tyrael.kharazim.common.util.CollectionUtils;
 import com.tyrael.kharazim.web.controller.BaseControllerTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,9 +29,6 @@ class CustomerControllerTest extends BaseControllerTest<CustomerController> {
 
     @Autowired
     private DictService dictService;
-
-    @Autowired
-    private CustomerService customerService;
 
     public CustomerControllerTest() {
         super(CustomerController.class);
@@ -183,7 +181,7 @@ class CustomerControllerTest extends BaseControllerTest<CustomerController> {
     void assignCustomerServiceUser() {
         String customerCode = "CU0000000001";
         String serviceUserCode = "U000002";
-        super.performWhenCall(mockController.assignCustomerServiceUser(customerCode, serviceUserCode, super.mockAdmin()));
+        super.performWhenCall(mockController.assignCustomerServiceUser(customerCode, serviceUserCode, super.mockUser()));
     }
 
     @Test
@@ -196,58 +194,13 @@ class CustomerControllerTest extends BaseControllerTest<CustomerController> {
     void assignCustomerSalesConsultant() {
         String customerCode = "CU0000000001";
         String salesConsultantCode = "U000002";
-        super.performWhenCall(mockController.assignCustomerSalesConsultant(customerCode, salesConsultantCode, super.mockAdmin()));
+        super.performWhenCall(mockController.assignCustomerSalesConsultant(customerCode, salesConsultantCode, super.mockUser()));
     }
 
     @Test
     void customerTags() {
         String customerCode = "CU0000000001";
         super.performWhenCall(mockController.customerTags(customerCode));
-    }
-
-    @Test
-    void addCustomerTag() {
-        Set<String> customerTagDictItems = dictService.dictItemKeys(DictConstants.CUSTOMER_TAG);
-        if (customerTagDictItems.isEmpty()) {
-            customerTagDictItems = addCustomerTagDict();
-        }
-
-        List<String> customerTags = new ArrayList<>(customerTagDictItems);
-
-        List<CustomerSimpleVO> customers = customerService.listSimpleInfo(new ListCustomerRequest());
-        for (CustomerSimpleVO customer : customers) {
-            Set<String> tagDictKeys = new LinkedHashSet<>(CollectionUtils.randomSubList(customerTags, 20));
-            if (random.nextInt(100) > 50 && !tagDictKeys.isEmpty()) {
-                AddCustomerTagRequest addCustomerTagRequest = new AddCustomerTagRequest();
-                addCustomerTagRequest.setCustomerCode(customer.getCode());
-                addCustomerTagRequest.setTagDictKeys(tagDictKeys);
-                super.performWhenCall(mockController.addCustomerTag(addCustomerTagRequest, super.mockAdmin()));
-            }
-        }
-
-    }
-
-    private Set<String> addCustomerTagDict() {
-        Pairs<String, String> customerTags = new Pairs<String, String>()
-                .append("bronze", "青铜")
-                .append("silver", "白银")
-                .append("gold", "黄金")
-                .append("platinum", "铂金")
-                .append("diamond", "钻石")
-                .append("fitness_enthusiasts", "健身爱好者")
-                .append("pay_attention_to_maintenance", "注重保养")
-                .append("hot_figure", "身材火辣")
-                .append("high_value_sensitive", "高价值敏感")
-                .append("good_credit", "信用良好")
-                .append("southerner", "南方人")
-                .append("northerner", "北方人")
-                .append("foreigner", "外国人")
-                .append("enterprise_senior_manager", "企业高管")
-                .append("common_laborer", "普通工人")
-                .append("housewife", "家庭妇女")
-                .append("retiree", "退休人员")
-                .append("strong_spending_power", "消费能力强");
-        return addDictItems(DictConstants.CUSTOMER_TAG.getCode(), customerTags);
     }
 
     @Test
@@ -266,7 +219,7 @@ class CustomerControllerTest extends BaseControllerTest<CustomerController> {
             addDictItemRequest.setKey(dictItem.left());
             addDictItemRequest.setValue(dictItem.right());
             addDictItemRequest.setSort(i + 1);
-            dictService.addDictItem(addDictItemRequest, super.mockAdmin());
+            dictService.addDictItem(addDictItemRequest, super.mockUser());
             dictItemKeys.add(dictItem.left());
         }
         return dictItemKeys;

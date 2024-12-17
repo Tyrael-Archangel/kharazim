@@ -4,8 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.tyrael.kharazim.application.base.auth.*;
+import com.tyrael.kharazim.application.user.domain.User;
+import com.tyrael.kharazim.application.user.dto.user.request.ListUserRequest;
+import com.tyrael.kharazim.application.user.mapper.UserMapper;
+import com.tyrael.kharazim.common.util.CollectionUtils;
 import com.tyrael.kharazim.common.util.RandomStringUtil;
-import com.tyrael.kharazim.mock.MockAuth;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
@@ -72,6 +75,8 @@ public abstract class BaseControllerTest<T> {
     protected MockMvc mockMvc;
     @Autowired
     protected ObjectMapper objectMapper;
+    @Autowired
+    private UserMapper userMapper;
     @MockBean
     private GlobalAuthInterceptor globalAuthInterceptor;
     private boolean globalAuthInterceptorInitialized = false;
@@ -83,7 +88,33 @@ public abstract class BaseControllerTest<T> {
     }
 
     protected AuthUser mockAdmin() {
-        return MockAuth.mockAdmin();
+        AuthUser currentUser = CurrentUserHolder.getCurrentUser();
+        if (currentUser == null) {
+            currentUser = new AuthUser();
+            currentUser.setId(1L);
+            currentUser.setCode("000000");
+            currentUser.setSuperAdmin(true);
+            currentUser.setName("admin");
+            currentUser.setNickName("超级管理员");
+            CurrentUserHolder.setCurrentUser(currentUser, RandomStringUtil.make(32));
+        }
+        return currentUser;
+    }
+
+    protected AuthUser mockUser() {
+        AuthUser currentUser = CurrentUserHolder.getCurrentUser();
+        if (currentUser == null) {
+            List<User> users = userMapper.list(new ListUserRequest());
+            User randomUser = CollectionUtils.random(users);
+            currentUser = new AuthUser();
+            currentUser.setId(randomUser.getId());
+            currentUser.setCode(randomUser.getCode());
+            currentUser.setName(randomUser.getName());
+            currentUser.setNickName(randomUser.getNickName());
+            currentUser.setSuperAdmin(true);
+            CurrentUserHolder.setCurrentUser(currentUser, RandomStringUtil.make(32));
+        }
+        return currentUser;
     }
 
     @BeforeEach
@@ -94,7 +125,7 @@ public abstract class BaseControllerTest<T> {
 
         Mockito.when(globalAuthInterceptor.preHandle(Mockito.any(), Mockito.any(), Mockito.any()))
                 .then(invocation -> {
-                    MockAuth.mockCurrentAdmin();
+                    mockUser();
                     return true;
                 });
         globalAuthInterceptorInitialized = true;

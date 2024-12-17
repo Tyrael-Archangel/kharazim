@@ -68,7 +68,7 @@ public class AddClinicTest extends BaseControllerTest<ClinicController> {
         uploadFileVO.setFileName(fileName);
         uploadFileVO.setFile(new MockMultipartFile(battlegroundName, new ByteArrayInputStream(body)));
 
-        return fileService.upload(uploadFileVO, super.mockAdmin()).getFileId();
+        return fileService.upload(uploadFileVO, super.mockUser()).getFileId();
     }
 
     private List<Battleground> battlegrounds() {

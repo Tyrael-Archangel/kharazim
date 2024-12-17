@@ -49,7 +49,7 @@ create table `user_role`
     `id`      bigint not null auto_increment primary key,
     `user_id` bigint not null,
     `role_id` bigint not null,
-    unique index udx_user_role (`user_id`),
+    unique index udx_user_role (`user_id`, `role_id`),
     index idx_role (`role_id`)
 ) comment '用户-角色（岗位）关联关系表';
 

@@ -7,7 +7,6 @@ import com.tyrael.kharazim.application.system.service.CodeGenerator;
 import com.tyrael.kharazim.application.user.converter.UserConverter;
 import com.tyrael.kharazim.application.user.domain.Role;
 import com.tyrael.kharazim.application.user.domain.User;
-import com.tyrael.kharazim.application.user.domain.UserRole;
 import com.tyrael.kharazim.application.user.dto.user.request.*;
 import com.tyrael.kharazim.application.user.dto.user.response.CurrentUserDTO;
 import com.tyrael.kharazim.application.user.dto.user.response.UserDTO;
@@ -35,7 +34,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -61,8 +63,8 @@ public class UserServiceImpl implements UserService {
         User user = userMapper.selectById(id);
         DomainNotFoundException.assertFound(user, id);
 
-        UserRoleDTO userRole = getUserRole(user.getId());
-        return userConverter.userDTO(user, userRole);
+        List<UserRoleDTO> userRoles = userRoleQueryService.queryUserRoles(id);
+        return userConverter.userDTO(user, userRoles);
     }
 
     @Override
@@ -70,26 +72,9 @@ public class UserServiceImpl implements UserService {
     public CurrentUserDTO getCurrentUserInfo(AuthUser currentUser) {
         Long currentUserId = currentUser.getId();
         User user = userMapper.selectById(currentUserId);
-        UserRoleDTO userRole = getUserRole(currentUserId);
+        List<UserRoleDTO> userRoles = userRoleQueryService.queryUserRoles(currentUserId);
         LocalDateTime lastLoginTime = authService.getUserLastLoginTime(currentUserId);
-        return userConverter.currentUserDTO(user, userRole, lastLoginTime);
-    }
-
-    private UserRoleDTO getUserRole(Long userId) {
-        UserRole userRole = userRoleMapper.findByUserId(userId);
-        if (userRole == null) {
-            return null;
-        }
-        Role role = roleMapper.selectById(userRole.getRoleId());
-        DomainNotFoundException.assertFound(role, userRole.getRoleId());
-
-        return UserRoleDTO.builder()
-                .userId(userId)
-                .admin(role.isAdmin())
-                .roleId(role.getId())
-                .roleCode(role.getCode())
-                .roleName(role.getName())
-                .build();
+        return userConverter.currentUserDTO(user, userRoles, lastLoginTime);
     }
 
     @Override
@@ -113,23 +98,21 @@ public class UserServiceImpl implements UserService {
                 .toList();
 
         List<UserRoleDTO> userRoles = userRoleQueryService.queryUserRoles(userIds);
-        Map<Long, UserRoleDTO> userRoleMap = userRoles.stream()
-                .collect(Collectors.toMap(UserRoleDTO::getUserId, e -> e));
+        Map<Long, List<UserRoleDTO>> userRolesMap = userRoles.stream()
+                .collect(Collectors.groupingBy(UserRoleDTO::getUserId));
 
         return users.stream()
-                .map(user -> userConverter.userDTO(user, userRoleMap.get(user.getId())))
+                .map(user -> userConverter.userDTO(user, userRolesMap.get(user.getId())))
                 .collect(Collectors.toList());
     }
 
     @Override
     public String add(AddUserRequest addUserRequest) {
 
-        Long roleId = addUserRequest.getRoleId();
-        if (roleId != null) {
-            Role role = roleMapper.selectById(roleId);
-            if (role != null && role.isAdmin()) {
-                throw new ForbiddenException("不能将用户添加为超级管理员");
-            }
+        List<Role> targetRoles = roleMapper.listByCodes(addUserRequest.getRoleCodes());
+        boolean isAdmin = targetRoles.stream().anyMatch(Role::isAdmin);
+        if (isAdmin) {
+            throw new ForbiddenException("不能将用户添加为超级管理员");
         }
 
         String password = RandomStringUtil.make();
@@ -142,7 +125,7 @@ public class UserServiceImpl implements UserService {
                 throw new BusinessException("用户名已存在", e);
             }
 
-            userRoleMapper.save(user.getId(), roleId);
+            userRoleMapper.save(user.getId(), targetRoles);
         });
 
         return password;
@@ -155,22 +138,8 @@ public class UserServiceImpl implements UserService {
         User user = userMapper.selectById(userId);
         DomainNotFoundException.assertFound(user, userId);
 
-        UserRoleDTO oldUserRole = this.getUserRole(user.getId());
-        Long roleId = modifyUserRequest.getRoleId();
-        if (oldUserRole != null && oldUserRole.isAdmin()) {
-            // 超级管理员不能修改
-            Role role = roleMapper.selectById(oldUserRole.getRoleId());
-            if (!Objects.equals(roleId, role.getId())) {
-                throw new BusinessException("不能修改超级管理员的角色");
-            }
-        } else {
-            if (roleId != null) {
-                Role role = roleMapper.selectById(roleId);
-                if (role != null && role.isAdmin()) {
-                    throw new ForbiddenException("不能将用户添加为超级管理员");
-                }
-            }
-        }
+        List<Role> targetRoles = roleMapper.listByCodes(modifyUserRequest.getRoleCodes());
+        checkAdminCantAddAndRemove(userId, targetRoles);
 
         user.setNickName(modifyUserRequest.getNickName());
         user.setEnglishName(modifyUserRequest.getEnglishName());
@@ -189,7 +158,21 @@ public class UserServiceImpl implements UserService {
             throw new BusinessException("用户名已存在", e);
         }
 
-        userRoleMapper.save(user.getId(), roleId);
+        userRoleMapper.save(user.getId(), targetRoles);
+    }
+
+    private void checkAdminCantAddAndRemove(Long userId, List<Role> targetRoles) {
+        // 如果用户是超管，就不能移除超管，如果不是超管，就不能添加为超管
+        List<UserRoleDTO> userRoles = userRoleQueryService.queryUserRoles(userId);
+        boolean userIsAdmin = userRoles.stream().anyMatch(UserRoleDTO::isAdmin);
+
+        boolean targetIsAdmin = targetRoles.stream().anyMatch(Role::isAdmin);
+        if (userIsAdmin && !targetIsAdmin) {
+            throw new BusinessException("不能移除超级管理员");
+        }
+        if (!userIsAdmin && targetIsAdmin) {
+            throw new ForbiddenException("不能将用户添加为超级管理员");
+        }
     }
 
     private User createUser(AddUserRequest addUserRequest, String password) {
@@ -260,8 +243,10 @@ public class UserServiceImpl implements UserService {
         User user = userMapper.selectById(id);
         DomainNotFoundException.assertFound(user, id);
 
-        UserRoleDTO userRole = getUserRole(id);
-        if (userRole != null && userRole.isAdmin() && EnableStatusEnum.DISABLED.equals(status)) {
+        List<UserRoleDTO> userRoles = userRoleQueryService.queryUserRoles(id);
+        boolean userIsAdmin = userRoles.stream()
+                .anyMatch(UserRoleDTO::isAdmin);
+        if (userIsAdmin) {
             throw new ForbiddenException("超级管理员不能被禁用");
         }
 

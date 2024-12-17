@@ -4,7 +4,6 @@ import com.tyrael.kharazim.application.user.dto.user.request.ChangePasswordReque
 import com.tyrael.kharazim.application.user.dto.user.request.ModifyUserRequest;
 import com.tyrael.kharazim.application.user.dto.user.request.PageUserRequest;
 import com.tyrael.kharazim.application.user.enums.EnableStatusEnum;
-import com.tyrael.kharazim.mock.MockAuth;
 import com.tyrael.kharazim.web.controller.BaseControllerTest;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -57,7 +56,7 @@ class UserControllerTest extends BaseControllerTest<UserController> {
         changePasswordRequest.setNewPassword("123456789");
         changePasswordRequest.setOldPassword("123456");
 
-        super.performWhenCall(mockController.changePassword(MockAuth.mockAdmin(), changePasswordRequest));
+        super.performWhenCall(mockController.changePassword(super.mockUser(), changePasswordRequest));
     }
 
     @Test

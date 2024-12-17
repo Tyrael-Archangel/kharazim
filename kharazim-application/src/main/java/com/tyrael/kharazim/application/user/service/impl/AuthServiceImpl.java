@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -123,12 +124,12 @@ public class AuthServiceImpl implements AuthService {
         return tokenManager.lastAuth(userId);
     }
 
-    private Role findUserRole(User user) {
-        UserRole userRole = userRoleMapper.findByUserId(user.getId());
-        if (userRole == null) {
-            return null;
-        }
-        return roleMapper.selectById(userRole.getRoleId());
+    private List<Role> findUserRole(User user) {
+        List<UserRole> userRoles = userRoleMapper.listByUserId(user.getId());
+        List<Long> roleIds = userRoles.stream()
+                .map(UserRole::getRoleId)
+                .toList();
+        return roleMapper.listByIds(roleIds);
     }
 
     @Override

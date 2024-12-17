@@ -33,7 +33,7 @@ class ProductUnitControllerTest extends BaseControllerTest<ProductUnitController
         ModifyProductUnitRequest modifyUnitRequest = new ModifyProductUnitRequest();
         modifyUnitRequest.setCode("UT0001");
         modifyUnitRequest.setEnglishName("gram");
-        super.performWhenCall(mockController.modify(modifyUnitRequest, super.mockAdmin()));
+        super.performWhenCall(mockController.modify(modifyUnitRequest, super.mockUser()));
     }
 
 }

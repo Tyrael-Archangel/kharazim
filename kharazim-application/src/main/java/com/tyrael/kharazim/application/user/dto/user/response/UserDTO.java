@@ -1,5 +1,6 @@
 package com.tyrael.kharazim.application.user.dto.user.response;
 
+import com.tyrael.kharazim.application.user.dto.role.response.RoleDTO;
 import com.tyrael.kharazim.application.user.enums.EnableStatusEnum;
 import com.tyrael.kharazim.application.user.enums.UserCertificateTypeEnum;
 import com.tyrael.kharazim.application.user.enums.UserGenderEnum;
@@ -11,6 +12,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * @author Tyrael Archangel
@@ -70,12 +72,8 @@ public class UserDTO {
     @Schema(description = "备注")
     private String remark;
 
-    @Schema(description = "角色（岗位）ID")
-    private Long roleId;
-    @Schema(description = "角色（岗位）编码")
-    private String roleCode;
-    @Schema(description = "角色（岗位）名")
-    private String roleName;
+    @Schema(description = "角色（岗位）")
+    private List<RoleDTO> roles;
 
     @Schema(description = "创建人")
     private String creator;

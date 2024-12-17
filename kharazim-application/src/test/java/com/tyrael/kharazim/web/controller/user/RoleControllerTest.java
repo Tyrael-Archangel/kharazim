@@ -39,8 +39,8 @@ class RoleControllerTest extends BaseControllerTest<RoleController> {
 
     @Test
     void delete() {
-        String ids = "1";
-        super.performWhenCall(mockController.delete(ids));
+        Long id = 1L;
+        super.performWhenCall(mockController.delete(id));
     }
 
     @Test

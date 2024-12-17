@@ -80,7 +80,7 @@ class PurchaseOrderControllerTest extends BaseControllerTest<PurchaseOrderContro
                         .build());
             }
             request.setItems(items);
-            super.performWhenCall(mockController.create(request, super.mockAdmin()));
+            super.performWhenCall(mockController.create(request, super.mockUser()));
         }
 
     }

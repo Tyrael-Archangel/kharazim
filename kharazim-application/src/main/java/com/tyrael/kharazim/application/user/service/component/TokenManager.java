@@ -49,7 +49,7 @@ public class TokenManager {
     /**
      * create token for user
      */
-    public String create(User user, Role role) {
+    public String create(User user, List<Role> roles) {
 
         if (!authConfig.isAllowMultiLogin()) {
             this.removeByUser(user.getId());
@@ -57,7 +57,7 @@ public class TokenManager {
 
         String token = RandomStringUtil.make(32);
 
-        AuthUser authUser = userConverter.authUser(user, role);
+        AuthUser authUser = userConverter.authUser(user, roles);
         String authUserJson = JSON.toJSONString(authUser);
 
         redisTemplate.opsForValue().set(

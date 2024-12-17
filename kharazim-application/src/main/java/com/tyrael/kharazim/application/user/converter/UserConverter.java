@@ -1,18 +1,21 @@
 package com.tyrael.kharazim.application.user.converter;
 
-import com.google.common.collect.Lists;
 import com.tyrael.kharazim.application.base.auth.AuthUser;
 import com.tyrael.kharazim.application.system.service.FileService;
 import com.tyrael.kharazim.application.user.domain.Role;
 import com.tyrael.kharazim.application.user.domain.User;
+import com.tyrael.kharazim.application.user.dto.role.response.RoleDTO;
 import com.tyrael.kharazim.application.user.dto.user.response.CurrentUserDTO;
 import com.tyrael.kharazim.application.user.dto.user.response.UserDTO;
 import com.tyrael.kharazim.application.user.dto.user.response.UserRoleDTO;
+import com.tyrael.kharazim.common.util.CollectionUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Tyrael Archangel
@@ -27,7 +30,7 @@ public class UserConverter {
     /**
      * User、UserRoleDTO -> UserDTO
      */
-    public UserDTO userDTO(User user, UserRoleDTO userRole) {
+    public UserDTO userDTO(User user, List<UserRoleDTO> userRoles) {
         return UserDTO.builder()
                 .id(user.getId())
                 .code(user.getCode())
@@ -45,9 +48,7 @@ public class UserConverter {
                 .certificateType(user.getCertificateType())
                 .certificateCode(user.getCertificateCode())
                 .remark(user.getRemark())
-                .roleId(userRole == null ? null : userRole.getRoleId())
-                .roleCode(userRole == null ? null : userRole.getRoleCode())
-                .roleName(userRole == null ? null : userRole.getRoleName())
+                .roles(this.roles(userRoles))
                 .creator(user.getCreator())
                 .creatorCode(user.getCreatorCode())
                 .createTime(user.getCreateTime())
@@ -60,13 +61,7 @@ public class UserConverter {
     /**
      * User、UserRoleDTO -> CurrentUserDTO
      */
-    public CurrentUserDTO currentUserDTO(User user, UserRoleDTO role, LocalDateTime lastLoginTime) {
-        String roleName = null;
-        List<String> roleCodes = Lists.newArrayList();
-        if (role != null) {
-            roleName = role.getRoleName();
-            roleCodes.add(role.getRoleCode());
-        }
+    public CurrentUserDTO currentUserDTO(User user, List<UserRoleDTO> userRoles, LocalDateTime lastLoginTime) {
         return CurrentUserDTO.builder()
                 .id(user.getId())
                 .code(user.getCode())
@@ -78,23 +73,38 @@ public class UserConverter {
                 .gender(user.getGender())
                 .birthday(user.getBirthday())
                 .phone(user.getPhone())
-                .roleName(roleName)
-                .roles(roleCodes)
+                .roles(this.roles(userRoles))
                 .needChangePassword(user.getNeedChangePassword())
                 .lastLogin(lastLoginTime)
                 .build();
     }
 
+    private List<RoleDTO> roles(List<UserRoleDTO> userRoles) {
+        if (CollectionUtils.isEmpty(userRoles)) {
+            return new ArrayList<>();
+        }
+        return userRoles.stream()
+                .map(e -> RoleDTO.builder()
+                        .code(e.getRoleCode())
+                        .name(e.getRoleName())
+                        .build()
+                ).collect(Collectors.toList());
+    }
+
     /**
      * User,Role -> AuthUser
      */
-    public AuthUser authUser(User user, Role role) {
+    public AuthUser authUser(User user, List<Role> roles) {
+
+        boolean superAdmin = roles.stream()
+                .anyMatch(Role::isAdmin);
+
         AuthUser authUser = new AuthUser();
         authUser.setId(user.getId());
         authUser.setCode(user.getCode());
         authUser.setName(user.getName());
         authUser.setNickName(user.getNickName());
-        authUser.setSuperAdmin(role != null && role.isAdmin());
+        authUser.setSuperAdmin(superAdmin);
         return authUser;
     }
 

@@ -40,7 +40,7 @@ class SkuPublishControllerTest extends BaseControllerTest<SkuPublishController> 
     @Test
     void cancelPublish() {
         String code = "SPB2024032617114000002";
-        super.performWhenCall(mockController.cancelPublish(code, super.mockAdmin()));
+        super.performWhenCall(mockController.cancelPublish(code, super.mockUser()));
     }
 
 }

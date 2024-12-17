@@ -3,6 +3,7 @@ package com.tyrael.kharazim.application.user.mapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.tyrael.kharazim.application.user.domain.Role;
 import com.tyrael.kharazim.application.user.domain.UserRole;
 import com.tyrael.kharazim.common.util.CollectionUtils;
 import org.apache.ibatis.annotations.Mapper;
@@ -19,15 +20,13 @@ import java.util.List;
 public interface UserRoleMapper extends BaseMapper<UserRole> {
 
     /**
-     * find by userId
+     * list by userId
      *
      * @param userId 用户ID
      * @return entities
      */
-    default UserRole findByUserId(Long userId) {
-        LambdaQueryWrapper<UserRole> queryWrapper = Wrappers.lambdaQuery();
-        queryWrapper.eq(UserRole::getUserId, userId);
-        return selectOne(queryWrapper);
+    default List<UserRole> listByUserId(Long userId) {
+        return listByUserIds(List.of(userId));
     }
 
     /**
@@ -49,15 +48,17 @@ public interface UserRoleMapper extends BaseMapper<UserRole> {
      * 保存用户角色
      *
      * @param userId 用户ID
-     * @param roleId 角色ID
+     * @param roles  角色
      */
-    default void save(Long userId, Long roleId) {
+    default void save(Long userId, List<Role> roles) {
         this.deleteByUserId(userId);
-        if (roleId != null) {
-            UserRole userRole = new UserRole();
-            userRole.setUserId(userId);
-            userRole.setRoleId(roleId);
-            this.insert(userRole);
+        if (CollectionUtils.isNotEmpty(roles)) {
+            for (Role role : roles) {
+                UserRole userRole = new UserRole();
+                userRole.setUserId(userId);
+                userRole.setRoleId(role.getId());
+                this.insert(userRole);
+            }
         }
     }
 

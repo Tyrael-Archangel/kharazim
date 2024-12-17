@@ -23,6 +23,22 @@ import java.util.List;
 public interface RoleMapper extends BasePageMapper<Role> {
 
     /**
+     * list by roleCodes
+     *
+     * @param codes roleCodes
+     * @return Roles
+     */
+    default List<Role> listByCodes(Collection<String> codes) {
+        if (CollectionUtils.isEmpty(codes)) {
+            return List.of();
+        }
+        LambdaQueryWrapper<Role> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.in(Role::getCode, codes);
+        queryWrapper.eq(Role::getDeletedTimestamp, 0L);
+        return selectList(queryWrapper);
+    }
+
+    /**
      * list by IDs
      *
      * @param ids ID
@@ -73,14 +89,11 @@ public interface RoleMapper extends BasePageMapper<Role> {
     /**
      * 逻辑删除
      *
-     * @param ids 角色（岗位）ID
+     * @param id 角色（岗位）ID
      */
-    default void logicDelete(List<Long> ids) {
-        if (CollectionUtils.isEmpty(ids)) {
-            return;
-        }
+    default void logicDelete(Long id) {
         LambdaUpdateWrapper<Role> updateWrapper = Wrappers.lambdaUpdate();
-        updateWrapper.in(Role::getId, ids)
+        updateWrapper.eq(Role::getId, id)
                 .set(Role::getDeletedTimestamp, System.currentTimeMillis());
         this.update(null, updateWrapper);
     }

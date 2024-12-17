@@ -105,7 +105,7 @@ class SettlementControllerTest extends BaseControllerTest<SettlementController> 
             SettlementPayCommand payCommand = new SettlementPayCommand();
             payCommand.setSettlementOrderCode(settlementOrder.getCode());
             payCommand.setRechargeCardPayDetails(rechargeCardPayDetails);
-            super.performWhenCall(mockController.payWithRechargeCard(payCommand, super.mockAdmin()));
+            super.performWhenCall(mockController.payWithRechargeCard(payCommand, super.mockUser()));
         }
     }
 

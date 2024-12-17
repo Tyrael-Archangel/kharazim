@@ -107,7 +107,7 @@ const currentUser = ref({
   gender: "",
   birthday: "",
   phone: "",
-  roleName: "",
+  roles: [] as { code: ""; name: "" }[],
   needChangePassword: false,
   lastLogin: "",
 });

@@ -76,7 +76,7 @@ class InboundOrderControllerTest extends BaseControllerTest<InboundOrderControll
                     AddInboundRequest inboundRequest = new AddInboundRequest();
                     inboundRequest.setInboundOrderCode(inboundOrder.getCode());
                     inboundRequest.setItems(inboundItems);
-                    super.performWhenCall(mockController.inbound(inboundRequest, super.mockAdmin()));
+                    super.performWhenCall(mockController.inbound(inboundRequest, super.mockUser()));
                 }
             }
 

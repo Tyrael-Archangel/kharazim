@@ -27,7 +27,7 @@ class CustomerRechargeCardControllerTest extends BaseControllerTest<CustomerRech
         CustomerRechargeCardChargebackRequest chargebackRequest = new CustomerRechargeCardChargebackRequest();
         chargebackRequest.setRechargeCardCode("CRC20240201000001");
         chargebackRequest.setChargebackAmount(BigDecimal.valueOf(100));
-        super.performWhenCall(mockController.chargeback(chargebackRequest, super.mockAdmin()));
+        super.performWhenCall(mockController.chargeback(chargebackRequest, super.mockUser()));
     }
 
     @Test
@@ -52,7 +52,7 @@ class CustomerRechargeCardControllerTest extends BaseControllerTest<CustomerRech
     @Test
     void markRefunded() {
         String code = "CRC20240201000001";
-        super.performWhenCall(mockController.markRefunded(code, super.mockAdmin()));
+        super.performWhenCall(mockController.markRefunded(code, super.mockUser()));
     }
 
     @Test

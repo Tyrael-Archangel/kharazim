@@ -28,7 +28,7 @@ class RechargeCardTypeControllerTest extends BaseControllerTest<RechargeCardType
         modifyRequest.setDiscountPercent(BigDecimal.valueOf(95));
         modifyRequest.setNeverExpire(Boolean.TRUE);
         modifyRequest.setDefaultAmount(BigDecimal.valueOf(5000));
-        super.performWhenCall(mockController.modify(modifyRequest, super.mockAdmin()));
+        super.performWhenCall(mockController.modify(modifyRequest, super.mockUser()));
     }
 
     @Test
@@ -36,7 +36,7 @@ class RechargeCardTypeControllerTest extends BaseControllerTest<RechargeCardType
     @Transactional(rollbackFor = Exception.class)
     void disableCreateNewCard() {
         String code = "RCT000001";
-        super.performWhenCall(mockController.disableCreateNewCard(code, super.mockAdmin()));
+        super.performWhenCall(mockController.disableCreateNewCard(code, super.mockUser()));
     }
 
     @Test

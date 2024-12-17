@@ -119,8 +119,8 @@ public class RoleServiceImpl implements RoleService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     @CacheEvict(cacheNames = {CURRENT_USER_INFO}, allEntries = true)
-    public void delete(List<Long> ids) {
-        roleMapper.logicDelete(ids);
+    public void delete(Long id) {
+        roleMapper.logicDelete(id);
     }
 
     @Override

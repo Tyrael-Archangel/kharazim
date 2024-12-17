@@ -1,6 +1,7 @@
 package com.tyrael.kharazim;
 
 import com.tyrael.kharazim.web.controller.clinic.AddClinicTest;
+import com.tyrael.kharazim.web.controller.customer.AddCustomerCommunicationLogTest;
 import com.tyrael.kharazim.web.controller.customer.AddCustomerTest;
 import com.tyrael.kharazim.web.controller.pharmacy.InboundTest;
 import com.tyrael.kharazim.web.controller.pharmacy.OutboundTest;
@@ -32,6 +33,7 @@ import org.junit.platform.suite.api.Suite;
         AddClinicTest.class,
         AddSupplierTest.class,
         AddCustomerTest.class,
+        AddCustomerCommunicationLogTest.class,
         AddRechargeCardTypeTest.class,
         AddProductUnitTest.class,
         AddProductCategoryTest.class,
