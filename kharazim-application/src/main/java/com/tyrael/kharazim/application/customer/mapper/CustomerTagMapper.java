@@ -25,6 +25,8 @@ public interface CustomerTagMapper extends BaseMapper<CustomerTag> {
     default List<CustomerTag> listByCustomerCode(String customerCode) {
         LambdaQueryWrapper<CustomerTag> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper.eq(CustomerTag::getCustomerCode, customerCode);
+        queryWrapper.eq(CustomerTag::getDeletedTimestamp, 0);
+        queryWrapper.orderByAsc(CustomerTag::getId);
         return selectList(queryWrapper);
     }
 

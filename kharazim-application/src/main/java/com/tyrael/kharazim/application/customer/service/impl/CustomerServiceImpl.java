@@ -608,10 +608,11 @@ public class CustomerServiceImpl implements CustomerService {
         Map<String, String> dictItemValueToNameMap = dictService.dictItemMap(DictConstants.CUSTOMER_TAG);
 
         return customerTags.stream()
-                .map(customerTag -> {
+                .map(CustomerTag::getTagDict)
+                .map(tagDict -> {
                     CustomerTagVO customerTagVO = new CustomerTagVO();
-                    customerTagVO.setTagName(dictItemValueToNameMap.get(customerTag.getTagDict()));
-                    customerTagVO.setTagDictKey(customerTag.getTagDict());
+                    customerTagVO.setTagDictKey(tagDict);
+                    customerTagVO.setTagName(dictItemValueToNameMap.get(tagDict));
                     return customerTagVO;
                 })
                 .filter(e -> StringUtils.isNotBlank(e.getTagName()))

@@ -77,7 +77,14 @@
     <h4>{{ detailCustomerData.code }}</h4>
     <div class="customer-tag-block">
       <div v-for="tag in detailCustomerTags" class="customer-tag">
-        <el-tag>{{ tag.tagName }}</el-tag>
+        <el-tag closable effect="dark" @close="removeTag(tag)">
+          {{ tag.tagName }}
+        </el-tag>
+      </div>
+      <div class="customer-tag">
+        <el-button size="small" @click="showAddCustomerTag">
+          添加标签
+        </el-button>
       </div>
     </div>
     <el-descriptions :column="2" border>
@@ -85,7 +92,7 @@
         {{ detailCustomerData.name }}
       </el-descriptions-item>
       <el-descriptions-item label="性别">
-        {{ detailCustomerData.gender === "MALE" ? "男" : "女" }}
+        {{ detailCustomerData.genderName }}
       </el-descriptions-item>
       <el-descriptions-item label="备注">
         {{ detailCustomerData.remark }}
@@ -193,6 +200,28 @@
       </div>
     </template>
   </el-dialog>
+  <el-dialog v-model="addCustomerTagVisible" title="选择标签" width="30%">
+    <div class="customer-tag-block">
+      <div v-for="tagOption in allDictOptions" class="customer-tag">
+        <el-button
+          v-if="tagOption.canSelect"
+          :type="tagOption.selected ? 'primary' : ''"
+          size="small"
+          @click="tagOption.selected = !tagOption.selected"
+        >
+          {{ tagOption.value }}
+        </el-button>
+        <el-button v-else disabled size="small" type="primary">
+          {{ tagOption.value }}
+        </el-button>
+      </div>
+    </div>
+    <template #footer>
+      <div class="dialog-footer">
+        <el-button @click="confirmAddTags">确认</el-button>
+      </div>
+    </template>
+  </el-dialog>
 </template>
 
 <script lang="ts" setup>
@@ -202,11 +231,13 @@ import { ACCESS_TOKEN, getToken } from "@/utils/auth.js";
 import { AxiosResponse } from "axios";
 import * as echarts from "echarts/core";
 import { FormInstance } from "element-plus";
+import { DictOption, loadDictOptions } from "@/views/dict/dict-item";
 
 interface CustomerData {
   code: string;
   name: string;
   gender: string;
+  genderName: string;
   birthYear: number | null;
   birthMonth: number | null;
   birthDayOfMonth: number | null;
@@ -255,6 +286,7 @@ const detailCustomerData = ref<CustomerData>({
   code: "",
   name: "",
   gender: "",
+  genderName: "",
   birthYear: null,
   birthMonth: null,
   birthDayOfMonth: null,
@@ -262,7 +294,13 @@ const detailCustomerData = ref<CustomerData>({
   sourceChannel: "",
   createTime: "",
 });
-const detailCustomerTags = ref([{ tagName: "", tagDictKey: "" }]);
+
+interface CustomerTag {
+  tagName: "";
+  tagDictKey: "";
+}
+
+const detailCustomerTags = ref<CustomerTag[]>([]);
 
 const detailCustomerVisible = ref(false);
 
@@ -288,6 +326,63 @@ const queryCustomerTags = (customerData: CustomerData) => {
       detailCustomerTags.value = response.data.data;
     });
 };
+
+function removeTag(tag: CustomerTag) {
+  const customerData = detailCustomerData.value;
+  axios
+    .delete(
+      `/kharazim-api/customer/tags/${customerData.code}/${tag.tagDictKey}`,
+    )
+    .then(() => queryCustomerTags(customerData));
+}
+
+const addCustomerTagVisible = ref(false);
+
+interface CanChoiceTagOption {
+  key: string;
+  value: string;
+  selected: boolean;
+  canSelect: boolean;
+}
+
+const allDictOptions = ref<CanChoiceTagOption[]>([]);
+
+function showAddCustomerTag() {
+  allDictOptions.value = [] as CanChoiceTagOption[];
+  loadDictOptions("customer_tag").then((dictOptions: DictOption[]) => {
+    const existTagKeys = detailCustomerTags.value.map(
+      (customerTag: CustomerTag) => customerTag.tagDictKey,
+    ) as string[];
+
+    allDictOptions.value = dictOptions.map((dictOption: DictOption) => {
+      return {
+        key: dictOption.key,
+        value: dictOption.value,
+        selected: false,
+        canSelect: !existTagKeys.includes(dictOption.key),
+      } as CanChoiceTagOption;
+    });
+    addCustomerTagVisible.value = true;
+  });
+}
+
+function confirmAddTags() {
+  const addTagKeys = allDictOptions.value
+    .filter((tagOption) => tagOption.canSelect && tagOption.selected)
+    .map((tagOption) => tagOption.key);
+  const customerData = detailCustomerData.value;
+  if (addTagKeys.length > 0) {
+    axios
+      .post("kharazim-api/customer/tags", {
+        customerCode: customerData.code,
+        tagDictKeys: addTagKeys,
+      })
+      .then(() => {
+        queryCustomerTags(customerData);
+      });
+  }
+  addCustomerTagVisible.value = false;
+}
 
 const editCustomerData = ref<CustomerData>({
   code: "",
