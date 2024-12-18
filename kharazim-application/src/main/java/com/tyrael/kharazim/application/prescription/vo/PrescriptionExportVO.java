@@ -22,6 +22,7 @@ public class PrescriptionExportVO {
 
     @ExcelProperty("处方编码")
     @MergeCell(unique = true)
+    @ColumnWidth(20)
     private String code;
 
     @ExcelProperty("会员姓名")
