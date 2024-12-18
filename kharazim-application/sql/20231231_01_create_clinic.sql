@@ -14,6 +14,6 @@ create table `clinic`
     `update_time`  datetime,
     `deleted`      bigint       not null default 0 comment '删除时间戳，0表示未删除',
     unique index udx_code (`code`),
-    unique index udx_name (`name`)
+    unique index udx_name (`name`, `deleted`)
 ) comment '诊所（机构）';
 
