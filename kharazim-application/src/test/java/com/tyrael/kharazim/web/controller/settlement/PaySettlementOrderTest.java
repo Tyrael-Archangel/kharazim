@@ -93,7 +93,7 @@ public class PaySettlementOrderTest extends BaseControllerTest<SettlementControl
             SettlementPayCommand payCommand = new SettlementPayCommand();
             payCommand.setSettlementOrderCode(settlementOrder.getCode());
             payCommand.setRechargeCardPayDetails(rechargeCardPayDetails);
-            super.performWhenCall(mockController.payWithRechargeCard(payCommand, super.mockUser()));
+            super.performWhenCall(mockController.payWithRechargeCard(payCommand, super.mockRandomUser()));
         }
     }
 

@@ -32,7 +32,7 @@ public class UserRoleQueryServiceImpl implements UserRoleQueryService {
         Set<Long> roleIds = userRoles.stream()
                 .map(UserRole::getRoleId)
                 .collect(Collectors.toSet());
-        List<Role> roles = roleMapper.listByIds(roleIds);
+        List<Role> roles = roleMapper.selectBatchIds(roleIds);
         Map<Long, Role> roleMap = roles.stream()
                 .collect(Collectors.toMap(Role::getId, e -> e));
         return userRoles.stream()

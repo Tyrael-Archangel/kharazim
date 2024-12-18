@@ -129,7 +129,7 @@ public class AuthServiceImpl implements AuthService {
         List<Long> roleIds = userRoles.stream()
                 .map(UserRole::getRoleId)
                 .toList();
-        return roleMapper.listByIds(roleIds);
+        return roleMapper.selectBatchIds(roleIds);
     }
 
     @Override

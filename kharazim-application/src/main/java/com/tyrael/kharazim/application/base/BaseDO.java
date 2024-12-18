@@ -33,8 +33,8 @@ public class BaseDO {
     @TableField(fill = FieldFill.INSERT_UPDATE, jdbcType = JdbcType.VARCHAR)
     private String updaterCode;
 
-    @TableLogic
-    private Boolean deleted;
+    @TableLogic(value = "0", delval = "FLOOR(UNIX_TIMESTAMP(NOW(6)) * 1000000)")
+    private Long deleted;
 
     public void setCreateUser(String creatorCode, String creator) {
         this.creatorCode = creatorCode;

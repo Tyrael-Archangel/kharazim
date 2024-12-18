@@ -86,7 +86,7 @@ public class AddCustomerTest extends BaseControllerTest<CustomerController> {
             addCustomerRequest.setSalesConsultantCode(CollectionUtils.random(serviceUserCodes));
             addCustomerRequest.setCustomerAddresses(this.mockAddress(name, phone, addressTree, mockCommunityNames));
             addCustomerRequest.setCustomerInsurances(this.mockInsurances(companyItemValues));
-            super.performWhenCall(mockController.add(addCustomerRequest, super.mockUser()));
+            super.performWhenCall(mockController.add(addCustomerRequest, super.mockRandomUser()));
         }
 
     }
@@ -295,7 +295,7 @@ public class AddCustomerTest extends BaseControllerTest<CustomerController> {
                 AddCustomerTagRequest addCustomerTagRequest = new AddCustomerTagRequest();
                 addCustomerTagRequest.setCustomerCode(customer.getCode());
                 addCustomerTagRequest.setTagDictKeys(tagDictKeys);
-                super.performWhenCall(mockController.addCustomerTag(addCustomerTagRequest, super.mockUser()));
+                super.performWhenCall(mockController.addCustomerTag(addCustomerTagRequest, super.mockRandomUser()));
             }
         }
     }
@@ -332,7 +332,7 @@ public class AddCustomerTest extends BaseControllerTest<CustomerController> {
             addDictItemRequest.setKey(dictItem.left());
             addDictItemRequest.setValue(dictItem.right());
             addDictItemRequest.setSort(i + 1);
-            dictService.addDictItem(addDictItemRequest, super.mockUser());
+            dictService.addDictItem(addDictItemRequest, super.mockRandomUser());
             dictItemKeys.add(dictItem.left());
         }
         return dictItemKeys;

@@ -219,7 +219,7 @@ class CustomerControllerTest extends BaseControllerTest<CustomerController> {
             addDictItemRequest.setKey(dictItem.left());
             addDictItemRequest.setValue(dictItem.right());
             addDictItemRequest.setSort(i + 1);
-            dictService.addDictItem(addDictItemRequest, super.mockUser());
+            dictService.addDictItem(addDictItemRequest, super.mockRandomUser());
             dictItemKeys.add(dictItem.left());
         }
         return dictItemKeys;

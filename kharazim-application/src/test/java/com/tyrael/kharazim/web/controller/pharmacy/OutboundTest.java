@@ -39,7 +39,7 @@ public class OutboundTest extends BaseControllerTest<OutboundOrderController> {
                         && random.nextInt(100) > 20) {
                     OutboundRequest outboundRequest = new OutboundRequest();
                     outboundRequest.setOutboundOrderCode(outboundOrder.getCode());
-                    super.performWhenCall(mockController.outbound(outboundRequest, super.mockUser()));
+                    super.performWhenCall(mockController.outbound(outboundRequest, super.mockRandomUser()));
                 }
             }
 

@@ -81,7 +81,6 @@ public class RoleServiceImpl implements RoleService {
         role.setStatus(addRoleRequest.getStatus());
         role.setCreateTime(LocalDateTime.now());
         role.setUpdateTime(role.getCreateTime());
-        role.setDeletedTimestamp(0L);
 
         transactionTemplate.executeWithoutResult(status -> {
             try {
@@ -120,7 +119,7 @@ public class RoleServiceImpl implements RoleService {
     @Transactional(rollbackFor = Exception.class)
     @CacheEvict(cacheNames = {CURRENT_USER_INFO}, allEntries = true)
     public void delete(Long id) {
-        roleMapper.logicDelete(id);
+        roleMapper.deleteById(id);
     }
 
     @Override
@@ -151,9 +150,7 @@ public class RoleServiceImpl implements RoleService {
 
     private Role getById(Long id) {
         Role role = roleMapper.selectById(id);
-        if (role == null || role.isDeleted()) {
-            throw new DomainNotFoundException(id);
-        }
+        DomainNotFoundException.assertFound(role, id);
         return role;
     }
 }

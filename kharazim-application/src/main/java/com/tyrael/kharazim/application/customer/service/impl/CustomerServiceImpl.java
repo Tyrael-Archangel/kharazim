@@ -475,7 +475,6 @@ public class CustomerServiceImpl implements CustomerService {
         customerInsurance.setPolicyNumber(addCustomerInsuranceRequest.getPolicyNumber());
         customerInsurance.setDuration(addCustomerInsuranceRequest.getDuration());
         customerInsurance.setBenefits(addCustomerInsuranceRequest.getBenefits());
-        customerInsurance.setDeletedTimestamp(0L);
         return customerInsurance;
     }
 
@@ -488,7 +487,7 @@ public class CustomerServiceImpl implements CustomerService {
         if (!StringUtils.equals(customerInsurance.getCustomerCode(), customerCode)) {
             throw new BusinessException("保险与会员不匹配");
         }
-        customerInsuranceMapper.deleteCustomerInsurance(customerInsuranceId);
+        customerInsuranceMapper.deleteById(customerInsuranceId);
 
         if (Boolean.TRUE.equals(customerInsurance.getDefaultInsurance())) {
             List<CustomerInsurance> customerInsurances = customerInsuranceMapper.listByCustomerCode(customerCode);
@@ -553,7 +552,6 @@ public class CustomerServiceImpl implements CustomerService {
             customerServiceUser = new CustomerServiceUser();
             customerServiceUser.setCustomerCode(customerCode);
             customerServiceUser.setServiceUserCode(serviceUserCode);
-            customerServiceUser.setDeletedTimestamp(0L);
             customerServiceUserMapper.insert(customerServiceUser);
 
         } else if (!StringUtils.equals(customerServiceUser.getServiceUserCode(), serviceUserCode)) {
@@ -587,7 +585,6 @@ public class CustomerServiceImpl implements CustomerService {
             customerSalesConsultant = new CustomerSalesConsultant();
             customerSalesConsultant.setCustomerCode(customerCode);
             customerSalesConsultant.setSalesConsultantCode(salesConsultantCode);
-            customerSalesConsultant.setDeletedTimestamp(0L);
             customerSalesConsultantMapper.insert(customerSalesConsultant);
 
         } else if (!StringUtils.equals(customerSalesConsultant.getSalesConsultantCode(), salesConsultantCode)) {
@@ -632,7 +629,6 @@ public class CustomerServiceImpl implements CustomerService {
             CustomerTag customerTag = new CustomerTag();
             customerTag.setCustomerCode(customerCode);
             customerTag.setTagDict(tagDict);
-            customerTag.setDeletedTimestamp(0L);
             try {
                 customerTagMapper.insert(customerTag);
             } catch (DuplicateKeyException e) {

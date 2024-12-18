@@ -24,24 +24,27 @@ create table `user`
     `updater`              varchar(64) not null,
     `updater_code`         varchar(32) not null,
     `update_time`          datetime    not null,
-    `deleted`              bit         not null default 0,
-    `deleted_timestamp`    bigint      not null default 0 comment '删除时间戳',
-    unique index udx_name (`name`, `deleted_timestamp`),
+    `deleted`              bigint      not null default 0 comment '删除时间戳，0表示未删除',
+    unique index udx_name (`name`, `deleted`),
     unique index udx_code (`code`)
 ) comment '系统用户表';
 
 create table `role`
 (
-    `id`                bigint      not null auto_increment primary key,
-    `code`              varchar(32) not null,
-    `super_admin`       bit         not null default 0,
-    `name`              varchar(64) not null,
-    `sort`              int                  default 1,
-    `status`            int                  default 1,
-    `create_time`       datetime    not null,
-    `update_time`       datetime    not null,
-    `deleted_timestamp` bigint      not null default 0 comment '删除时间戳，0表示未删除',
-    unique index udx_name_deleted (`name`, `deleted_timestamp`)
+    `id`           bigint      not null auto_increment primary key,
+    `code`         varchar(32) not null,
+    `super_admin`  bit         not null default 0,
+    `name`         varchar(64) not null,
+    `sort`         int                  default 1,
+    `status`       int                  default 1,
+    `creator`      varchar(64) not null,
+    `creator_code` varchar(32) not null,
+    `create_time`  datetime    not null,
+    `updater`      varchar(64) not null,
+    `updater_code` varchar(32) not null,
+    `update_time`  datetime    not null,
+    `deleted`      bigint      not null default 0 comment '删除时间戳，0表示未删除',
+    unique index udx_name_deleted (`name`, `deleted`)
 ) comment '角色（岗位）';
 
 create table `user_role`
@@ -65,8 +68,9 @@ values ('000000', 'admin', '超级管理员', 'admin',
 
 -- 初始化角色：超级管理员，id：1，code：SUPER_ADMIN
 insert into `role`
-(`code`, `super_admin`, `name`, `sort`, `status`, `create_time`, `update_time`)
-VALUES ('SUPER_ADMIN', 1, '超级管理员', 0, 1, now(), now());
+(`code`, `super_admin`, `name`, `sort`, `status`,
+ `creator`, `creator_code`, `create_time`, `updater`, `updater_code`, `update_time`)
+VALUES ('SUPER_ADMIN', 1, '超级管理员', 0, 1, '超级管理员', '000000', now(), '超级管理员', '000000', now());
 -- 初始化角色：超级管理员，id：1，code：SUPER_ADMIN
 
 insert into `user_role`(`user_id`, `role_id`)

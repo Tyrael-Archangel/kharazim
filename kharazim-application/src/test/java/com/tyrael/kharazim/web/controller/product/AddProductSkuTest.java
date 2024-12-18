@@ -125,7 +125,7 @@ public class AddProductSkuTest extends BaseControllerTest<ProductSkuController> 
             uploadFileVO.setFileName(fileName);
             uploadFileVO.setFile(new MockMultipartFile(abilityName, new ByteArrayInputStream(body)));
 
-            return fileService.upload(uploadFileVO, super.mockUser()).getFileId();
+            return fileService.upload(uploadFileVO, super.mockRandomUser()).getFileId();
         } catch (Exception e) {
             log.error("get hero avatar error: {}", e.getMessage(), e);
             return null;

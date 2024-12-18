@@ -70,7 +70,7 @@ public class InboundTest extends BaseControllerTest<InboundOrderController> {
                     AddInboundRequest inboundRequest = new AddInboundRequest();
                     inboundRequest.setInboundOrderCode(inboundOrder.getCode());
                     inboundRequest.setItems(inboundItems);
-                    super.performWhenCall(mockController.inbound(inboundRequest, super.mockUser()));
+                    super.performWhenCall(mockController.inbound(inboundRequest, super.mockRandomUser()));
                 }
             }
 

@@ -19,9 +19,4 @@ public class CustomerTag extends BaseDO {
 
     private String tagDict;
 
-    /**
-     * 删除时间戳，用来表示删除的时间，并且用来做唯一索引
-     */
-    private Long deletedTimestamp;
-
 }

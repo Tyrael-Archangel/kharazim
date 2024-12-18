@@ -1,7 +1,6 @@
 package com.tyrael.kharazim.application.customer.mapper;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.tyrael.kharazim.application.customer.domain.FamilyMember;
@@ -79,12 +78,10 @@ public interface FamilyMemberMapper extends BaseMapper<FamilyMember> {
      * @param customerCode 会员编码
      */
     default void leave(String familyCode, String customerCode) {
-        LambdaUpdateWrapper<FamilyMember> updateWrapper = Wrappers.lambdaUpdate();
-        updateWrapper.eq(FamilyMember::getFamilyCode, familyCode)
-                .eq(FamilyMember::getCustomerCode, customerCode)
-                .set(FamilyMember::getDeleted, true)
-                .set(FamilyMember::getDeletedTimestamp, System.currentTimeMillis());
-        this.update(null, updateWrapper);
+        LambdaQueryWrapper<FamilyMember> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.eq(FamilyMember::getFamilyCode, familyCode)
+                .eq(FamilyMember::getCustomerCode, customerCode);
+        this.delete(queryWrapper);
     }
 
 }

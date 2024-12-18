@@ -73,7 +73,7 @@ public class AddPurchaseOrderTest extends BaseControllerTest<PurchaseOrderContro
                         .build());
             }
             request.setItems(items);
-            super.performWhenCall(mockController.create(request, super.mockUser()));
+            super.performWhenCall(mockController.create(request, super.mockRandomUser()));
         }
 
     }

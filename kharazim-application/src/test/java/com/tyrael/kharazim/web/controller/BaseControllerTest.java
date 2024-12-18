@@ -101,6 +101,11 @@ public abstract class BaseControllerTest<T> {
         return currentUser;
     }
 
+    protected AuthUser mockRandomUser() {
+        CurrentUserHolder.remove();
+        return mockUser();
+    }
+
     protected AuthUser mockUser() {
         AuthUser currentUser = CurrentUserHolder.getCurrentUser();
         if (currentUser == null) {

@@ -196,7 +196,6 @@ public class UserServiceImpl implements UserService {
         user.setCertificateType(addUserRequest.getCertificateType());
         user.setCertificateCode(addUserRequest.getCertificateCode());
         user.setRemark(addUserRequest.getRemark());
-        user.setDeletedTimestamp(0L);
 
         return user;
     }

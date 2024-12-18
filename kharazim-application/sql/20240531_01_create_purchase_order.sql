@@ -15,7 +15,7 @@ create table `purchase_order`
     `updater`        varchar(64),
     `updater_code`   varchar(32),
     `update_time`    datetime,
-    `deleted`        bit            not null default 0,
+    `deleted`        bigint         not null default 0 comment '删除时间戳，0表示未删除',
     unique index udx_code (`code`),
     index idx_clinic_code (`clinic_code`),
     index idx_supplier_code (`supplier_code`)
@@ -49,13 +49,13 @@ create table `purchase_order_payment_record`
 
 create table `purchase_order_receive_record`
 (
-    `id`                  bigint         NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `serial_code`         varchar(32)    not null comment '流水号',
-    `purchase_order_code` varchar(32)    not null comment '采购单号',
-    `tracking_number`     varchar(64)    not null comment '物流跟踪号',
-    `receive_time`        datetime       not null comment '收货时间',
-    `receive_user`        varchar(64)    not null comment '收货人',
-    `receive_user_code`   varchar(32)    not null comment '收货人编码',
+    `id`                  bigint      NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `serial_code`         varchar(32) not null comment '流水号',
+    `purchase_order_code` varchar(32) not null comment '采购单号',
+    `tracking_number`     varchar(64) not null comment '物流跟踪号',
+    `receive_time`        datetime    not null comment '收货时间',
+    `receive_user`        varchar(64) not null comment '收货人',
+    `receive_user_code`   varchar(32) not null comment '收货人编码',
     unique index udx_serial_code (`serial_code`),
     index idx_purchase_order_code (`purchase_order_code`)
 ) comment '采购单收货记录';

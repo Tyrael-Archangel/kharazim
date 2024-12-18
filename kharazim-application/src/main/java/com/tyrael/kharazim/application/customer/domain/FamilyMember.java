@@ -24,9 +24,4 @@ public class FamilyMember extends BaseDO {
      */
     private String relationToLeader;
 
-    /**
-     * 删除时间戳，用来表示删除的时间，并且用来做唯一索引，会员只能属于一个家庭
-     */
-    private Long deletedTimestamp;
-
 }

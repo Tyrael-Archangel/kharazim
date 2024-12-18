@@ -12,7 +12,7 @@ create table `clinic`
     `updater`      varchar(64),
     `updater_code` varchar(32),
     `update_time`  datetime,
-    `deleted`      bit          not null default 0,
+    `deleted`      bigint       not null default 0 comment '删除时间戳，0表示未删除',
     unique index udx_code (`code`),
     unique index udx_name (`name`)
 ) comment '诊所（机构）';
