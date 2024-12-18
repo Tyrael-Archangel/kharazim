@@ -33,6 +33,9 @@ public class BaseDO {
     @TableField(fill = FieldFill.INSERT_UPDATE, jdbcType = JdbcType.VARCHAR)
     private String updaterCode;
 
+    /**
+     * 逻辑删除字段，0表示未删除，删除时设置为时间戳
+     */
     @TableLogic(value = "0", delval = "FLOOR(UNIX_TIMESTAMP(NOW(6)) * 1000000)")
     private Long deleted;
 
