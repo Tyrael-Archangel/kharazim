@@ -34,9 +34,9 @@ public class BaseDO {
     private String updaterCode;
 
     /**
-     * 逻辑删除字段，0表示未删除，删除时设置为时间戳
+     * 逻辑删除字段，0表示未删除，删除时设置为当前时间
      */
-    @TableLogic(value = "0", delval = "FLOOR(UNIX_TIMESTAMP(NOW(6)) * 1000000)")
+    @TableLogic(value = "0", delval = "FLOOR(NOW(3) * 1000)")
     private Long deleted;
 
     public void setCreateUser(String creatorCode, String creator) {
