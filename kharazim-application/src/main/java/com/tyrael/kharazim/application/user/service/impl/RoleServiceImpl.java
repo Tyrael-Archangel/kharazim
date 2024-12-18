@@ -79,8 +79,6 @@ public class RoleServiceImpl implements RoleService {
         role.setName(addRoleRequest.getName());
         role.setSort(addRoleRequest.getSort());
         role.setStatus(addRoleRequest.getStatus());
-        role.setCreateTime(LocalDateTime.now());
-        role.setUpdateTime(role.getCreateTime());
 
         transactionTemplate.executeWithoutResult(status -> {
             try {

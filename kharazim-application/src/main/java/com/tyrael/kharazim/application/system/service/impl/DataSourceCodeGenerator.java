@@ -58,7 +58,7 @@ public class DataSourceCodeGenerator extends AbstractCodeGenerator {
     }
 
     private TagCache loadCache(String tag) {
-        synchronized (tag.intern()) {
+        synchronized (("business_load_tag_cache__" + tag).intern()) {
             TagCache cache = tagCacheMap.get(tag);
             if (cache == null) {
                 TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);

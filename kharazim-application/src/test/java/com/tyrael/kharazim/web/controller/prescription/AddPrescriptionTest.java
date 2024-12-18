@@ -88,6 +88,7 @@ public class AddPrescriptionTest extends BaseControllerTest<PrescriptionControll
                 request.setClinicCode(clinic.getCode());
                 request.setRemark(MockRandomPoetry.random());
                 request.setProducts(new ArrayList<>(randomProductsMap.values()));
+                super.mockRandomUser();
                 super.performWhenCall(mockController.create(request));
             }
         }

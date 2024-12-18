@@ -95,7 +95,7 @@
     <el-form :model="addFamilyMemberSelected" label-width="20%">
       <el-form-item label="选择成员">
         <el-select
-          v-model="addFamilyMemberSelected?.customerCode"
+          v-model="addFamilyMemberSelected.customerCode"
           :remote-method="
             async (query: any) => (customers = await loadSimpleCustomers(query))
           "
@@ -116,7 +116,7 @@
       </el-form-item>
       <el-form-item label="与户主关系">
         <el-input
-          v-model="addFamilyMemberSelected?.relationToLeader"
+          v-model="addFamilyMemberSelected.relationToLeader"
           autocomplete="off"
           placeholder="与户主关系"
         />
@@ -217,7 +217,12 @@ function showFamilyMembers(family: CustomerFamily) {
 
 const addFamilyMembersVisible = ref(false);
 const addFamilyMemberFamily = ref<CustomerFamily>();
-const addFamilyMemberSelected = ref<FamilyMember>();
+const addFamilyMemberSelected = ref<FamilyMember>({
+  name: "",
+  customerCode: "",
+  phone: "",
+  relationToLeader: "",
+});
 
 function showAddFamilyMembers(family: CustomerFamily) {
   addFamilyMemberFamily.value = family;

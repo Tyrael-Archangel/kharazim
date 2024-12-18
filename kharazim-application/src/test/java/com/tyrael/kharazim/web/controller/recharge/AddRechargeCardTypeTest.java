@@ -26,6 +26,7 @@ public class AddRechargeCardTypeTest extends BaseControllerTest<RechargeCardType
                 AddRechargeCardTypeRequest.create("至尊卡", 70, true, null, 200000)
         );
         for (AddRechargeCardTypeRequest cardType : cardTypes) {
+            super.mockRandomUser();
             super.performWhenCall(mockController.create(cardType));
         }
     }

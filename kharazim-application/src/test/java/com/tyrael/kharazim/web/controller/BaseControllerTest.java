@@ -81,6 +81,8 @@ public abstract class BaseControllerTest<T> {
     private GlobalAuthInterceptor globalAuthInterceptor;
     private boolean globalAuthInterceptorInitialized = false;
 
+    private volatile List<User> userCache;
+
     public BaseControllerTest(Class<T> controller) {
         MockCreationSettings<T> settings = Mockito.withSettings().build(controller);
         this.mockController = Plugins.getMockMaker()
@@ -109,8 +111,10 @@ public abstract class BaseControllerTest<T> {
     protected AuthUser mockUser() {
         AuthUser currentUser = CurrentUserHolder.getCurrentUser();
         if (currentUser == null) {
-            List<User> users = userMapper.list(new ListUserRequest());
-            User randomUser = CollectionUtils.random(users);
+            if (CollectionUtils.isEmpty(userCache)) {
+                userCache = userMapper.list(new ListUserRequest());
+            }
+            User randomUser = CollectionUtils.random(userCache);
             currentUser = new AuthUser();
             currentUser.setId(randomUser.getId());
             currentUser.setCode(randomUser.getCode());

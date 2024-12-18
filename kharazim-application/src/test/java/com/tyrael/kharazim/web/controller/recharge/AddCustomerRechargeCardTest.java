@@ -76,6 +76,8 @@ public class AddCustomerRechargeCardTest extends BaseControllerTest<CustomerRech
             rechargeRequest.setAmount(BigDecimal.valueOf(amount));
             rechargeRequest.setTraderUserCode(user.getCode());
             rechargeRequest.setRemark(MockRandomPoetry.random());
+
+            super.mockRandomUser();
             super.performWhenCall(mockController.recharge(rechargeRequest));
         }
     }

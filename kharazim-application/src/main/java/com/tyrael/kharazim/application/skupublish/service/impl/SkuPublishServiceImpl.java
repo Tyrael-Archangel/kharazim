@@ -55,7 +55,7 @@ public class SkuPublishServiceImpl implements SkuPublishService {
 
         BusinessException.assertTrue(effectEnd.isAfter(effectBegin), "生效时间必须小于失效时间");
 
-        synchronized ((skuCode + "__" + clinicCode).intern()) {
+        synchronized (("business_publish_sku__" + skuCode + "___" + clinicCode).intern()) {
             boolean exists = skuPublishMapper.publishExists(skuCode, clinicCode, effectBegin, effectEnd);
             BusinessException.assertTrue(!exists, "该时间范围内已存在发布数据");
 

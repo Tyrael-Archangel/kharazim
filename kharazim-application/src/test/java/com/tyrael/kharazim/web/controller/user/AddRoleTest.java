@@ -26,6 +26,7 @@ public class AddRoleTest extends BaseControllerTest<RoleController> {
             addRoleRequest.setName(role);
             addRoleRequest.setSort(i++);
             addRoleRequest.setStatus(EnableStatusEnum.ENABLED);
+            super.mockRandomUser();
             super.performWhenCall(mockController.add(addRoleRequest));
         }
     }

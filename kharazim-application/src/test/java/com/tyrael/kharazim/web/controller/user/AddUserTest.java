@@ -94,6 +94,7 @@ public class AddUserTest extends BaseControllerTest<UserController> {
             addUserRequest.setRemark(hero.getRemark());
             addUserRequest.setBirthday(hero.getRelease());
 
+            super.mockRandomUser();
             super.performWhenCall(mockController.add(addUserRequest));
         };
 

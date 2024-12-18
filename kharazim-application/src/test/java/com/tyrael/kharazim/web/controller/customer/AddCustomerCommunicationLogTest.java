@@ -15,6 +15,7 @@ import com.tyrael.kharazim.web.controller.BaseControllerTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -52,9 +53,13 @@ public class AddCustomerCommunicationLogTest extends BaseControllerTest<Customer
             for (int i = 0; i < logCount; i++) {
                 AddCustomerCommunicationLogRequest addRequest = new AddCustomerCommunicationLogRequest();
                 addRequest.setCustomerCode(customer.getCode());
+                addRequest.setServiceUserCode(super.mockRandomUser().getCode());
                 addRequest.setTypeDictKey(CollectionUtils.random(customerCommunicationTypes));
-                addRequest.setContent(MockRandomPoetry.random());
                 addRequest.setEvaluateDictKey(CollectionUtils.random(customerCommunicationEvaluates));
+                addRequest.setContent(MockRandomPoetry.random());
+                addRequest.setCommunicationTime(LocalDateTime.now()
+                        .minusHours(random.nextInt(300))
+                        .minusSeconds(random.nextInt(1000)));
                 super.performWhenCall(mockController.add(addRequest, super.mockRandomUser()));
             }
         }

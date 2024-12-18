@@ -88,6 +88,7 @@ public class AddProductSkuTest extends BaseControllerTest<ProductSkuController> 
                 addRequest.setDescription(heroAbility.desc);
                 String cooldown = heroAbility.cooldown.replace("Cooldown: ", "");
                 addRequest.setAttributes(List.of(new Attribute("cooldown", cooldown)));
+                super.mockRandomUser();
                 super.performWhenCall(mockController.create(addRequest));
             });
         }

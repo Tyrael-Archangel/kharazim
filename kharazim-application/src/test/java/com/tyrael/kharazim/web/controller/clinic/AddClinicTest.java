@@ -50,6 +50,7 @@ public class AddClinicTest extends BaseControllerTest<ClinicController> {
                 addClinicRequest.setName(name);
                 addClinicRequest.setEnglishName(battleground.englishName());
                 addClinicRequest.setImage(imageFileId);
+                super.mockRandomUser();
                 super.performWhenCall(mockController.add(addClinicRequest));
             }
         }

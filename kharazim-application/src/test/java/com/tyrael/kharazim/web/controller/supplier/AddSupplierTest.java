@@ -29,6 +29,7 @@ public class AddSupplierTest extends BaseControllerTest<SupplierController> {
             AddSupplierRequest addSupplierRequest = new AddSupplierRequest();
             addSupplierRequest.setName(supplier.left());
             addSupplierRequest.setRemark(supplier.right());
+            super.mockRandomUser();
             super.performWhenCall(mockController.add(addSupplierRequest));
         }
     }

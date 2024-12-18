@@ -39,6 +39,7 @@ public class AddProductUnitTest extends BaseControllerTest<ProductUnitController
             AddProductUnitRequest addUnitRequest = new AddProductUnitRequest();
             addUnitRequest.setName(unit.left());
             addUnitRequest.setEnglishName(unit.right());
+            super.mockRandomUser();
             super.performWhenCall(mockController.add(addUnitRequest));
         }
     }

@@ -21,12 +21,14 @@ import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
 
 /**
+ * 注意顺序，测试类会按此处定义的顺序依次执行
+ * 测试类中使用{@linkplain  org.junit.jupiter.api.Order @Order}来指定一个测试类中每个测试方法的顺序
+ *
  * @author Tyrael Archangel
  * @since 2024/9/30
  */
 @Suite
 @SelectClasses({
-        // 注意顺序，测试类会按此处定义的顺序依次执行
 
         AddRoleTest.class,
         AddUserTest.class,

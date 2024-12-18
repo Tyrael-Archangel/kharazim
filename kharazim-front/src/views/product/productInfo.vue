@@ -393,7 +393,7 @@ function confirmAddProduct() {
 
 const router = useRouter();
 
-onMounted(() => {
+onMounted(async () => {
   const query = router.currentRoute.value.query;
   const skuCode = query.skuCode as string;
   if (skuCode) {
@@ -401,7 +401,7 @@ onMounted(() => {
   }
   loadProducts();
   loadCategories();
-  supplierOptions.value = loadSupplierOptions();
+  supplierOptions.value = await loadSupplierOptions();
   loadProductUnitOptions();
 });
 </script>

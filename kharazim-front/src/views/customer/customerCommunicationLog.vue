@@ -123,9 +123,9 @@
         style="width: 100%; margin-top: 10px"
       >
         <el-table-column type="index" width="50" />
-        <el-table-column label="会员姓名" prop="customerName" width="150" />
-        <el-table-column label="沟通类型" prop="type" width="180" />
-        <el-table-column label="沟通评价" prop="evaluate" width="180" />
+        <el-table-column label="会员姓名" prop="customerName" width="120" />
+        <el-table-column label="沟通类型" prop="type" width="150" />
+        <el-table-column label="沟通评价" prop="evaluate" width="160" />
         <el-table-column label="客服人员" prop="serviceUserName" width="130" />
         <el-table-column
           label="沟通时间"

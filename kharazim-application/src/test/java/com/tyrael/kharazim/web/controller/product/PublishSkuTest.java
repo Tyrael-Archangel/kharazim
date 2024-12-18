@@ -81,6 +81,7 @@ public class PublishSkuTest extends BaseControllerTest<SkuPublishController> {
             publishRequest.setEffectBegin(effectBegin.atStartOfDay());
             publishRequest.setEffectEnd(effectEnd.atStartOfDay());
 
+            super.mockRandomUser();
             super.performWhenCall(mockController.publish(publishRequest));
         }
     }
