@@ -388,7 +388,7 @@ function confirmAddTags() {
   const customerData = detailCustomerData.value;
   if (addTagKeys.length > 0) {
     axios
-      .post("kharazim-api/customer/tags", {
+      .post("/kharazim-api/customer/tags", {
         customerCode: customerData.code,
         tagDictKeys: addTagKeys,
       })
