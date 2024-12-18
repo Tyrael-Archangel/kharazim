@@ -42,6 +42,7 @@ public class ClinicServiceImpl implements ClinicService {
     private final FileService fileService;
 
     @Override
+    @Transactional(readOnly = true)
     public PageResponse<ClinicVO> page(PageClinicRequest pageRequest) {
         Page<Clinic> pageCondition = new Page<>(pageRequest.getPageIndex(), pageRequest.getPageSize());
         PageResponse<Clinic> pageData = clinicMapper.page(pageRequest, pageCondition);
@@ -55,6 +56,7 @@ public class ClinicServiceImpl implements ClinicService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public void export(PageClinicRequest request, HttpServletResponse response) throws IOException {
         WriteSheet writeSheet = EasyExcelFactory.writerSheet("诊所数据")
                 .head(ClinicExportVO.class)

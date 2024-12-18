@@ -43,25 +43,6 @@ public interface UserMapper extends BasePageMapper<User> {
     }
 
     /**
-     * list userId by userCode
-     *
-     * @param codes codes
-     * @return userIds
-     */
-    default List<Long> listIdByCode(Collection<String> codes) {
-        if (codes == null || codes.isEmpty()) {
-            return List.of();
-        }
-        LambdaQueryWrapper<User> queryWrapper = Wrappers.lambdaQuery();
-        queryWrapper.in(User::getCode, codes);
-        queryWrapper.select(User::getId);
-
-        return selectList(queryWrapper).stream()
-                .map(User::getId)
-                .collect(Collectors.toList());
-    }
-
-    /**
      * 验证用户存在
      *
      * @param code 会员编码
