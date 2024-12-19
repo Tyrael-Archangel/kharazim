@@ -11,7 +11,7 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
-public enum PurchaseOrderReceiveStatus implements BaseHasNameEnum<PurchaseOrderReceiveStatus> {
+public enum PurchaseReceiveStatus implements BaseHasNameEnum<PurchaseReceiveStatus> {
 
     WAIT_RECEIVE(1, "待收货"),
 

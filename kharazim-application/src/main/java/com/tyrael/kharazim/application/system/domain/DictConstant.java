@@ -33,7 +33,7 @@ public sealed class DictConstant permits DictConstant.EnumDictConstant {
             super(code, desc);
             this.relatedEnum = relatedEnum;
             this.itemMap = Arrays.stream(relatedEnum.getEnumConstants())
-                    .collect(Collectors.toMap(Enum::name, BaseHasNameEnum::getName));
+                    .collect(Collectors.toMap(Enum::name, BaseHasNameEnum::getName, (e1, e2) -> e1, LinkedHashMap::new));
         }
 
         public String getItemName(String itemKey) {

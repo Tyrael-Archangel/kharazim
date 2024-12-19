@@ -38,7 +38,7 @@ export default {
       } else {
         return url;
       }
-    }
+    },
   },
 };
 </script>

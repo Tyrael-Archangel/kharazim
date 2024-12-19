@@ -4,13 +4,13 @@
   </div>
   <div>
     <el-table
-        :data="categoryData"
-        :default-expand-all="true"
-        :tree-props="{ children: 'children' }"
-        border
-        row-key="id"
-        style="margin-top: 10px"
-        :indent="20"
+      :data="categoryData"
+      :default-expand-all="true"
+      :indent="20"
+      :tree-props="{ children: 'children' }"
+      border
+      row-key="id"
+      style="margin-top: 10px"
     >
       <el-table-column label="分类编码" prop="code" />
       <el-table-column label="分类名称" prop="name" />
@@ -23,27 +23,22 @@
     </el-table>
   </div>
   <div>
-    <el-dialog
-        v-model="createCategoryVisible"
-        draggable
-        title="添加分类"
-        width="500"
-    >
+    <el-dialog v-model="createCategoryVisible" draggable title="添加分类" width="500">
       <el-form :model="createNewCategory" label-width="20%">
         <el-form-item label="父级分类">
           <el-tree-select
-              v-model="createNewCategory.parentId"
-              :current-node-key="createNewCategory.parentId"
-              :data="categoryData"
-              :fit-input-width="true"
-              :props="{ value: 'id', label: 'name' }"
-              :render-after-expand="false"
-              check-on-click-node
-              check-strictly
-              node-key="id"
-              placeholder="请选择父级分类"
-              show-checkbox
-              value-key="id"
+            v-model="createNewCategory.parentId"
+            :current-node-key="createNewCategory.parentId"
+            :data="categoryData"
+            :fit-input-width="true"
+            :props="{ value: 'id', label: 'name' }"
+            :render-after-expand="false"
+            check-on-click-node
+            check-strictly
+            node-key="id"
+            placeholder="请选择父级分类"
+            show-checkbox
+            value-key="id"
           />
         </el-form-item>
         <el-form-item label="分类名称">
@@ -56,9 +51,7 @@
       <template #footer>
         <div class="dialog-footer">
           <el-button @click="closeCreateCategory">取消</el-button>
-          <el-button type="primary" @click="confirmCreateCategory"
-          >确定
-          </el-button>
+          <el-button type="primary" @click="confirmCreateCategory">确定 </el-button>
         </div>
       </template>
     </el-dialog>
@@ -83,11 +76,9 @@ interface ProductCategory {
 const categoryData = ref<ProductCategory[]>([]);
 
 function loadCategories() {
-  axios
-      .get("/kharazim-api/product/category/tree")
-      .then((res: AxiosResponse) => {
-        categoryData.value = res.data.data;
-      });
+  axios.get("/kharazim-api/product/category/tree").then((res: AxiosResponse) => {
+    categoryData.value = res.data.data;
+  });
 }
 
 const createCategoryVisible = ref(false);
@@ -127,15 +118,15 @@ function showCreateCategory(row: ProductCategory | null) {
 
 function confirmCreateCategory() {
   axios
-      .post("/kharazim-api/product/category/add", {
-        parentId: createNewCategory.value.parentId,
-        name: createNewCategory.value.name,
-        remark: createNewCategory.value.remark,
-      })
-      .then(() => {
-        loadCategories();
-        closeCreateCategory();
-      });
+    .post("/kharazim-api/product/category/add", {
+      parentId: createNewCategory.value.parentId,
+      name: createNewCategory.value.name,
+      remark: createNewCategory.value.remark,
+    })
+    .then(() => {
+      loadCategories();
+      closeCreateCategory();
+    });
 }
 
 onMounted(() => loadCategories());

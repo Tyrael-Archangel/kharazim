@@ -1,6 +1,7 @@
 package com.tyrael.kharazim.application.recharge.vo;
 
 import com.tyrael.kharazim.application.recharge.enums.CustomerRechargeCardStatus;
+import com.tyrael.kharazim.application.system.domain.DictConstants;
 import com.tyrael.kharazim.common.dto.PageCommand;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -27,7 +28,10 @@ public class CustomerRechargeCardPageRequest extends PageCommand {
     @Schema(description = "储值卡项类型")
     private List<String> rechargeCardTypes;
 
-    @Schema(description = "状态，" + CustomerRechargeCardStatus.DESC)
+    /**
+     * {@link DictConstants#CUSTOMER_RECHARGE_STATUS}
+     */
+    @Schema(description = "状态，字典编码: customer_recharge_status" + CustomerRechargeCardStatus.DESC)
     private List<CustomerRechargeCardStatus> statuses;
 
     @Schema(description = "储值起始日期")

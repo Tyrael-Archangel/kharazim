@@ -1,7 +1,7 @@
 package com.tyrael.kharazim.application.purchase.vo;
 
-import com.tyrael.kharazim.application.purchase.enums.PurchaseOrderPaymentStatus;
-import com.tyrael.kharazim.application.purchase.enums.PurchaseOrderReceiveStatus;
+import com.tyrael.kharazim.application.purchase.enums.PurchasePaymentStatus;
+import com.tyrael.kharazim.application.purchase.enums.PurchaseReceiveStatus;
 import com.tyrael.kharazim.application.system.dto.file.FileVO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -45,10 +45,10 @@ public class PurchaseOrderVO {
     private BigDecimal paidAmount;
 
     @Schema(description = "收货状态")
-    private PurchaseOrderReceiveStatus receiveStatus;
+    private PurchaseReceiveStatus receiveStatus;
 
     @Schema(description = "结算状态")
-    private PurchaseOrderPaymentStatus paymentStatus;
+    private PurchasePaymentStatus paymentStatus;
 
     @Schema(description = "备注")
     private String remark;

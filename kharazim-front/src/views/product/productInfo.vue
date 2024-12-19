@@ -2,20 +2,10 @@
   <div>
     <el-form :inline="true" :model="pageRequest" class="page-form-block">
       <el-form-item label="商品编码">
-        <el-input
-          v-model="pageRequest.code"
-          clearable
-          placeholder="商品编码"
-          @keyup.enter="loadProducts"
-        />
+        <el-input v-model="pageRequest.code" clearable placeholder="商品编码" @keyup.enter="loadProducts" />
       </el-form-item>
       <el-form-item label="商品名称">
-        <el-input
-          v-model="pageRequest.name"
-          clearable
-          placeholder="商品名称"
-          @keyup.enter="loadProducts"
-        />
+        <el-input v-model="pageRequest.name" clearable placeholder="商品名称" @keyup.enter="loadProducts" />
       </el-form-item>
       <el-form-item label="商品分类">
         <el-tree-select
@@ -42,27 +32,15 @@
           placeholder="选择供应商"
           reserve-keyword
         >
-          <el-option
-            v-for="item in supplierOptions"
-            :key="item.code"
-            :label="item.name"
-            :value="item.code"
-          />
+          <el-option v-for="item in supplierOptions" :key="item.code" :label="item.name" :value="item.code" />
         </el-select>
       </el-form-item>
       <el-form-item label="商品描述">
-        <el-input
-          v-model="pageRequest.description"
-          clearable
-          placeholder="商品描述"
-          @keyup.enter="loadProducts"
-        />
+        <el-input v-model="pageRequest.description" clearable placeholder="商品描述" @keyup.enter="loadProducts" />
       </el-form-item>
       <el-form-item class="page-form-block-search-block">
         <el-button type="primary" @click="loadProducts">查询</el-button>
-        <el-button type="primary" @click="clearPageRequestAndLoadProducts"
-          >重置
-        </el-button>
+        <el-button type="primary" @click="clearPageRequestAndLoadProducts">重置</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -70,11 +48,7 @@
     <el-button type="primary" @click="openAddProductDialog">新建商品</el-button>
   </div>
   <div>
-    <el-table
-      :data="productPageData.data"
-      border
-      style="width: 100%; margin-top: 10px"
-    >
+    <el-table :data="productPageData.data" border style="width: 100%; margin-top: 10px">
       <el-table-column label="商品编码" prop="code" width="160" />
       <el-table-column label="商品名称" prop="name" width="220" />
       <el-table-column align="center" label="主图" width="120">
@@ -108,20 +82,11 @@
       @current-change="loadProducts"
     />
   </div>
-  <el-dialog
-    v-model="addProductVisible"
-    :close-on-click-modal="false"
-    draggable
-    title="新建商品"
-    width="1000"
-  >
+  <el-dialog v-model="addProductVisible" :close-on-click-modal="false" draggable title="新建商品" width="1000">
     <el-form :model="addProductData" label-width="24%">
       <div class="add-product-form">
         <el-form-item class="add-product-form-item" label="商品名称">
-          <el-input
-            v-model="addProductData.name"
-            placeholder="请输入商品名称"
-          />
+          <el-input v-model="addProductData.name" placeholder="请输入商品名称" />
         </el-form-item>
         <el-form-item class="add-product-form-item" label="商品分类">
           <el-tree-select
@@ -141,33 +106,13 @@
           />
         </el-form-item>
         <el-form-item class="add-product-form-item" label="供应商">
-          <el-select
-            v-model="addProductData.supplierCode"
-            clearable
-            filterable
-            placeholder="选择供应商"
-          >
-            <el-option
-              v-for="item in supplierOptions"
-              :key="item.code"
-              :label="item.name"
-              :value="item.code"
-            />
+          <el-select v-model="addProductData.supplierCode" clearable filterable placeholder="选择供应商">
+            <el-option v-for="item in supplierOptions" :key="item.code" :label="item.name" :value="item.code" />
           </el-select>
         </el-form-item>
         <el-form-item class="add-product-form-item" label="单位">
-          <el-select
-            v-model="addProductData.unitCode"
-            clearable
-            filterable
-            placeholder="选择商品单位"
-          >
-            <el-option
-              v-for="item in productUnitOptions"
-              :key="item.code"
-              :label="item.name"
-              :value="item.code"
-            >
+          <el-select v-model="addProductData.unitCode" clearable filterable placeholder="选择商品单位">
+            <el-option v-for="item in productUnitOptions" :key="item.code" :label="item.name" :value="item.code">
               <span style="float: left">{{ item.name }}</span>
               <span style="float: right">{{ item.englishName }}</span>
             </el-option>
@@ -184,22 +129,11 @@
         />
       </el-form-item>
       <el-form-item label="属性" label-width="11%">
-        <div
-          v-for="attribute in addProductData.attributes"
-          style="display: inline-block"
-        >
+        <div v-for="attribute in addProductData.attributes" style="display: inline-block">
           <div style="display: block">
-            <el-input
-              v-model="attribute.name"
-              placeholder="属性名"
-              style="width: 40%"
-            />
+            <el-input v-model="attribute.name" placeholder="属性名" style="width: 40%" />
             <span> : </span>
-            <el-input
-              v-model="attribute.value"
-              placeholder="属性值"
-              style="width: 40%"
-            />
+            <el-input v-model="attribute.value" placeholder="属性值" style="width: 40%" />
           </div>
         </div>
         <el-button icon="Plus" @click="addProductDataAddAttribute" />
@@ -290,11 +224,9 @@ export interface ProductCategory {
 const categoryData = ref<ProductCategory[]>([]);
 
 function loadCategories() {
-  axios
-    .get("/kharazim-api/product/category/tree")
-    .then((res: AxiosResponse) => {
-      categoryData.value = res.data.data;
-    });
+  axios.get("/kharazim-api/product/category/tree").then((res: AxiosResponse) => {
+    categoryData.value = res.data.data;
+  });
 }
 
 const supplierOptions = ref<SupplierVO[]>([]);
@@ -378,11 +310,9 @@ function confirmAddProduct() {
     supplierCode: addProductData.value?.supplierCode,
     unitCode: addProductData.value?.unitCode,
     defaultImage: addProductData.value?.defaultImage.fileId,
-    images: addProductData.value?.images.map((x) => x.fileId),
+    images: addProductData.value?.images.map((x: any) => x.fileId),
     description: addProductData.value?.description,
-    attributes: addProductData.value?.attributes.filter(
-      (x) => x.name && x.value,
-    ),
+    attributes: addProductData.value?.attributes.filter((x) => x.name && x.value),
   } as AddProductRequest;
   console.log(addProductRequest);
   axios.post("/kharazim-api/product/sku/create", addProductRequest).then(() => {

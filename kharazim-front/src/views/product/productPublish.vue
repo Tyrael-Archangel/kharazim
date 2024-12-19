@@ -1,36 +1,20 @@
 <template>
   <div>
-    <el-form
-      :inline="true"
-      :model="pageRequest"
-      class="page-form-block"
-      @keyup.enter="loadProductPublish"
-    >
+    <el-form :inline="true" :model="pageRequest" class="page-form-block" @keyup.enter="loadProductPublish">
       <el-form-item label="商品名称">
-        <el-input
-          v-model="pageRequest.skuName"
-          clearable
-          placeholder="商品名称"
-        />
+        <el-input v-model="pageRequest.skuName" clearable placeholder="商品名称" />
       </el-form-item>
       <el-form-item label="商品编码">
-        <el-input
-          v-model="pageRequest.skuCode"
-          clearable
-          placeholder="商品编码"
-        />
+        <el-input v-model="pageRequest.skuCode" clearable placeholder="商品编码" />
       </el-form-item>
       <el-form-item label="发布状态">
-        <el-select
-          v-model="pageRequest.publishStatus"
-          clearable
-          filterable
-          placeholder="选择发布状态"
-        >
-          <el-option key="WAIT_EFFECT" label="待生效" value="WAIT_EFFECT" />
-          <el-option key="IN_EFFECT" label="生效中" value="IN_EFFECT" />
-          <el-option key="LOST_EFFECT" label="已失效" value="LOST_EFFECT" />
-          <el-option key="CANCELED" label="已取消" value="CANCELED" />
+        <el-select v-model="pageRequest.publishStatus" clearable filterable placeholder="选择发布状态">
+          <el-option
+            v-for="option in publishStatusOptions"
+            :key="option.key"
+            :label="option.value"
+            :value="option.key"
+          />
         </el-select>
       </el-form-item>
       <el-form-item label="诊所">
@@ -42,22 +26,12 @@
           placeholder="选择诊所"
           reserve-keyword
         >
-          <el-option
-            v-for="item in clinicOptions"
-            :key="item.code"
-            :label="item.name"
-            :value="item.code"
-          />
+          <el-option v-for="item in clinicOptions" :key="item.code" :label="item.name" :value="item.code" />
         </el-select>
       </el-form-item>
       <el-form-item class="page-form-block-search-block">
         <el-button type="primary" @click="loadProductPublish">查询</el-button>
-        <el-button
-          type="primary"
-          @click="clearPageRequestAndLoadProductPublish"
-        >
-          重置
-        </el-button>
+        <el-button type="primary" @click="clearPageRequestAndLoadProductPublish"> 重置</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -81,37 +55,21 @@
       <el-table-column label="发布编码" prop="code" width="220" />
       <el-table-column align="center" label="发布状态" width="100">
         <template v-slot="{ row }">
-          <el-tag :type="statusTagType(row.publishStatus)" effect="dark"
-            >{{ row.publishStatusName }}
-          </el-tag>
+          <el-tag :type="statusTagType(row.publishStatus)" effect="dark">{{ row.publishStatusName }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column label="商品编码" prop="skuCode" width="150">
         <template v-slot="{ row }">
-          <el-link
-            :href="'/#/product-info?skuCode=' + row.skuCode"
-            type="primary"
-            >{{ row.skuCode }}
-          </el-link>
+          <el-link :href="'/#/product-info?skuCode=' + row.skuCode" type="primary">{{ row.skuCode }}</el-link>
         </template>
       </el-table-column>
       <el-table-column label="商品名称" prop="skuName" width="160" />
       <el-table-column align="center" label="商品主图" width="110">
         <template v-slot="{ row }">
-          <el-image
-            v-if="row.defaultImageUrl"
-            :src="row.defaultImageUrl"
-            style="width: 80px"
-          >
-          </el-image>
+          <el-image v-if="row.defaultImageUrl" :src="row.defaultImageUrl" style="width: 80px"></el-image>
         </template>
       </el-table-column>
-      <el-table-column
-        align="center"
-        label="发布价格"
-        prop="price"
-        width="120"
-      />
+      <el-table-column align="center" label="发布价格" prop="price" width="120" />
       <el-table-column label="诊所名称" prop="clinicName" width="180" />
       <el-table-column label="商品分类" prop="categoryFullName" width="220" />
       <el-table-column label="供应商" prop="supplierName" width="130" />
@@ -123,10 +81,7 @@
       <el-table-column align="center" label="操作" width="100">
         <template v-slot="{ row }">
           <el-button
-            v-if="
-              row.publishStatus === 'WAIT_EFFECT' ||
-              row.publishStatus === 'IN_EFFECT'
-            "
+            v-if="row.publishStatus === 'WAIT_EFFECT' || row.publishStatus === 'IN_EFFECT'"
             plain
             size="small"
             type="danger"
@@ -156,10 +111,8 @@ import { onMounted, reactive, ref, toRaw } from "vue";
 import axios from "@/utils/http.js";
 import { AxiosResponse } from "axios";
 import { ElMessage, ElMessageBox } from "element-plus";
-import {
-  ClinicVO,
-  loadClinicOptions,
-} from "@/views/clinic/clinicManagement.vue";
+import { ClinicVO, loadClinicOptions } from "@/views/clinic/clinicManagement.vue";
+import { DictOption, loadDictOptions } from "@/views/dict/dict-item";
 
 interface SkuPublish {
   code: string;
@@ -221,11 +174,9 @@ function clearPageRequestAndLoadProductPublish() {
 }
 
 function loadProductPublish() {
-  axios
-    .get("/kharazim-api/product/publish/page", { params: toRaw(pageRequest) })
-    .then((response: AxiosResponse) => {
-      skuPublishPageData.value = response.data;
-    });
+  axios.get("/kharazim-api/product/publish/page", { params: toRaw(pageRequest) }).then((response: AxiosResponse) => {
+    skuPublishPageData.value = response.data;
+  });
 }
 
 function cancelPublish(row: SkuPublish) {
@@ -235,23 +186,23 @@ function cancelPublish(row: SkuPublish) {
     type: "warning",
   })
     .then(() => {
-      axios
-        .post(`/kharazim-api/product/publish/cancel-publish/${row.code}`)
-        .then(() => {
-          loadProductPublish();
-          ElMessage({
-            showClose: true,
-            message: "操作成功",
-            type: "success",
-          });
+      axios.post(`/kharazim-api/product/publish/cancel-publish/${row.code}`).then(() => {
+        loadProductPublish();
+        ElMessage({
+          showClose: true,
+          message: "操作成功",
+          type: "success",
         });
+      });
     })
     .catch(() => {});
 }
 
+const publishStatusOptions = ref<DictOption[]>([]);
 const clinicOptions = ref<ClinicVO[]>([]);
 
 onMounted(async () => {
+  publishStatusOptions.value = await loadDictOptions("sku_publish_status");
   clinicOptions.value = await loadClinicOptions();
   loadProductPublish();
 });

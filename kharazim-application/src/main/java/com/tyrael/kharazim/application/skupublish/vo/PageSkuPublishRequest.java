@@ -1,6 +1,7 @@
 package com.tyrael.kharazim.application.skupublish.vo;
 
 import com.tyrael.kharazim.application.skupublish.enums.SkuPublishStatus;
+import com.tyrael.kharazim.application.system.domain.DictConstants;
 import com.tyrael.kharazim.common.dto.PageCommand;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -15,7 +16,10 @@ import java.util.Set;
 @Data
 public class PageSkuPublishRequest extends PageCommand {
 
-    @Schema(description = "发布状态", implementation = SkuPublishStatus.class)
+    /**
+     * {@link DictConstants#SKU_PUBLISH_STATUS}
+     */
+    @Schema(description = "发布状态，字典编码: sku_publish_status", implementation = SkuPublishStatus.class)
     private SkuPublishStatus publishStatus;
 
     @Schema(description = "商品名称")

@@ -11,7 +11,7 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
-public enum PurchaseOrderPaymentStatus implements BaseHasNameEnum<PurchaseOrderPaymentStatus> {
+public enum PurchasePaymentStatus implements BaseHasNameEnum<PurchasePaymentStatus> {
 
     UNPAID(1, "待结算"),
     PART_PAID(2, "部分结算"),

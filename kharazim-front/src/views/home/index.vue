@@ -14,16 +14,9 @@
                   <el-text>{{ currentUser.nickName }}</el-text>
                 </div>
                 <div class="current-user-avatar">
-                  <el-avatar
-                    v-if="currentUser && currentUser.avatarUrl"
-                    :src="currentUser.avatarUrl"
-                  />
+                  <el-avatar v-if="currentUser && currentUser.avatarUrl" :src="currentUser.avatarUrl" />
                 </div>
-                <el-button
-                  class="change-password"
-                  @click="showChangeCurrentUserPassword"
-                  >修改密码
-                </el-button>
+                <el-button class="change-password" @click="showChangeCurrentUserPassword">修改密码 </el-button>
                 <el-button class="logout" @click="logout">注销</el-button>
               </div>
             </div>
@@ -45,25 +38,13 @@
       status-icon
     >
       <el-form-item label="原密码" prop="oldPassword">
-        <el-input
-          v-model="changePasswordForm.oldPassword"
-          show-password
-          type="password"
-        />
+        <el-input v-model="changePasswordForm.oldPassword" show-password type="password" />
       </el-form-item>
       <el-form-item label="新密码" prop="newPassword">
-        <el-input
-          v-model="changePasswordForm.newPassword"
-          show-password
-          type="password"
-        />
+        <el-input v-model="changePasswordForm.newPassword" show-password type="password" />
       </el-form-item>
       <el-form-item label="确认密码" prop="confirmPassword">
-        <el-input
-          v-model="changePasswordForm.confirmPassword"
-          show-password
-          type="password"
-        />
+        <el-input v-model="changePasswordForm.confirmPassword" show-password type="password" />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="submitForm"> 确认</el-button>

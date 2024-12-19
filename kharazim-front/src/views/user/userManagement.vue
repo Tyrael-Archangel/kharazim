@@ -1,30 +1,16 @@
 <template>
   <el-form :inline="true" :model="pageRequest" class="page-form-block">
     <el-form-item label="关键字">
-      <el-input
-        v-model="pageRequest.keywords"
-        clearable
-        placeholder="用户名/昵称/手机号"
-      />
+      <el-input v-model="pageRequest.keywords" clearable placeholder="用户名/昵称/手机号" />
     </el-form-item>
     <el-form-item label="状态">
       <el-select v-model="pageRequest.status" clearable placeholder="状态">
-        <el-option
-          v-for="option in statusOptions"
-          :key="option.key"
-          :label="option.value"
-          :value="option.key"
-        />
+        <el-option v-for="option in statusOptions" :key="option.key" :label="option.value" :value="option.key" />
       </el-select>
     </el-form-item>
     <el-form-item label="性别">
       <el-select v-model="pageRequest.gender" clearable placeholder="性别">
-        <el-option
-          v-for="option in genderOptions"
-          :key="option.key"
-          :label="option.value"
-          :value="option.key"
-        />
+        <el-option v-for="option in genderOptions" :key="option.key" :label="option.value" :value="option.key" />
       </el-select>
     </el-form-item>
     <el-form-item>
@@ -74,9 +60,7 @@
       <el-table-column label="备注" prop="remark" />
       <el-table-column label="操作">
         <template v-slot="{ row }">
-          <el-link :underline="false" type="primary" @click="resetPwd(row)"
-            >重置密码
-          </el-link>
+          <el-link :underline="false" type="primary" @click="resetPwd(row)">重置密码 </el-link>
         </template>
       </el-table-column>
     </el-table>
@@ -136,9 +120,7 @@ interface UserData {
 const userPageData = ref({ totalCount: 0, data: [] as UserData[] });
 
 function switchStatus(user: UserData) {
-  axios
-    .put(`/kharazim-api/user/update-status/${user.id}/${user.status}`)
-    .then(() => loadUser());
+  axios.put(`/kharazim-api/user/update-status/${user.id}/${user.status}`).then(() => loadUser());
 }
 
 const initPageRequest = {
@@ -169,14 +151,12 @@ function resetPwd(user: UserData) {
     type: "warning",
   })
     .then(() => {
-      axios
-        .post(`/kharazim-api/user/reset-password/${user.id}`)
-        .then((response: AxiosResponse) => {
-          let newPassword = response.data.data;
-          ElMessageBox.alert(`新密码: ${newPassword}`, "操作成功", {
-            confirmButtonText: "确认",
-          });
+      axios.post(`/kharazim-api/user/reset-password/${user.id}`).then((response: AxiosResponse) => {
+        let newPassword = response.data.data;
+        ElMessageBox.alert(`新密码: ${newPassword}`, "操作成功", {
+          confirmButtonText: "确认",
         });
+      });
     })
     .catch(() => {});
 }

@@ -4,8 +4,8 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.tyrael.kharazim.application.base.BaseDO;
-import com.tyrael.kharazim.application.purchase.enums.PurchaseOrderPaymentStatus;
-import com.tyrael.kharazim.application.purchase.enums.PurchaseOrderReceiveStatus;
+import com.tyrael.kharazim.application.purchase.enums.PurchasePaymentStatus;
+import com.tyrael.kharazim.application.purchase.enums.PurchaseReceiveStatus;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -41,12 +41,12 @@ public class PurchaseOrder extends BaseDO {
     /**
      * 收货状态
      */
-    private PurchaseOrderReceiveStatus receiveStatus;
+    private PurchaseReceiveStatus receiveStatus;
 
     /**
      * 结算状态
      */
-    private PurchaseOrderPaymentStatus paymentStatus;
+    private PurchasePaymentStatus paymentStatus;
 
     /**
      * 总金额（元）
@@ -70,13 +70,13 @@ public class PurchaseOrder extends BaseDO {
         boolean noneReceive = items.stream()
                 .allMatch(e -> e.getReceivedQuantity() == 0);
         if (noneReceive) {
-            this.receiveStatus = PurchaseOrderReceiveStatus.WAIT_RECEIVE;
+            this.receiveStatus = PurchaseReceiveStatus.WAIT_RECEIVE;
         } else {
             boolean hasAnyNotFinish = items.stream()
                     .anyMatch(e -> e.getRemainQuantity() > 0);
             this.receiveStatus = hasAnyNotFinish
-                    ? PurchaseOrderReceiveStatus.RECEIVING
-                    : PurchaseOrderReceiveStatus.RECEIVE_FINISHED;
+                    ? PurchaseReceiveStatus.RECEIVING
+                    : PurchaseReceiveStatus.RECEIVE_FINISHED;
         }
     }
 }

@@ -25,7 +25,9 @@ public class PageInventoryLogRequest extends PageCommand {
     @Schema(description = "关联业务编码")
     private String businessCode;
 
-    @ArraySchema(arraySchema = @Schema(description = "库存变化类型", implementation = InventoryChangeTypeEnum.class))
+    @ArraySchema(arraySchema = @Schema(
+            description = "库存变化类型，字典编码: inventory_change_type",
+            implementation = InventoryChangeTypeEnum.class))
     private Set<InventoryChangeTypeEnum> changeTypes;
 
     @Schema(description = "开始时间", format = "yyyy-MM-dd HH:mm:ss", example = "2024-08-01 08:10:30")

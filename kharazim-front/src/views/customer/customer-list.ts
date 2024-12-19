@@ -7,9 +7,7 @@ export interface SimpleCustomer {
   phone: string;
 }
 
-export async function loadSimpleCustomers(
-  keywords: string,
-): Promise<SimpleCustomer[]> {
+export async function loadSimpleCustomers(keywords: string): Promise<SimpleCustomer[]> {
   let res = await axios.get("/kharazim-api/customer/list", {
     params: { keywords: keywords },
   });

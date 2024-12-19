@@ -4,11 +4,7 @@
   </div>
   <div>
     <div>
-      <el-table
-        :data="supplierPageData"
-        border
-        style="width: 100%; margin-top: 10px"
-      >
+      <el-table :data="supplierPageData" border style="width: 100%; margin-top: 10px">
         <el-table-column label="供应商编码" prop="code" width="160" />
         <el-table-column label="供应商名称" prop="name" width="350" />
         <el-table-column label="创建人" prop="creator" width="160" />
@@ -32,18 +28,10 @@
   <el-dialog v-model="addSupplierVisible" title="新建供应商" width="500">
     <el-form :model="addSupplierData" label-width="20%">
       <el-form-item label="供应商名称">
-        <el-input
-          v-model="addSupplierData.name"
-          autocomplete="off"
-          placeholder="请输入供应商名称"
-        />
+        <el-input v-model="addSupplierData.name" autocomplete="off" placeholder="请输入供应商名称" />
       </el-form-item>
       <el-form-item label="备注">
-        <el-input
-          v-model="addSupplierData.remark"
-          autocomplete="off"
-          placeholder="备注"
-        />
+        <el-input v-model="addSupplierData.remark" autocomplete="off" placeholder="备注" />
       </el-form-item>
     </el-form>
     <template #footer>
@@ -69,9 +57,7 @@ const pageInfo = reactive({
 
 function loadSupplier() {
   axios
-    .get(
-      `/kharazim-api/supplier/page?pageSize=${pageInfo.pageSize}&pageIndex=${pageInfo.currentPage}`,
-    )
+    .get(`/kharazim-api/supplier/page?pageSize=${pageInfo.pageSize}&pageIndex=${pageInfo.currentPage}`)
     .then((response: AxiosResponse) => {
       supplierPageData.value = response.data.data;
       pageInfo.totalCount = response.data.totalCount;
@@ -79,7 +65,14 @@ function loadSupplier() {
 }
 
 const addSupplierVisible = ref(false);
-const addSupplierData = ref<SupplierVO>();
+const addSupplierData = ref<SupplierVO>({
+  code: "",
+  name: "",
+  remark: "",
+  creator: "",
+  creatorCode: "",
+  createTime: "",
+});
 
 function closeAddSupplierDialog() {
   addSupplierVisible.value = false;
@@ -132,4 +125,3 @@ export async function loadSupplierOptions() {
   return res.data.data;
 }
 </script>
-<style scoped></style>

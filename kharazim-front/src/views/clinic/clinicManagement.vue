@@ -6,8 +6,7 @@
       </el-form-item>
       <el-form-item label="状态" prop="status">
         <el-select v-model="pageRequest.status" clearable placeholder="状态">
-          <el-option label="正常经营" value="NORMAL" />
-          <el-option label="已关闭" value="CLOSED" />
+          <el-option v-for="option in statusOptions" :key="option.key" :label="option.value" :value="option.key" />
         </el-select>
       </el-form-item>
       <el-form-item>
@@ -75,6 +74,7 @@
 import { onMounted, reactive, ref, toRaw } from "vue";
 import { ACCESS_TOKEN, getToken } from "@/utils/auth.js";
 import { AxiosResponse } from "axios";
+import { DictOption, loadDictOptions } from "@/views/dict/dict-item";
 
 const clinicPageResponse = ref({
   data: [] as ClinicVO[],
@@ -89,14 +89,17 @@ const pageRequest = reactive({
 });
 
 function loadClinic() {
-  axios
-    .get("/kharazim-api/clinic/page", { params: toRaw(pageRequest) })
-    .then((response: AxiosResponse) => {
-      clinicPageResponse.value = response.data;
-    });
+  axios.get("/kharazim-api/clinic/page", { params: toRaw(pageRequest) }).then((response: AxiosResponse) => {
+    clinicPageResponse.value = response.data;
+  });
 }
 
-onMounted(() => loadClinic());
+const statusOptions = ref<DictOption[]>([]);
+
+onMounted(async () => {
+  statusOptions.value = await loadDictOptions("clinic_status");
+  loadClinic();
+});
 </script>
 
 <script lang="ts">

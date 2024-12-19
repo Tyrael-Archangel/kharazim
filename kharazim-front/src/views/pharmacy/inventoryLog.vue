@@ -1,32 +1,12 @@
 <template>
   <div>
-    <el-form
-      :inline="true"
-      :model="pageRequest"
-      class="page-form-block"
-      @keyup.enter="loadInventoryLogs"
-    >
+    <el-form :inline="true" :model="pageRequest" class="page-form-block" @keyup.enter="loadInventoryLogs">
       <el-form-item label="商品编码">
-        <el-input
-          v-model="pageRequest.skuCode"
-          clearable
-          placeholder="商品编码"
-        />
+        <el-input v-model="pageRequest.skuCode" clearable placeholder="商品编码" />
       </el-form-item>
       <el-form-item label="诊所">
-        <el-select
-          v-model="pageRequest.clinicCode"
-          clearable
-          filterable
-          placeholder="选择诊所"
-          reserve-keyword
-        >
-          <el-option
-            v-for="item in clinicOptions"
-            :key="item.code"
-            :label="item.name"
-            :value="item.code"
-          />
+        <el-select v-model="pageRequest.clinicCode" clearable filterable placeholder="选择诊所" reserve-keyword>
+          <el-option v-for="item in clinicOptions" :key="item.code" :label="item.name" :value="item.code" />
         </el-select>
       </el-form-item>
       <el-form-item label="库存变化类型">
@@ -38,17 +18,11 @@
           placeholder="库存变化类型"
           reserve-keyword
         >
-          <el-option key="PURCHASE_IN" label="采购入库" value="PURCHASE_IN" />
-          <el-option key="SALE_OUT" label="销售出库" value="SALE_OUT" />
-          <el-option key="SALE_OCCUPY" label="销售预占" value="SALE_OCCUPY" />
+          <el-option v-for="option in changeTypeOptions" :key="option.key" :label="option.value" :value="option.key" />
         </el-select>
       </el-form-item>
       <el-form-item label="关联业务编码">
-        <el-input
-          v-model="pageRequest.businessCode"
-          clearable
-          placeholder="关联业务编码"
-        />
+        <el-input v-model="pageRequest.businessCode" clearable placeholder="关联业务编码" />
       </el-form-item>
       <el-form-item label="时间">
         <el-date-picker
@@ -61,80 +35,29 @@
       </el-form-item>
       <el-form-item class="page-form-block-search-block">
         <el-button type="primary" @click="loadInventoryLogs">查询</el-button>
-        <el-button type="primary" @click="resetAndLoadInventoryLogs"
-          >重置
-        </el-button>
+        <el-button type="primary" @click="resetAndLoadInventoryLogs">重置</el-button>
       </el-form-item>
     </el-form>
   </div>
   <div>
     <div>
-      <el-table
-        :data="inventoryLogPageData.data"
-        border
-        style="width: 100%; margin-top: 10px"
-      >
+      <el-table :data="inventoryLogPageData.data" border style="width: 100%; margin-top: 10px">
         <el-table-column align="center" label="ID" prop="id" width="70" />
         <el-table-column label="流水批次号" prop="serialCode" width="170" />
         <el-table-column label="商品编码" prop="skuCode" width="150" />
-        <el-table-column
-          align="center"
-          label="诊所"
-          prop="clinicName"
-          width="140"
-        />
+        <el-table-column align="center" label="诊所" prop="clinicName" width="140" />
         <el-table-column label="关联业务编码" prop="businessCode" width="170" />
-        <el-table-column
-          align="center"
-          label="类型"
-          prop="changeTypeName"
-          width="100"
-        />
-        <el-table-column
-          align="center"
-          label="变化数量"
-          prop="quantity"
-          width="90"
-        />
-        <el-table-column
-          align="center"
-          label="结存数量"
-          prop="balanceQuantity"
-          width="90"
-        />
-        <el-table-column
-          align="center"
-          label="结存预占数量"
-          prop="balanceOccupyQuantity"
-          width="110"
-        />
-        <el-table-column
-          align="center"
-          label="时间"
-          prop="operateTime"
-          width="170"
-        />
-        <el-table-column
-          align="center"
-          label="操作人"
-          min-width="100"
-          prop="operator"
-        />
+        <el-table-column align="center" label="类型" prop="changeTypeName" width="100" />
+        <el-table-column align="center" label="变化数量" prop="quantity" width="90" />
+        <el-table-column align="center" label="结存数量" prop="balanceQuantity" width="90" />
+        <el-table-column align="center" label="结存预占数量" prop="balanceOccupyQuantity" width="110" />
+        <el-table-column align="center" label="时间" prop="operateTime" width="170" />
+        <el-table-column align="center" label="操作人" min-width="100" prop="operator" />
         <el-table-column label="SKU名称" min-width="160" prop="skuName" />
-        <el-table-column
-          align="center"
-          label="单位"
-          prop="unitName"
-          width="80"
-        />
+        <el-table-column align="center" label="单位" prop="unitName" width="80" />
         <el-table-column align="center" label="商品主图">
           <template v-slot="{ row }">
-            <el-image
-              v-if="row.defaultImageUrl"
-              :src="row.defaultImageUrl"
-              style="width: 40px"
-            >
-            </el-image>
+            <el-image v-if="row.defaultImageUrl" :src="row.defaultImageUrl" style="width: 40px"></el-image>
           </template>
         </el-table-column>
       </el-table>
@@ -159,10 +82,8 @@ import { onMounted, reactive, ref, toRaw } from "vue";
 import axios from "@/utils/http.js";
 import { AxiosResponse } from "axios";
 import { dateTimeFormat } from "@/utils/DateUtil";
-import {
-  ClinicVO,
-  loadClinicOptions,
-} from "@/views/clinic/clinicManagement.vue";
+import { ClinicVO, loadClinicOptions } from "@/views/clinic/clinicManagement.vue";
+import { DictOption, loadDictOptions } from "@/views/dict/dict-item";
 
 const inventoryLogPageData = ref({ totalCount: 0, data: [] });
 
@@ -192,9 +113,7 @@ function loadInventoryLogs() {
 
   axios
     .get("/kharazim-api/inventory/page-log", { params: pageParams })
-    .then((response: AxiosResponse) => {
-      inventoryLogPageData.value = response.data;
-    });
+    .then((response: AxiosResponse) => (inventoryLogPageData.value = response.data));
 }
 
 function resetAndLoadInventoryLogs() {
@@ -202,12 +121,14 @@ function resetAndLoadInventoryLogs() {
   loadInventoryLogs();
 }
 
+const changeTypeOptions = ref<DictOption[]>([]);
 const clinicOptions = ref<ClinicVO[]>([]);
 
 onMounted(async () => {
+  changeTypeOptions.value = await loadDictOptions("inventory_change_type");
   loadInventoryLogs();
   clinicOptions.value = await loadClinicOptions();
 });
 </script>
 
-<style scoped></style>
+<style scoped />

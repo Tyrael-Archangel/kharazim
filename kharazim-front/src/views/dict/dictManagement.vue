@@ -1,34 +1,19 @@
 <template>
   <h1>字典管理</h1>
   <div>
-    <el-form
-      :inline="true"
-      :model="pageRequest"
-      class="page-form-block"
-      @keyup.enter="loadDictionaries"
-    >
+    <el-form :inline="true" :model="pageRequest" class="page-form-block" @keyup.enter="loadDictionaries">
       <el-form-item label="关键字">
-        <el-input
-          v-model="pageRequest.keywords"
-          clearable
-          placeholder="关键字"
-        />
+        <el-input v-model="pageRequest.keywords" clearable placeholder="关键字" />
       </el-form-item>
       <el-form-item class="page-form-block-search-block">
         <el-button type="primary" @click="loadDictionaries">查询</el-button>
-        <el-button type="primary" @click="resetAndReloadDictionaries">
-          重置
-        </el-button>
+        <el-button type="primary" @click="resetAndReloadDictionaries"> 重置 </el-button>
       </el-form-item>
     </el-form>
   </div>
   <div>
     <div>
-      <el-table
-        :data="dictPageData.data"
-        border
-        style="width: 100%; margin-top: 10px"
-      >
+      <el-table :data="dictPageData.data" border style="width: 100%; margin-top: 10px">
         <el-table-column align="center" type="index" width="70" />
         <el-table-column label="字典编码" prop="code" width="270" />
         <el-table-column label="字典描述信息" prop="desc" />
@@ -44,13 +29,7 @@
         </el-table-column>
         <el-table-column align="center" label="操作" width="200">
           <template v-slot="{ row: item }">
-            <el-button
-              link
-              size="small"
-              type="primary"
-              @click="showDictItems(item)"
-              >字典项
-            </el-button>
+            <el-button link size="small" type="primary" @click="showDictItems(item)">字典项 </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -97,12 +76,7 @@
           <el-text v-else>{{ item.value }}</el-text>
         </template>
       </el-table-column>
-      <el-table-column
-        align="center"
-        label="排序"
-        min-width="100"
-        property="sort"
-      >
+      <el-table-column align="center" label="排序" min-width="100" property="sort">
         <template v-slot="{ row: item }">
           <el-input-number
             v-if="item.editing"
@@ -121,11 +95,7 @@
       <el-table-column align="center" label="操作" min-width="150">
         <template v-slot="{ row: item }">
           <el-button
-            v-if="
-              currentViewDict &&
-              currentViewDict.allowModifyItem &&
-              !item.editing
-            "
+            v-if="currentViewDict && currentViewDict.allowModifyItem && !item.editing"
             link
             size="small"
             type="primary"
@@ -133,21 +103,8 @@
           >
             编辑
           </el-button>
-          <el-button
-            v-if="item.editing"
-            size="small"
-            type="primary"
-            @click="saveEditDictItem(item)"
-          >
-            保存
-          </el-button>
-          <el-button
-            v-if="item.editing"
-            size="small"
-            @click="cancelEditDictItem(item)"
-          >
-            取消
-          </el-button>
+          <el-button v-if="item.editing" size="small" type="primary" @click="saveEditDictItem(item)"> 保存 </el-button>
+          <el-button v-if="item.editing" size="small" @click="cancelEditDictItem(item)"> 取消 </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -194,11 +151,9 @@ const initPageRequest = {
 const pageRequest = reactive({ ...initPageRequest });
 
 function loadDictionaries() {
-  axios
-    .get("/kharazim-api/system/dict/page", { params: toRaw(pageRequest) })
-    .then((response: AxiosResponse) => {
-      dictPageData.value = response.data;
-    });
+  axios.get("/kharazim-api/system/dict/page", { params: toRaw(pageRequest) }).then((response: AxiosResponse) => {
+    dictPageData.value = response.data;
+  });
 }
 
 function resetAndReloadDictionaries() {
@@ -218,13 +173,11 @@ function showDictItems(dict: Dict) {
 }
 
 function loadDictItems(dict: Dict) {
-  axios
-    .get(`/kharazim-api/system/dict/${dict.code}/items`)
-    .then((response: AxiosResponse) => {
-      const dictItemsData = (response.data.data || []) as DictItemView[];
-      dictItemsData.forEach((item: DictItemView) => (item.editing = false));
-      dictItems.value = dictItemsData;
-    });
+  axios.get(`/kharazim-api/system/dict/${dict.code}/items`).then((response: AxiosResponse) => {
+    const dictItemsData = (response.data.data || []) as DictItemView[];
+    dictItemsData.forEach((item: DictItemView) => (item.editing = false));
+    dictItems.value = dictItemsData;
+  });
 }
 
 const dictItemViewEditBackUp = new Map();
@@ -247,18 +200,14 @@ function saveEditDictItem(dictItem: DictItemView) {
   };
   const itemId = dictItem.id as number | undefined | null;
   if (itemId !== undefined && itemId !== null) {
-    axios
-      .put(`/kharazim-api/system/dict/item/${dictItem.id}`, saveDictItemRequest)
-      .then(() => {
-        dictItem.editing = false;
-      });
+    axios.put(`/kharazim-api/system/dict/item/${dictItem.id}`, saveDictItemRequest).then(() => {
+      dictItem.editing = false;
+    });
   } else {
-    axios
-      .post(`/kharazim-api/system/dict/item`, saveDictItemRequest)
-      .then((response: AxiosResponse) => {
-        dictItem.id = response.data.data;
-        dictItem.editing = false;
-      });
+    axios.post(`/kharazim-api/system/dict/item`, saveDictItemRequest).then((response: AxiosResponse) => {
+      dictItem.id = response.data.data;
+      dictItem.editing = false;
+    });
   }
 }
 
@@ -279,10 +228,7 @@ function cancelEditDictItem(dictItem: DictItemView) {
 }
 
 function startAddDictItem() {
-  let maxSort = Math.max(
-    ...dictItems.value.map((dictItem) => dictItem.sort),
-    0,
-  );
+  let maxSort = Math.max(...dictItems.value.map((dictItem) => dictItem.sort), 0);
   dictItems.value.push({
     id: null,
     dictCode: currentViewDict.value?.code,

@@ -4,19 +4,12 @@
       <el-form-item label="会员">
         <el-select
           v-model="createPrescriptionRequest.customerCode"
-          :remote-method="
-            async (query: any) => (customers = await loadSimpleCustomers(query))
-          "
+          :remote-method="async (query: any) => (customers = await loadSimpleCustomers(query))"
           filterable
           placeholder="选择会员"
           remote
         >
-          <el-option
-            v-for="item in customers"
-            :key="item.code"
-            :label="item.name"
-            :value="item.code"
-          >
+          <el-option v-for="item in customers" :key="item.code" :label="item.name" :value="item.code">
             <span style="float: left">{{ item.name }}</span>
             <span class="customer-select">{{ item.phone }}</span>
           </el-option>
@@ -33,65 +26,33 @@
           reserve-keyword
           @change="clearSelectedProducts"
         >
-          <el-option
-            v-for="item in clinicOptions"
-            :key="item.code"
-            :label="item.name"
-            :value="item.code"
-          />
+          <el-option v-for="item in clinicOptions" :key="item.code" :label="item.name" :value="item.code" />
         </el-select>
       </el-form-item>
     </div>
   </div>
-  <el-form-item
-    class="create-prescription-header-item"
-    label="备注"
-    style="width: 50%"
-  >
-    <el-input
-      v-model="createPrescriptionRequest.remark"
-      placeholder="备注信息"
-      type="textarea"
-    ></el-input>
+  <el-form-item class="create-prescription-header-item" label="备注" style="width: 50%">
+    <el-input v-model="createPrescriptionRequest.remark" placeholder="备注信息" type="textarea"></el-input>
   </el-form-item>
   <el-button type="primary" @click="showSelectProduct">选择商品</el-button>
   <div>
-    <el-table
-      :data="selectedProducts"
-      border
-      style="width: 100%; margin-top: 10px"
-    >
+    <el-table :data="selectedProducts" border style="width: 100%; margin-top: 10px">
       <el-table-column align="center" type="index" width="60" />
       <el-table-column align="center" label="操作" width="80">
         <template v-slot="{ row }">
-          <el-button
-            :icon="Delete"
-            circle
-            type="danger"
-            @click="removeSelectedSku(row)"
-          />
+          <el-button :icon="Delete" circle type="danger" @click="removeSelectedSku(row)" />
         </template>
       </el-table-column>
       <el-table-column align="center" label="商品主图" width="160">
         <template v-slot="{ row }">
-          <el-image
-            v-if="row.defaultImageUrl"
-            :src="row.defaultImageUrl"
-            style="width: 80px"
-          >
-          </el-image>
+          <el-image v-if="row.defaultImageUrl" :src="row.defaultImageUrl" style="width: 80px"></el-image>
         </template>
       </el-table-column>
       <el-table-column label="商品编码" prop="skuCode" width="160" />
       <el-table-column label="商品名称" prop="skuName" width="180" />
       <el-table-column align="center" label="单位" prop="unitName" width="80" />
       <el-table-column align="center" label="单价" prop="price" width="100" />
-      <el-table-column
-        align="center"
-        label="可用库存"
-        prop="inventoryQuantity"
-        width="100"
-      />
+      <el-table-column align="center" label="可用库存" prop="inventoryQuantity" width="100" />
       <el-table-column align="center" label="数量" prop="quantity" width="150">
         <template v-slot="{ row }">
           <el-input-number
@@ -108,47 +69,19 @@
         </template>
       </el-table-column>
       <el-table-column label="供应商" min-width="180" prop="supplierName" />
-      <el-table-column
-        label="商品分类"
-        min-width="240"
-        prop="categoryFullName"
-      />
+      <el-table-column label="商品分类" min-width="240" prop="categoryFullName" />
     </el-table>
   </div>
   <br />
-  <el-button
-    style="width: 8%; float: right"
-    type="primary"
-    @click="submitCreatePrescription"
-    >提交
-  </el-button>
-  <el-dialog
-    v-model="selectProductVisible"
-    :close-on-click-modal="false"
-    draggable
-    title="选择商品"
-    width="1400"
-  >
+  <el-button style="width: 8%; float: right" type="primary" @click="submitCreatePrescription">提交</el-button>
+  <el-dialog v-model="selectProductVisible" :close-on-click-modal="false" draggable title="选择商品" width="1400">
     <div>
-      <el-form
-        :inline="true"
-        :model="pagePublishSkuRequest"
-        class="page-form-block"
-        @keyup.enter="loadProductPublish"
-      >
+      <el-form :inline="true" :model="pagePublishSkuRequest" class="page-form-block" @keyup.enter="loadProductPublish">
         <el-form-item label="商品编码">
-          <el-input
-            v-model="pagePublishSkuRequest.skuCode"
-            clearable
-            placeholder="商品编码"
-          />
+          <el-input v-model="pagePublishSkuRequest.skuCode" clearable placeholder="商品编码" />
         </el-form-item>
         <el-form-item label="商品名称">
-          <el-input
-            v-model="pagePublishSkuRequest.skuName"
-            clearable
-            placeholder="商品名称"
-          />
+          <el-input v-model="pagePublishSkuRequest.skuName" clearable placeholder="商品名称" />
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="loadProductPublish">查询</el-button>
@@ -162,20 +95,11 @@
       row-key="code"
       style="width: 100%; margin-top: 10px"
     >
-      <el-table-column
-        :selectable="skuSelectable"
-        type="selection"
-        width="50"
-      />
+      <el-table-column :selectable="skuSelectable" type="selection" width="50" />
       <el-table-column label="商品编码" prop="skuCode" width="180" />
       <el-table-column align="center" label="商品主图" width="120">
         <template v-slot="{ row }">
-          <el-image
-            v-if="row.defaultImageUrl"
-            :src="row.defaultImageUrl"
-            style="width: 80px"
-          >
-          </el-image>
+          <el-image v-if="row.defaultImageUrl" :src="row.defaultImageUrl" style="width: 80px"></el-image>
         </template>
       </el-table-column>
       <el-table-column label="商品名称" prop="skuName" width="260" />
@@ -211,14 +135,8 @@ import { ElMessage, ElTable } from "element-plus";
 import { Delete } from "@element-plus/icons-vue";
 import Decimal from "decimal.js";
 import { useRouter } from "vue-router";
-import {
-  ClinicVO,
-  loadClinicOptions,
-} from "@/views/clinic/clinicManagement.vue";
-import {
-  loadSimpleCustomers,
-  SimpleCustomer,
-} from "@/views/customer/customer-list";
+import { ClinicVO, loadClinicOptions } from "@/views/clinic/clinicManagement.vue";
+import { loadSimpleCustomers, SimpleCustomer } from "@/views/customer/customer-list";
 
 const router = useRouter();
 
@@ -299,9 +217,7 @@ function showSelectProduct() {
 }
 
 function removeSelectedSku(row: SkuPublish) {
-  selectedProducts.value = selectedProducts.value.filter(
-    (e) => e.code !== row.code,
-  );
+  selectedProducts.value = selectedProducts.value.filter((e) => e.code !== row.code);
 }
 
 const selectSkuTableRef = ref<InstanceType<typeof ElTable>>();
@@ -324,17 +240,13 @@ const currentSelectedSkus = ref<SkuPublish[]>([]);
 
 function loadProductPublish() {
   if (selectSkuTableRef.value) {
-    const selectionRows =
-      selectSkuTableRef.value.getSelectionRows() as SkuPublish[];
+    const selectionRows = selectSkuTableRef.value.getSelectionRows() as SkuPublish[];
     currentSelectedSkus.value.push(...selectionRows);
   }
   axios
-    .get(
-      `/kharazim-api/product/publish/page?pageSize=${pageInfo.pageSize}&pageIndex=${pageInfo.currentPage}`,
-      {
-        params: pagePublishSkuRequest,
-      },
-    )
+    .get(`/kharazim-api/product/publish/page?pageSize=${pageInfo.pageSize}&pageIndex=${pageInfo.currentPage}`, {
+      params: pagePublishSkuRequest,
+    })
     .then((response: AxiosResponse) => {
       publishSkuPage.value = response.data.data;
       pageInfo.totalCount = response.data.totalCount;
@@ -354,15 +266,12 @@ function querySkuInventory() {
           skuCodes: skuCodes,
         },
       })
-      .then((response) => {
+      .then((response: AxiosResponse) => {
         const skuUsableQuantity = new Map(
-          response.data.data.map((inventory) => [
-            inventory.skuCode,
-            inventory.usableQuantity,
-          ]),
+          response.data.data.map((inventory: any) => [inventory.skuCode, inventory.usableQuantity]),
         );
         publishSkuCurrentPageData.forEach((e) => {
-          e.inventoryQuantity = skuUsableQuantity.get(e.skuCode) || 0;
+          e.inventoryQuantity = (skuUsableQuantity.get(e.skuCode) || 0) as number;
         });
       });
   }
@@ -374,9 +283,7 @@ function skuSelectable(row: SkuPublish) {
 
 function showSelectedSku() {
   nextTick(() => {
-    const selectedPublishCodes = currentSelectedSkus.value.map(
-      (x) => x.code,
-    ) as string[];
+    const selectedPublishCodes = currentSelectedSkus.value.map((x) => x.code) as string[];
     for (const sku of publishSkuPage.value) {
       if (selectedPublishCodes.includes(sku.code)) {
         selectSkuTableRef.value!.toggleRowSelection(sku, true);
@@ -386,12 +293,9 @@ function showSelectedSku() {
 }
 
 function confirmSelectSku() {
-  const selectionRows =
-    selectSkuTableRef.value!.getSelectionRows() as SkuPublish[];
+  const selectionRows = selectSkuTableRef.value!.getSelectionRows() as SkuPublish[];
   currentSelectedSkus.value.push(...selectionRows);
-  const selectedPublishCodes = selectedProducts.value.map(
-    (x) => x.code,
-  ) as string[];
+  const selectedPublishCodes = selectedProducts.value.map((x) => x.code) as string[];
   for (const selectionRow of currentSelectedSkus.value) {
     if (!selectedPublishCodes.includes(selectionRow.code)) {
       if (!selectionRow.quantity) {
@@ -429,16 +333,14 @@ function submitCreatePrescription() {
     remark: createPrescriptionRequest.value.remark,
     products: products,
   };
-  axios
-    .post("/kharazim-api/prescription/create", createPrescriptionParam)
-    .then(() => {
-      ElMessage({
-        showClose: true,
-        message: "创建处方成功",
-        type: "success",
-      });
-      router.push("/prescription-info");
+  axios.post("/kharazim-api/prescription/create", createPrescriptionParam).then(() => {
+    ElMessage({
+      showClose: true,
+      message: "创建处方成功",
+      type: "success",
     });
+    router.push("/prescription-info");
+  });
 }
 
 onMounted(async () => {

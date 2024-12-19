@@ -24,5 +24,14 @@
     "@vitejs/plugin-vue": "^5.0.3",
     "prettier": "^3.2.5",
     "vite": "^5.1.0"
+  },
+  "prettier": {
+    "printWidth": 120
+  },
+  "baseUrl": "./src",
+  "paths": {
+    "@/*": [
+      "src/*"
+    ]
   }
 }

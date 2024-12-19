@@ -1,12 +1,7 @@
 <template>
   <aside :style="'background-color:' + navBackgroundColor" class="nav-aside">
-    <el-menu
-      :background-color="navBackgroundColor"
-      :default-active="currentActiveMenu"
-      :unique-opened="true"
-      router
-    >
-      <SubNavMenu :menu-data="navs"></SubNavMenu>
+    <el-menu :background-color="navBackgroundColor" :default-active="currentActiveMenu" :unique-opened="true" router>
+      <SubNavMenu :menu-data="navs" />
     </el-menu>
   </aside>
 </template>

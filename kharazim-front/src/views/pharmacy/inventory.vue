@@ -1,24 +1,11 @@
 <template>
   <div>
-    <el-form
-      :inline="true"
-      :model="pageRequest"
-      class="page-form-block"
-      @keyup.enter="loadInventories"
-    >
+    <el-form :inline="true" :model="pageRequest" class="page-form-block" @keyup.enter="loadInventories">
       <el-form-item label="商品编码">
-        <el-input
-          v-model="pageRequest.skuCode"
-          clearable
-          placeholder="商品编码"
-        />
+        <el-input v-model="pageRequest.skuCode" clearable placeholder="商品编码" />
       </el-form-item>
       <el-form-item label="商品名称">
-        <el-input
-          v-model="pageRequest.skuName"
-          clearable
-          placeholder="商品名称"
-        />
+        <el-input v-model="pageRequest.skuName" clearable placeholder="商品名称" />
       </el-form-item>
       <el-form-item label="诊所">
         <el-select
@@ -29,37 +16,23 @@
           placeholder="选择诊所"
           reserve-keyword
         >
-          <el-option
-            v-for="item in clinicOptions"
-            :key="item.code"
-            :label="item.name"
-            :value="item.code"
-          />
+          <el-option v-for="item in clinicOptions" :key="item.code" :label="item.name" :value="item.code" />
         </el-select>
       </el-form-item>
       <el-form-item label="排序方式">
-        <el-button
-          :type="getSortButtonType('QUANTITY')"
-          @click="switchSort('QUANTITY')"
-        >
+        <el-button :type="getSortButtonType('QUANTITY')" @click="switchSort('QUANTITY')">
           在库库存
           <el-icon>
             <component :is="getSortDirectionIcon('QUANTITY')" />
           </el-icon>
         </el-button>
-        <el-button
-          :type="getSortButtonType('USABLE_QUANTITY')"
-          @click="switchSort('USABLE_QUANTITY')"
-        >
+        <el-button :type="getSortButtonType('USABLE_QUANTITY')" @click="switchSort('USABLE_QUANTITY')">
           可用库存
           <el-icon>
             <component :is="getSortDirectionIcon('USABLE_QUANTITY')" />
           </el-icon>
         </el-button>
-        <el-button
-          :type="getSortButtonType('OCCUPIED_QUANTITY')"
-          @click="switchSort('OCCUPIED_QUANTITY')"
-        >
+        <el-button :type="getSortButtonType('OCCUPIED_QUANTITY')" @click="switchSort('OCCUPIED_QUANTITY')">
           预占库存
           <el-icon>
             <component :is="getSortDirectionIcon('OCCUPIED_QUANTITY')" />
@@ -68,28 +41,18 @@
       </el-form-item>
       <el-form-item class="page-form-block-search-block">
         <el-button type="primary" @click="loadInventories">查询</el-button>
-        <el-button type="primary" @click="resetAndLoadInventories">
-          重置
-        </el-button>
+        <el-button type="primary" @click="resetAndLoadInventories"> 重置 </el-button>
       </el-form-item>
     </el-form>
   </div>
   <div>
     <div>
-      <el-table
-        :data="inventoryPageData.data"
-        border
-        style="width: 100%; margin-top: 10px"
-      >
+      <el-table :data="inventoryPageData.data" border style="width: 100%; margin-top: 10px">
         <el-table-column label="商品编码" prop="skuCode" />
         <el-table-column label="诊所" prop="clinicName" />
         <el-table-column label="商品名称" prop="skuName" />
         <el-table-column align="center" label="在库库存" prop="quantity" />
-        <el-table-column
-          align="center"
-          label="可用库存"
-          prop="usableQuantity"
-        />
+        <el-table-column align="center" label="可用库存" prop="usableQuantity" />
         <el-table-column align="center" label="预占数量">
           <template v-slot="{ row }">
             <el-button link type="primary" @click="showSkuOccupyRecord(row)">
@@ -99,12 +62,7 @@
         </el-table-column>
         <el-table-column align="center" label="商品主图">
           <template v-slot="{ row }">
-            <el-image
-              v-if="row.defaultImageUrl"
-              :src="row.defaultImageUrl"
-              style="width: 40px"
-            >
-            </el-image>
+            <el-image v-if="row.defaultImageUrl" :src="row.defaultImageUrl" style="width: 40px"> </el-image>
           </template>
         </el-table-column>
         <el-table-column align="center" label="单位" prop="unitName" />
@@ -124,11 +82,7 @@
     </div>
   </div>
   <el-dialog v-model="skuOccupyRecordVisible" title="商品预占情况" width="30%">
-    <el-table
-      :data="skuOccupyRecordPageData"
-      border
-      style="width: 100%; margin-top: 10px"
-    >
+    <el-table :data="skuOccupyRecordPageData" border style="width: 100%; margin-top: 10px">
       <el-table-column label="单据编码" prop="businessCode" />
       <el-table-column label="数量" prop="quantity" />
     </el-table>
@@ -151,10 +105,7 @@
 import { onMounted, reactive, ref, toRaw } from "vue";
 import axios from "@/utils/http.js";
 import { AxiosResponse } from "axios";
-import {
-  ClinicVO,
-  loadClinicOptions,
-} from "@/views/clinic/clinicManagement.vue";
+import { ClinicVO, loadClinicOptions } from "@/views/clinic/clinicManagement.vue";
 
 const inventoryPageData = ref({ totalCount: 0, data: [] });
 
@@ -172,8 +123,7 @@ const pageRequest = reactive({ ...initPageRequest });
 
 function switchSort(btn: string) {
   if (btn === pageRequest.sortBy) {
-    pageRequest.sortDirection =
-      pageRequest.sortDirection === "ASC" ? "DESC" : "ASC";
+    pageRequest.sortDirection = pageRequest.sortDirection === "ASC" ? "DESC" : "ASC";
   } else {
     pageRequest.sortBy = btn;
     pageRequest.sortDirection = "DESC";
@@ -199,11 +149,9 @@ function getSortDirectionIcon(btn: string) {
 }
 
 function loadInventories() {
-  axios
-    .get("/kharazim-api/inventory/page", { params: toRaw(pageRequest) })
-    .then((response: AxiosResponse) => {
-      inventoryPageData.value = response.data;
-    });
+  axios.get("/kharazim-api/inventory/page", { params: toRaw(pageRequest) }).then((response: AxiosResponse) => {
+    inventoryPageData.value = response.data;
+  });
 }
 
 function resetAndLoadInventories() {

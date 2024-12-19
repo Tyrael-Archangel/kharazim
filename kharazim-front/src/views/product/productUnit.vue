@@ -1,11 +1,7 @@
 <template>
   <div>
     <div>
-      <el-table
-        :data="unitPageData"
-        border
-        style="width: 100%; margin-top: 10px"
-      >
+      <el-table :data="unitPageData" border style="width: 100%; margin-top: 10px">
         <el-table-column label="单位编码" prop="code" />
         <el-table-column label="单位名称" prop="name" />
         <el-table-column label="单位英文名称" prop="englishName" />
@@ -47,9 +43,7 @@ const pageInfo = reactive({
 
 function loadUnit() {
   axios
-    .get(
-      `/kharazim-api/product/unit/page?pageSize=${pageInfo.pageSize}&pageIndex=${pageInfo.currentPage}`,
-    )
+    .get(`/kharazim-api/product/unit/page?pageSize=${pageInfo.pageSize}&pageIndex=${pageInfo.currentPage}`)
     .then((response: AxiosResponse) => {
       unitPageData.value = response.data.data;
       pageInfo.totalCount = response.data.totalCount;

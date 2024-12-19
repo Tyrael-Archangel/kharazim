@@ -1,11 +1,7 @@
 <template>
   <div>
     <div>
-      <el-table
-        :data="rechargeCardTypePageData"
-        border
-        style="width: 100%; margin-top: 10px"
-      >
+      <el-table :data="rechargeCardTypePageData" border style="width: 100%; margin-top: 10px">
         <el-table-column label="储值卡项编码" prop="code" />
         <el-table-column label="储值卡项名称" prop="name" />
         <el-table-column label="折扣百分比" prop="discountPercent" />
@@ -24,10 +20,7 @@
               active-text="可发新卡"
               inactive-text="禁止发卡"
               inline-prompt
-              style="
-                --el-switch-on-color: #13ce66;
-                --el-switch-off-color: #ff4949;
-              "
+              style="--el-switch-on-color: #13ce66; --el-switch-off-color: #ff4949"
               @change="switchEnableStatus(row)"
             />
           </template>
@@ -73,9 +66,7 @@ const pageInfo = reactive({
 
 function loadRechargeCardType() {
   axios
-    .get(
-      `/kharazim-api/recharge-card-type/page?pageSize=${pageInfo.pageSize}&pageIndex=${pageInfo.currentPage}`,
-    )
+    .get(`/kharazim-api/recharge-card-type/page?pageSize=${pageInfo.pageSize}&pageIndex=${pageInfo.currentPage}`)
     .then((response: AxiosResponse) => {
       rechargeCardTypePageData.value = response.data.data;
       pageInfo.totalCount = response.data.totalCount;
@@ -99,4 +90,4 @@ function switchEnableStatus(rechargeCardType: RechargeCardType) {
 onMounted(() => loadRechargeCardType());
 </script>
 
-<style scoped></style>
+<style scoped />

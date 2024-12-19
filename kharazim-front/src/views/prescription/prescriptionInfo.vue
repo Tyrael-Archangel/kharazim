@@ -1,36 +1,20 @@
 <template>
   <div>
-    <el-form
-      :inline="true"
-      :model="pageRequest"
-      class="page-form-block"
-      @keyup.enter="loadPrescriptions"
-    >
+    <el-form :inline="true" :model="pageRequest" class="page-form-block" @keyup.enter="loadPrescriptions">
       <el-form-item label="处方编码">
-        <el-input
-          v-model="pageRequest.prescriptionCode"
-          clearable
-          placeholder="处方编码"
-        />
+        <el-input v-model="pageRequest.prescriptionCode" clearable placeholder="处方编码" />
       </el-form-item>
       <el-form-item label="会员">
         <el-select
           v-model="pageRequest.customerCode"
-          :remote-method="
-            async (query: any) => (customers = await loadSimpleCustomers(query))
-          "
+          :remote-method="async (query: any) => (customers = await loadSimpleCustomers(query))"
           clearable
           filterable
           placeholder="选择会员"
           remote
           width="500px"
         >
-          <el-option
-            v-for="item in customers"
-            :key="item.code"
-            :label="item.name"
-            :value="item.code"
-          >
+          <el-option v-for="item in customers" :key="item.code" :label="item.name" :value="item.code">
             <span style="float: left">{{ item.name }}</span>
             <span class="customer-select">{{ item.phone }}</span>
           </el-option>
@@ -45,12 +29,7 @@
           placeholder="选择诊所"
           reserve-keyword
         >
-          <el-option
-            v-for="item in clinicOptions"
-            :key="item.code"
-            :label="item.name"
-            :value="item.code"
-          />
+          <el-option v-for="item in clinicOptions" :key="item.code" :label="item.name" :value="item.code" />
         </el-select>
       </el-form-item>
       <el-form-item label="创建时间">
@@ -64,9 +43,7 @@
       </el-form-item>
       <el-form-item class="page-form-block-search-block">
         <el-button type="primary" @click="loadPrescriptions">查询</el-button>
-        <el-button type="primary" @click="resetAndReloadPrescriptions">
-          重置
-        </el-button>
+        <el-button type="primary" @click="resetAndReloadPrescriptions"> 重置</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -74,21 +51,13 @@
     <router-link to="/create-prescription">
       <el-button type="primary">创建处方</el-button>
     </router-link>
-    <el-link
-      :href="`/kharazim-api/prescription/export` + formatPageUrlQuery()"
-      :underline="false"
-      style="float: right"
-    >
+    <el-link :href="`/kharazim-api/prescription/export` + formatPageUrlQuery()" :underline="false" style="float: right">
       <el-button plain>导出</el-button>
     </el-link>
   </div>
   <div>
     <div>
-      <el-table
-        :data="prescriptionPageData.data"
-        border
-        style="width: 100%; margin-top: 10px"
-      >
+      <el-table :data="prescriptionPageData.data" border style="width: 100%; margin-top: 10px">
         <el-table-column type="expand">
           <template v-slot="{ row }">
             <div style="padding: 10px 50px 10px 50px">
@@ -96,11 +65,7 @@
                 <el-table-column align="center" type="index" width="50" />
                 <el-table-column align="center" label="商品主图" width="160">
                   <template v-slot="{ row: product }">
-                    <el-image
-                      v-if="product.defaultImageUrl"
-                      :src="product.defaultImageUrl"
-                      style="width: 50px"
-                    >
+                    <el-image v-if="product.defaultImageUrl" :src="product.defaultImageUrl" style="width: 50px">
                     </el-image>
                   </template>
                 </el-table-column>
@@ -148,14 +113,8 @@ import { ACCESS_TOKEN, getToken } from "@/utils/auth.js";
 import { dateFormat } from "@/utils/DateUtil.js";
 import { ifNullEmpty, join } from "@/utils/StringUtil.ts";
 import { useRouter } from "vue-router";
-import {
-  ClinicVO,
-  loadClinicOptions,
-} from "@/views/clinic/clinicManagement.vue";
-import {
-  loadSimpleCustomers,
-  SimpleCustomer,
-} from "@/views/customer/customer-list";
+import { ClinicVO, loadClinicOptions } from "@/views/clinic/clinicManagement.vue";
+import { loadSimpleCustomers, SimpleCustomer } from "@/views/customer/customer-list";
 
 const prescriptionPageData = ref({ totalCount: 0, data: [] });
 
@@ -180,9 +139,7 @@ function resetAndReloadPrescriptions() {
 function loadPrescriptions() {
   axios
     .get("/kharazim-api/prescription/page" + formatPageUrlQuery())
-    .then((response: AxiosResponse) => {
-      prescriptionPageData.value = response.data;
-    });
+    .then((response: AxiosResponse) => (prescriptionPageData.value = response.data));
 }
 
 function formatPageUrlQuery() {

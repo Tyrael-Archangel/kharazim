@@ -55,9 +55,7 @@ const pageInfo = reactive({
 
 function loadRole() {
   axios
-    .get(
-      `/kharazim-api/roles/pages?pageSize=${pageInfo.pageSize}&pageIndex=${pageInfo.currentPage}`,
-    )
+    .get(`/kharazim-api/roles/pages?pageSize=${pageInfo.pageSize}&pageIndex=${pageInfo.currentPage}`)
     .then((response: AxiosResponse) => {
       rolePageData.value = response.data.data;
       pageInfo.totalCount = response.data.totalCount;

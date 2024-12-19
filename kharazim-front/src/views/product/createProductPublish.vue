@@ -1,10 +1,6 @@
 <template>
   <div>
-    <el-form
-      :model="createPrescriptionRequest"
-      label-width="auto"
-      style="max-width: 600px"
-    >
+    <el-form :model="createPrescriptionRequest" label-width="auto" style="max-width: 600px">
       <el-form-item label="诊所">
         <el-select
           v-model="createPrescriptionRequest.clinicCode"
@@ -13,12 +9,7 @@
           placeholder="选择诊所"
           reserve-keyword
         >
-          <el-option
-            v-for="item in clinicOptions"
-            :key="item.code"
-            :label="item.name"
-            :value="item.code"
-          />
+          <el-option v-for="item in clinicOptions" :key="item.code" :label="item.name" :value="item.code" />
         </el-select>
       </el-form-item>
       <el-form-item label="单价">
@@ -56,12 +47,7 @@
   </div>
   <el-button type="primary" @click="showSelectProduct">选择商品</el-button>
   <div>
-    <el-table
-      :data="selectedProduct"
-      border
-      empty-text="请选择商品"
-      style="width: 100%; margin-top: 10px"
-    >
+    <el-table :data="selectedProduct" border empty-text="请选择商品" style="width: 100%; margin-top: 10px">
       <el-table-column label="商品编码" prop="code" width="160" />
       <el-table-column label="商品名称" prop="name" width="220" />
       <el-table-column align="center" label="主图" width="120">
@@ -84,36 +70,18 @@
 
     <div style="float: right; margin-top: 15px">
       <el-button @click="cancelCreateProductPublish">取消</el-button>
-      <el-button type="primary" @click="confirmCreateProductPublish">
-        确定
-      </el-button>
+      <el-button type="primary" @click="confirmCreateProductPublish"> 确定 </el-button>
     </div>
   </div>
   <br />
-  <el-dialog
-    v-model="selectProductVisible"
-    :close-on-click-modal="false"
-    draggable
-    title="选择商品"
-    width="75%"
-  >
+  <el-dialog v-model="selectProductVisible" :close-on-click-modal="false" draggable title="选择商品" width="75%">
     <div>
       <el-form :inline="true" :model="pageRequest" class="page-form-block">
         <el-form-item label="商品编码">
-          <el-input
-            v-model="pageRequest.code"
-            clearable
-            placeholder="商品编码"
-            @keyup.enter="loadProducts"
-          />
+          <el-input v-model="pageRequest.code" clearable placeholder="商品编码" @keyup.enter="loadProducts" />
         </el-form-item>
         <el-form-item label="商品名称">
-          <el-input
-            v-model="pageRequest.name"
-            clearable
-            placeholder="商品名称"
-            @keyup.enter="loadProducts"
-          />
+          <el-input v-model="pageRequest.name" clearable placeholder="商品名称" @keyup.enter="loadProducts" />
         </el-form-item>
         <el-form-item label="商品分类">
           <el-tree-select
@@ -140,19 +108,12 @@
             placeholder="选择供应商"
             reserve-keyword
           >
-            <el-option
-              v-for="item in supplierOptions"
-              :key="item.code"
-              :label="item.name"
-              :value="item.code"
-            />
+            <el-option v-for="item in supplierOptions" :key="item.code" :label="item.name" :value="item.code" />
           </el-select>
         </el-form-item>
         <el-form-item class="page-form-block-search-block">
           <el-button type="primary" @click="loadProducts">查询</el-button>
-          <el-button type="primary" @click="clearPageRequestAndLoadProducts">
-            重置
-          </el-button>
+          <el-button type="primary" @click="clearPageRequestAndLoadProducts"> 重置 </el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -180,11 +141,7 @@
         <el-table-column label="供应商" prop="supplierName" width="130" />
         <el-table-column label="商品单位" prop="unitName" width="100" />
         <el-table-column label="商品属性" prop="attributesDesc" width="200" />
-        <el-table-column
-          label="商品分类"
-          min-width="200"
-          prop="categoryFullName"
-        />
+        <el-table-column label="商品分类" min-width="200" prop="categoryFullName" />
       </el-table>
     </div>
     <div class="pagination-block-center">
@@ -202,13 +159,7 @@
     <template #footer>
       <div class="dialog-footer">
         <el-button @click="closeSelectDialog">取消</el-button>
-        <el-button
-          :disabled="selectedAtTable === null"
-          type="primary"
-          @click="confirmSelectProduct"
-        >
-          确定
-        </el-button>
+        <el-button :disabled="selectedAtTable === null" type="primary" @click="confirmSelectProduct"> 确定 </el-button>
       </div>
     </template>
   </el-dialog>
@@ -223,10 +174,7 @@ import { dateTimeFormat } from "@/utils/DateUtil.js";
 import { ProductCategory, ProductInfo } from "./productInfo.vue";
 import { useRouter } from "vue-router";
 import { loadSupplierOptions, SupplierVO } from "@/views/supplier/supplier.vue";
-import {
-  ClinicVO,
-  loadClinicOptions,
-} from "@/views/clinic/clinicManagement.vue";
+import { ClinicVO, loadClinicOptions } from "@/views/clinic/clinicManagement.vue";
 
 const router = useRouter();
 
@@ -251,9 +199,7 @@ function cancelCreateProductPublish() {
 }
 
 function confirmCreateProductPublish() {
-  const effectBegin = dateTimeFormat(
-    createPrescriptionRequest.value.effectBegin,
-  );
+  const effectBegin = dateTimeFormat(createPrescriptionRequest.value.effectBegin);
   const effectEnd = dateTimeFormat(createPrescriptionRequest.value.effectEnd);
   axios
     .post("/kharazim-api/product/publish/do-publish", {
@@ -317,11 +263,9 @@ const pageRequest = reactive({ ...initPageRequest });
 const productPageData = ref({ totalCount: 0, data: [] });
 
 function loadProducts() {
-  axios
-    .get("/kharazim-api/product/sku/page", { params: toRaw(pageRequest) })
-    .then((response: AxiosResponse) => {
-      productPageData.value = response.data;
-    });
+  axios.get("/kharazim-api/product/sku/page", { params: toRaw(pageRequest) }).then((response: AxiosResponse) => {
+    productPageData.value = response.data;
+  });
 }
 
 function clearPageRequestAndLoadProducts() {
@@ -334,11 +278,9 @@ const supplierOptions = ref<SupplierVO[]>([]);
 const categoryData = ref<ProductCategory[]>([]);
 
 function loadCategories() {
-  axios
-    .get("/kharazim-api/product/category/tree")
-    .then((res: AxiosResponse) => {
-      categoryData.value = res.data.data;
-    });
+  axios.get("/kharazim-api/product/category/tree").then((res: AxiosResponse) => {
+    categoryData.value = res.data.data;
+  });
 }
 
 onMounted(async () => {

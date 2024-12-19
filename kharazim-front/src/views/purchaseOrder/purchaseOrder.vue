@@ -56,12 +56,11 @@
           placeholder="选择收货状态"
           reserve-keyword
         >
-          <el-option key="WAIT_RECEIVE" label="待收货" value="WAIT_RECEIVE" />
-          <el-option key="RECEIVING" label="收货中" value="RECEIVING" />
           <el-option
-            key="RECEIVE_FINISHED"
-            label="收货完结"
-            value="RECEIVE_FINISHED"
+            v-for="option in receiveStatusOptions"
+            :key="option.key"
+            :label="option.value"
+            :value="option.key"
           />
         </el-select>
       </el-form-item>
@@ -74,9 +73,12 @@
           placeholder="选择结算状态"
           reserve-keyword
         >
-          <el-option key="UNPAID" label="待结算" value="UNPAID" />
-          <el-option key="PART_PAID" label="部分结算" value="PART_PAID" />
-          <el-option key="ALL_PAID" label="已结算" value="ALL_PAID" />
+          <el-option
+            v-for="option in paymentStatusOptions"
+            :key="option.key"
+            :label="option.value"
+            :value="option.key"
+          />
         </el-select>
       </el-form-item>
       <el-form-item label="创建时间">
@@ -192,6 +194,7 @@ import {
   ClinicVO,
   loadClinicOptions,
 } from "@/views/clinic/clinicManagement.vue";
+import { DictOption, loadDictOptions } from "@/views/dict/dict-item";
 
 const purchaseOrderPageData = ref({ totalCount: 0, data: [] });
 
@@ -208,6 +211,8 @@ const initPageRequest = {
 
 const pageRequest = reactive({ ...initPageRequest });
 
+const receiveStatusOptions = ref<DictOption[]>([]);
+const paymentStatusOptions = ref<DictOption[]>([]);
 const clinicOptions = ref<ClinicVO[]>([]);
 const supplierOptions = ref<SupplierVO[]>([]);
 
@@ -244,8 +249,11 @@ function loadPurchaseOrders() {
 }
 
 onMounted(async () => {
+  receiveStatusOptions.value = await loadDictOptions("purchase_receive_status");
+  paymentStatusOptions.value = await loadDictOptions("purchase_payment_status");
   clinicOptions.value = await loadClinicOptions();
   supplierOptions.value = await loadSupplierOptions();
+
   loadPurchaseOrders();
 });
 </script>

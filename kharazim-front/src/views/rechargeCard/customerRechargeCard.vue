@@ -1,45 +1,24 @@
 <template>
   <div>
-    <el-form
-      :inline="true"
-      :model="pageRequest"
-      class="page-form-block"
-      @keyup.enter="loadCustomerRechargeCard"
-    >
+    <el-form :inline="true" :model="pageRequest" class="page-form-block" @keyup.enter="loadCustomerRechargeCard">
       <el-form-item label="储值单号">
         <el-input v-model="pageRequest.code" clearable placeholder="储值单号" />
       </el-form-item>
       <el-form-item label="状态">
-        <el-select
-          v-model="pageRequest.statuses"
-          clearable
-          multiple
-          placeholder="状态"
-        >
-          <el-option
-            v-for="status in customerRechargeCardStatuses"
-            :label="status.name"
-            :value="status.value"
-          />
+        <el-select v-model="pageRequest.statuses" clearable multiple placeholder="状态">
+          <el-option v-for="option in statusOptions" :key="option.key" :label="option.value" :value="option.key" />
         </el-select>
       </el-form-item>
       <el-form-item label="会员">
         <el-select
           v-model="pageRequest.customerCode"
-          :remote-method="
-            async (query: any) => (customers = await loadSimpleCustomers(query))
-          "
+          :remote-method="async (query: any) => (customers = await loadSimpleCustomers(query))"
           clearable
           filterable
           placeholder="选择会员"
           remote
         >
-          <el-option
-            v-for="item in customers"
-            :key="item.code"
-            :label="item.name"
-            :value="item.code"
-          >
+          <el-option v-for="item in customers" :key="item.code" :label="item.name" :value="item.code">
             <span style="float: left">{{ item.name }}</span>
             <span style="float: right">{{ item.phone }}</span>
           </el-option>
@@ -54,37 +33,21 @@
           placeholder="选择储值卡项"
           reserve-keyword
         >
-          <el-option
-            v-for="item in rechargeCardTypeOptions"
-            :key="item.code"
-            :label="item.name"
-            :value="item.code"
-          />
+          <el-option v-for="item in rechargeCardTypeOptions" :key="item.code" :label="item.name" :value="item.code" />
         </el-select>
       </el-form-item>
       <el-form-item label="成交员工">
         <el-select
           v-model="pageRequest.traderUserCode"
-          :remote-method="
-            async (query: any) => (traderUsers = await loadSimpleUsers(query))
-          "
+          :remote-method="async (query: any) => (traderUsers = await loadSimpleUsers(query))"
           clearable
           filterable
           placeholder="选择员工"
           remote
           width="500px"
         >
-          <el-option
-            v-for="item in traderUsers"
-            :key="item.code"
-            :label="item.nickName"
-            :value="item.code"
-          >
-            <el-image
-              v-if="item.avatarUrl"
-              :src="item.avatarUrl"
-              style="float: left; width: 30px"
-            />
+          <el-option v-for="item in traderUsers" :key="item.code" :label="item.nickName" :value="item.code">
+            <el-image v-if="item.avatarUrl" :src="item.avatarUrl" style="float: left; width: 30px" />
             <span style="float: right">{{ item.nickName }}</span>
           </el-option>
         </el-select>
@@ -99,12 +62,8 @@
         />
       </el-form-item>
       <el-form-item class="page-form-block-search-block">
-        <el-button type="primary" @click="loadCustomerRechargeCard">
-          查询
-        </el-button>
-        <el-button type="primary" @click="clearAndLoadCustomerRechargeCard">
-          重置
-        </el-button>
+        <el-button type="primary" @click="loadCustomerRechargeCard">查询</el-button>
+        <el-button type="primary" @click="clearAndLoadCustomerRechargeCard">重置</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -113,44 +72,17 @@
   </div>
   <div>
     <div>
-      <el-table
-        :data="customerRechargeCardPageData.data"
-        border
-        style="width: 100%; margin-top: 10px"
-      >
+      <el-table :data="customerRechargeCardPageData.data" border style="width: 100%; margin-top: 10px">
         <el-table-column label="会员储值单号" prop="code" width="180" />
         <el-table-column label="会员姓名" prop="customerName" width="120" />
         <el-table-column label="储值卡项" prop="cardTypeName" width="110" />
         <el-table-column label="储值金额" prop="amount" width="110" />
-        <el-table-column
-          label="剩余储值金额"
-          prop="balanceAmount"
-          width="125"
-        />
+        <el-table-column label="剩余储值金额" prop="balanceAmount" width="125" />
         <el-table-column label="已消耗金额" prop="consumedAmount" width="110" />
-        <el-table-column
-          label="已抵扣金额"
-          prop="consumedOriginalAmount"
-          width="110"
-        />
-        <el-table-column
-          align="center"
-          label="折扣百分比"
-          prop="discountPercent"
-          width="100"
-        />
-        <el-table-column
-          align="center"
-          label="状态"
-          prop="statusName"
-          width="90"
-        />
-        <el-table-column
-          align="center"
-          label="储值日期"
-          prop="rechargeDate"
-          width="115"
-        />
+        <el-table-column label="已抵扣金额" prop="consumedOriginalAmount" width="110" />
+        <el-table-column align="center" label="折扣百分比" prop="discountPercent" width="100" />
+        <el-table-column align="center" label="状态" prop="statusName" width="90" />
+        <el-table-column align="center" label="储值日期" prop="rechargeDate" width="115" />
         <el-table-column label="成交员工" prop="traderUserName" width="120" />
         <el-table-column align="center" label="过期时间" width="115">
           <template v-slot="{ row }">
@@ -158,21 +90,10 @@
           </template>
         </el-table-column>
         <el-table-column label="退卡金额" prop="chargebackAmount" width="110" />
-        <el-table-column
-          label="退卡员工"
-          prop="chargebackUserName"
-          width="120"
-        />
+        <el-table-column label="退卡员工" prop="chargebackUserName" width="120" />
         <el-table-column align="center" label="操作">
           <template v-slot="{ row }">
-            <el-button
-              v-if="row.status === 'UNPAID'"
-              link
-              type="primary"
-              @click="markPaid(row)"
-            >
-              收款
-            </el-button>
+            <el-button v-if="row.status === 'UNPAID'" link type="primary" @click="markPaid(row)"> 收款</el-button>
             <el-button
               v-if="row.status === 'PAID' && row.balanceAmount > 0"
               link
@@ -181,17 +102,10 @@
             >
               退卡
             </el-button>
-            <el-button
-              v-if="row.status === 'WAIT_REFUND'"
-              link
-              type="primary"
-              @click="markRefunded(row)"
-            >
+            <el-button v-if="row.status === 'WAIT_REFUND'" link type="primary" @click="markRefunded(row)">
               标记退款
             </el-button>
-            <el-button link type="primary" @click="showLog(row)">
-              日志记录
-            </el-button>
+            <el-button link type="primary" @click="showLog(row)"> 日志记录</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -209,11 +123,7 @@
       />
     </div>
   </div>
-  <el-dialog
-    v-model="logTableVisible"
-    :title="'日志记录 - ' + currentLogRow?.code"
-    width="1400"
-  >
+  <el-dialog v-model="logTableVisible" :title="'日志记录 - ' + currentLogRow?.code" width="1400">
     <div>
       <el-table :data="customerRechargeCardLogData.data">
         <el-table-column label="操作类型" prop="logTypeName" />
@@ -237,30 +147,18 @@
       />
     </div>
   </el-dialog>
-  <el-dialog
-    v-model="addCustomerRechargeCardVisible"
-    title="新建储值单"
-    width="600"
-  >
+  <el-dialog v-model="addCustomerRechargeCardVisible" title="新建储值单" width="600">
     <el-form :model="addCustomerRechargeCardData" label-width="15%">
       <el-form-item label="会员">
         <el-select
           v-model="addCustomerRechargeCardData.customerCode"
-          :remote-method="
-            async (query: any) =>
-              (addRechargeCardCustomers = await loadSimpleCustomers(query))
-          "
+          :remote-method="async (query: any) => (addRechargeCardCustomers = await loadSimpleCustomers(query))"
           filterable
           placeholder="选择会员"
           remote
           style="width: 95%"
         >
-          <el-option
-            v-for="item in addRechargeCardCustomers"
-            :key="item.code"
-            :label="item.name"
-            :value="item.code"
-          >
+          <el-option v-for="item in addRechargeCardCustomers" :key="item.code" :label="item.name" :value="item.code">
             <span style="float: left">{{ item.name }}</span>
             <span class="family-leader-select">{{ item.phone }}</span>
           </el-option>
@@ -275,12 +173,7 @@
           reserve-keyword
           style="width: 95%"
         >
-          <el-option
-            v-for="item in rechargeCardTypeOptions"
-            :key="item.code"
-            :label="item.name"
-            :value="item.code"
-          />
+          <el-option v-for="item in rechargeCardTypeOptions" :key="item.code" :label="item.name" :value="item.code" />
         </el-select>
       </el-form-item>
       <el-form-item label="储值日期">
@@ -306,10 +199,7 @@
       <el-form-item label="成交员工">
         <el-select
           v-model="addCustomerRechargeCardData.traderUserCode"
-          :remote-method="
-            async (query: any) =>
-              (addRechargeCardTraderUsers = await loadSimpleUsers(query))
-          "
+          :remote-method="async (query: any) => (addRechargeCardTraderUsers = await loadSimpleUsers(query))"
           clearable
           filterable
           placeholder="选择员工"
@@ -322,11 +212,7 @@
             :label="item.nickName"
             :value="item.code"
           >
-            <el-image
-              v-if="item.avatarUrl"
-              :src="item.avatarUrl"
-              style="float: left; width: 30px"
-            />
+            <el-image v-if="item.avatarUrl" :src="item.avatarUrl" style="float: left; width: 30px" />
             <span style="float: right">{{ item.nickName }}</span>
           </el-option>
         </el-select>
@@ -344,9 +230,7 @@
     <template #footer>
       <div class="dialog-footer">
         <el-button @click="closeAddCustomerRechargeCardDialog">取消</el-button>
-        <el-button type="primary" @click="confirmAddCustomerRechargeCard">
-          确定
-        </el-button>
+        <el-button type="primary" @click="confirmAddCustomerRechargeCard"> 确定</el-button>
       </div>
     </template>
   </el-dialog>
@@ -358,11 +242,9 @@ import { AxiosResponse } from "axios";
 import axios from "@/utils/http.js";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { dateFormat } from "@/utils/DateUtil.js";
-import {
-  loadSimpleCustomers,
-  SimpleCustomer,
-} from "@/views/customer/customer-list";
+import { loadSimpleCustomers, SimpleCustomer } from "@/views/customer/customer-list";
 import { loadSimpleUsers, SimpleUser } from "@/views/user/user-list";
+import { DictOption, loadDictOptions } from "@/views/dict/dict-item";
 
 interface CustomerRechargeCard {
   code: string;
@@ -430,20 +312,15 @@ function closeAddCustomerRechargeCardDialog() {
 }
 
 function confirmAddCustomerRechargeCard() {
-  axios
-    .post(
-      "kharazim-api/recharge-card/recharge",
-      toRaw(addCustomerRechargeCardData),
-    )
-    .then(() => {
-      ElMessage({
-        showClose: true,
-        message: "创建储值单成功",
-        type: "success",
-      });
-      closeAddCustomerRechargeCardDialog();
-      loadCustomerRechargeCard();
+  axios.post("kharazim-api/recharge-card/recharge", toRaw(addCustomerRechargeCardData)).then(() => {
+    ElMessage({
+      showClose: true,
+      message: "创建储值单成功",
+      type: "success",
     });
+    closeAddCustomerRechargeCardDialog();
+    loadCustomerRechargeCard();
+  });
 }
 
 function clearAndLoadCustomerRechargeCard() {
@@ -462,10 +339,7 @@ function loadCustomerRechargeCard() {
   }
   axios
     .get("/kharazim-api/recharge-card/page", { params: pageParams })
-    .then(
-      (response: AxiosResponse) =>
-        (customerRechargeCardPageData.value = response.data),
-    );
+    .then((response: AxiosResponse) => (customerRechargeCardPageData.value = response.data));
 }
 
 function expireDate(row: CustomerRechargeCard) {
@@ -479,15 +353,13 @@ function markPaid(row: CustomerRechargeCard) {
     type: "warning",
   })
     .then(() => {
-      axios
-        .put(`/kharazim-api/recharge-card/mark-paid/${row.code}`)
-        .then(() => {
-          ElMessage({
-            type: "success",
-            message: "收款成功",
-          });
-          loadCustomerRechargeCard();
+      axios.put(`/kharazim-api/recharge-card/mark-paid/${row.code}`).then(() => {
+        ElMessage({
+          type: "success",
+          message: "收款成功",
         });
+        loadCustomerRechargeCard();
+      });
     })
     .catch(() => {});
 }
@@ -499,29 +371,23 @@ function markRefunded(row: CustomerRechargeCard) {
     type: "warning",
   })
     .then(() => {
-      axios
-        .put(`/kharazim-api/recharge-card/mark-refunded/${row.code}`)
-        .then(() => {
-          ElMessage({
-            type: "success",
-            message: "退款成功",
-          });
-          loadCustomerRechargeCard();
+      axios.put(`/kharazim-api/recharge-card/mark-refunded/${row.code}`).then(() => {
+        ElMessage({
+          type: "success",
+          message: "退款成功",
         });
+        loadCustomerRechargeCard();
+      });
     })
     .catch(() => {});
 }
 
 function chargeback(row: CustomerRechargeCard) {
-  ElMessageBox.prompt(
-    "请输入退卡金额，最大可退金额: " + row.balanceAmount,
-    "提示",
-    {
-      confirmButtonText: "确认",
-      cancelButtonText: "取消",
-      inputValue: row.balanceAmount,
-    },
-  )
+  ElMessageBox.prompt("请输入退卡金额，最大可退金额: " + row.balanceAmount, "提示", {
+    confirmButtonText: "确认",
+    cancelButtonText: "取消",
+    inputValue: row.balanceAmount,
+  })
     .then(({ value }) => {
       axios
         .post(`/kharazim-api/recharge-card/chargeback`, {
@@ -559,10 +425,7 @@ function showLog(row: CustomerRechargeCard) {
 function loadCustomerRechargeCardLog() {
   if (currentLogRow.value) {
     axios
-      .get(
-        `/kharazim-api/recharge-card/page-log/${currentLogRow.value?.code}`,
-        { params: toRaw(logPageInfo) },
-      )
+      .get(`/kharazim-api/recharge-card/page-log/${currentLogRow.value?.code}`, { params: toRaw(logPageInfo) })
       .then((response: AxiosResponse) => {
         customerRechargeCardLogData.value = response.data;
       });
@@ -587,38 +450,15 @@ interface RechargeCardType {
 const rechargeCardTypeOptions = ref<RechargeCardType[]>([]);
 
 function loadRechargeCardTypes() {
-  axios
-    .get("/kharazim-api/recharge-card-type/list")
-    .then((res: AxiosResponse) => {
-      rechargeCardTypeOptions.value = res.data.data;
-    });
+  axios.get("/kharazim-api/recharge-card-type/list").then((res: AxiosResponse) => {
+    rechargeCardTypeOptions.value = res.data.data;
+  });
 }
 
-interface CustomerRechargeCardStatus {
-  name: string;
-  value: string;
-}
+const statusOptions = ref<DictOption[]>([]);
 
-const customerRechargeCardStatuses = ref<CustomerRechargeCardStatus[]>([
-  {
-    name: "未收款",
-    value: "UNPAID",
-  },
-  {
-    name: "已收款",
-    value: "PAID",
-  },
-  {
-    name: "未退款",
-    value: "WAIT_REFUND",
-  },
-  {
-    name: "已退款",
-    value: "REFUNDED",
-  },
-]);
-
-onMounted(() => {
+onMounted(async () => {
+  statusOptions.value = await loadDictOptions("customer_recharge_status");
   loadCustomerRechargeCard();
   loadRechargeCardTypes();
 });
