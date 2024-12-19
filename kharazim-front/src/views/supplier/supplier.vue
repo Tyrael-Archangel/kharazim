@@ -106,6 +106,7 @@ onMounted(() => loadSupplier());
 </script>
 
 <script lang="ts">
+// @ts-ignore
 import axios from "@/utils/http.js";
 
 export interface SupplierVO {
@@ -120,7 +121,7 @@ export interface SupplierVO {
 /**
  * supplier options
  */
-export async function loadSupplierOptions() {
+export async function loadSuppliers(): Promise<SupplierVO[]> {
   let res = await axios.get("/kharazim-api/supplier/list");
   return res.data.data;
 }

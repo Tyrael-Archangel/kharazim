@@ -162,7 +162,7 @@ import MultiImageUpload from "@/components/upload/MultiImageUpload.vue";
 import SingleImageUpload from "@/components/upload/SingleImageUpload.vue";
 import { UploadFileObj } from "@/components/upload/UploadFileObj";
 import { useRouter } from "vue-router";
-import { loadSupplierOptions, SupplierVO } from "@/views/supplier/supplier.vue";
+import { loadSuppliers, SupplierVO } from "@/views/supplier/supplier.vue";
 
 interface Attribute {
   name: string;
@@ -323,7 +323,7 @@ function confirmAddProduct() {
 
 const router = useRouter();
 
-onMounted(async () => {
+onMounted(() => {
   const query = router.currentRoute.value.query;
   const skuCode = query.skuCode as string;
   if (skuCode) {
@@ -331,7 +331,7 @@ onMounted(async () => {
   }
   loadProducts();
   loadCategories();
-  supplierOptions.value = await loadSupplierOptions();
+  loadSuppliers().then((res: SupplierVO[]) => (supplierOptions.value = res));
   loadProductUnitOptions();
 });
 </script>

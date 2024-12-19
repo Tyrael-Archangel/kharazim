@@ -192,7 +192,7 @@ import axios from "@/utils/http.js";
 import { CircleCheck, Warning } from "@element-plus/icons-vue";
 import Decimal from "decimal.js";
 import { ElMessage, ElTable } from "element-plus";
-import { ClinicVO, loadClinicOptions } from "@/views/clinic/clinicManagement.vue";
+import { ClinicVO, loadClinics } from "@/views/clinic/clinicManagement.vue";
 import { loadSimpleCustomers, SimpleCustomer } from "@/views/customer/customer-list";
 import { DictOption, loadDictOptions } from "@/views/dict/dict-item";
 
@@ -404,9 +404,9 @@ function submitPay() {
     });
 }
 
-onMounted(async () => {
-  settlementStatusOptions.value = await loadDictOptions("settlement_order_status");
-  clinicOptions.value = await loadClinicOptions();
+onMounted(() => {
+  loadDictOptions("settlement_order_status").then((res: DictOption[]) => (settlementStatusOptions.value = res));
+  loadClinics().then((res: ClinicVO[]) => (clinicOptions.value = res));
   loadSettlementOrders();
 });
 </script>

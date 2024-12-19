@@ -7,7 +7,7 @@
       </el-form-item>
       <el-form-item class="page-form-block-search-block">
         <el-button type="primary" @click="loadDictionaries">查询</el-button>
-        <el-button type="primary" @click="resetAndReloadDictionaries"> 重置 </el-button>
+        <el-button type="primary" @click="resetAndReloadDictionaries"> 重置</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -29,7 +29,7 @@
         </el-table-column>
         <el-table-column align="center" label="操作" width="200">
           <template v-slot="{ row: item }">
-            <el-button link size="small" type="primary" @click="showDictItems(item)">字典项 </el-button>
+            <el-button link size="small" type="primary" @click="showDictItems(item)">字典项</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -103,8 +103,8 @@
           >
             编辑
           </el-button>
-          <el-button v-if="item.editing" size="small" type="primary" @click="saveEditDictItem(item)"> 保存 </el-button>
-          <el-button v-if="item.editing" size="small" @click="cancelEditDictItem(item)"> 取消 </el-button>
+          <el-button v-if="item.editing" size="small" type="primary" @click="saveEditDictItem(item)"> 保存</el-button>
+          <el-button v-if="item.editing" size="small" @click="cancelEditDictItem(item)"> 取消</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -239,7 +239,7 @@ function startAddDictItem() {
   });
 }
 
-onMounted(async () => {
+onMounted(() => {
   loadDictionaries();
 });
 </script>

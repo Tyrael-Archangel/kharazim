@@ -111,7 +111,7 @@ import { onMounted, reactive, ref, toRaw } from "vue";
 import axios from "@/utils/http.js";
 import { AxiosResponse } from "axios";
 import { ElMessage, ElMessageBox } from "element-plus";
-import { ClinicVO, loadClinicOptions } from "@/views/clinic/clinicManagement.vue";
+import { ClinicVO, loadClinics } from "@/views/clinic/clinicManagement.vue";
 import { DictOption, loadDictOptions } from "@/views/dict/dict-item";
 
 interface SkuPublish {
@@ -201,9 +201,9 @@ function cancelPublish(row: SkuPublish) {
 const publishStatusOptions = ref<DictOption[]>([]);
 const clinicOptions = ref<ClinicVO[]>([]);
 
-onMounted(async () => {
-  publishStatusOptions.value = await loadDictOptions("sku_publish_status");
-  clinicOptions.value = await loadClinicOptions();
+onMounted(() => {
+  loadDictOptions("sku_publish_status").then((res: DictOption[]) => (publishStatusOptions.value = res));
+  loadClinics().then((res: ClinicVO[]) => (clinicOptions.value = res));
   loadProductPublish();
 });
 </script>

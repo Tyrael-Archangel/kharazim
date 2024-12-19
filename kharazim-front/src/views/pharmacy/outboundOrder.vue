@@ -122,7 +122,7 @@ import { onMounted, reactive, ref, toRaw } from "vue";
 import { AxiosResponse } from "axios";
 import axios from "@/utils/http.js";
 import { ElMessage, ElMessageBox } from "element-plus";
-import { ClinicVO, loadClinicOptions } from "@/views/clinic/clinicManagement.vue";
+import { ClinicVO, loadClinics } from "@/views/clinic/clinicManagement.vue";
 import { loadSimpleCustomers, SimpleCustomer } from "@/views/customer/customer-list";
 import { DictOption, loadDictOptions } from "@/views/dict/dict-item";
 
@@ -178,9 +178,9 @@ function markOutboundFinished(row: any) {
   console.log(row);
 }
 
-onMounted(async () => {
-  outboundStatusOptions.value = await loadDictOptions("outbound_order_status");
-  clinicOptions.value = await loadClinicOptions();
+onMounted(() => {
+  loadDictOptions("outbound_order_status").then((res: DictOption[]) => (outboundStatusOptions.value = res));
+  loadClinics().then((res: ClinicVO[]) => (clinicOptions.value = res));
   loadOutboundOrders();
 });
 </script>

@@ -457,8 +457,8 @@ function loadRechargeCardTypes() {
 
 const statusOptions = ref<DictOption[]>([]);
 
-onMounted(async () => {
-  statusOptions.value = await loadDictOptions("customer_recharge_status");
+onMounted(() => {
+  loadDictOptions("customer_recharge_status").then((res: DictOption[]) => (statusOptions.value = res));
   loadCustomerRechargeCard();
   loadRechargeCardTypes();
 });

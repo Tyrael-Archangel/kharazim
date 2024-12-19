@@ -1,17 +1,8 @@
 <template>
   <div>
-    <el-form
-      :inline="true"
-      :model="pageRequest"
-      class="page-form-block"
-      @keyup.enter="loadPurchaseOrders"
-    >
+    <el-form :inline="true" :model="pageRequest" class="page-form-block" @keyup.enter="loadPurchaseOrders">
       <el-form-item label="采购单编码">
-        <el-input
-          v-model="pageRequest.purchaseOrderCode"
-          clearable
-          placeholder="采购单编码"
-        />
+        <el-input v-model="pageRequest.purchaseOrderCode" clearable placeholder="采购单编码" />
       </el-form-item>
       <el-form-item label="诊所">
         <el-select
@@ -22,12 +13,7 @@
           placeholder="选择诊所"
           reserve-keyword
         >
-          <el-option
-            v-for="item in clinicOptions"
-            :key="item.code"
-            :label="item.name"
-            :value="item.code"
-          />
+          <el-option v-for="item in clinicOptions" :key="item.code" :label="item.name" :value="item.code" />
         </el-select>
       </el-form-item>
       <el-form-item label="供应商">
@@ -39,12 +25,7 @@
           placeholder="选择供应商"
           reserve-keyword
         >
-          <el-option
-            v-for="item in supplierOptions"
-            :key="item.code"
-            :label="item.name"
-            :value="item.code"
-          />
+          <el-option v-for="item in supplierOptions" :key="item.code" :label="item.name" :value="item.code" />
         </el-select>
       </el-form-item>
       <el-form-item label="收货状态">
@@ -92,9 +73,7 @@
       </el-form-item>
       <el-form-item class="page-form-block-search-block">
         <el-button type="primary" @click="loadPurchaseOrders">查询</el-button>
-        <el-button type="primary" @click="resetAndReloadPurchaseOrders">
-          重置
-        </el-button>
+        <el-button type="primary" @click="resetAndReloadPurchaseOrders"> 重置</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -105,11 +84,7 @@
   </div>
   <div>
     <div>
-      <el-table
-        :data="purchaseOrderPageData.data"
-        border
-        style="width: 100%; margin-top: 10px"
-      >
+      <el-table :data="purchaseOrderPageData.data" border style="width: 100%; margin-top: 10px">
         <el-table-column type="expand">
           <template v-slot="{ row }">
             <div style="padding: 10px 50px 10px 50px">
@@ -117,12 +92,7 @@
                 <el-table-column align="center" type="index" width="50" />
                 <el-table-column align="center" label="商品主图" width="160">
                   <template v-slot="{ row: item }">
-                    <el-image
-                      v-if="item.defaultImageUrl"
-                      :src="item.defaultImageUrl"
-                      style="width: 50px"
-                    >
-                    </el-image>
+                    <el-image v-if="item.defaultImageUrl" :src="item.defaultImageUrl" style="width: 50px"></el-image>
                   </template>
                 </el-table-column>
                 <el-table-column label="商品编码" prop="skuCode" />
@@ -130,16 +100,8 @@
                 <el-table-column label="单位" prop="unitName" width="160" />
                 <el-table-column label="商品分类" prop="categoryName" />
                 <el-table-column align="center" label="单价" prop="price" />
-                <el-table-column
-                  align="center"
-                  label="采购数量"
-                  prop="quantity"
-                />
-                <el-table-column
-                  align="center"
-                  label="已收货数量"
-                  prop="receivedQuantity"
-                />
+                <el-table-column align="center" label="采购数量" prop="quantity" />
+                <el-table-column align="center" label="已收货数量" prop="receivedQuantity" />
                 <el-table-column align="center" label="小计" prop="amount" />
               </el-table>
             </div>
@@ -148,22 +110,10 @@
         <el-table-column label="采购单编码" prop="code" width="160" />
         <el-table-column label="诊所" prop="clinicName" width="160" />
         <el-table-column label="供应商" prop="supplierName" width="160" />
-        <el-table-column
-          label="收货状态"
-          prop="receiveStatusName"
-          width="100"
-        />
-        <el-table-column
-          label="结算状态"
-          prop="paymentStatusName"
-          width="100"
-        />
+        <el-table-column label="收货状态" prop="receiveStatusName" width="100" />
+        <el-table-column label="结算状态" prop="paymentStatusName" width="100" />
         <el-table-column label="总金额（元）" prop="totalAmount" width="120" />
-        <el-table-column
-          label="已结算金额（元）"
-          prop="paidAmount"
-          width="150"
-        />
+        <el-table-column label="已结算金额（元）" prop="paidAmount" width="150" />
         <el-table-column label="创建人" prop="creator" width="160" />
         <el-table-column label="创建时间" prop="createTime" width="180" />
         <el-table-column label="备注" min-width="330" prop="remark" />
@@ -189,11 +139,8 @@ import { onMounted, reactive, ref } from "vue";
 import { AxiosResponse } from "axios";
 import axios from "@/utils/http.js";
 import { dateFormat } from "@/utils/DateUtil";
-import { loadSupplierOptions, SupplierVO } from "@/views/supplier/supplier.vue";
-import {
-  ClinicVO,
-  loadClinicOptions,
-} from "@/views/clinic/clinicManagement.vue";
+import { loadSuppliers, SupplierVO } from "@/views/supplier/supplier.vue";
+import { ClinicVO, loadClinics } from "@/views/clinic/clinicManagement.vue";
 import { DictOption, loadDictOptions } from "@/views/dict/dict-item";
 
 const purchaseOrderPageData = ref({ totalCount: 0, data: [] });
@@ -248,12 +195,11 @@ function loadPurchaseOrders() {
     });
 }
 
-onMounted(async () => {
-  receiveStatusOptions.value = await loadDictOptions("purchase_receive_status");
-  paymentStatusOptions.value = await loadDictOptions("purchase_payment_status");
-  clinicOptions.value = await loadClinicOptions();
-  supplierOptions.value = await loadSupplierOptions();
-
+onMounted(() => {
+  loadDictOptions("purchase_receive_status").then((res: DictOption[]) => (receiveStatusOptions.value = res));
+  loadDictOptions("purchase_payment_status").then((res: DictOption[]) => (paymentStatusOptions.value = res));
+  loadClinics().then((res: ClinicVO[]) => (clinicOptions.value = res));
+  loadSuppliers().then((res: SupplierVO[]) => (supplierOptions.value = res));
   loadPurchaseOrders();
 });
 </script>

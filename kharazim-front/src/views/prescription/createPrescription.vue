@@ -135,7 +135,7 @@ import { ElMessage, ElTable } from "element-plus";
 import { Delete } from "@element-plus/icons-vue";
 import Decimal from "decimal.js";
 import { useRouter } from "vue-router";
-import { ClinicVO, loadClinicOptions } from "@/views/clinic/clinicManagement.vue";
+import { ClinicVO, loadClinics } from "@/views/clinic/clinicManagement.vue";
 import { loadSimpleCustomers, SimpleCustomer } from "@/views/customer/customer-list";
 
 const router = useRouter();
@@ -343,8 +343,8 @@ function submitCreatePrescription() {
   });
 }
 
-onMounted(async () => {
-  clinicOptions.value = await loadClinicOptions();
+onMounted(() => {
+  loadClinics().then((res: ClinicVO[]) => (clinicOptions.value = res));
 });
 </script>
 

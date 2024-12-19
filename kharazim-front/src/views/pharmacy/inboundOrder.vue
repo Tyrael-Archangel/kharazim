@@ -153,8 +153,8 @@ import { onMounted, reactive, ref, toRaw } from "vue";
 import { AxiosResponse } from "axios";
 import axios from "@/utils/http.js";
 import { ElMessage } from "element-plus";
-import { loadSupplierOptions, SupplierVO } from "@/views/supplier/supplier.vue";
-import { ClinicVO, loadClinicOptions } from "@/views/clinic/clinicManagement.vue";
+import { loadSuppliers, SupplierVO } from "@/views/supplier/supplier.vue";
+import { ClinicVO, loadClinics } from "@/views/clinic/clinicManagement.vue";
 import { DictOption, loadDictOptions } from "@/views/dict/dict-item";
 
 const inboundOrderPageData = ref({ totalCount: 0, data: [] });
@@ -223,10 +223,10 @@ function confirmAddInbound() {
   }
 }
 
-onMounted(async () => {
-  inboundStatusOptions.value = await loadDictOptions("inbound_order_status");
-  clinicOptions.value = await loadClinicOptions();
-  supplierOptions.value = await loadSupplierOptions();
+onMounted(() => {
+  loadDictOptions("inbound_order_status").then((res: DictOption[]) => (inboundStatusOptions.value = res));
+  loadClinics().then((res: ClinicVO[]) => (clinicOptions.value = res));
+  loadSuppliers().then((res: SupplierVO[]) => (supplierOptions.value = res));
   loadInboundOrders();
 });
 </script>

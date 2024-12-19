@@ -113,7 +113,7 @@ import { ACCESS_TOKEN, getToken } from "@/utils/auth.js";
 import { dateFormat } from "@/utils/DateUtil.js";
 import { ifNullEmpty, join } from "@/utils/StringUtil.ts";
 import { useRouter } from "vue-router";
-import { ClinicVO, loadClinicOptions } from "@/views/clinic/clinicManagement.vue";
+import { ClinicVO, loadClinics } from "@/views/clinic/clinicManagement.vue";
 import { loadSimpleCustomers, SimpleCustomer } from "@/views/customer/customer-list";
 
 const prescriptionPageData = ref({ totalCount: 0, data: [] });
@@ -171,13 +171,13 @@ const clinicOptions = ref<ClinicVO[]>([]);
 
 const router = useRouter();
 
-onMounted(async () => {
+onMounted(() => {
   const query = router.currentRoute.value.query;
   const prescriptionCode = query.prescriptionCode as string;
   if (prescriptionCode) {
     pageRequest.prescriptionCode = prescriptionCode;
   }
-  clinicOptions.value = await loadClinicOptions();
+  loadClinics().then((res: ClinicVO[]) => (clinicOptions.value = res));
   loadPrescriptions();
 });
 </script>

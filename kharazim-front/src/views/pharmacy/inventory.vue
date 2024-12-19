@@ -41,7 +41,7 @@
       </el-form-item>
       <el-form-item class="page-form-block-search-block">
         <el-button type="primary" @click="loadInventories">查询</el-button>
-        <el-button type="primary" @click="resetAndLoadInventories"> 重置 </el-button>
+        <el-button type="primary" @click="resetAndLoadInventories">重置</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -62,7 +62,7 @@
         </el-table-column>
         <el-table-column align="center" label="商品主图">
           <template v-slot="{ row }">
-            <el-image v-if="row.defaultImageUrl" :src="row.defaultImageUrl" style="width: 40px"> </el-image>
+            <el-image v-if="row.defaultImageUrl" :src="row.defaultImageUrl" style="width: 40px" />
           </template>
         </el-table-column>
         <el-table-column align="center" label="单位" prop="unitName" />
@@ -105,7 +105,7 @@
 import { onMounted, reactive, ref, toRaw } from "vue";
 import axios from "@/utils/http.js";
 import { AxiosResponse } from "axios";
-import { ClinicVO, loadClinicOptions } from "@/views/clinic/clinicManagement.vue";
+import { ClinicVO, loadClinics } from "@/views/clinic/clinicManagement.vue";
 
 const inventoryPageData = ref({ totalCount: 0, data: [] });
 
@@ -198,9 +198,9 @@ function loadSkuOccupyRecords() {
     });
 }
 
-onMounted(async () => {
+onMounted(() => {
+  loadClinics().then((res: ClinicVO[]) => (clinicOptions.value = res));
   loadInventories();
-  clinicOptions.value = await loadClinicOptions();
 });
 </script>
 

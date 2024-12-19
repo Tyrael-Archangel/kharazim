@@ -37,7 +37,7 @@
       <el-table-column align="center" type="index" width="90" />
       <el-table-column align="center" label="商品主图" width="160">
         <template v-slot="{ row }">
-          <el-image v-if="row.defaultImageUrl" :src="row.defaultImageUrl" style="width: 80px"> </el-image>
+          <el-image v-if="row.defaultImageUrl" :src="row.defaultImageUrl" style="width: 80px"></el-image>
         </template>
       </el-table-column>
       <el-table-column label="商品编码" prop="code" width="160" />
@@ -75,7 +75,7 @@
     </el-table>
   </div>
   <br />
-  <el-button style="width: 8%; float: right" type="primary" @click="submitCreatePurchaseOrder">提交 </el-button>
+  <el-button style="width: 8%; float: right" type="primary" @click="submitCreatePurchaseOrder">提交</el-button>
   <el-dialog v-model="selectProductVisible" :close-on-click-modal="false" draggable title="选择商品" width="1400">
     <div>
       <el-form :inline="true" :model="pageProductSkuRequest" class="page-form-block" @keyup.enter="loadProductSku">
@@ -102,7 +102,7 @@
       <el-table-column label="商品名称" prop="name" width="260" />
       <el-table-column align="center" label="商品主图" width="120">
         <template v-slot="{ row }">
-          <el-image v-if="row.defaultImageUrl" :src="row.defaultImageUrl" style="width: 80px"> </el-image>
+          <el-image v-if="row.defaultImageUrl" :src="row.defaultImageUrl" style="width: 80px"></el-image>
         </template>
       </el-table-column>
       <el-table-column label="商品单位" prop="unitName" width="100" />
@@ -135,8 +135,8 @@ import { ElMessage, ElTable } from "element-plus";
 import { Delete } from "@element-plus/icons-vue";
 import Decimal from "decimal.js";
 import { useRouter } from "vue-router";
-import { loadSupplierOptions, SupplierVO } from "@/views/supplier/supplier.vue";
-import { ClinicVO, loadClinicOptions } from "@/views/clinic/clinicManagement.vue";
+import { loadSuppliers, SupplierVO } from "@/views/supplier/supplier.vue";
+import { ClinicVO, loadClinics } from "@/views/clinic/clinicManagement.vue";
 
 const router = useRouter();
 
@@ -315,9 +315,9 @@ function submitCreatePurchaseOrder() {
   });
 }
 
-onMounted(async () => {
-  clinicOptions.value = await loadClinicOptions();
-  supplierOptions.value = await loadSupplierOptions();
+onMounted(() => {
+  loadClinics().then((res: ClinicVO[]) => (clinicOptions.value = res));
+  loadSuppliers().then((res: SupplierVO[]) => (supplierOptions.value = res));
 });
 </script>
 

@@ -82,7 +82,7 @@ import { onMounted, reactive, ref, toRaw } from "vue";
 import axios from "@/utils/http.js";
 import { AxiosResponse } from "axios";
 import { dateTimeFormat } from "@/utils/DateUtil";
-import { ClinicVO, loadClinicOptions } from "@/views/clinic/clinicManagement.vue";
+import { ClinicVO, loadClinics } from "@/views/clinic/clinicManagement.vue";
 import { DictOption, loadDictOptions } from "@/views/dict/dict-item";
 
 const inventoryLogPageData = ref({ totalCount: 0, data: [] });
@@ -124,10 +124,10 @@ function resetAndLoadInventoryLogs() {
 const changeTypeOptions = ref<DictOption[]>([]);
 const clinicOptions = ref<ClinicVO[]>([]);
 
-onMounted(async () => {
-  changeTypeOptions.value = await loadDictOptions("inventory_change_type");
+onMounted(() => {
+  loadDictOptions("inventory_change_type").then((res: DictOption[]) => (changeTypeOptions.value = res));
+  loadClinics().then((res: ClinicVO[]) => (clinicOptions.value = res));
   loadInventoryLogs();
-  clinicOptions.value = await loadClinicOptions();
 });
 </script>
 

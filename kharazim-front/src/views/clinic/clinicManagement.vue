@@ -96,13 +96,14 @@ function loadClinic() {
 
 const statusOptions = ref<DictOption[]>([]);
 
-onMounted(async () => {
-  statusOptions.value = await loadDictOptions("clinic_status");
+onMounted(() => {
+  loadDictOptions("clinic_status").then((res: DictOption[]) => (statusOptions.value = res));
   loadClinic();
 });
 </script>
 
 <script lang="ts">
+// @ts-ignore
 import axios from "@/utils/http.js";
 
 export interface ClinicVO {
@@ -115,7 +116,7 @@ export interface ClinicVO {
   statusName: string;
 }
 
-export async function loadClinicOptions() {
+export async function loadClinics(): Promise<ClinicVO[]> {
   let res = await axios.get("/kharazim-api/clinic/list");
   return res.data.data;
 }

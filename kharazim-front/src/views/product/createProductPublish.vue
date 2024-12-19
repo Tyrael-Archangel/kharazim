@@ -173,8 +173,8 @@ import { ElMessage, ElTable } from "element-plus";
 import { dateTimeFormat } from "@/utils/DateUtil.js";
 import { ProductCategory, ProductInfo } from "./productInfo.vue";
 import { useRouter } from "vue-router";
-import { loadSupplierOptions, SupplierVO } from "@/views/supplier/supplier.vue";
-import { ClinicVO, loadClinicOptions } from "@/views/clinic/clinicManagement.vue";
+import { loadSuppliers, SupplierVO } from "@/views/supplier/supplier.vue";
+import { ClinicVO, loadClinics } from "@/views/clinic/clinicManagement.vue";
 
 const router = useRouter();
 
@@ -283,9 +283,9 @@ function loadCategories() {
   });
 }
 
-onMounted(async () => {
-  clinicOptions.value = await loadClinicOptions();
-  supplierOptions.value = await loadSupplierOptions();
+onMounted(() => {
+  loadClinics().then((res: ClinicVO[]) => (clinicOptions.value = res));
+  loadSuppliers().then((res: SupplierVO[]) => (supplierOptions.value = res));
   loadCategories();
 });
 </script>

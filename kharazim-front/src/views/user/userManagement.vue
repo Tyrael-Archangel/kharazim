@@ -60,7 +60,7 @@
       <el-table-column label="备注" prop="remark" />
       <el-table-column label="操作">
         <template v-slot="{ row }">
-          <el-link :underline="false" type="primary" @click="resetPwd(row)">重置密码 </el-link>
+          <el-link :underline="false" type="primary" @click="resetPwd(row)">重置密码</el-link>
         </template>
       </el-table-column>
     </el-table>
@@ -161,9 +161,9 @@ function resetPwd(user: UserData) {
     .catch(() => {});
 }
 
-onMounted(async () => {
-  statusOptions.value = await loadDictOptions("enable_status");
-  genderOptions.value = await loadDictOptions("user_gender");
+onMounted(() => {
+  loadDictOptions("enable_status").then((res: DictOption[]) => (statusOptions.value = res));
+  loadDictOptions("user_gender").then((res: DictOption[]) => (genderOptions.value = res));
   loadUser();
 });
 </script>
