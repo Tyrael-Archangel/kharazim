@@ -18,30 +18,30 @@ import java.util.stream.Collectors;
 @Getter
 @ToString
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
-public sealed class DictConstant permits DictConstant.EnumDictConstant {
+public sealed class Dict permits Dict.EnumDict {
 
     private final String code;
     private final String desc;
 
     @ToString
-    public static final class EnumDictConstant<T extends Enum<T> & BaseHasNameEnum<T>> extends DictConstant {
+    public static final class EnumDict<T extends Enum<T> & BaseHasNameEnum<T>> extends Dict {
 
         private final Class<T> relatedEnum;
-        private final Map<String, String> itemMap;
+        private final Map<String, String> items;
 
-        EnumDictConstant(String code, Class<T> relatedEnum, String desc) {
+        EnumDict(String code, Class<T> relatedEnum, String desc) {
             super(code, desc);
             this.relatedEnum = relatedEnum;
-            this.itemMap = Arrays.stream(relatedEnum.getEnumConstants())
+            this.items = Arrays.stream(this.relatedEnum.getEnumConstants())
                     .collect(Collectors.toMap(Enum::name, BaseHasNameEnum::getName, (e1, e2) -> e1, LinkedHashMap::new));
         }
 
-        public String getItemName(String itemKey) {
-            return itemMap.get(itemKey);
+        public String getItemValue(String itemKey) {
+            return items.get(itemKey);
         }
 
-        public Map<String, String> getDictItemMap() {
-            return new LinkedHashMap<>(itemMap);
+        public Map<String, String> getDictItems() {
+            return new LinkedHashMap<>(items);
         }
     }
 

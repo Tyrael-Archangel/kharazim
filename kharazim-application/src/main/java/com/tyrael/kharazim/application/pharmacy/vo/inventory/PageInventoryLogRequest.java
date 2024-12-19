@@ -1,6 +1,7 @@
 package com.tyrael.kharazim.application.pharmacy.vo.inventory;
 
 import com.tyrael.kharazim.application.pharmacy.enums.InventoryChangeTypeEnum;
+import com.tyrael.kharazim.application.system.domain.DictConstants;
 import com.tyrael.kharazim.common.dto.PageCommand;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -25,6 +26,9 @@ public class PageInventoryLogRequest extends PageCommand {
     @Schema(description = "关联业务编码")
     private String businessCode;
 
+    /**
+     * {@link DictConstants#INVENTORY_CHANGE_TYPE}
+     */
     @ArraySchema(arraySchema = @Schema(
             description = "库存变化类型，字典编码: inventory_change_type",
             implementation = InventoryChangeTypeEnum.class))

@@ -1,7 +1,7 @@
 package com.tyrael.kharazim.application.system.service.impl;
 
 import com.tyrael.kharazim.application.base.auth.AuthUser;
-import com.tyrael.kharazim.application.system.domain.DictConstant;
+import com.tyrael.kharazim.application.system.domain.Dict;
 import com.tyrael.kharazim.application.system.domain.DictConstants;
 import com.tyrael.kharazim.application.system.domain.DictItem;
 import com.tyrael.kharazim.application.system.dto.dict.DictDTO;
@@ -39,45 +39,46 @@ public class DictServiceImpl implements DictService {
 
     @Override
     public PageResponse<DictDTO> pageDict(PageDictRequest pageRequest) {
-        List<DictConstant> dictConstants = DictConstants.allDictConstants();
-        List<DictConstant> allMatchedDictConstants = dictConstants.stream()
+        List<Dict> dictionaries = DictConstants.allDictConstants();
+        List<Dict> allMatchedDictionaris = dictionaries.stream()
                 .filter(e -> matchQuery(pageRequest, e))
                 .toList();
 
-        List<DictDTO> dictPage = allMatchedDictConstants.stream()
+        List<DictDTO> dictPage = allMatchedDictionaris.stream()
                 .skip((pageRequest.getPageIndex() - 1L) * pageRequest.getPageSize())
                 .limit(pageRequest.getPageSize())
                 .map(this::dictDTO)
                 .toList();
-        return PageResponse.success(dictPage, allMatchedDictConstants.size());
+        return PageResponse.success(dictPage, allMatchedDictionaris.size());
     }
 
-    private boolean matchQuery(PageDictRequest pageDictRequest, DictConstant dictConstant) {
+    private boolean matchQuery(PageDictRequest pageDictRequest, Dict dict) {
         String keywords = pageDictRequest.getKeywords();
         boolean match = true;
         if (StringUtils.isNotBlank(keywords)) {
-            match = (StringUtils.contains(dictConstant.getCode(), keywords)
-                    || StringUtils.contains(dictConstant.getDesc(), keywords));
+            match = (StringUtils.contains(dict.getCode(), keywords)
+                    || StringUtils.contains(dict.getDesc(), keywords));
         }
         return match;
     }
 
-    private DictDTO dictDTO(DictConstant dictConstant) {
+    private DictDTO dictDTO(Dict dict) {
         DictDTO dictDTO = new DictDTO();
-        dictDTO.setCode(dictConstant.getCode());
-        dictDTO.setDesc(dictConstant.getDesc());
-        dictDTO.setAllowModifyItem(!(dictConstant instanceof DictConstant.EnumDictConstant));
+        dictDTO.setCode(dict.getCode());
+        dictDTO.setDesc(dict.getDesc());
+        dictDTO.setAllowModifyItem(!(dict instanceof Dict.EnumDict));
         return dictDTO;
     }
 
     @Override
     public List<DictItemDTO> listItems(String dictCode) {
-        DictConstant dictConstant = DictConstants.getDictConstant(dictCode);
-        DomainNotFoundException.assertFound(dictConstant, dictCode);
+        Dict dict = DictConstants.getDictConstant(dictCode);
+        DomainNotFoundException.assertFound(dict, dictCode);
 
-        if (dictConstant instanceof DictConstant.EnumDictConstant<?> enumDictConstant) {
+        if (dict instanceof Dict.EnumDict<?> enumDictConstant) {
             AtomicInteger sort = new AtomicInteger(1);
-            return enumDictConstant.getDictItemMap().entrySet()
+            return enumDictConstant.getDictItems()
+                    .entrySet()
                     .stream()
                     .map(itemValueToName -> DictItemDTO.builder()
                             .dictCode(dictCode)
@@ -88,7 +89,7 @@ public class DictServiceImpl implements DictService {
                     .toList();
         } else {
 
-            return dictItemMapper.listByDictCode(dictConstant.getCode())
+            return dictItemMapper.listByDictCode(dict.getCode())
                     .stream()
                     .sorted(Comparator.comparing(DictItem::getSort).thenComparing(DictItem::getId))
                     .map(e -> DictItemDTO.builder()
@@ -103,31 +104,31 @@ public class DictServiceImpl implements DictService {
     }
 
     @Override
-    public Map<String, String> dictItemMap(DictConstant dictConstant) {
-        if (dictConstant instanceof DictConstant.EnumDictConstant<?> enumDictConstant) {
-            return enumDictConstant.getDictItemMap();
+    public Map<String, String> dictItemMap(Dict dict) {
+        if (dict instanceof Dict.EnumDict<?> enumDictConstant) {
+            return enumDictConstant.getDictItems();
         }
-        return dictItemMapper.listByDictCode(dictConstant.getCode())
+        return dictItemMapper.listByDictCode(dict.getCode())
                 .stream()
                 .collect(Collectors.toMap(DictItem::getKey, DictItem::getValue));
     }
 
     @Override
-    public String findItemValue(DictConstant dictConstant, String dictItemKey) {
-        if (dictConstant instanceof DictConstant.EnumDictConstant<?> enumDictConstant) {
-            return enumDictConstant.getItemName(dictItemKey);
+    public String findItemValue(Dict dict, String dictItemKey) {
+        if (dict instanceof Dict.EnumDict<?> enumDictConstant) {
+            return enumDictConstant.getItemValue(dictItemKey);
         } else {
-            DictItem dictItem = dictItemMapper.finByDictCodeAndItemKey(dictConstant.getCode(), dictItemKey);
+            DictItem dictItem = dictItemMapper.finByDictCodeAndItemKey(dict.getCode(), dictItemKey);
             return dictItem == null ? null : dictItem.getValue();
         }
     }
 
     @Override
-    public Set<String> dictItemKeys(DictConstant dictConstant) {
-        if (dictConstant instanceof DictConstant.EnumDictConstant<?> enumDictConstant) {
-            return enumDictConstant.getDictItemMap().keySet();
+    public Set<String> dictItemKeys(Dict dict) {
+        if (dict instanceof Dict.EnumDict<?> enumDictConstant) {
+            return enumDictConstant.getDictItems().keySet();
         } else {
-            return dictItemMapper.listByDictCode(dictConstant.getCode())
+            return dictItemMapper.listByDictCode(dict.getCode())
                     .stream()
                     .map(DictItem::getKey)
                     .collect(Collectors.toSet());
@@ -135,14 +136,14 @@ public class DictServiceImpl implements DictService {
     }
 
     @Override
-    public void ensureDictItemEnable(DictConstant dictConstant, Collection<String> dictItemKeys) {
+    public void ensureDictItemEnable(Dict dict, Collection<String> dictItemKeys) {
         if (CollectionUtils.isEmpty(dictItemKeys)) {
             return;
         }
 
-        Set<String> availableItemKeys = dictItemKeys(dictConstant);
+        Set<String> availableItemKeys = dictItemKeys(dict);
 
-        String constantsDesc = Optional.ofNullable(dictConstant.getDesc())
+        String constantsDesc = Optional.ofNullable(dict.getDesc())
                 .orElse("");
         if (availableItemKeys.isEmpty()) {
             throw new BusinessException(constantsDesc
@@ -161,17 +162,17 @@ public class DictServiceImpl implements DictService {
     }
 
     @Override
-    public void ensureDictItemEnable(DictConstant dictConstant, String dictItemKey) {
-        this.ensureDictItemEnable(dictConstant, Collections.singleton(dictItemKey));
+    public void ensureDictItemEnable(Dict dict, String dictItemKey) {
+        this.ensureDictItemEnable(dict, Collections.singleton(dictItemKey));
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Long addDictItem(SaveDictItemRequest addDictItemRequest, AuthUser currentUser) {
         String dictCode = addDictItemRequest.getDictCode();
-        DictConstant dictConstant = DictConstants.getDictConstant(dictCode);
-        DomainNotFoundException.assertFound(dictConstant, dictCode);
-        if (dictConstant instanceof DictConstant.EnumDictConstant<?>) {
+        Dict dict = DictConstants.getDictConstant(dictCode);
+        DomainNotFoundException.assertFound(dict, dictCode);
+        if (dict instanceof Dict.EnumDict<?>) {
             throw new ForbiddenException("该字典不允许添加字典项");
         }
 
@@ -201,9 +202,9 @@ public class DictServiceImpl implements DictService {
         DomainNotFoundException.assertFound(dictItem, dictItemId);
 
         String dictCode = dictItem.getDictCode();
-        DictConstant dictConstant = DictConstants.getDictConstant(dictCode);
-        DomainNotFoundException.assertFound(dictConstant, dictCode);
-        if (dictConstant instanceof DictConstant.EnumDictConstant<?>) {
+        Dict dict = DictConstants.getDictConstant(dictCode);
+        DomainNotFoundException.assertFound(dict, dictCode);
+        if (dict instanceof Dict.EnumDict<?>) {
             throw new ForbiddenException("该字典不允许修改字典项");
         }
 

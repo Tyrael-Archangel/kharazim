@@ -1,6 +1,7 @@
 package com.tyrael.kharazim.application.settlement.vo;
 
 import com.tyrael.kharazim.application.settlement.enums.SettlementOrderStatus;
+import com.tyrael.kharazim.application.system.domain.DictConstants;
 import com.tyrael.kharazim.common.dto.PageCommand;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -27,7 +28,10 @@ public class PageSettlementOrderRequest extends PageCommand {
     @Schema(description = "会员编码")
     private String customerCode;
 
-    @Schema(description = "结算状态", implementation = SettlementOrderStatus.class)
+    /**
+     * {@link DictConstants#SETTLEMENT_ORDER_STATUS}
+     */
+    @Schema(description = "结算状态，字典编码: settlement_order_status", implementation = SettlementOrderStatus.class)
     private SettlementOrderStatus status;
 
 }

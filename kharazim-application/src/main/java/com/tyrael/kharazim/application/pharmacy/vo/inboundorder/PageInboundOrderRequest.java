@@ -1,6 +1,7 @@
 package com.tyrael.kharazim.application.pharmacy.vo.inboundorder;
 
 import com.tyrael.kharazim.application.pharmacy.enums.InboundOrderStatus;
+import com.tyrael.kharazim.application.system.domain.DictConstants;
 import com.tyrael.kharazim.common.dto.PageCommand;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -27,7 +28,10 @@ public class PageInboundOrderRequest extends PageCommand {
     @ArraySchema(arraySchema = @Schema(description = "供应商编码"))
     private Set<String> supplierCodes;
 
-    @Schema(description = "入库单状态")
+    /**
+     * {@link DictConstants#INBOUND_ORDER_STATUS}
+     */
+    @Schema(description = "入库单状态，字典编码: inbound_order_status", implementation = InboundOrderStatus.class)
     private InboundOrderStatus status;
 
 }

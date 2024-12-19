@@ -1,6 +1,7 @@
 package com.tyrael.kharazim.application.pharmacy.vo.outboundorder;
 
 import com.tyrael.kharazim.application.pharmacy.enums.OutboundOrderStatus;
+import com.tyrael.kharazim.application.system.domain.DictConstants;
 import com.tyrael.kharazim.common.dto.PageCommand;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -21,7 +22,10 @@ public class PageOutboundOrderRequest extends PageCommand {
     @Schema(description = "来源单据编码")
     private String sourceBusinessCode;
 
-    @Schema(description = "出库单状态", implementation = OutboundOrderStatus.class)
+    /**
+     * {@link DictConstants#OUTBOUND_ORDER_STATUS}
+     */
+    @Schema(description = "出库单状态，字典编码: outbound_order_status", implementation = OutboundOrderStatus.class)
     private OutboundOrderStatus status;
 
     @ArraySchema(arraySchema = @Schema(description = "机构（诊所）编码"))

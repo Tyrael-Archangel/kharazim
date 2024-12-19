@@ -1,7 +1,7 @@
 package com.tyrael.kharazim.application.system.service;
 
 import com.tyrael.kharazim.application.base.auth.AuthUser;
-import com.tyrael.kharazim.application.system.domain.DictConstant;
+import com.tyrael.kharazim.application.system.domain.Dict;
 import com.tyrael.kharazim.application.system.dto.dict.DictDTO;
 import com.tyrael.kharazim.application.system.dto.dict.DictItemDTO;
 import com.tyrael.kharazim.application.system.dto.dict.PageDictRequest;
@@ -38,45 +38,45 @@ public interface DictService {
     /**
      * 字典项 key -> value
      *
-     * @param dictConstant {@link DictConstant}
+     * @param dict {@link Dict}
      * @return 字典项 key -> value
      */
-    Map<String, String> dictItemMap(DictConstant dictConstant);
+    Map<String, String> dictItemMap(Dict dict);
 
     /**
      * 查询字典项值
      *
-     * @param dictConstant {@link DictConstant}
+     * @param dict {@link Dict}
      * @param dictItemKey  字典项键
      * @return 字典项名称
      */
-    String findItemValue(DictConstant dictConstant, String dictItemKey);
+    String findItemValue(Dict dict, String dictItemKey);
 
     /**
      * list dict item values by dictCodeConstants
      *
-     * @param dictConstant {@link DictConstant}
+     * @param dict {@link Dict}
      * @return dict item codes
      */
-    default Set<String> dictItemKeys(DictConstant dictConstant) {
-        return Set.copyOf(dictItemMap(dictConstant).values());
+    default Set<String> dictItemKeys(Dict dict) {
+        return Set.copyOf(dictItemMap(dict).values());
     }
 
     /**
      * 验证字典值是否有效
      *
-     * @param dictConstant {@link DictConstant}
+     * @param dict {@link Dict}
      * @param dictItemKeys 字典值
      */
-    void ensureDictItemEnable(DictConstant dictConstant, Collection<String> dictItemKeys);
+    void ensureDictItemEnable(Dict dict, Collection<String> dictItemKeys);
 
     /**
      * 验证字典值是否有效
      *
-     * @param dictConstant {@link DictConstant}
+     * @param dict {@link Dict}
      * @param dictItemKey  字典键
      */
-    void ensureDictItemEnable(DictConstant dictConstant, String dictItemKey);
+    void ensureDictItemEnable(Dict dict, String dictItemKey);
 
     /**
      * 添加字典项

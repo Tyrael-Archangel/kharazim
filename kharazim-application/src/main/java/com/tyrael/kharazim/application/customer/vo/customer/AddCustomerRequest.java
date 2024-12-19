@@ -1,5 +1,6 @@
 package com.tyrael.kharazim.application.customer.vo.customer;
 
+import com.tyrael.kharazim.application.system.domain.DictConstants;
 import com.tyrael.kharazim.application.user.enums.UserCertificateTypeEnum;
 import com.tyrael.kharazim.application.user.enums.UserGenderEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -56,6 +57,9 @@ public class AddCustomerRequest {
     @Schema(description = "短信验证码序列号，需要绑定手机号时传入", maxLength = 32)
     private String captchaSerialCode;
 
+    /**
+     * {@link DictConstants#CERTIFICATE_TYPE}
+     */
     @Schema(description = "证件类型")
     private UserCertificateTypeEnum certificateType;
 

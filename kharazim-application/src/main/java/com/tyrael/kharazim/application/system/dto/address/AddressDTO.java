@@ -1,5 +1,6 @@
 package com.tyrael.kharazim.application.system.dto.address;
 
+import com.tyrael.kharazim.application.system.domain.DictConstants;
 import com.tyrael.kharazim.application.system.enums.AddressLevelEnum;
 import lombok.Data;
 
@@ -18,6 +19,9 @@ public class AddressDTO {
 
     private Long parentId;
 
+    /**
+     * {@link DictConstants#SYSTEM_ADDRESS_LEVEL}
+     */
     private AddressLevelEnum level;
 
 }
