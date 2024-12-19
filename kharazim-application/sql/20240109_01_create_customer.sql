@@ -23,7 +23,7 @@ create table `customer`
     `updater`              varchar(64),
     `updater_code`         varchar(32),
     `update_time`          datetime,
-    `deleted`              bigint      not null default 0 comment '删除时间戳，0表示未删除',
+    `deleted`              bigint      not null default 0 comment '删除时间，0表示未删除',
     unique index udx_code (`code`),
     index idx_name (`name`),
     index idx_certificate_code (`certificate_code`),
@@ -54,7 +54,7 @@ create table `customer_address`
     `updater`         varchar(64),
     `updater_code`    varchar(32),
     `update_time`     datetime,
-    `deleted`         bigint      not null default 0 comment '删除时间戳，0表示未删除',
+    `deleted`         bigint      not null default 0 comment '删除时间，0表示未删除',
     index idx_customer_code (`customer_code`)
 ) comment '会员地址';
 
@@ -73,7 +73,7 @@ create table `customer_insurance`
     `updater`           varchar(64),
     `updater_code`      varchar(32),
     `update_time`       datetime,
-    `deleted`           bigint      not null default 0 comment '删除时间戳，0表示未删除',
+    `deleted`           bigint      not null default 0 comment '删除时间，0表示未删除',
     unique index udx_customer_policy (`customer_code`, `policy_number`, `deleted`)
 ) comment '会员保险';
 
@@ -88,7 +88,7 @@ create table `customer_service_user`
     `updater`           varchar(64),
     `updater_code`      varchar(32),
     `update_time`       datetime,
-    `deleted`           bigint      not null default 0 comment '删除时间戳，0表示未删除',
+    `deleted`           bigint      not null default 0 comment '删除时间，0表示未删除',
     unique index udx_customer_code (`customer_code`, `deleted`)
 ) comment '会员专属客服';
 
@@ -103,7 +103,7 @@ create table `customer_sales_consultant`
     `updater`               varchar(64),
     `updater_code`          varchar(32),
     `update_time`           datetime,
-    `deleted`               bigint      not null default 0 comment '删除时间戳，0表示未删除',
+    `deleted`               bigint      not null default 0 comment '删除时间，0表示未删除',
     unique index udx_customer_code (`customer_code`, `deleted`)
 ) comment '会员专属销售顾问';
 
@@ -118,7 +118,7 @@ create table `customer_tag`
     `updater`       varchar(64),
     `updater_code`  varchar(32),
     `update_time`   datetime,
-    `deleted`       bigint      not null default 0 comment '删除时间戳，0表示未删除',
+    `deleted`       bigint      not null default 0 comment '删除时间，0表示未删除',
     unique index udx_customer_tag (`customer_code`, `tag_dict`, `deleted`)
 ) comment '会员标签';
 
@@ -151,7 +151,7 @@ create table `family`
     `updater`      varchar(64),
     `updater_code` varchar(32),
     `update_time`  datetime,
-    `deleted`      bigint      not null default 0 comment '删除时间戳，0表示未删除',
+    `deleted`      bigint      not null default 0 comment '删除时间，0表示未删除',
     unique index udx_code (`code`)
 ) comment '家庭';
 
@@ -167,7 +167,7 @@ create table `family_member`
     `updater`            varchar(64),
     `updater_code`       varchar(32),
     `update_time`        datetime,
-    `deleted`            bigint      not null default 0 comment '删除时间戳，0表示未删除',
+    `deleted`            bigint      not null default 0 comment '删除时间，0表示未删除',
     unique index udx_customer_family (`customer_code`, `family_code`, `deleted`),
     index idx_family (`family_code`)
 ) comment '家庭成员';

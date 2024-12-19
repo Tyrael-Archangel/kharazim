@@ -24,7 +24,7 @@ create table `user`
     `updater`              varchar(64) not null,
     `updater_code`         varchar(32) not null,
     `update_time`          datetime    not null,
-    `deleted`              bigint      not null default 0 comment '删除时间戳，0表示未删除',
+    `deleted`              bigint      not null default 0 comment '删除时间，0表示未删除',
     unique index udx_name (`name`, `deleted`),
     unique index udx_code (`code`)
 ) comment '系统用户表';
@@ -43,7 +43,7 @@ create table `role`
     `updater`      varchar(64) not null,
     `updater_code` varchar(32) not null,
     `update_time`  datetime    not null,
-    `deleted`      bigint      not null default 0 comment '删除时间戳，0表示未删除',
+    `deleted`      bigint      not null default 0 comment '删除时间，0表示未删除',
     unique index udx_name_deleted (`name`, `deleted`)
 ) comment '角色（岗位）';
 

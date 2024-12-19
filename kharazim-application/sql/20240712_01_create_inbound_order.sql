@@ -14,7 +14,7 @@ create table `inbound_order`
     `updater`              varchar(64),
     `updater_code`         varchar(32),
     `update_time`          datetime,
-    `deleted`              bigint      not null default 0 comment '删除时间戳，0表示未删除',
+    `deleted`              bigint      not null default 0 comment '删除时间，0表示未删除',
     unique index udx_code (`code`),
     unique index udx_source_business_code (`source_business_code`, `deleted`),
     index idx_clinic_code (`clinic_code`),
