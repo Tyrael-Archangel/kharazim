@@ -46,8 +46,7 @@ public interface RoleMapper extends BasePageMapper<Role> {
         String keywords = pageRoleRequest.getKeywords();
         if (StringUtils.isNotBlank(keywords)) {
             queryWrapper.and(q -> q.like(Role::getName, keywords)
-                    .or()
-                    .like(Role::getCode, keywords));
+                    .or().like(Role::getCode, keywords));
         }
 
         queryWrapper.orderByAsc(Role::getSort);

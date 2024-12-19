@@ -93,13 +93,14 @@ public interface CustomerMapper extends BasePageMapper<Customer> {
         if (StringUtils.isNotBlank(keyword)) {
             ListCustomerRequest.QueryConditionType conditionType = request.getConditionType();
             if (conditionType == null) {
-                queryWrapper.and(q -> q.like(Customer::getName, keyword))
-                        .or()
-                        .eq(Customer::getPhone, keyword)
-                        .or()
-                        .eq(Customer::getCertificateCode, keyword);
+                queryWrapper.and(q -> q.eq(Customer::getCode, keyword)
+                        .or().like(Customer::getName, keyword)
+                        .or().eq(Customer::getPhone, keyword)
+                        .or().eq(Customer::getCertificateCode, keyword)
+                );
             } else {
                 queryWrapper = switch (conditionType) {
+                    case CODE -> queryWrapper.eq(Customer::getCode, keyword);
                     case NAME -> queryWrapper.like(Customer::getName, keyword);
                     case PHONE -> queryWrapper.eq(Customer::getPhone, keyword);
                     case CERTIFICATE -> queryWrapper.eq(Customer::getCertificateCode, keyword);

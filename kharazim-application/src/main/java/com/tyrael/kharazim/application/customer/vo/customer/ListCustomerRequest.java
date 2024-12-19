@@ -18,6 +18,10 @@ public class ListCustomerRequest {
 
     public enum QueryConditionType {
         /**
+         * 会员编码
+         */
+        CODE,
+        /**
          * 姓名
          */
         NAME,

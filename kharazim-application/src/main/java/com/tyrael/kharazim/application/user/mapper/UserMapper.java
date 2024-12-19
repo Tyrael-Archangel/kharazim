@@ -113,12 +113,9 @@ public interface UserMapper extends BasePageMapper<User> {
 
         String keywords = StringUtils.trim(pageCommand.getKeywords());
         if (StringUtils.isNotBlank(keywords)) {
-            queryWrapper.and(
-                    q -> q.like(User::getName, keywords)
-                            .or()
-                            .like(User::getNickName, keywords)
-                            .or()
-                            .like(User::getPhone, keywords));
+            queryWrapper.and(q -> q.like(User::getName, keywords)
+                    .or().like(User::getNickName, keywords)
+                    .or().like(User::getPhone, keywords));
         }
         queryWrapper.orderByAsc(User::getCode);
 
@@ -135,12 +132,9 @@ public interface UserMapper extends BasePageMapper<User> {
         LambdaQueryWrapper<User> queryWrapper = Wrappers.lambdaQuery();
         String keywords = StringUtils.trim(listRequest.getKeywords());
         if (StringUtils.isNotBlank(keywords)) {
-            queryWrapper.and(
-                    q -> q.like(User::getName, keywords)
-                            .or()
-                            .like(User::getNickName, keywords)
-                            .or()
-                            .like(User::getPhone, keywords));
+            queryWrapper.and(q -> q.like(User::getName, keywords)
+                    .or().like(User::getNickName, keywords)
+                    .or().like(User::getPhone, keywords));
         }
         if (listRequest.getStatus() != null) {
             queryWrapper.eq(User::getStatus, listRequest.getStatus());

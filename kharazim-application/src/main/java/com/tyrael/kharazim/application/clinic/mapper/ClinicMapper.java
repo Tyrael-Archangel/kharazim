@@ -65,8 +65,7 @@ public interface ClinicMapper extends BasePageMapper<Clinic> {
         String name = StringUtils.trim(pageRequest.getName());
         if (StringUtils.isNotBlank(name)) {
             queryWrapper.and(q -> q.like(Clinic::getName, name)
-                    .or()
-                    .like(Clinic::getEnglishName, name));
+                    .or().like(Clinic::getEnglishName, name));
         }
         queryWrapper.eqIfPresent(Clinic::getStatus, pageRequest.getStatus());
         queryWrapper.orderByAsc(Clinic::getCode);

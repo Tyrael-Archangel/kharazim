@@ -37,8 +37,7 @@ public interface ProductUnitMapper extends BasePageMapper<ProductUnitDO> {
         String name = pageRequest.getName();
         if (StringUtils.isNotBlank(name)) {
             queryWrapper.and(q -> q.like(ProductUnitDO::getName, name)
-                    .or()
-                    .like(ProductUnitDO::getEnglishName, name));
+                    .or().like(ProductUnitDO::getEnglishName, name));
         }
         queryWrapper.orderByAsc(ProductUnitDO::getCode);
 
@@ -56,8 +55,7 @@ public interface ProductUnitMapper extends BasePageMapper<ProductUnitDO> {
         String name = listRequest.getName();
         if (StringUtils.isNotBlank(name)) {
             queryWrapper.and(q -> q.like(ProductUnitDO::getName, name)
-                    .or()
-                    .like(ProductUnitDO::getEnglishName, name));
+                    .or().like(ProductUnitDO::getEnglishName, name));
         }
         queryWrapper.orderByAsc(ProductUnitDO::getCode);
         return selectList(queryWrapper);
