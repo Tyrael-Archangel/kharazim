@@ -61,17 +61,13 @@ system:
         - /**/api-docs/**
         - /**/webjars/**
         - /**/swagger-resources/**
-        - /**/system/request-log/**
-        - /**/system/address/**
-        - /**/system/dict/**/pages
-        - /**/system/dict/**/form
-        - /**/system/dict/types/*/items
     auth:
       allow-multi-login: true
       enable: true
       white-list:
         - /**/login
         - /**/logout
+        - /**/system/file/fetch/*
 
 springdoc:
   group-configs:

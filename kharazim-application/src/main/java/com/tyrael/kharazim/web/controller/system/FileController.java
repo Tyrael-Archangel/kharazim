@@ -6,7 +6,6 @@ import com.tyrael.kharazim.application.system.dto.file.FileVO;
 import com.tyrael.kharazim.application.system.dto.file.UploadFileVO;
 import com.tyrael.kharazim.application.system.service.FileService;
 import com.tyrael.kharazim.common.dto.DataResponse;
-import com.tyrael.kharazim.common.dto.MultiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -17,8 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * @author Tyrael Archangel
@@ -43,29 +40,11 @@ public class FileController {
         return DataResponse.ok(fileService.upload(fileVO, currentUser));
     }
 
-    @GetMapping("/{fileId}")
+    @GetMapping("/fetch/{fileId}")
     @Operation(summary = "下载文件")
     public void download(@PathVariable("fileId") @Parameter(description = "文件ID", required = true) String fileId,
                          HttpServletResponse httpServletResponse) throws IOException {
         fileService.download(fileId, httpServletResponse);
-    }
-
-    @GetMapping("/url/{fileId}")
-    @Operation(summary = "获取文件的临时访问URL", description = "获取文件的临时访问URL，10秒内有效")
-    public DataResponse<String> getUrl(
-            @PathVariable("fileId") @Parameter(description = "文件ID", required = true) String fileId) {
-        return DataResponse.ok(fileService.getUrl(fileId));
-    }
-
-    @GetMapping("/urls/{fileIds}")
-    @Operation(summary = "批量获取文件的临时访问URL", description = "获取文件的临时访问URL")
-    public MultiResponse<FileVO> getUrls(
-            @PathVariable("fileIds") @Parameter(description = "文件ID", required = true) String fileIds) {
-        List<String> fileIdList = Arrays.stream(fileIds.trim().split(","))
-                .map(String::trim)
-                .distinct()
-                .toList();
-        return MultiResponse.success(fileService.getFiles(fileIdList));
     }
 
 }
