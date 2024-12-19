@@ -48,7 +48,6 @@ public class RequestPathMatcher {
     }
 
     private boolean anyMatch(HttpServletRequest request) {
-        System.out.println("===== pathMatchCache.estimatedSize: " + pathMatchCache.estimatedSize());
         return patterns.stream()
                 .anyMatch(pattern -> pattern.match(request));
     }
