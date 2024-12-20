@@ -60,7 +60,9 @@
       </el-table-column>
       <el-table-column label="商品编码" prop="skuCode" width="150">
         <template v-slot="{ row }">
-          <el-link :href="'/#/product-info?skuCode=' + row.skuCode" type="primary">{{ row.skuCode }}</el-link>
+          <el-link type="primary" @click="router.push(`product-info?skuCode=${row.skuCode}`)">
+            {{ row.skuCode }}
+          </el-link>
         </template>
       </el-table-column>
       <el-table-column label="商品名称" prop="skuName" width="160" />
@@ -113,6 +115,9 @@ import { AxiosResponse } from "axios";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { ClinicVO, loadClinics } from "@/views/clinic/clinicManagement.vue";
 import { DictOption, loadDictOptions } from "@/views/dict/dict-item";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 
 interface SkuPublish {
   code: string;

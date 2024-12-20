@@ -80,8 +80,11 @@
         <el-table-column label="结算单编码" prop="code" width="180" />
         <el-table-column label="处方编码" width="180">
           <template v-slot="{ row }">
-            <el-link :href="'/#/prescription-info?prescriptionCode=' + row.sourcePrescriptionCode" type="primary"
-              >{{ row.sourcePrescriptionCode }}
+            <el-link
+              type="primary"
+              @click="router.push(`prescription-info?prescriptionCode=${row.sourcePrescriptionCode}`)"
+            >
+              {{ row.sourcePrescriptionCode }}
             </el-link>
           </template>
         </el-table-column>
@@ -195,6 +198,9 @@ import { ElMessage, ElTable } from "element-plus";
 import { ClinicVO, loadClinics } from "@/views/clinic/clinicManagement.vue";
 import { loadSimpleCustomers, SimpleCustomer } from "@/views/customer/customer-list";
 import { DictOption, loadDictOptions } from "@/views/dict/dict-item";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 
 interface SettlementOrderItem {
   skuCode: string;
