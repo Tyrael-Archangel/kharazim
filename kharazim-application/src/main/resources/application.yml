@@ -61,6 +61,10 @@ system:
         - /**/api-docs/**
         - /**/webjars/**
         - /**/swagger-resources/**
+        - /**/actuator/**
+        - /**/system/request-log/**
+        - /**/system/address/**
+        - /**/system/dict/**
     auth:
       allow-multi-login: true
       enable: true
