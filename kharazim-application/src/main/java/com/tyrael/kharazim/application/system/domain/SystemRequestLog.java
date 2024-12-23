@@ -52,6 +52,8 @@ public class SystemRequestLog {
 
     private String userName;
 
+    private String endpoint;
+
     private LocalDateTime startTime;
 
     private LocalDateTime endTime;

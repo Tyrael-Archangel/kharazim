@@ -13,9 +13,11 @@ create table `system_request_log`
     `request_body`     longtext,
     `response_body`    longtext,
     `user_name`        varchar(64),
+    `endpoint`         varchar(1024),
     `start_time`       datetime(3),
     `end_time`         datetime(3),
     `cost_mills`       int as ((`end_time` - `start_time`) * 1000),
+    index idx_endpoint (`endpoint`(32)),
     index idx_start (`start_time`),
     index idx_end (`end_time`)
 ) comment '系统请求日志';

@@ -3,7 +3,9 @@ package com.tyrael.kharazim.web.config;
 import com.tyrael.kharazim.application.base.auth.AuthConfig;
 import com.tyrael.kharazim.application.base.auth.CurrentUserMethodArgumentResolver;
 import com.tyrael.kharazim.application.base.auth.GlobalAuthInterceptor;
+import com.tyrael.kharazim.application.config.requestlog.RequestLogRequestMappingPrepareInterceptor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
@@ -26,6 +28,7 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     private final CurrentUserMethodArgumentResolver currentUserMethodArgumentResolver;
     private final GlobalAuthInterceptor globalAuthInterceptor;
     private final AuthConfig authConfig;
+    private final ObjectProvider<RequestLogRequestMappingPrepareInterceptor> requestLogRequestMappingPrepareInterceptor;
 
     @Value("${server.error.path:${error.path:/error}}")
     private String errorPath;
@@ -60,6 +63,9 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
                     .excludePathPatterns(knife4jResources)
                     .order(Ordered.HIGHEST_PRECEDENCE);
         }
+
+        requestLogRequestMappingPrepareInterceptor.ifAvailable(registry::addInterceptor);
+
     }
 
 }

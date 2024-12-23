@@ -52,7 +52,7 @@ knife4j:
 system:
   global:
     code-generator: datasource
-    enable-print-request-log: false
+    enable-print-request-log: true
     request-log:
       ignore-urls:
         - ${server.servlet.context-path}/
@@ -64,7 +64,6 @@ system:
         - /**/actuator/**
         - /**/system/request-log/**
         - /**/system/address/**
-        - /**/system/dict/**
     auth:
       allow-multi-login: true
       enable: true

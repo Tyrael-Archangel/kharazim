@@ -57,6 +57,9 @@ public class SystemRequestLogDTO {
     @Schema(description = "用户")
     private String userName;
 
+    @Schema(description = "endpoint")
+    private String endpoint;
+
     @Schema(description = "请求发起时间", format = "yyyy-MM-dd HH:mm:ss.SSS")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS")
     private LocalDateTime startTime;
