@@ -1,10 +1,12 @@
 package com.tyrael.kharazim.application.config.requestlog;
 
 import com.tyrael.kharazim.application.system.domain.SystemRequestLog;
+import com.tyrael.kharazim.application.system.dto.requestlog.SystemRequestLogConverter;
 import com.tyrael.kharazim.application.system.service.SystemRequestLogService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -22,6 +24,7 @@ import java.util.stream.Collectors;
  * @author Tyrael Archangel
  * @since 2024/12/20
  */
+@Slf4j
 @Component
 @RequiredArgsConstructor
 @ConditionalOnBean(GlobalRequestLogConfig.class)
@@ -29,6 +32,7 @@ public class RequestLogRequestMappingPrepareInterceptor implements HandlerInterc
 
     private final BeanFactory beanFactory;
     private final SystemRequestLogService systemRequestLogService;
+    private final SystemRequestLogConverter systemRequestLogConverter;
     private Map<HandlerMethod, RequestMappingInfo> handlerMethodMap;
 
     @Override
@@ -58,7 +62,7 @@ public class RequestLogRequestMappingPrepareInterceptor implements HandlerInterc
             return;
         }
 
-        String endpoint = requestMappingInfo.toString();
+        String endpoint = systemRequestLogConverter.requestMappingInfoEndpoint(requestMappingInfo);
         if (systemRequestLogService.isEndpointLogEnabled(endpoint)) {
             systemRequestLog.setEndpoint(endpoint);
         } else {

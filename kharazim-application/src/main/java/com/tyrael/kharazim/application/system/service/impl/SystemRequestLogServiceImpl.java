@@ -3,6 +3,7 @@ package com.tyrael.kharazim.application.system.service.impl;
 import com.tyrael.kharazim.application.system.domain.SystemRequestLog;
 import com.tyrael.kharazim.application.system.dto.requestlog.PageSystemRequestLogRequest;
 import com.tyrael.kharazim.application.system.dto.requestlog.SystemEndpointDTO;
+import com.tyrael.kharazim.application.system.dto.requestlog.SystemRequestLogConverter;
 import com.tyrael.kharazim.application.system.dto.requestlog.SystemRequestLogDTO;
 import com.tyrael.kharazim.application.system.mapper.SystemRequestLogMapper;
 import com.tyrael.kharazim.application.system.service.SystemRequestLogService;
@@ -15,7 +16,6 @@ import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 import java.util.Comparator;
@@ -39,6 +39,7 @@ public class SystemRequestLogServiceImpl implements SystemRequestLogService {
     private final SystemRequestLogMapper systemRequestLogMapper;
     private final StringRedisTemplate redisTemplate;
     private final BeanFactory beanFactory;
+    private final SystemRequestLogConverter systemRequestLogConverter;
 
     @Override
     public void save(SystemRequestLog systemRequestLog) {
@@ -47,11 +48,9 @@ public class SystemRequestLogServiceImpl implements SystemRequestLogService {
 
     @Override
     public List<SystemRequestLogDTO> latestLogs(Integer rows) {
-
         List<SystemRequestLog> systemRequestLogs = systemRequestLogMapper.latestRows(rows == null ? 20 : rows);
-
         return systemRequestLogs.stream()
-                .map(this::logDTO)
+                .map(systemRequestLogConverter::systemRequestLogDTO)
                 .toList();
     }
 
@@ -60,30 +59,9 @@ public class SystemRequestLogServiceImpl implements SystemRequestLogService {
         PageResponse<SystemRequestLog> pageData = systemRequestLogMapper.page(pageCommand);
         List<SystemRequestLogDTO> systemRequestLogs = pageData.getData()
                 .stream()
-                .map(this::logDTO)
+                .map(systemRequestLogConverter::systemRequestLogDTO)
                 .collect(Collectors.toList());
         return PageResponse.success(systemRequestLogs, pageData.getTotalCount());
-    }
-
-    private SystemRequestLogDTO logDTO(SystemRequestLog systemRequestLog) {
-        return SystemRequestLogDTO.builder()
-                .id(systemRequestLog.getId())
-                .uri(systemRequestLog.getUri())
-                .remoteAddr(systemRequestLog.getRemoteAddr())
-                .forwardedFor(systemRequestLog.getForwardedFor())
-                .realIp(systemRequestLog.getRealIp())
-                .requestHeaders(systemRequestLog.getRequestHeaders())
-                .responseHeaders(systemRequestLog.getResponseHeaders())
-                .requestParams(systemRequestLog.getRequestParams())
-                .responseStatus(systemRequestLog.getResponseStatus())
-                .requestBody(systemRequestLog.getRequestBody())
-                .responseBody(systemRequestLog.getResponseBody())
-                .userName(systemRequestLog.getUserName())
-                .endpoint(systemRequestLog.getEndpoint())
-                .startTime(systemRequestLog.getStartTime())
-                .endTime(systemRequestLog.getEndTime())
-                .costMills(systemRequestLog.getCostMills())
-                .build();
     }
 
     @Override
@@ -96,7 +74,7 @@ public class SystemRequestLogServiceImpl implements SystemRequestLogService {
         Set<String> allActiveEndpoints = requestMappingHandlerMapping.getHandlerMethods()
                 .keySet()
                 .stream()
-                .map(RequestMappingInfo::toString)
+                .map(systemRequestLogConverter::requestMappingInfoEndpoint)
                 .collect(Collectors.toSet());
 
         return Stream.concat(allHistoryEndpoints.stream(), allActiveEndpoints.stream())
