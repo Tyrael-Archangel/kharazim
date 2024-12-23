@@ -12,6 +12,7 @@ create table `system_request_log`
     `response_status`  int,
     `request_body`     longtext,
     `response_body`    longtext,
+    `user_code`        varchar(32),
     `user_name`        varchar(64),
     `endpoint`         varchar(1024),
     `start_time`       datetime(3),

@@ -38,6 +38,12 @@ const navs: Nav[] = [
         path: "/system-setting/dict-management",
         icon: "/icons/dict_management.svg",
       },
+      {
+        name: "请求日志",
+        component: "systemLog/systemRequestLog.vue",
+        path: "/system-setting/request-log",
+        icon: "/icons/system_request_log.svg",
+      },
     ],
   },
   {

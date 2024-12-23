@@ -54,7 +54,7 @@ public class SystemRequestLogDTO {
     @Schema(description = "返回数据")
     private String responseBody;
 
-    @Schema(description = "用户")
+    @Schema(description = "请求用户")
     private String userName;
 
     @Schema(description = "endpoint")

@@ -74,7 +74,8 @@ public class RequestLogWriteAdvice implements ResponseBodyAdvice<Object> {
 
         try {
             AuthUser currentUser = CurrentUserHolder.getCurrentUser();
-            systemRequestLog.setUserName(currentUser == null ? null : currentUser.getName());
+            systemRequestLog.setUserCode(currentUser == null ? null : currentUser.getCode());
+            systemRequestLog.setUserName(currentUser == null ? null : currentUser.getNickName());
             systemRequestLog.setResponseHeaders(this.responseHeaders(response));
             systemRequestLog.setResponseBody(this.responseBody(body, selectedMediaType, selectedConverterType));
             systemRequestLog.setResponseStatus(this.responseStatus(response));

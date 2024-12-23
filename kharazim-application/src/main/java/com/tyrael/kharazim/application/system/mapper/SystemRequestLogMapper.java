@@ -43,7 +43,8 @@ public interface SystemRequestLogMapper extends BasePageMapper<SystemRequestLog>
     default PageResponse<SystemRequestLog> page(PageSystemRequestLogRequest pageCommand) {
         LambdaQueryWrapperX<SystemRequestLog> queryWrapper = new LambdaQueryWrapperX<>();
         queryWrapper.eqIfPresent(SystemRequestLog::getResponseStatus, pageCommand.getResponseStatus())
-                .eqIfPresent(SystemRequestLog::getEndpoint, pageCommand.getEndpoint())
+                .eqIfHasText(SystemRequestLog::getEndpoint, pageCommand.getEndpoint())
+                .eqIfHasText(SystemRequestLog::getUserCode, pageCommand.getUserCode())
                 .geIfPresent(SystemRequestLog::getStartTime, pageCommand.getStartTimeRangeBegin())
                 .leIfPresent(SystemRequestLog::getStartTime, pageCommand.getStartTimeRangeEnd())
                 .geIfPresent(SystemRequestLog::getEndTime, pageCommand.getEndTimeRangeBegin())

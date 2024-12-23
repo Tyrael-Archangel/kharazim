@@ -50,6 +50,8 @@ public class SystemRequestLog {
 
     private String responseBody;
 
+    private String userCode;
+
     private String userName;
 
     private String endpoint;

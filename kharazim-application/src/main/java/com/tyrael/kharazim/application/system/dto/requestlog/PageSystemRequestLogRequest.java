@@ -19,6 +19,9 @@ public class PageSystemRequestLogRequest extends PageCommand {
     @Schema(description = "endpoint")
     private String endpoint;
 
+    @Schema(description = "请求用户编码")
+    private String userCode;
+
     @Schema(description = "请求开始时间范围-begin")
     private LocalDateTime startTimeRangeBegin;
     @Schema(description = "请求开始时间范围-end")
@@ -28,11 +31,5 @@ public class PageSystemRequestLogRequest extends PageCommand {
     private LocalDateTime endTimeRangeBegin;
     @Schema(description = "请求结束时间范围-end")
     private LocalDateTime endTimeRangeEnd;
-
-    @Schema(description = "时间范围-begin")
-    private LocalDateTime timeRangeBegin;
-
-    @Schema(description = "时间范围-end")
-    private LocalDateTime timeRangeEnd;
 
 }
