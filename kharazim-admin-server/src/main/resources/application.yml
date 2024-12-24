@@ -1,8 +1,0 @@
-server:
-  port: 9508
-  servlet:
-    context-path: /kharazim-admin
-
-spring:
-  application:
-    name: kharazim-admin-server

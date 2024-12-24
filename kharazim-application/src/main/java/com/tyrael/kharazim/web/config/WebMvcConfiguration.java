@@ -3,7 +3,7 @@ package com.tyrael.kharazim.web.config;
 import com.tyrael.kharazim.application.base.auth.AuthConfig;
 import com.tyrael.kharazim.application.base.auth.CurrentUserMethodArgumentResolver;
 import com.tyrael.kharazim.application.base.auth.GlobalAuthInterceptor;
-import com.tyrael.kharazim.application.config.requestlog.RequestLogRequestMappingPrepareInterceptor;
+import com.tyrael.kharazim.application.config.requestlog.RequestLogEndpointPrepareInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,7 +28,7 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     private final CurrentUserMethodArgumentResolver currentUserMethodArgumentResolver;
     private final GlobalAuthInterceptor globalAuthInterceptor;
     private final AuthConfig authConfig;
-    private final ObjectProvider<RequestLogRequestMappingPrepareInterceptor> requestLogRequestMappingPrepareInterceptor;
+    private final ObjectProvider<RequestLogEndpointPrepareInterceptor> requestLogEndpointPrepareInterceptor;
 
     @Value("${server.error.path:${error.path:/error}}")
     private String errorPath;
@@ -48,23 +48,23 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
 
         if (authConfig.isEnable()) {
 
-            String[] knife4jResources = {
+            List<String> excludeResources = List.of(
+                    "/",
+                    errorPath,
+                    "/bootstrap",
+                    "/favicon.ico",
                     "/swagger-resources/**",
                     "/doc.html",
                     "/webjars/**",
                     "/*/api-docs/**"
-            };
+            );
 
             registry.addInterceptor(globalAuthInterceptor)
-                    .excludePathPatterns(errorPath)
-                    .excludePathPatterns("/favicon.ico")
-                    .excludePathPatterns("/")
-                    .excludePathPatterns("/bootstrap")
-                    .excludePathPatterns(knife4jResources)
+                    .excludePathPatterns(excludeResources)
                     .order(Ordered.HIGHEST_PRECEDENCE);
         }
 
-        requestLogRequestMappingPrepareInterceptor.ifAvailable(registry::addInterceptor);
+        requestLogEndpointPrepareInterceptor.ifAvailable(registry::addInterceptor);
 
     }
 

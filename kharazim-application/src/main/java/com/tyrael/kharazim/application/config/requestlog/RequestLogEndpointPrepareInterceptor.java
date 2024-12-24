@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 @ConditionalOnBean(GlobalRequestLogConfig.class)
-public class RequestLogRequestMappingPrepareInterceptor implements HandlerInterceptor, ApplicationRunner {
+public class RequestLogEndpointPrepareInterceptor implements HandlerInterceptor, ApplicationRunner {
 
     private final BeanFactory beanFactory;
     private final SystemRequestLogService systemRequestLogService;
@@ -41,8 +41,8 @@ public class RequestLogRequestMappingPrepareInterceptor implements HandlerInterc
 
         try {
             determineMethodHandler(handler);
-        } catch (Exception ignore) {
-            // ignore
+        } catch (Exception e) {
+            log.info("system request log endpoint prepare error: {}", e.getMessage(), e);
         }
 
         return true;

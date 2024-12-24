@@ -24,13 +24,6 @@ spring:
   servlet:
     multipart:
       max-file-size: 10MB
-  boot:
-    admin:
-      client:
-        url: http://localhost:9508/kharazim-admin
-        instance:
-          service-host-type: ip
-        enabled: false
   mvc:
     format:
       date-time: yyyy-MM-dd HH:mm:ss
@@ -111,15 +104,6 @@ springdoc:
       packages-to-scan:
         - com.tyrael.kharazim.web.controller.demo
 
-management:
-  endpoints:
-    enabled-by-default: true
-    web:
-      exposure:
-        include: "*"
-  info:
-    env:
-      enabled: true
 file:
   home-path: ${FILE_HOME:}
   root-dir: ${FILE_ROOT_DIR:.kharazim_files}

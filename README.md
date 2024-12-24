@@ -2,13 +2,11 @@
 
 A quality outpatient operate system
 
-该项目分为三个模块
+该项目分为两个模块
 
 * kharazim-application，提供高质量的门诊管理系统后端服务
     * 使用spring-boot作为核心框架，用尽量简单清晰的代码处理逻辑
     * 集成mybatis-plus作为mybatis的持久层增强工具
     * 使用knife4j管理接口文档
-* kharazim-admin-server，系统监控、管理工具
-  * 使用开源项目spring-boot-admin
 * kharazim-front，提供高质量的门诊管理系统前端服务
     * vue3 + vite + element-plus
