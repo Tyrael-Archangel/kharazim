@@ -1,5 +1,6 @@
 package com.tyrael.kharazim.web.controller.system;
 
+import com.tyrael.kharazim.application.config.requestlog.GlobalRequestLogConfig;
 import com.tyrael.kharazim.application.system.dto.requestlog.PageSystemRequestLogRequest;
 import com.tyrael.kharazim.application.system.dto.requestlog.SystemEndpointDTO;
 import com.tyrael.kharazim.application.system.dto.requestlog.SystemRequestLogDTO;
@@ -13,6 +14,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -26,6 +28,7 @@ import org.springframework.web.bind.annotation.*;
 public class SystemRequestLogController {
 
     private final SystemRequestLogService systemRequestLogService;
+    private final ObjectProvider<GlobalRequestLogConfig> globalRequestLogConfig;
 
     @GetMapping("/latest/{rows}")
     @Operation(description = "获取最新若干条日志", summary = "最新若干条日志")
@@ -44,6 +47,15 @@ public class SystemRequestLogController {
     @Operation(summary = "获取所有endpoints")
     public MultiResponse<SystemEndpointDTO> endpoints() {
         return MultiResponse.success(systemRequestLogService.endpoints());
+    }
+
+    @GetMapping("/config-ignored-urls")
+    @Operation(summary = "获取已配置的忽略记录请求日志的url")
+    public MultiResponse<String> configIgnoredUrls() {
+        GlobalRequestLogConfig requestLogConfig = globalRequestLogConfig.getIfAvailable();
+        return requestLogConfig == null
+                ? MultiResponse.error("系统未开启记录请求日志")
+                : MultiResponse.success(requestLogConfig.getIgnoreUrls());
     }
 
     @PutMapping("/disable/endpoint")
