@@ -68,6 +68,7 @@ public class SystemRequestLogConverter {
         if (patternConditions.size() == 1) {
             activePatternsConditionString = patternConditions.iterator().next();
         } else {
+            // SIGN_THERE_COMBINE @see SIGN_THERE_SPLIT
             activePatternsConditionString = patternConditions.stream()
                     .sorted()
                     .collect(Collectors.joining(" || ", "[", "]"));
@@ -80,5 +81,28 @@ public class SystemRequestLogConverter {
 
         return activePatternsConditionString;
     }
+
+    /**
+     * patternConditions of endpoint
+     */
+    public List<String> patternConditions(String endpoint) {
+        int splitMethodsIndex = endpoint.indexOf("  ");
+        String activePatternsConditionString;
+        if (splitMethodsIndex == -1) {
+            activePatternsConditionString = endpoint;
+        } else {
+            activePatternsConditionString = endpoint.substring(0, splitMethodsIndex);
+        }
+
+        // SIGN_THERE_SPLIT @see SIGN_THERE_COMBINE
+        if (activePatternsConditionString.contains(" || ")
+                && activePatternsConditionString.startsWith("[")
+                && activePatternsConditionString.endsWith("]")) {
+            return List.of(activePatternsConditionString.substring(1, activePatternsConditionString.length() - 2).split(" \\|\\| "));
+        } else {
+            return List.of(activePatternsConditionString);
+        }
+    }
+
 
 }

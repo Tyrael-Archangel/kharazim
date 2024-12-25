@@ -11,6 +11,7 @@ import com.tyrael.kharazim.common.dto.Response;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
@@ -45,8 +46,8 @@ public class SystemRequestLogController {
 
     @GetMapping("/endpoints")
     @Operation(summary = "获取所有endpoints")
-    public MultiResponse<SystemEndpointDTO> endpoints() {
-        return MultiResponse.success(systemRequestLogService.endpoints());
+    public MultiResponse<SystemEndpointDTO> endpoints(HttpServletRequest httpServletRequest) {
+        return MultiResponse.success(systemRequestLogService.endpoints(httpServletRequest));
     }
 
     @GetMapping("/config-ignored-urls")

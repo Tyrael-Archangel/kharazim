@@ -52,6 +52,7 @@ system:
         - ${server.servlet.context-path}/bootstrap
         - /**/favicon.ico
         - /**/api-docs/**
+        - /**/api-docs.yaml/**
         - /**/webjars/**
         - /**/swagger-resources/**
         - /**/actuator/**

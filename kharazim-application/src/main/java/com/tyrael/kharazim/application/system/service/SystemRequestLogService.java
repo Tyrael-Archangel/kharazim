@@ -6,6 +6,7 @@ import com.tyrael.kharazim.application.system.dto.requestlog.PageSystemRequestLo
 import com.tyrael.kharazim.application.system.dto.requestlog.SystemEndpointDTO;
 import com.tyrael.kharazim.application.system.dto.requestlog.SystemRequestLogDTO;
 import com.tyrael.kharazim.common.dto.PageResponse;
+import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.List;
 
@@ -41,9 +42,10 @@ public interface SystemRequestLogService {
     /**
      * all endpoints
      *
+     * @param httpServletRequest HttpServletRequest
      * @return all endpoints
      */
-    List<SystemEndpointDTO> endpoints();
+    List<SystemEndpointDTO> endpoints(HttpServletRequest httpServletRequest);
 
     /**
      * 禁止endpoint记录日志

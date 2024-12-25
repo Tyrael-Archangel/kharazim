@@ -1,6 +1,12 @@
 <template>
   <el-table :data="endpoints">
-    <el-table-column label="endpoint" prop="endpoint" />
+    <el-table-column label="endpoint">
+      <template v-slot="{ row }">
+        <el-link type="primary" @click="$emit('choiceEndpoint', row.endpoint)">
+          {{ row.endpoint }}
+        </el-link>
+      </template>
+    </el-table-column>
     <el-table-column align="center" label="是否活跃" prop="active">
       <template v-slot="{ row }">
         <el-tag v-if="row.active" type="success">是</el-tag>
@@ -12,7 +18,10 @@
         <el-switch
           v-model="row.enableSystemLog"
           :active-value="true"
+          :disabled="!row.enableSystemLog && !row.canEnableSystemLog"
+          :inactive-text="!row.canEnableSystemLog ? 'X' : ''"
           :inactive-value="false"
+          inline-prompt
           @change="switchEnableLog(row)"
         />
       </template>
@@ -29,6 +38,7 @@ interface Endpoint {
   endpoint: string;
   active: boolean;
   enableSystemLog: boolean;
+  canEnableSystemLog: boolean;
 }
 
 const endpoints = ref<Endpoint[]>([]);
@@ -41,14 +51,12 @@ function loadEndpoints() {
 
 function switchEnableLog(endpoint: Endpoint) {
   const url = endpoint.enableSystemLog
-    ? "/kharazim-api/system/request-log/enable/endpoint"
-    : "/kharazim-api/system/request-log/disable/endpoint";
-  axios.put(url, null, {
-    params: {
-      endpoint: endpoint.endpoint,
-    },
-  });
+    ? `/kharazim-api/system/request-log/enable/endpoint?endpoint=${endpoint.endpoint}`
+    : `/kharazim-api/system/request-log/disable/endpoint?endpoint=${endpoint.endpoint}`;
+  axios.put(url);
 }
+
+defineEmits(["choiceEndpoint"]);
 
 onMounted(() => {
   loadEndpoints();

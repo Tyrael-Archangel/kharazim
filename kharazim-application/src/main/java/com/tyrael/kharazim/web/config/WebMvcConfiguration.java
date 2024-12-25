@@ -56,7 +56,8 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
                     "/swagger-resources/**",
                     "/doc.html",
                     "/webjars/**",
-                    "/*/api-docs/**"
+                    "/*/api-docs/**",
+                    "/*/api-docs.yaml/**"
             );
 
             registry.addInterceptor(globalAuthInterceptor)

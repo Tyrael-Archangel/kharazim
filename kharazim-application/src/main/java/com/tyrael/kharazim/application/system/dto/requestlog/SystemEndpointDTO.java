@@ -25,4 +25,7 @@ public class SystemEndpointDTO {
     @Schema(description = "是否允许记录系统日志")
     private Boolean enableSystemLog;
 
+    @Schema(description = "是否可以开启记录系统日志")
+    private Boolean canEnableSystemLog;
+
 }

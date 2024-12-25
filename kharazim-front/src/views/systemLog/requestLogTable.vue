@@ -143,8 +143,11 @@
       @current-change="loadSystemRequestLogs"
     />
   </div>
-  <el-dialog v-model="detailDialogVisible" title="详细信息">
-    <p>{{ dialogContent }}</p>
+  <el-dialog v-model="detailDialogVisible" title="详细信息" width="60%">
+    <div style="display: flex; flex-direction: column; align-items: flex-end">
+      <el-button @click="copyToClipboard">复制</el-button>
+    </div>
+    <pre>{{ dialogContent }}</pre>
   </el-dialog>
 </template>
 
@@ -154,6 +157,7 @@ import { AxiosResponse } from "axios";
 import axios from "@/utils/http.js";
 import { dateTimeFormat } from "@/utils/DateUtil";
 import { loadSimpleUsers, SimpleUser } from "@/views/user/user-list";
+import { ElMessage } from "element-plus";
 
 const requestLogPageData = ref({ totalCount: 0, data: [] });
 
@@ -243,13 +247,44 @@ const detailDialogVisible = ref(false);
 const dialogContent = ref("");
 
 function showDetailDialog(detail: any) {
-  dialogContent.value = detail;
+  try {
+    dialogContent.value = JSON.stringify(JSON.parse(detail), null, 2);
+  } catch (e) {
+    dialogContent.value = detail;
+  }
+
   detailDialogVisible.value = true;
 }
+
+function copyToClipboard() {
+  navigator.clipboard.writeText(dialogContent.value).then(() => {
+    ElMessage({
+      message: "内容已复制到剪切板",
+      type: "success",
+    });
+  });
+}
+
+function showEndpointLogs(endpoint: string) {
+  Object.assign(pageRequest, initPageRequest);
+  pageRequest.endpoint = endpoint;
+  loadSystemRequestLogs();
+}
+
+defineExpose({
+  showEndpointLogs,
+});
 
 onMounted(() => {
   loadSystemRequestLogs();
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+pre {
+  background-color: #f7f7f7;
+  padding: 10px;
+  border-radius: 4px;
+  white-space: pre-wrap;
+}
+</style>

@@ -3,6 +3,7 @@ package com.tyrael.kharazim.web.controller.system;
 import com.tyrael.kharazim.application.system.dto.requestlog.PageSystemRequestLogRequest;
 import com.tyrael.kharazim.web.controller.BaseControllerTest;
 import org.junit.jupiter.api.Test;
+import org.springframework.mock.web.MockHttpServletRequest;
 
 /**
  * @author Tyrael Archangel
@@ -27,17 +28,17 @@ class SystemRequestLogControllerTest extends BaseControllerTest<SystemRequestLog
 
     @Test
     void endpoints() {
-        super.performWhenCall(mockController.endpoints());
+        super.performWhenCall(mockController.endpoints(new MockHttpServletRequest()));
     }
 
     @Test
     void disableEndpointLog() {
-        super.performWhenCall(mockController.disableEndpointLog("{GET [/system/dict/{code}/items]}"));
+        super.performWhenCall(mockController.disableEndpointLog("/system/dict/{code}/items  GET"));
     }
 
     @Test
     void enableEndpointLog() {
-        super.performWhenCall(mockController.enableEndpointLog("{GET [/system/dict/{code}/items]}"));
+        super.performWhenCall(mockController.enableEndpointLog("/system/dict/{code}/items  GET"));
     }
 
 }

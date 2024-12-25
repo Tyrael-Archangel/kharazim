@@ -1,5 +1,7 @@
 package com.tyrael.kharazim.application.system.service.impl;
 
+import com.tyrael.kharazim.application.base.auth.RequestPathMatcher;
+import com.tyrael.kharazim.application.config.requestlog.GlobalRequestLogConfig;
 import com.tyrael.kharazim.application.system.domain.SystemRequestLog;
 import com.tyrael.kharazim.application.system.dto.requestlog.PageSystemRequestLogRequest;
 import com.tyrael.kharazim.application.system.dto.requestlog.SystemEndpointDTO;
@@ -8,9 +10,12 @@ import com.tyrael.kharazim.application.system.dto.requestlog.SystemRequestLogDTO
 import com.tyrael.kharazim.application.system.mapper.SystemRequestLogMapper;
 import com.tyrael.kharazim.application.system.service.SystemRequestLogService;
 import com.tyrael.kharazim.common.dto.PageResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequestWrapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -40,6 +45,7 @@ public class SystemRequestLogServiceImpl implements SystemRequestLogService {
     private final StringRedisTemplate redisTemplate;
     private final BeanFactory beanFactory;
     private final SystemRequestLogConverter systemRequestLogConverter;
+    private final ObjectProvider<GlobalRequestLogConfig> globalRequestLogConfig;
 
     @Override
     public void save(SystemRequestLog systemRequestLog) {
@@ -65,7 +71,7 @@ public class SystemRequestLogServiceImpl implements SystemRequestLogService {
     }
 
     @Override
-    public List<SystemEndpointDTO> endpoints() {
+    public List<SystemEndpointDTO> endpoints(HttpServletRequest httpServletRequest) {
         RequestMappingHandlerMapping requestMappingHandlerMapping = beanFactory.getBean(
                 "requestMappingHandlerMapping", RequestMappingHandlerMapping.class);
 
@@ -83,11 +89,39 @@ public class SystemRequestLogServiceImpl implements SystemRequestLogService {
                     SystemEndpointDTO endpointDTO = new SystemEndpointDTO();
                     endpointDTO.setEndpoint(e);
                     endpointDTO.setActive(allActiveEndpoints.contains(e));
-                    endpointDTO.setEnableSystemLog(!disabledEndpoints.contains(e));
+                    boolean canEnableSystemLog = this.endpointCanEnableLog(e, httpServletRequest);
+                    endpointDTO.setEnableSystemLog(canEnableSystemLog && !disabledEndpoints.contains(e));
+                    endpointDTO.setCanEnableSystemLog(canEnableSystemLog);
                     return endpointDTO;
                 })
                 .sorted(Comparator.comparing(SystemEndpointDTO::getEndpoint))
                 .toList();
+    }
+
+    private boolean endpointCanEnableLog(String endpoint, HttpServletRequest httpServletRequest) {
+
+        GlobalRequestLogConfig config = globalRequestLogConfig.getIfAvailable();
+        if (config == null) {
+            return false;
+        }
+
+        List<String> patternConditions = systemRequestLogConverter.patternConditions(endpoint);
+        RequestPathMatcher requestPathMatcher = new RequestPathMatcher(config.getIgnoreUrls());
+
+        return patternConditions.stream()
+                .noneMatch(e -> requestPathMatcher.matches(
+                        new HttpServletRequestWrapper(httpServletRequest) {
+
+                            @Override
+                            public String getRequestURI() {
+                                return httpServletRequest.getContextPath() + e;
+                            }
+
+                            @Override
+                            public Object getAttribute(String name) {
+                                return null;
+                            }
+                        }));
     }
 
     private Set<String> disabledEndpoints() {

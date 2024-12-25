@@ -1,13 +1,12 @@
 <template>
-  <el-tabs type="card">
-    <el-tab-pane label="系统请求日志">
-      <RequestLogTable />
+  <el-tabs v-model="tabModel" type="card">
+    <el-tab-pane label="系统请求日志" name="systemLogTab">
+      <RequestLogTable ref="requestLogTableRef" />
     </el-tab-pane>
-    <el-tab-pane label="endpoints">
-      <EndpointManage />
+    <el-tab-pane label="endpoints" name="endpointTab">
+      <EndpointManage @choice-endpoint="showEndpointLogs" />
     </el-tab-pane>
-    <el-tab-pane label="配置状态">
-      <br />
+    <el-tab-pane label="配置状态" name="configStatusTab">
       <el-card shadow="never">
         <el-space>
           <el-text size="large">系统记录请求日志状态:</el-text>
@@ -52,6 +51,15 @@ function loadIgnoreRequestLogUrls() {
       configIgnoredUrls.value = response.data.data;
     }
   });
+}
+
+const tabModel = ref("systemLogTab");
+
+const requestLogTableRef = ref<InstanceType<typeof RequestLogTable>>();
+
+function showEndpointLogs(endpoint: string) {
+  tabModel.value = "systemLogTab";
+  requestLogTableRef.value?.showEndpointLogs(endpoint);
 }
 
 onMounted(() => {
