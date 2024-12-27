@@ -105,7 +105,9 @@ public class AddProductSkuTest extends BaseControllerTest<ProductSkuController> 
         while (category != null && CollectionUtils.isNotEmpty(category.getChildren())) {
             category = CollectionUtils.random(category.getChildren());
         }
-        ShouldNotHappenException.assertNotNull(category);
+        if (category == null) {
+            throw new ShouldNotHappenException();
+        }
         return category;
     }
 

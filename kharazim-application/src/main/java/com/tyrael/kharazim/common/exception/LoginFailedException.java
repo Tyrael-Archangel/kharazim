@@ -10,8 +10,4 @@ public class LoginFailedException extends UnauthorizedException {
         super(message);
     }
 
-    public LoginFailedException() {
-        super("Login failed");
-    }
-
 }

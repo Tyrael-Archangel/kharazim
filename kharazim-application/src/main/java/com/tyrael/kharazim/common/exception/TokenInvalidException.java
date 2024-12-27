@@ -10,8 +10,4 @@ public class TokenInvalidException extends UnauthorizedException {
         super(message);
     }
 
-    public TokenInvalidException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
 }
