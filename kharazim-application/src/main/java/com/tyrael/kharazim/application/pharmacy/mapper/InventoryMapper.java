@@ -51,7 +51,7 @@ public interface InventoryMapper extends BasePageMapper<Inventory> {
         if (StringUtils.isNotBlank(skuName)) {
             List<String> skuCodes = ProductSkuMapper.filterSkuCodesByName(skuName);
             if (CollectionUtils.isEmpty(skuCodes)) {
-                return PageResponse.success(new ArrayList<>(), 0L);
+                return PageResponse.success(new ArrayList<>(), 0);
             } else {
                 queryWrapper.in(Inventory::getSkuCode, skuCodes);
             }

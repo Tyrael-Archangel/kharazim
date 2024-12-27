@@ -1,11 +1,9 @@
 package com.tyrael.kharazim.common.dto;
 
-import com.google.common.collect.Lists;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.util.Collection;
-import java.util.Optional;
 
 /**
  * @author Tyrael Archangel
@@ -26,10 +24,6 @@ public class PageResponse<T> extends MultiResponse<T> {
         return response;
     }
 
-    public static <T> PageResponse<T> success(Collection<T> data, long totalCount) {
-        return success(data, (int) totalCount);
-    }
-
     public static <T> PageResponse<T> error(String msg) {
         PageResponse<T> response = new PageResponse<>();
         response.markError(msg);
@@ -37,9 +31,4 @@ public class PageResponse<T> extends MultiResponse<T> {
         return response;
     }
 
-    @Override
-    public Collection<T> getData() {
-        return Optional.ofNullable(super.getData())
-                .orElseGet(Lists::newArrayList);
-    }
 }

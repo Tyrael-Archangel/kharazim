@@ -3,8 +3,8 @@ package com.tyrael.kharazim.common.dto;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 
 /**
  * @author Tyrael Archangel
@@ -32,7 +32,7 @@ public class MultiResponse<T> extends DataResponse<Collection<T>> {
 
     @Override
     public Collection<T> getData() {
-        return data == null ? Collections.emptyList() : data;
+        return data == null ? new ArrayList<>() : data;
     }
 
 }
