@@ -76,18 +76,18 @@ public class GlobalAuthInterceptor implements HandlerInterceptor {
     }
 
     private String getTokenFromHeader(HttpServletRequest request) {
-        return request.getHeader(SystemGlobalConfig.TOKEN_HEADER);
+        return request.getHeader(AuthConfig.TOKEN_HEADER);
     }
 
     private String getTokenFromParam(HttpServletRequest request) {
-        return request.getParameter(SystemGlobalConfig.TOKEN_HEADER);
+        return request.getParameter(AuthConfig.TOKEN_HEADER);
     }
 
     private String getTokenFromCookie(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
-                if (SystemGlobalConfig.TOKEN_HEADER.equalsIgnoreCase(cookie.getName())) {
+                if (AuthConfig.TOKEN_HEADER.equalsIgnoreCase(cookie.getName())) {
                     return cookie.getValue();
                 }
             }

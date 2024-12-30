@@ -2,7 +2,7 @@ package com.tyrael.kharazim.application.user.service.impl;
 
 import com.tyrael.kharazim.application.base.auth.AuthUser;
 import com.tyrael.kharazim.application.config.BusinessCodeConstants;
-import com.tyrael.kharazim.application.config.CacheKeyConstants;
+import com.tyrael.kharazim.application.config.cache.CacheKeyConstants;
 import com.tyrael.kharazim.application.system.service.CodeGenerator;
 import com.tyrael.kharazim.application.user.converter.UserConverter;
 import com.tyrael.kharazim.application.user.domain.Role;

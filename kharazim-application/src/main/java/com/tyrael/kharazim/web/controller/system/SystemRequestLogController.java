@@ -16,7 +16,11 @@ import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.cache.CacheManager;
+import org.springframework.context.ApplicationContext;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 /**
  * @author Tyrael Archangel
@@ -30,6 +34,7 @@ public class SystemRequestLogController {
 
     private final SystemRequestLogService systemRequestLogService;
     private final ObjectProvider<GlobalRequestLogConfig> globalRequestLogConfig;
+    private final ApplicationContext applicationContext;
 
     @GetMapping("/latest/{rows}")
     @Operation(description = "获取最新若干条日志", summary = "最新若干条日志")
@@ -41,6 +46,8 @@ public class SystemRequestLogController {
     @GetMapping("/page")
     @Operation(summary = "日志分页")
     public PageResponse<SystemRequestLogDTO> page(@ParameterObject PageSystemRequestLogRequest pageCommand) {
+        Map<String, CacheManager> beansOfType = applicationContext.getBeansOfType(CacheManager.class);
+        System.out.println(beansOfType.size());
         return systemRequestLogService.page(pageCommand);
     }
 

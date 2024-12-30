@@ -1,7 +1,7 @@
 package com.tyrael.kharazim.application.system.service.impl;
 
 import com.google.common.collect.Lists;
-import com.tyrael.kharazim.application.config.CacheKeyConstants;
+import com.tyrael.kharazim.application.config.cache.CacheKeyConstants;
 import com.tyrael.kharazim.application.system.domain.Address;
 import com.tyrael.kharazim.application.system.dto.address.AddressDTO;
 import com.tyrael.kharazim.application.system.dto.address.AddressTreeNodeDTO;

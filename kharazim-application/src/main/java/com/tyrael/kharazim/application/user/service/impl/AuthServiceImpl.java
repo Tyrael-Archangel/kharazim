@@ -4,7 +4,7 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.tyrael.kharazim.application.base.auth.AuthUser;
 import com.tyrael.kharazim.application.base.auth.CurrentUserHolder;
-import com.tyrael.kharazim.application.config.CacheKeyConstants;
+import com.tyrael.kharazim.application.config.cache.CacheKeyConstants;
 import com.tyrael.kharazim.application.user.domain.Role;
 import com.tyrael.kharazim.application.user.domain.User;
 import com.tyrael.kharazim.application.user.domain.UserRole;

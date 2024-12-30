@@ -13,18 +13,6 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "system.global")
 public class SystemGlobalConfig {
 
-    public static final String TOKEN_HEADER = "ACCESS-TOKEN";
-
-    /**
-     * 是否开启redis缓存
-     */
-    private boolean enableRedisCache = true;
-
-    /**
-     * 是否开启caffeine缓存
-     */
-    private boolean enableCaffeineCache = true;
-
     /**
      * 是否将异常轨迹打印给前端
      */

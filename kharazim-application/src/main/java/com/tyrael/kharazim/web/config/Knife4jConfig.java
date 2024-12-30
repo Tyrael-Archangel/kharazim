@@ -5,6 +5,7 @@ import com.github.xiaoymin.knife4j.extend.filter.basic.JakartaServletSecurityBas
 import com.github.xiaoymin.knife4j.extend.util.FilterUtils;
 import com.github.xiaoymin.knife4j.spring.configuration.Knife4jHttpBasic;
 import com.github.xiaoymin.knife4j.spring.configuration.Knife4jProperties;
+import com.tyrael.kharazim.application.base.auth.AuthConfig;
 import com.tyrael.kharazim.application.user.dto.auth.LoginRequest;
 import com.tyrael.kharazim.application.user.service.AuthService;
 import com.tyrael.kharazim.common.exception.UnauthorizedException;
@@ -88,7 +89,7 @@ public class Knife4jConfig {
                     String token = this.tryAuth(auth, request);
 
                     request.getSession().setAttribute(GlobalConstants.KNIFE4J_BASIC_AUTH_SESSION, token);
-                    response.addCookie(new Cookie(SystemGlobalConfig.TOKEN_HEADER, token));
+                    response.addCookie(new Cookie(AuthConfig.TOKEN_HEADER, token));
 
                 } catch (UnauthorizedException e) {
 

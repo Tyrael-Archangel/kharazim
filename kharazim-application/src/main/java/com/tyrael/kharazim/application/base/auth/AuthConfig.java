@@ -16,6 +16,8 @@ import java.util.List;
 @ConfigurationProperties(prefix = "system.global.auth")
 public class AuthConfig {
 
+    public static final String TOKEN_HEADER = "ACCESS-TOKEN";
+
     /**
      * 是否开启身份验证
      */

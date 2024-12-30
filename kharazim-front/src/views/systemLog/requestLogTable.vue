@@ -144,7 +144,8 @@
     />
   </div>
   <el-dialog v-model="detailDialogVisible" title="详细信息" width="60%">
-    <div style="display: flex; flex-direction: column; align-items: flex-end">
+    <div style="display: flex; justify-content: flex-end; align-items: flex-end">
+      <el-button @click="formatDialogContent">格式化</el-button>
       <el-button @click="copyToClipboard">复制</el-button>
     </div>
     <pre>{{ dialogContent }}</pre>
@@ -247,13 +248,22 @@ const detailDialogVisible = ref(false);
 const dialogContent = ref("");
 
 function showDetailDialog(detail: any) {
-  try {
-    dialogContent.value = JSON.stringify(JSON.parse(detail), null, 2);
-  } catch (e) {
-    dialogContent.value = detail;
-  }
-
+  dialogContent.value = detail;
   detailDialogVisible.value = true;
+}
+
+function formatDialogContent() {
+  const content = dialogContent.value;
+  if (content && content.length > 0) {
+    try {
+      dialogContent.value = JSON.stringify(JSON.parse(content), null, 2);
+    } catch (ignore) {
+      ElMessage({
+        message: "格式化失败",
+        type: "error",
+      });
+    }
+  }
 }
 
 function copyToClipboard() {

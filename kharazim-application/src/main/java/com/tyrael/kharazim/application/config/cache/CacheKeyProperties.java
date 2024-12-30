@@ -1,4 +1,4 @@
-package com.tyrael.kharazim.application.config;
+package com.tyrael.kharazim.application.config.cache;
 
 import lombok.Data;
 

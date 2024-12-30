@@ -1,7 +1,7 @@
 package com.tyrael.kharazim.web.controller.user;
 
 import com.tyrael.kharazim.application.base.auth.CurrentUserHolder;
-import com.tyrael.kharazim.application.config.CacheKeyConstants;
+import com.tyrael.kharazim.application.config.cache.CacheKeyConstants;
 import com.tyrael.kharazim.application.user.dto.auth.LoginRequest;
 import com.tyrael.kharazim.application.user.service.AuthService;
 import com.tyrael.kharazim.common.dto.DataResponse;

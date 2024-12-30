@@ -27,6 +27,9 @@ spring:
   mvc:
     format:
       date-time: yyyy-MM-dd HH:mm:ss
+  cache:
+    type: caffeine
+
 mybatis-plus:
   global-config:
     banner: false

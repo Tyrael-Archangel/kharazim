@@ -24,7 +24,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static com.tyrael.kharazim.application.config.CacheKeyConstants.CURRENT_USER_INFO;
+import static com.tyrael.kharazim.application.config.cache.CacheKeyConstants.CURRENT_USER_INFO;
 
 /**
  * @author Tyrael Archangel
