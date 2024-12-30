@@ -28,7 +28,27 @@ spring:
     format:
       date-time: yyyy-MM-dd HH:mm:ss
   cache:
-    type: caffeine
+    type: redis
+    redis:
+      key-prefix: KHARAZIM_CACHE
+      time-to-live: 20m
+      caches:
+        - name: CURRENT_USER_INFO
+          capacity: 10
+          ttl: 5m
+        - name: ADDRESS_TREE_NODE
+          capacity: 20
+          ttl: 24h
+
+    caffeine:
+      default-ttl: 20m
+      caches:
+        - name: CURRENT_USER_INFO
+          capacity: 10
+          ttl: 5m
+        - name: ADDRESS_TREE_NODE
+          capacity: 20
+          ttl: 24h
 
 mybatis-plus:
   global-config:
