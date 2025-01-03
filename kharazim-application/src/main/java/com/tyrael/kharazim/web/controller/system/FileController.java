@@ -37,7 +37,7 @@ public class FileController {
         UploadFileVO fileVO = new UploadFileVO();
         fileVO.setFile(file);
         fileVO.setFileName(fileName);
-        return DataResponse.ok(fileService.upload(fileVO, currentUser));
+        return DataResponse.success(fileService.upload(fileVO, currentUser));
     }
 
     @GetMapping("/fetch/{fileId}")

@@ -45,13 +45,13 @@ public class PrescriptionController {
     @GetMapping("/detail/{code}")
     @Operation(summary = "处方详情")
     public DataResponse<PrescriptionVO> detail(@Schema(description = "处方编码") @PathVariable String code) {
-        return DataResponse.ok(prescriptionService.detail(code));
+        return DataResponse.success(prescriptionService.detail(code));
     }
 
     @PostMapping("/create")
     @Operation(summary = "创建处方", description = "创建处方，返回处方编码")
     public DataResponse<String> create(@RequestBody @Valid CreatePrescriptionRequest request) {
-        return DataResponse.ok(prescriptionService.create(request));
+        return DataResponse.success(prescriptionService.create(request));
     }
 
 }

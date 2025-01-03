@@ -36,7 +36,7 @@ public class CustomerController {
     @Operation(summary = "查询会员基本信息")
     public DataResponse<CustomerBaseVO> findByCode(
             @PathVariable("code") @Parameter(description = "会员编码", required = true) String code) {
-        return DataResponse.ok(customerService.findByCode(code));
+        return DataResponse.success(customerService.findByCode(code));
     }
 
     @GetMapping("/page")
@@ -56,7 +56,7 @@ public class CustomerController {
     @Operation(summary = "新建会员")
     public DataResponse<String> add(@RequestBody @Valid AddCustomerRequest addCustomerRequest,
                                     @Schema(hidden = true) @CurrentUser AuthUser currentUser) {
-        return DataResponse.ok(customerService.add(addCustomerRequest, currentUser));
+        return DataResponse.success(customerService.add(addCustomerRequest, currentUser));
     }
 
     @PostMapping("/{code}")
@@ -108,7 +108,7 @@ public class CustomerController {
     @PostMapping("/address")
     @Operation(summary = "新建会员地址", description = "新建会员地址，返回会员地址ID")
     public DataResponse<Long> addAddress(@RequestBody @Valid AddCustomerAddressRequest addCustomerAddressRequest) {
-        return DataResponse.ok(customerService.addAddress(addCustomerAddressRequest));
+        return DataResponse.success(customerService.addAddress(addCustomerAddressRequest));
     }
 
     @DeleteMapping("/address/{customerCode}/{customerAddressId}")
@@ -149,7 +149,7 @@ public class CustomerController {
     @Operation(summary = "新增会员保险", description = "新增会员保险，返回会员保险ID")
     public DataResponse<Long> addInsurance(
             @RequestBody @Valid AddCustomerInsuranceRequest addCustomerInsuranceRequest) {
-        return DataResponse.ok(customerService.addInsurance(addCustomerInsuranceRequest));
+        return DataResponse.success(customerService.addInsurance(addCustomerInsuranceRequest));
     }
 
     @DeleteMapping("/insurance/{customerCode}/{customerInsuranceId}")
@@ -182,7 +182,7 @@ public class CustomerController {
     @Operation(summary = "查询会员的专属客服")
     public DataResponse<CustomerServiceUserVO> customerService(
             @PathVariable("customerCode") @Parameter(description = "会员编码", required = true) String customerCode) {
-        return DataResponse.ok(customerService.customerService(customerCode));
+        return DataResponse.success(customerService.customerService(customerCode));
     }
 
     @PutMapping("/service/{customerCode}/{serviceUserCode}")
@@ -199,7 +199,7 @@ public class CustomerController {
     @Operation(summary = "查询会员的专属销售顾问")
     public DataResponse<CustomerSalesConsultantVO> customerSalesConsultant(
             @PathVariable("code") @Parameter(description = "会员编码", required = true) String code) {
-        return DataResponse.ok(customerService.customerSalesConsultant(code));
+        return DataResponse.success(customerService.customerSalesConsultant(code));
     }
 
     @PutMapping("/sales-consultant/{customerCode}/{salesConsultantCode}")

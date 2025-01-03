@@ -38,7 +38,7 @@ public class AuthController {
     @Operation(description = "登录认证，获取token，访问系统其他接口都需要在header头传递ACCESS-TOKEN=获取到的token", summary = "登录认证")
     public DataResponse<String> login(@RequestBody @Valid LoginRequest loginRequest,
                                       HttpServletRequest httpServletRequest) throws LoginFailedException {
-        return DataResponse.ok(authService.safetyLogin(loginRequest, httpServletRequest));
+        return DataResponse.success(authService.safetyLogin(loginRequest, httpServletRequest));
     }
 
     @PostMapping("/logout")

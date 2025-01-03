@@ -53,7 +53,7 @@ public class ClinicController {
     @PostMapping("/add")
     @Operation(summary = "新建诊所（机构）", description = "新建诊所（机构），返回诊所（机构）编码")
     public DataResponse<String> add(@RequestBody @Valid AddClinicRequest addClinicRequest) {
-        return DataResponse.ok(clinicService.add(addClinicRequest));
+        return DataResponse.success(clinicService.add(addClinicRequest));
     }
 
     @PostMapping("/modify")

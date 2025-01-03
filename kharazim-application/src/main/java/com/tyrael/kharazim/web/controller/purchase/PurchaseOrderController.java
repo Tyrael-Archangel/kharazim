@@ -33,7 +33,7 @@ public class PurchaseOrderController {
     @Operation(summary = "创建采购单")
     public DataResponse<String> create(@RequestBody CreatePurchaseOrderRequest request,
                                        @Schema(hidden = true) @CurrentUser AuthUser currentUser) {
-        return DataResponse.ok(createPurchaseOrderService.create(request, currentUser));
+        return DataResponse.success(createPurchaseOrderService.create(request, currentUser));
     }
 
     @GetMapping("/page")
@@ -45,7 +45,7 @@ public class PurchaseOrderController {
     @GetMapping("/detail/{code}")
     @Operation(summary = "采购单详情")
     public DataResponse<PurchaseOrderVO> detail(@Schema(description = "采购单号") @PathVariable String code) {
-        return DataResponse.ok(queryPurchaseOrderService.detail(code));
+        return DataResponse.success(queryPurchaseOrderService.detail(code));
     }
 
 }

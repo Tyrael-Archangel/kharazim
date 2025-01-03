@@ -34,7 +34,7 @@ public class SettlementController {
     @GetMapping("/detail/{code}")
     @Operation(summary = "结算单详情")
     public DataResponse<SettlementOrderVO> detail(@Schema(description = "结算单编码") @PathVariable String code) {
-        return DataResponse.ok(settlementOrderService.findByCode(code));
+        return DataResponse.success(settlementOrderService.findByCode(code));
     }
 
     @GetMapping("/page")

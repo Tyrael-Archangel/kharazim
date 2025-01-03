@@ -33,7 +33,7 @@ public class FamilyController {
     @Operation(summary = "查询家庭信息")
     public DataResponse<CustomerFamilyVO> family(
             @PathVariable("familyCode") @Parameter(description = "家庭编码", required = true) String familyCode) {
-        return DataResponse.ok(customerFamilyService.family(familyCode));
+        return DataResponse.success(customerFamilyService.family(familyCode));
     }
 
     @GetMapping("/page")
@@ -45,7 +45,7 @@ public class FamilyController {
     @PostMapping("/create")
     @Operation(summary = "创建家庭", description = "创建家庭，返回家庭编码")
     public DataResponse<String> create(@RequestBody @Valid CreateFamilyRequest createFamilyRequest) {
-        return DataResponse.ok(customerFamilyService.create(createFamilyRequest));
+        return DataResponse.success(customerFamilyService.create(createFamilyRequest));
     }
 
     @PostMapping("/family-member/add")

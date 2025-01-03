@@ -25,7 +25,7 @@ public class CaptchaController {
     @PostMapping("/sms/{phoneNumber}")
     @Operation(summary = "发送短信验证码", description = "发送短信验证码，返回序列号")
     public DataResponse<String> sendSmsCaptcha(@PathVariable("phoneNumber") String phoneNumber) {
-        return DataResponse.ok(captchaService.sendSmsCaptcha(phoneNumber));
+        return DataResponse.success(captchaService.sendSmsCaptcha(phoneNumber));
     }
 
 }

@@ -35,7 +35,7 @@ public class AddressController {
     @GetMapping("/tree-by-root/{id}")
     @Operation(description = "某个节点下的地址树", summary = "根据节点ID查询某个节点的地址树")
     public DataResponse<AddressTreeNodeDTO> treeByRootId(@PathVariable("id") Long id) {
-        return DataResponse.ok(addressQueryService.addressTreeByNodeId(id));
+        return DataResponse.success(addressQueryService.addressTreeByNodeId(id));
     }
 
     @GetMapping("/query-by-name/{name}")

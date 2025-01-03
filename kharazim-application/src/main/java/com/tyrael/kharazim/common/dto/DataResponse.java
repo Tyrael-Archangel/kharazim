@@ -14,7 +14,7 @@ public class DataResponse<T> extends Response {
 
     protected T data;
 
-    public static <T> DataResponse<T> ok(T data) {
+    public static <T> DataResponse<T> success(T data) {
         DataResponse<T> response = new DataResponse<>();
         response.markSuccess();
         response.data = data;

@@ -43,7 +43,7 @@ public class ProductUnitController {
     @PostMapping("/add")
     @Operation(summary = "新建商品单位", description = "新建商品单位，返回单位编码")
     public DataResponse<String> add(@RequestBody @Valid AddProductUnitRequest addUnitRequest) {
-        return DataResponse.ok(productUnitService.add(addUnitRequest));
+        return DataResponse.success(productUnitService.add(addUnitRequest));
     }
 
     @PostMapping("/modify")

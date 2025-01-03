@@ -49,7 +49,7 @@ public class DictController {
     @Operation(summary = "添加字典项")
     public DataResponse<Long> addDictItem(@RequestBody @Valid SaveDictItemRequest addDictItemRequest,
                                           @Schema(hidden = true) @CurrentUser AuthUser currentUser) {
-        return DataResponse.ok(dictService.addDictItem(addDictItemRequest, currentUser));
+        return DataResponse.success(dictService.addDictItem(addDictItemRequest, currentUser));
     }
 
     @PutMapping("/item/{itemId}")

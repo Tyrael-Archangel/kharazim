@@ -42,7 +42,7 @@ public class SupplierController {
     @PostMapping("/add")
     @Operation(summary = "新建供应商", description = "新建供应商，返回供应商编码")
     public DataResponse<String> add(@RequestBody @Valid AddSupplierRequest addSupplierRequest) {
-        return DataResponse.ok(supplierService.add(addSupplierRequest));
+        return DataResponse.success(supplierService.add(addSupplierRequest));
     }
 
 }

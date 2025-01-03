@@ -28,13 +28,13 @@ public class ProductSkuController {
     @GetMapping("/{code}")
     @Operation(summary = "商品信息")
     public DataResponse<ProductSkuVO> getByCode(@PathVariable("code") String code) {
-        return DataResponse.ok(productSkuService.getByCode(code));
+        return DataResponse.success(productSkuService.getByCode(code));
     }
 
     @PostMapping("/create")
     @Operation(summary = "创建商品")
     public DataResponse<String> create(@RequestBody @Valid AddProductRequest addRequest) {
-        return DataResponse.ok(productSkuService.create(addRequest));
+        return DataResponse.success(productSkuService.create(addRequest));
     }
 
     @GetMapping("/page")

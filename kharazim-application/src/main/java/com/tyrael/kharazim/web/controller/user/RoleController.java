@@ -37,13 +37,13 @@ public class RoleController {
     @GetMapping("/{id}")
     @Operation(description = "角色（岗位）详情", summary = "角色（岗位）详情")
     public DataResponse<RoleDetailDTO> roleDetail(@PathVariable("id") Long id) {
-        return DataResponse.ok(roleService.roleDetail(id));
+        return DataResponse.success(roleService.roleDetail(id));
     }
 
     @PostMapping
     @Operation(description = "新增角色（岗位）", summary = "新增角色（岗位）")
     public DataResponse<Long> add(@RequestBody @Valid SaveRoleRequest addRoleRequest) {
-        return DataResponse.ok(roleService.add(addRoleRequest));
+        return DataResponse.success(roleService.add(addRoleRequest));
     }
 
     @PutMapping("/{id}")

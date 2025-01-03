@@ -32,7 +32,7 @@ public class CalculatorController {
     public DataResponse<ExpressionResult> calculate(@RequestBody ExpressionBody expressionBody) {
         String expression = expressionBody.getExpression();
         BigDecimal result = calculatorComponent.calculate(expression);
-        return DataResponse.ok(new ExpressionResult(expression, result));
+        return DataResponse.success(new ExpressionResult(expression, result));
     }
 
     @Data

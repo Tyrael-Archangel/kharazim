@@ -32,7 +32,7 @@ public class RechargeCardTypeController {
     @PostMapping
     @Operation(summary = "新建储值卡项")
     public DataResponse<String> create(@RequestBody @Valid AddRechargeCardTypeRequest addRequest) {
-        return DataResponse.ok(rechargeCardTypeService.create(addRequest));
+        return DataResponse.success(rechargeCardTypeService.create(addRequest));
     }
 
     @PostMapping("/modify")

@@ -88,7 +88,7 @@ public class CustomerRechargeCardController {
     @Operation(summary = "会员账户金额总览", description = "会员账户金额总览")
     public DataResponse<CustomerBalanceOverviewVO> balanceOverview(
             @PathVariable("customerCode") @Parameter(description = "会员编码") String customerCode) {
-        return DataResponse.ok(customerRechargeCardService.customerBalanceOverview(customerCode));
+        return DataResponse.success(customerRechargeCardService.customerBalanceOverview(customerCode));
     }
 
     @GetMapping("/customer/card-type-balance/{customerCode}")

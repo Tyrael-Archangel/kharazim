@@ -39,6 +39,6 @@ public class CustomerCommunicationLogController {
     @Operation(summary = "新建沟通记录")
     public Response add(@RequestBody @Valid AddCustomerCommunicationLogRequest addRequest,
                         @Schema(hidden = true) @CurrentUser AuthUser currentUser) {
-        return DataResponse.ok(customerCommunicationLogService.add(addRequest, currentUser));
+        return DataResponse.success(customerCommunicationLogService.add(addRequest, currentUser));
     }
 }

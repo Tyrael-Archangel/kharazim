@@ -44,7 +44,7 @@ public class ProductCategoryController {
     @PostMapping("/add")
     @Operation(summary = "新建商品分类")
     public DataResponse<String> add(@RequestBody @Valid AddProductCategoryRequest addRequest) {
-        return DataResponse.ok(productCategoryService.add(addRequest));
+        return DataResponse.success(productCategoryService.add(addRequest));
     }
 
     @PostMapping("/modify")

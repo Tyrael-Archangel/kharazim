@@ -34,7 +34,7 @@ public class UserController {
     @GetMapping("/{id}")
     @Operation(description = "根据用户ID获取用户详情", summary = "用户详情")
     public DataResponse<UserDTO> getById(@PathVariable("id") Long id) {
-        return DataResponse.ok(userService.getById(id));
+        return DataResponse.success(userService.getById(id));
     }
 
     @GetMapping("/page")
@@ -52,7 +52,7 @@ public class UserController {
     @PostMapping("/add")
     @Operation(description = "新增用户，返回用户密码", summary = "新增用户")
     public DataResponse<String> add(@RequestBody @Valid AddUserRequest addUserRequest) {
-        return DataResponse.ok(userService.add(addUserRequest));
+        return DataResponse.success(userService.add(addUserRequest));
     }
 
     @PostMapping("/modify")
@@ -75,13 +75,13 @@ public class UserController {
     @Operation(description = "重置账户密码，返回新密码", summary = "重置账户密码")
     public DataResponse<String> resetPassword(@Schema(hidden = true) @CurrentUser AuthUser currentUser,
                                               @PathVariable("userId") Long userId) {
-        return DataResponse.ok(userService.resetPassword(currentUser, userId));
+        return DataResponse.success(userService.resetPassword(currentUser, userId));
     }
 
     @GetMapping("/current-user")
     @Operation(description = "获取当前登录用户信息", summary = "获取当前登录用户信息")
     public DataResponse<CurrentUserDTO> currentUser(@Schema(hidden = true) @CurrentUser AuthUser currentUser) {
-        return DataResponse.ok(userService.getCurrentUserInfo(currentUser));
+        return DataResponse.success(userService.getCurrentUserInfo(currentUser));
     }
 
     @PutMapping("/update-status/{userId}/{status}")

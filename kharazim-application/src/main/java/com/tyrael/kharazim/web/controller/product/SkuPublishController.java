@@ -38,7 +38,7 @@ public class SkuPublishController {
     @PostMapping("/do-publish")
     @Operation(summary = "发布商品")
     public DataResponse<String> publish(@RequestBody @Valid PublishSkuRequest publishRequest) {
-        return DataResponse.ok(skuPublishService.publish(publishRequest));
+        return DataResponse.success(skuPublishService.publish(publishRequest));
     }
 
     @PostMapping("/cancel-publish/{code}")
