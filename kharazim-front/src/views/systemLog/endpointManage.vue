@@ -51,9 +51,13 @@ function loadEndpoints() {
 
 function switchEnableLog(endpoint: Endpoint) {
   const url = endpoint.enableSystemLog
-    ? `/kharazim-api/system/request-log/enable/endpoint?endpoint=${endpoint.endpoint}`
-    : `/kharazim-api/system/request-log/disable/endpoint?endpoint=${endpoint.endpoint}`;
-  axios.put(url);
+    ? "/kharazim-api/system/request-log/enable/endpoint"
+    : "/kharazim-api/system/request-log/disable/endpoint";
+  axios.put(url, null, {
+    params: {
+      endpoint: endpoint.endpoint,
+    },
+  });
 }
 
 defineEmits(["choiceEndpoint"]);
