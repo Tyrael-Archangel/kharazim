@@ -29,7 +29,12 @@ service.interceptors.response.use(
       }
     }
     if (code === 401 && !error.config?.disableCheck401) {
-      window.location.href = "/";
+      const basePath = import.meta.env.VITE_BASE_PATH;
+      if (basePath) {
+        window.location.href = "/" + basePath;
+      } else {
+        window.location.href = "/";
+      }
     }
     return Promise.reject(error);
   },
