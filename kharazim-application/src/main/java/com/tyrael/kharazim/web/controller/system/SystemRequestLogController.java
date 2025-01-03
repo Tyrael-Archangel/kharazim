@@ -62,7 +62,8 @@ public class SystemRequestLogController {
     @PutMapping("/disable/endpoint")
     @Operation(summary = "禁止endpoint记录日志")
     public Response disableEndpointLog(@Parameter(description = "endpoint", required = true)
-                                       @NotEmpty(message = "endpoint不能为空") String endpoint) {
+                                           @NotEmpty(message = "endpoint不能为空")
+                                           @RequestParam("endpoint") String endpoint) {
         systemRequestLogService.disableEndpointLog(endpoint);
         return Response.success();
     }
@@ -70,7 +71,8 @@ public class SystemRequestLogController {
     @PutMapping("/enable/endpoint")
     @Operation(summary = "开启endpoint记录日志")
     public Response enableEndpointLog(@Parameter(description = "endpoint", required = true)
-                                      @NotEmpty(message = "endpoint不能为空") String endpoint) {
+                                      @NotEmpty(message = "endpoint不能为空")
+                                      @RequestParam("endpoint") String endpoint) {
         systemRequestLogService.enableEndpointLog(endpoint);
         return Response.success();
     }
