@@ -7,6 +7,7 @@ import com.tyrael.kharazim.application.system.service.CodeGenerator;
 import com.tyrael.kharazim.application.user.converter.UserConverter;
 import com.tyrael.kharazim.application.user.domain.Role;
 import com.tyrael.kharazim.application.user.domain.User;
+import com.tyrael.kharazim.application.user.domain.UserRole;
 import com.tyrael.kharazim.application.user.dto.user.request.*;
 import com.tyrael.kharazim.application.user.dto.user.response.CurrentUserDTO;
 import com.tyrael.kharazim.application.user.dto.user.response.UserDTO;
@@ -33,7 +34,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -73,8 +73,7 @@ public class UserServiceImpl implements UserService {
         Long currentUserId = currentUser.getId();
         User user = userMapper.selectById(currentUserId);
         List<UserRoleDTO> userRoles = userRoleQueryService.queryUserRoles(currentUserId);
-        LocalDateTime lastLoginTime = authService.getUserLastLoginTime(currentUserId);
-        return userConverter.currentUserDTO(user, userRoles, lastLoginTime);
+        return userConverter.currentUserDTO(user, userRoles);
     }
 
     @Override
@@ -221,7 +220,14 @@ public class UserServiceImpl implements UserService {
     @Transactional(rollbackFor = Exception.class)
     @CacheEvict(cacheNames = CacheKeyConstants.CURRENT_USER_INFO, key = "#userId")
     public String resetPassword(AuthUser currentUser, Long userId) {
-        if (!currentUser.isSuperAdmin()) {
+        List<Long> currentUserRoleIds = userRoleMapper.listByUserId(currentUser.getId())
+                .stream()
+                .map(UserRole::getRoleId)
+                .toList();
+        List<Role> roles = roleMapper.selectBatchIds(currentUserRoleIds);
+        boolean currentUserIsSuperAdmin = roles.stream()
+                .anyMatch(Role::isAdmin);
+        if (!currentUserIsSuperAdmin) {
             throw new ForbiddenException("Not allowed.");
         }
 

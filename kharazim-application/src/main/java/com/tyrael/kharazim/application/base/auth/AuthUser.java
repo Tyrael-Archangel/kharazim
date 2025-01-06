@@ -14,6 +14,4 @@ public class AuthUser {
     private String name;
     private String nickName;
 
-    private boolean superAdmin;
-
 }

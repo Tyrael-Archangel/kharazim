@@ -2,11 +2,12 @@ package com.tyrael.kharazim.application.user.service;
 
 import com.tyrael.kharazim.application.base.auth.AuthUser;
 import com.tyrael.kharazim.application.user.dto.auth.LoginRequest;
+import com.tyrael.kharazim.application.user.dto.auth.OnlineUserDTO;
 import com.tyrael.kharazim.common.exception.LoginFailedException;
 import com.tyrael.kharazim.common.exception.TokenInvalidException;
 import jakarta.servlet.http.HttpServletRequest;
 
-import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * @author Tyrael Archangel
@@ -23,14 +24,6 @@ public interface AuthService {
      * @throws LoginFailedException 用户名或密码不对
      */
     String safetyLogin(LoginRequest loginRequest, HttpServletRequest httpServletRequest) throws LoginFailedException;
-
-    /**
-     * 用户上一次登录的时间
-     *
-     * @param userId userId
-     * @return 用户上一次登录的时间
-     */
-    LocalDateTime getUserLastLoginTime(Long userId);
 
     /**
      * logout
@@ -54,5 +47,12 @@ public interface AuthService {
      * @throws TokenInvalidException token invalid
      */
     AuthUser verifyToken(String token) throws TokenInvalidException;
+
+    /**
+     * 在线用户信息
+     *
+     * @return 在线用户信息
+     */
+    List<OnlineUserDTO> onlineUsers();
 
 }

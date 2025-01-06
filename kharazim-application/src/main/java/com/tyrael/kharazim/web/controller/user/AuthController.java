@@ -3,8 +3,10 @@ package com.tyrael.kharazim.web.controller.user;
 import com.tyrael.kharazim.application.base.auth.CurrentUserHolder;
 import com.tyrael.kharazim.application.config.cache.CacheKeyConstants;
 import com.tyrael.kharazim.application.user.dto.auth.LoginRequest;
+import com.tyrael.kharazim.application.user.dto.auth.OnlineUserDTO;
 import com.tyrael.kharazim.application.user.service.AuthService;
 import com.tyrael.kharazim.common.dto.DataResponse;
+import com.tyrael.kharazim.common.dto.MultiResponse;
 import com.tyrael.kharazim.common.dto.Response;
 import com.tyrael.kharazim.common.exception.LoginFailedException;
 import io.swagger.v3.oas.annotations.Operation;
@@ -15,10 +17,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author Tyrael Archangel
@@ -54,6 +53,12 @@ public class AuthController {
             }
         }
         return Response.success();
+    }
+
+    @GetMapping("/online-users")
+    @Operation(description = "在线用户信息")
+    public MultiResponse<OnlineUserDTO> onlineUsers() {
+        return MultiResponse.success(authService.onlineUsers());
     }
 
 }

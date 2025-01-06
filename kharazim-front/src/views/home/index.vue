@@ -90,7 +90,6 @@ const currentUser = ref({
   phone: "",
   roles: [] as { code: ""; name: "" }[],
   needChangePassword: false,
-  lastLogin: "",
 });
 
 function loadCurrentUser() {

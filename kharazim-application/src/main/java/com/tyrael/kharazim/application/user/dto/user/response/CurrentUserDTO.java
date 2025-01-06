@@ -9,7 +9,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -57,8 +56,5 @@ public class CurrentUserDTO {
 
     @Schema(description = "是否建议当前用户修改密码")
     private Boolean needChangePassword;
-
-    @Schema(description = "上一次登录时间")
-    private LocalDateTime lastLogin;
 
 }

@@ -1,18 +1,15 @@
 package com.tyrael.kharazim.application.user.service.impl;
 
-import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.tyrael.kharazim.application.base.auth.AuthUser;
 import com.tyrael.kharazim.application.base.auth.CurrentUserHolder;
 import com.tyrael.kharazim.application.config.cache.CacheKeyConstants;
-import com.tyrael.kharazim.application.user.domain.Role;
+import com.tyrael.kharazim.application.user.converter.UserConverter;
 import com.tyrael.kharazim.application.user.domain.User;
-import com.tyrael.kharazim.application.user.domain.UserRole;
 import com.tyrael.kharazim.application.user.dto.auth.LoginRequest;
+import com.tyrael.kharazim.application.user.dto.auth.OnlineUserDTO;
 import com.tyrael.kharazim.application.user.enums.EnableStatusEnum;
-import com.tyrael.kharazim.application.user.mapper.RoleMapper;
 import com.tyrael.kharazim.application.user.mapper.UserMapper;
-import com.tyrael.kharazim.application.user.mapper.UserRoleMapper;
 import com.tyrael.kharazim.application.user.service.AuthService;
 import com.tyrael.kharazim.application.user.service.component.PasswordEncoder;
 import com.tyrael.kharazim.application.user.service.component.TokenManager;
@@ -22,11 +19,11 @@ import com.tyrael.kharazim.common.exception.TokenInvalidException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -38,30 +35,26 @@ import java.util.concurrent.atomic.AtomicInteger;
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
-    private final Cache<String, AtomicInteger> addressLoginFailedCache = Caffeine.newBuilder()
-            .expireAfterWrite(Duration.ofMinutes(5))
-            .maximumSize(200)
-            .build();
-
     private final UserMapper userMapper;
-    private final UserRoleMapper userRoleMapper;
-    private final RoleMapper roleMapper;
     private final PasswordEncoder passwordEncoder;
     private final TokenManager tokenManager;
     private final CacheManager cacheManager;
+    private final UserConverter userConverter;
+
+    private final ViolentLoginManager violentLoginManager = new ViolentLoginManager();
 
     @Override
     public String safetyLogin(LoginRequest loginRequest, HttpServletRequest httpServletRequest) throws LoginFailedException {
 
         String remoteAddress = getRemoteAddress(httpServletRequest);
-        checkViolentLogin(remoteAddress);
+        violentLoginManager.checkViolentLogin(remoteAddress);
 
         try {
             String token = this.login(loginRequest);
-            clearLoginFailedCache(remoteAddress);
+            violentLoginManager.clearLoginFailedCache(remoteAddress);
             return token;
         } catch (LoginFailedException e) {
-            saveLoginFailedCache(remoteAddress);
+            violentLoginManager.saveLoginFailedCache(remoteAddress);
             throw e;
         }
     }
@@ -83,26 +76,10 @@ public class AuthServiceImpl implements AuthService {
         boolean matches = passwordEncoder.matches(requestPassword, userPassword);
         if (matches) {
             this.clearCurrentUserInfoCache(user.getId());
-            return tokenManager.create(user, findUserRole(user));
+            return tokenManager.create(userConverter.authUser(user));
         } else {
             throw new LoginFailedException("用户名或密码错误");
         }
-    }
-
-    private void checkViolentLogin(String address) {
-        AtomicInteger failedCount = addressLoginFailedCache.getIfPresent(address);
-        if (failedCount != null && failedCount.get() > 5) {
-            throw new BusinessException("尝试登录失败次数过多，请稍后再试");
-        }
-    }
-
-    private void clearLoginFailedCache(String address) {
-        addressLoginFailedCache.invalidate(address);
-    }
-
-    private void saveLoginFailedCache(String address) {
-        AtomicInteger failedCount = addressLoginFailedCache.get(address, e -> new AtomicInteger(0));
-        failedCount.incrementAndGet();
     }
 
     private String getRemoteAddress(HttpServletRequest httpServletRequest) {
@@ -120,19 +97,6 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public LocalDateTime getUserLastLoginTime(Long userId) {
-        return tokenManager.lastAuth(userId);
-    }
-
-    private List<Role> findUserRole(User user) {
-        List<UserRole> userRoles = userRoleMapper.listByUserId(user.getId());
-        List<Long> roleIds = userRoles.stream()
-                .map(UserRole::getRoleId)
-                .toList();
-        return roleMapper.selectBatchIds(roleIds);
-    }
-
-    @Override
     public void logout(String token) {
         tokenManager.remove(token);
         clearCurrentUserInfoCache(CurrentUserHolder.getCurrentUserId());
@@ -140,7 +104,7 @@ public class AuthServiceImpl implements AuthService {
 
     private void clearCurrentUserInfoCache(Long userId) {
         if (userId != null) {
-            org.springframework.cache.Cache currentUserInfoCache = cacheManager.getCache(CacheKeyConstants.CURRENT_USER_INFO);
+            Cache currentUserInfoCache = cacheManager.getCache(CacheKeyConstants.CURRENT_USER_INFO);
             if (currentUserInfoCache != null) {
                 currentUserInfoCache.evict(userId);
             }
@@ -158,4 +122,40 @@ public class AuthServiceImpl implements AuthService {
     public AuthUser verifyToken(String token) throws TokenInvalidException {
         return tokenManager.verifyToken(token);
     }
+
+    @Override
+    public List<OnlineUserDTO> onlineUsers() {
+        // TODO
+        return List.of();
+    }
+
+    static class ViolentLoginManager {
+
+        private final com.github.benmanes.caffeine.cache.Cache<String, AtomicInteger> addressLoginFailedCache;
+
+        public ViolentLoginManager() {
+            this.addressLoginFailedCache = Caffeine.newBuilder()
+                    .expireAfterWrite(Duration.ofMinutes(5))
+                    .maximumSize(200)
+                    .build();
+        }
+
+        private void checkViolentLogin(String address) {
+            AtomicInteger failedCount = addressLoginFailedCache.getIfPresent(address);
+            if (failedCount != null && failedCount.get() > 5) {
+                throw new BusinessException("尝试登录失败次数过多，请稍后再试");
+            }
+        }
+
+        private void clearLoginFailedCache(String address) {
+            addressLoginFailedCache.invalidate(address);
+        }
+
+        private void saveLoginFailedCache(String address) {
+            AtomicInteger failedCount = addressLoginFailedCache.get(address, e -> new AtomicInteger(0));
+            failedCount.incrementAndGet();
+        }
+
+    }
+
 }

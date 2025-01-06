@@ -2,7 +2,6 @@ package com.tyrael.kharazim.application.user.converter;
 
 import com.tyrael.kharazim.application.base.auth.AuthUser;
 import com.tyrael.kharazim.application.system.service.FileService;
-import com.tyrael.kharazim.application.user.domain.Role;
 import com.tyrael.kharazim.application.user.domain.User;
 import com.tyrael.kharazim.application.user.dto.role.response.RoleDTO;
 import com.tyrael.kharazim.application.user.dto.user.response.CurrentUserDTO;
@@ -12,7 +11,6 @@ import com.tyrael.kharazim.common.util.CollectionUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -61,7 +59,7 @@ public class UserConverter {
     /**
      * User、UserRoleDTO -> CurrentUserDTO
      */
-    public CurrentUserDTO currentUserDTO(User user, List<UserRoleDTO> userRoles, LocalDateTime lastLoginTime) {
+    public CurrentUserDTO currentUserDTO(User user, List<UserRoleDTO> userRoles) {
         return CurrentUserDTO.builder()
                 .id(user.getId())
                 .code(user.getCode())
@@ -75,7 +73,6 @@ public class UserConverter {
                 .phone(user.getPhone())
                 .roles(this.roles(userRoles))
                 .needChangePassword(user.getNeedChangePassword())
-                .lastLogin(lastLoginTime)
                 .build();
     }
 
@@ -92,19 +89,15 @@ public class UserConverter {
     }
 
     /**
-     * User,Role -> AuthUser
+     * User -> AuthUser
      */
-    public AuthUser authUser(User user, List<Role> roles) {
-
-        boolean superAdmin = roles.stream()
-                .anyMatch(Role::isAdmin);
+    public AuthUser authUser(User user) {
 
         AuthUser authUser = new AuthUser();
         authUser.setId(user.getId());
         authUser.setCode(user.getCode());
         authUser.setName(user.getName());
         authUser.setNickName(user.getNickName());
-        authUser.setSuperAdmin(superAdmin);
         return authUser;
     }
 

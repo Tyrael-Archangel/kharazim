@@ -31,11 +31,6 @@ public class AuthTokenConfig {
     private String userTokenCachePrefix = "AUTH_TOKEN_USER";
 
     /**
-     * 用户上一次登录缓存前缀
-     */
-    private String userLastAuthCachePrefix = "USER_LAST_AUTH";
-
-    /**
      * 是否自动刷新token有效期
      */
     private boolean autoRefreshExpire = true;

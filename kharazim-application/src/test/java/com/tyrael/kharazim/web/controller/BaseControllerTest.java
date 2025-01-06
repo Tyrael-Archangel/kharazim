@@ -58,8 +58,7 @@ import java.util.stream.Stream;
  * @since 2023/12/21
  */
 @SpringBootTest(properties = {
-        "system.global.enable-print-request-log=false",
-        "spring.boot.admin.client.enabled=false"
+        "system.global.enable-print-request-log=false"
 })
 @AutoConfigureMockMvc
 public abstract class BaseControllerTest<T> {
@@ -95,7 +94,6 @@ public abstract class BaseControllerTest<T> {
             currentUser = new AuthUser();
             currentUser.setId(1L);
             currentUser.setCode("000000");
-            currentUser.setSuperAdmin(true);
             currentUser.setName("admin");
             currentUser.setNickName("超级管理员");
             CurrentUserHolder.setCurrentUser(currentUser, RandomStringUtil.make(32));
@@ -120,7 +118,6 @@ public abstract class BaseControllerTest<T> {
             currentUser.setCode(randomUser.getCode());
             currentUser.setName(randomUser.getName());
             currentUser.setNickName(randomUser.getNickName());
-            currentUser.setSuperAdmin(true);
             CurrentUserHolder.setCurrentUser(currentUser, RandomStringUtil.make(32));
         }
         return currentUser;

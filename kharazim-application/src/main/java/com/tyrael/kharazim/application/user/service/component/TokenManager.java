@@ -8,9 +8,6 @@ import com.google.common.collect.Sets;
 import com.tyrael.kharazim.application.base.auth.AuthConfig;
 import com.tyrael.kharazim.application.base.auth.AuthTokenConfig;
 import com.tyrael.kharazim.application.base.auth.AuthUser;
-import com.tyrael.kharazim.application.user.converter.UserConverter;
-import com.tyrael.kharazim.application.user.domain.Role;
-import com.tyrael.kharazim.application.user.domain.User;
 import com.tyrael.kharazim.common.exception.TokenInvalidException;
 import com.tyrael.kharazim.common.util.CollectionUtils;
 import com.tyrael.kharazim.common.util.RandomStringUtil;
@@ -23,7 +20,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -44,12 +40,11 @@ public class TokenManager {
     private final StringRedisTemplate redisTemplate;
     private final AuthTokenConfig authTokenConfig;
     private final AuthConfig authConfig;
-    private final UserConverter userConverter;
 
     /**
      * create token for user
      */
-    public String create(User user, List<Role> roles) {
+    public String create(AuthUser user) {
 
         if (!authConfig.isAllowMultiLogin()) {
             this.removeByUser(user.getId());
@@ -57,8 +52,7 @@ public class TokenManager {
 
         String token = RandomStringUtil.make(32);
 
-        AuthUser authUser = userConverter.authUser(user, roles);
-        String authUserJson = JSON.toJSONString(authUser);
+        String authUserJson = JSON.toJSONString(user);
 
         redisTemplate.opsForValue().set(
                 this.tokenCacheKey(token),
@@ -68,8 +62,6 @@ public class TokenManager {
                 this.userTokenCacheKey(user.getId(), token),
                 String.valueOf(System.currentTimeMillis()),
                 authTokenConfig.getTokenExpire());
-
-        this.saveLastAuth(user.getId());
 
         return token;
     }
@@ -157,29 +149,6 @@ public class TokenManager {
     private String getAuthUserJson(String token) {
         return redisTemplate.opsForValue()
                 .get(this.tokenCacheKey(token));
-    }
-
-    private void saveLastAuth(Long userId) {
-        redisTemplate.opsForValue()
-                .set(this.lastAuthCacheKey(userId), LocalDateTime.now().toString());
-    }
-
-    public LocalDateTime lastAuth(Long userId) {
-        String lastAuthTime = redisTemplate.opsForValue()
-                .get(this.lastAuthCacheKey(userId));
-        if (!StringUtils.hasText(lastAuthTime)) {
-            return null;
-        }
-        try {
-            return LocalDateTime.parse(lastAuthTime);
-        } catch (Exception e) {
-            log.warn("parse last auth time error: {}", e.getMessage(), e);
-            return null;
-        }
-    }
-
-    private String lastAuthCacheKey(Long userId) {
-        return authTokenConfig.getUserLastAuthCachePrefix() + CACHE_KEY_SEP + userId;
     }
 
     /**
