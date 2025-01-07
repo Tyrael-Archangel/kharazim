@@ -2,10 +2,10 @@ package com.tyrael.kharazim.application.user.service.impl;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.tyrael.kharazim.application.base.auth.AuthUser;
-import com.tyrael.kharazim.application.base.auth.CurrentUserHolder;
 import com.tyrael.kharazim.application.config.cache.CacheKeyConstants;
 import com.tyrael.kharazim.application.user.converter.UserConverter;
 import com.tyrael.kharazim.application.user.domain.User;
+import com.tyrael.kharazim.application.user.dto.auth.LoginClientInfo;
 import com.tyrael.kharazim.application.user.dto.auth.LoginRequest;
 import com.tyrael.kharazim.application.user.dto.auth.OnlineUserDTO;
 import com.tyrael.kharazim.application.user.enums.EnableStatusEnum;
@@ -13,9 +13,11 @@ import com.tyrael.kharazim.application.user.mapper.UserMapper;
 import com.tyrael.kharazim.application.user.service.AuthService;
 import com.tyrael.kharazim.application.user.service.component.PasswordEncoder;
 import com.tyrael.kharazim.application.user.service.component.TokenManager;
+import com.tyrael.kharazim.common.dto.PageCommand;
 import com.tyrael.kharazim.common.exception.BusinessException;
 import com.tyrael.kharazim.common.exception.LoginFailedException;
 import com.tyrael.kharazim.common.exception.TokenInvalidException;
+import eu.bitwalker.useragentutils.UserAgent;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -25,6 +27,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -46,20 +49,21 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public String safetyLogin(LoginRequest loginRequest, HttpServletRequest httpServletRequest) throws LoginFailedException {
 
-        String remoteAddress = getRemoteAddress(httpServletRequest);
-        violentLoginManager.checkViolentLogin(remoteAddress);
+        LoginClientInfo loginClientInfo = getClientInfo(httpServletRequest);
+        String host = loginClientInfo.getHost();
+        violentLoginManager.checkViolentLogin(host);
 
         try {
-            String token = this.login(loginRequest);
-            violentLoginManager.clearLoginFailedCache(remoteAddress);
+            String token = this.login(loginRequest, loginClientInfo);
+            violentLoginManager.clearLoginFailedCache(host);
             return token;
         } catch (LoginFailedException e) {
-            violentLoginManager.saveLoginFailedCache(remoteAddress);
+            violentLoginManager.saveLoginFailedCache(host);
             throw e;
         }
     }
 
-    private String login(LoginRequest loginRequest) throws LoginFailedException {
+    private String login(LoginRequest loginRequest, LoginClientInfo loginClientInfo) throws LoginFailedException {
 
         String userName = loginRequest.getUserName();
         String requestPassword = loginRequest.getPassword();
@@ -76,30 +80,45 @@ public class AuthServiceImpl implements AuthService {
         boolean matches = passwordEncoder.matches(requestPassword, userPassword);
         if (matches) {
             this.clearCurrentUserInfoCache(user.getId());
-            return tokenManager.create(userConverter.authUser(user));
+            return tokenManager.create(userConverter.authUser(user), loginClientInfo);
         } else {
             throw new LoginFailedException("用户名或密码错误");
         }
     }
 
-    private String getRemoteAddress(HttpServletRequest httpServletRequest) {
-        String address = httpServletRequest.getHeader("X-Forwarded-For");
-        if (StringUtils.isBlank(address) || "unknown".equalsIgnoreCase(address)) {
-            address = httpServletRequest.getHeader("X-Real-IP");
+    private LoginClientInfo getClientInfo(HttpServletRequest request) {
+
+        String host = request.getHeader("X-Forwarded-For");
+        if (StringUtils.isBlank(host) || "unknown".equalsIgnoreCase(host)) {
+            host = request.getHeader("X-Real-IP");
         }
-        if (StringUtils.isBlank(address) || "unknown".equalsIgnoreCase(address)) {
-            address = httpServletRequest.getRemoteAddr();
+        if (StringUtils.isBlank(host) || "unknown".equalsIgnoreCase(host)) {
+            host = request.getRemoteAddr();
         }
-        if (address.contains(",")) {
-            return address.split(",")[0];
+        if (host.contains(",")) {
+            host = host.split(",")[0];
         }
-        return address;
+
+        LoginClientInfo loginClientInfo = new LoginClientInfo();
+        loginClientInfo.setHost(host);
+
+        UserAgent userAgent;
+        try {
+            userAgent = UserAgent.parseUserAgentString(request.getHeader("User-Agent"));
+        } catch (Exception e) {
+            return loginClientInfo;
+        }
+
+        loginClientInfo.setBrowser(userAgent.getBrowser().getName());
+        loginClientInfo.setOs(userAgent.getOperatingSystem().getName());
+        loginClientInfo.setBrowserVersion(Objects.toString(userAgent.getBrowserVersion()));
+        return loginClientInfo;
     }
 
     @Override
     public void logout(String token) {
-        tokenManager.remove(token);
-        clearCurrentUserInfoCache(CurrentUserHolder.getCurrentUserId());
+        Long userId = tokenManager.remove(token);
+        clearCurrentUserInfoCache(userId);
     }
 
     private void clearCurrentUserInfoCache(Long userId) {
@@ -124,9 +143,14 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public List<OnlineUserDTO> onlineUsers() {
-        // TODO
-        return List.of();
+    public List<OnlineUserDTO> onlineUsers(PageCommand pageCommand) {
+        List<TokenManager.LoggedUser> loggedUsers = tokenManager.loggedUsers(pageCommand);
+        List<Long> userIds = loggedUsers.stream()
+                .map(e -> e.getAuthUser().getId())
+                .toList();
+        List<User> users = userMapper.selectBatchIds(userIds);
+
+        return userConverter.onlineUsers(loggedUsers, users);
     }
 
     static class ViolentLoginManager {

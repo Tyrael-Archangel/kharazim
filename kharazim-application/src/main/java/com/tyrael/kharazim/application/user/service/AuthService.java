@@ -3,6 +3,7 @@ package com.tyrael.kharazim.application.user.service;
 import com.tyrael.kharazim.application.base.auth.AuthUser;
 import com.tyrael.kharazim.application.user.dto.auth.LoginRequest;
 import com.tyrael.kharazim.application.user.dto.auth.OnlineUserDTO;
+import com.tyrael.kharazim.common.dto.PageCommand;
 import com.tyrael.kharazim.common.exception.LoginFailedException;
 import com.tyrael.kharazim.common.exception.TokenInvalidException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -51,8 +52,9 @@ public interface AuthService {
     /**
      * 在线用户信息
      *
+     * @param pageCommand PageCommand
      * @return 在线用户信息
      */
-    List<OnlineUserDTO> onlineUsers();
+    List<OnlineUserDTO> onlineUsers(PageCommand pageCommand);
 
 }

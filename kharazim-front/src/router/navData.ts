@@ -44,6 +44,12 @@ const navs: Nav[] = [
         path: "/system-setting/request-log",
         icon: "/icons/system_request_log.svg",
       },
+      {
+        name: "在线用户",
+        component: "user/onlineUsers.vue",
+        path: "/system-setting/online-users",
+        icon: "/icons/online_users.svg",
+      },
     ],
   },
   {

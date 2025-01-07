@@ -62,8 +62,8 @@ public class SystemRequestLogController {
     @PutMapping("/disable/endpoint")
     @Operation(summary = "禁止endpoint记录日志")
     public Response disableEndpointLog(@Parameter(description = "endpoint", required = true)
-                                           @NotEmpty(message = "endpoint不能为空")
-                                           @RequestParam("endpoint") String endpoint) {
+                                       @NotEmpty(message = "endpoint不能为空")
+                                       @RequestParam("endpoint") String endpoint) {
         systemRequestLogService.disableEndpointLog(endpoint);
         return Response.success();
     }

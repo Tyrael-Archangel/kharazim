@@ -15,8 +15,20 @@ public class OnlineUserDTO {
     @Schema(description = "token")
     private String token;
 
+    @Schema(description = "用户编码")
+    private String userCode;
+
+    @Schema(description = "用户名")
+    private String username;
+
     @Schema(description = "用户昵称")
     private String userNickName;
+
+    @Schema(description = "用户昵称")
+    private String userAvatar;
+
+    @Schema(description = "用户昵称")
+    private String userAvatarUrl;
 
     @Schema(description = "登录时间")
     private LocalDateTime loginTime;
@@ -24,7 +36,13 @@ public class OnlineUserDTO {
     @Schema(description = "登录主机")
     private String host;
 
-    @Schema(description = "登录地点")
-    private String address;
+    @Schema(description = "os")
+    private String os;
+
+    @Schema(description = "浏览器")
+    private String browser;
+
+    @Schema(description = "浏览器版本")
+    private String browserVersion;
 
 }

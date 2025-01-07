@@ -3,16 +3,20 @@ package com.tyrael.kharazim.application.user.converter;
 import com.tyrael.kharazim.application.base.auth.AuthUser;
 import com.tyrael.kharazim.application.system.service.FileService;
 import com.tyrael.kharazim.application.user.domain.User;
+import com.tyrael.kharazim.application.user.dto.auth.LoginClientInfo;
+import com.tyrael.kharazim.application.user.dto.auth.OnlineUserDTO;
 import com.tyrael.kharazim.application.user.dto.role.response.RoleDTO;
 import com.tyrael.kharazim.application.user.dto.user.response.CurrentUserDTO;
 import com.tyrael.kharazim.application.user.dto.user.response.UserDTO;
 import com.tyrael.kharazim.application.user.dto.user.response.UserRoleDTO;
+import com.tyrael.kharazim.application.user.service.component.TokenManager;
 import com.tyrael.kharazim.common.util.CollectionUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -99,6 +103,36 @@ public class UserConverter {
         authUser.setName(user.getName());
         authUser.setNickName(user.getNickName());
         return authUser;
+    }
+
+    /**
+     * TokenManager.LoggedUsers -> OnlineUserDTOs
+     */
+    public List<OnlineUserDTO> onlineUsers(List<TokenManager.LoggedUser> loggedUsers, List<User> users) {
+        Map<Long, User> userMap = users.stream()
+                .collect(Collectors.toMap(User::getId, e -> e));
+
+        return loggedUsers.stream()
+                .map(loggedUser -> {
+                    User user = userMap.get(loggedUser.getAuthUser().getId());
+                    OnlineUserDTO onlineUser = new OnlineUserDTO();
+                    onlineUser.setToken(loggedUser.getToken());
+                    onlineUser.setUserCode(user.getCode());
+                    onlineUser.setUsername(user.getName());
+                    onlineUser.setUserNickName(user.getNickName());
+                    onlineUser.setUserAvatar(user.getAvatar());
+                    onlineUser.setUserAvatarUrl(fileService.getUrl(user.getAvatar()));
+                    onlineUser.setLoginTime(loggedUser.getLoggedTime());
+                    LoginClientInfo loginClientInfo = loggedUser.getLoginClientInfo();
+                    if (loginClientInfo != null) {
+                        onlineUser.setHost(loginClientInfo.getHost());
+                        onlineUser.setOs(loginClientInfo.getOs());
+                        onlineUser.setBrowser(loginClientInfo.getBrowser());
+                        onlineUser.setBrowserVersion(loginClientInfo.getBrowserVersion());
+                    }
+                    return onlineUser;
+                })
+                .toList();
     }
 
 }
