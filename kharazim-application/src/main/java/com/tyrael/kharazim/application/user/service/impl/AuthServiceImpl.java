@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -145,12 +146,16 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public List<OnlineUserDTO> onlineUsers(PageCommand pageCommand) {
         List<TokenManager.RefreshLoggedUser> loggedUsers = tokenManager.loggedUsers(pageCommand);
-        List<Long> userIds = loggedUsers.stream()
-                .map(e -> e.getAuthUser().getId())
+        List<String> userCodes = loggedUsers.stream()
+                .map(e -> e.getAuthUser().getCode())
                 .toList();
-        List<User> users = userMapper.selectBatchIds(userIds);
-
-        return userConverter.onlineUsers(loggedUsers, users);
+        Map<String, User> userMap = userMapper.mapByCodes(userCodes);
+        return loggedUsers.stream()
+                .map(loggedUser -> userConverter.onlineUser(
+                        loggedUser,
+                        userMap.get(loggedUser.getAuthUser().getCode()))
+                )
+                .toList();
     }
 
     static class ViolentLoginManager {

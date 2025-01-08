@@ -16,7 +16,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -106,34 +105,26 @@ public class UserConverter {
     }
 
     /**
-     * TokenManager.LoggedUsers -> OnlineUserDTOs
+     * TokenManager.LoggedUser -> OnlineUserDTO
      */
-    public List<OnlineUserDTO> onlineUsers(List<TokenManager.RefreshLoggedUser> loggedUsers, List<User> users) {
-        Map<Long, User> userMap = users.stream()
-                .collect(Collectors.toMap(User::getId, e -> e));
-
-        return loggedUsers.stream()
-                .map(loggedUser -> {
-                    User user = userMap.get(loggedUser.getAuthUser().getId());
-                    OnlineUserDTO onlineUser = new OnlineUserDTO();
-                    onlineUser.setToken(loggedUser.getToken());
-                    onlineUser.setUserCode(user.getCode());
-                    onlineUser.setUsername(user.getName());
-                    onlineUser.setUserNickName(user.getNickName());
-                    onlineUser.setUserAvatar(user.getAvatar());
-                    onlineUser.setUserAvatarUrl(fileService.getUrl(user.getAvatar()));
-                    onlineUser.setLoginTime(loggedUser.getLoggedTime());
-                    onlineUser.setLastRefreshTime(loggedUser.getLastRefreshTime());
-                    LoginClientInfo loginClientInfo = loggedUser.getLoginClientInfo();
-                    if (loginClientInfo != null) {
-                        onlineUser.setHost(loginClientInfo.getHost());
-                        onlineUser.setOs(loginClientInfo.getOs());
-                        onlineUser.setBrowser(loginClientInfo.getBrowser());
-                        onlineUser.setBrowserVersion(loginClientInfo.getBrowserVersion());
-                    }
-                    return onlineUser;
-                })
-                .toList();
+    public OnlineUserDTO onlineUser(TokenManager.RefreshLoggedUser loggedUser, User user) {
+        OnlineUserDTO onlineUser = new OnlineUserDTO();
+        onlineUser.setToken(loggedUser.getToken());
+        onlineUser.setUserCode(user.getCode());
+        onlineUser.setUsername(user.getName());
+        onlineUser.setUserNickName(user.getNickName());
+        onlineUser.setUserAvatar(user.getAvatar());
+        onlineUser.setUserAvatarUrl(fileService.getUrl(user.getAvatar()));
+        onlineUser.setLoginTime(loggedUser.getLoggedTime());
+        onlineUser.setLastRefreshTime(loggedUser.getLastRefreshTime());
+        LoginClientInfo loginClientInfo = loggedUser.getLoginClientInfo();
+        if (loginClientInfo != null) {
+            onlineUser.setHost(loginClientInfo.getHost());
+            onlineUser.setOs(loginClientInfo.getOs());
+            onlineUser.setBrowser(loginClientInfo.getBrowser());
+            onlineUser.setBrowserVersion(loginClientInfo.getBrowserVersion());
+        }
+        return onlineUser;
     }
 
 }
