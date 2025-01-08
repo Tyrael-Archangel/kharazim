@@ -41,11 +41,6 @@ public class FileConfig {
     private int maxDirCountEveryLevel = 5;
 
     /**
-     * 文件服务器schema
-     */
-    private String schema = "http://localhost:9408/kharazim-api";
-
-    /**
      * 文件在客户端缓存时间
      */
     private Duration maxAge = Duration.ofMinutes(5);

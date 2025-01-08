@@ -132,5 +132,4 @@ springdoc:
 file:
   home-path: ${FILE_HOME:}
   root-dir: ${FILE_ROOT_DIR:.kharazim_files}
-  schema: ${FILE_SCHEMA:http://localhost:${server.port}/kharazim-api}
   max-age: ${FILE_CACHE_AGE:5m}
