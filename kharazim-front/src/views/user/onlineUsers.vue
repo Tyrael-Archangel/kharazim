@@ -79,7 +79,7 @@ function loadOnlineUsers() {
 }
 
 function forceLogout(onlineUserData: OnlineUserData) {
-  axios.put("kharazim-api/auth/force-logout", null, { params: { token: onlineUserData.token } }).then(() => {
+  axios.put("/kharazim-api/auth/force-logout", null, { params: { token: onlineUserData.token } }).then(() => {
     ElMessage.success("操作成功");
     loadOnlineUsers();
   });
