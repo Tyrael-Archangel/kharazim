@@ -30,11 +30,6 @@ public class AuthTokenConfig {
      */
     private String userTokenCachePrefix = "AUTH_TOKEN_USER";
 
-    /**
-     * 是否自动刷新token有效期
-     */
-    private boolean autoRefreshExpire = true;
-
     public Duration getTokenExpire() {
         return Duration.ofSeconds(tokenExpireSeconds);
     }

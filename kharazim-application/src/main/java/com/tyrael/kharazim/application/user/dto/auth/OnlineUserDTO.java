@@ -33,6 +33,9 @@ public class OnlineUserDTO {
     @Schema(description = "登录时间")
     private LocalDateTime loginTime;
 
+    @Schema(description = "最后访问时间")
+    private LocalDateTime lastRefreshTime;
+
     @Schema(description = "登录主机")
     private String host;
 

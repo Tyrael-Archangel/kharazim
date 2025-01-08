@@ -144,7 +144,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public List<OnlineUserDTO> onlineUsers(PageCommand pageCommand) {
-        List<TokenManager.LoggedUser> loggedUsers = tokenManager.loggedUsers(pageCommand);
+        List<TokenManager.RefreshLoggedUser> loggedUsers = tokenManager.loggedUsers(pageCommand);
         List<Long> userIds = loggedUsers.stream()
                 .map(e -> e.getAuthUser().getId())
                 .toList();

@@ -16,7 +16,7 @@
                 <div class="current-user-avatar">
                   <el-avatar v-if="currentUser && currentUser.avatarUrl" :src="currentUser.avatarUrl" />
                 </div>
-                <el-button class="change-password" @click="showChangeCurrentUserPassword">修改密码 </el-button>
+                <el-button class="change-password" @click="showChangeCurrentUserPassword">修改密码</el-button>
                 <el-button class="logout" @click="logout">注销</el-button>
               </div>
             </div>
@@ -57,7 +57,7 @@
 <script lang="ts" setup>
 import Bread from "./bread.vue";
 import NavMenu from "./navMenu.vue";
-import { removeToken } from "@/utils/auth.js";
+import { getToken, removeToken } from "@/utils/auth.js";
 import { useRouter } from "vue-router";
 import { onMounted, reactive, ref } from "vue";
 import axios from "@/utils/http.js";
@@ -71,6 +71,7 @@ function logout() {
   axios
     .post("/kharazim-api/auth/logout", null, {
       disablePrintGlobalError: true,
+      headers: { "ACCESS-TOKEN": getToken() },
     })
     .catch(() => {});
   removeToken();

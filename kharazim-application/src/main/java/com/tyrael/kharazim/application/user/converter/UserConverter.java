@@ -108,7 +108,7 @@ public class UserConverter {
     /**
      * TokenManager.LoggedUsers -> OnlineUserDTOs
      */
-    public List<OnlineUserDTO> onlineUsers(List<TokenManager.LoggedUser> loggedUsers, List<User> users) {
+    public List<OnlineUserDTO> onlineUsers(List<TokenManager.RefreshLoggedUser> loggedUsers, List<User> users) {
         Map<Long, User> userMap = users.stream()
                 .collect(Collectors.toMap(User::getId, e -> e));
 
@@ -123,6 +123,7 @@ public class UserConverter {
                     onlineUser.setUserAvatar(user.getAvatar());
                     onlineUser.setUserAvatarUrl(fileService.getUrl(user.getAvatar()));
                     onlineUser.setLoginTime(loggedUser.getLoggedTime());
+                    onlineUser.setLastRefreshTime(loggedUser.getLastRefreshTime());
                     LoginClientInfo loginClientInfo = loggedUser.getLoginClientInfo();
                     if (loginClientInfo != null) {
                         onlineUser.setHost(loginClientInfo.getHost());

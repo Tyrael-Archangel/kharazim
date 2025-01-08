@@ -1,5 +1,12 @@
 <template>
   <div>
+    <el-form :inline="true" :model="pageRequest" class="page-form-block">
+      <el-form-item>
+        <el-button type="primary" @click="loadOnlineUsers">刷新</el-button>
+      </el-form-item>
+    </el-form>
+  </div>
+  <div>
     <el-table :data="onlineUserPageData.data" border style="width: 100%">
       <el-table-column label="token" prop="token" width="300" />
       <el-table-column label="用户编码" prop="userCode" width="100" />
@@ -10,6 +17,7 @@
         </template>
       </el-table-column>
       <el-table-column label="登录时间" prop="loginTime" width="170" />
+      <el-table-column label="最后访问时间" prop="lastRefreshTime" width="170" />
       <el-table-column label="登录主机" prop="host" />
       <el-table-column label="操作系统" prop="os" />
       <el-table-column label="浏览器" prop="browser" />
@@ -54,7 +62,8 @@ interface OnlineUserData {
   userNickName: number;
   userAvatar: number;
   userAvatarUrl: number;
-  loginTime: number;
+  loginTime: string;
+  lastRefreshTime: string;
   host: number;
   os: number;
   browser: number;

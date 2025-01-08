@@ -16,7 +16,6 @@ import com.tyrael.kharazim.common.util.RandomStringUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.ScanOptions;
@@ -35,14 +34,19 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Component
-@RequiredArgsConstructor
 public class TokenManager {
-
-    private final TokenRefresher tokenRefresher = new TokenRefresher();
 
     private final StringRedisTemplate redisTemplate;
     private final AuthTokenConfig authTokenConfig;
     private final AuthConfig authConfig;
+    private final TokenRefresher tokenRefresher;
+
+    public TokenManager(StringRedisTemplate redisTemplate, AuthTokenConfig authTokenConfig, AuthConfig authConfig) {
+        this.redisTemplate = redisTemplate;
+        this.authTokenConfig = authTokenConfig;
+        this.authConfig = authConfig;
+        this.tokenRefresher = new TokenRefresher(authTokenConfig.getTokenExpire());
+    }
 
     /**
      * create token for user
@@ -145,11 +149,10 @@ public class TokenManager {
         }
 
         LoggedUser loggedUser = LoggedUser.parse(loggedUserJson);
-        AuthUser authUser = loggedUser == null ? null : loggedUser.authUser;
-        if (authUser != null && authTokenConfig.isAutoRefreshExpire()) {
-            tokenRefresher.refreshExpire(authUser.getId(), token);
+        if (loggedUser != null) {
+            tokenRefresher.refreshExpire(loggedUser.authUser.getId(), token);
         }
-        return authUser;
+        return loggedUser == null ? null : loggedUser.authUser;
     }
 
     private String getLoggedUserJson(String token) {
@@ -160,7 +163,7 @@ public class TokenManager {
     /**
      * list all logged users
      */
-    public List<LoggedUser> loggedUsers(PageCommand pageCommand) {
+    public List<RefreshLoggedUser> loggedUsers(PageCommand pageCommand) {
         ScanOptions scanOptions = ScanOptions.scanOptions().match(tokenCacheKeyPattern()).build();
         Set<String> keys;
         try (Cursor<String> cursor = redisTemplate.scan(scanOptions)) {
@@ -178,7 +181,9 @@ public class TokenManager {
         return loggedUserJsons.stream()
                 .map(LoggedUser::parse)
                 .filter(Objects::nonNull)
-                .sorted(Comparator.comparing(LoggedUser::getLoggedTime).reversed())
+                .map(e -> new RefreshLoggedUser(e, tokenRefresher.getLastRefreshTime(e.getToken())))
+                .sorted(Comparator.comparing(LoggedUser::getLoggedTime).reversed()
+                        .thenComparing(LoggedUser::getToken))
                 .skip((pageCommand.getPageIndex() - 1L) * pageCommand.getPageSize())
                 .limit(pageCommand.getPageSize())
                 .toList();
@@ -187,14 +192,14 @@ public class TokenManager {
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class LoggedUser {
+    protected static class LoggedUser {
 
         private String token;
         private AuthUser authUser;
         private LoginClientInfo loginClientInfo;
         private LocalDateTime loggedTime;
 
-        public static LoggedUser parse(String json) {
+        static LoggedUser parse(String json) {
             if (!StringUtils.hasText(json)) {
                 return null;
             }
@@ -207,8 +212,23 @@ public class TokenManager {
             }
         }
 
-        public String toJson() {
+        String toJson() {
             return JSON.toJSONString(this);
+        }
+
+    }
+
+    @Data
+    public static class RefreshLoggedUser extends LoggedUser {
+
+        private LocalDateTime lastRefreshTime;
+
+        RefreshLoggedUser(LoggedUser loggedUser, LocalDateTime lastRefreshTime) {
+            super.token = loggedUser.token;
+            super.authUser = loggedUser.authUser;
+            super.loginClientInfo = loggedUser.loginClientInfo;
+            super.loggedTime = loggedUser.loggedTime;
+            this.lastRefreshTime = lastRefreshTime;
         }
 
     }
@@ -219,21 +239,34 @@ public class TokenManager {
     private class TokenRefresher {
 
         private final Cache<String, Boolean> cache;
+        private final Cache<String, LocalDateTime> lastRefreshCache;
+        private final Duration tokenExpire;
 
-        public TokenRefresher() {
+        public TokenRefresher(Duration tokenExpire) {
+            this.tokenExpire = tokenExpire;
             this.cache = Caffeine.newBuilder()
-                    .expireAfterWrite(Duration.ofMinutes(5L))
-                    .maximumSize(100L)
+                    .expireAfterWrite(Duration.ofMinutes(1L))
+                    .maximumSize(2000L)
+                    .build();
+            this.lastRefreshCache = Caffeine.newBuilder()
+                    .expireAfterWrite(tokenExpire)
+                    .maximumSize(2000L)
                     .build();
         }
 
-        public void refreshExpire(Long userId, String token) {
-            Boolean value = cache.getIfPresent(token);
+        public synchronized void refreshExpire(Long userId, String token) {
+            this.lastRefreshCache.put(token, LocalDateTime.now());
+
+            Boolean value = this.cache.getIfPresent(token);
             if (value == null) {
-                cache.put(token, Boolean.TRUE);
-                redisTemplate.expire(tokenCacheKey(token), authTokenConfig.getTokenExpire());
-                redisTemplate.expire(userTokenCacheKey(userId, token), authTokenConfig.getTokenExpire());
+                this.cache.put(token, Boolean.TRUE);
+                redisTemplate.expire(tokenCacheKey(token), tokenExpire);
+                redisTemplate.expire(userTokenCacheKey(userId, token), tokenExpire);
             }
+        }
+
+        public LocalDateTime getLastRefreshTime(String token) {
+            return this.lastRefreshCache.getIfPresent(token);
         }
 
     }
