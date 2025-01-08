@@ -201,7 +201,7 @@ public class FileServiceImpl implements FileService {
         }
 
 //      String url = "http://localhost:9408/kharazim-api/system/file/fetch/" + fileId;
-        return fileConfig.getSchema() + "/system/file/fetch/" + fileId;
+        return "/kharazim-api/system/file/fetch/" + fileId;
     }
 
     @Override
