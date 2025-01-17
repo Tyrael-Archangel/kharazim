@@ -15,6 +15,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import java.io.IOException;
+import java.util.Enumeration;
 
 /**
  * @author Tyrael Archangel
@@ -80,7 +81,14 @@ public class GlobalAuthInterceptor implements HandlerInterceptor {
     }
 
     private String getTokenFromParam(HttpServletRequest request) {
-        return request.getParameter(AuthConfig.TOKEN_HEADER);
+        Enumeration<String> parameterNames = request.getParameterNames();
+        while (parameterNames != null && parameterNames.hasMoreElements()) {
+            String parameterName = parameterNames.nextElement();
+            if (AuthConfig.TOKEN_HEADER.equalsIgnoreCase(parameterName)) {
+                return request.getParameter(parameterName);
+            }
+        }
+        return null;
     }
 
     private String getTokenFromCookie(HttpServletRequest request) {
