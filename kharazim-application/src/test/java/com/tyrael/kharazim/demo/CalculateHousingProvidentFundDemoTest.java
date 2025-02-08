@@ -29,7 +29,13 @@ public class CalculateHousingProvidentFundDemoTest {
                 Pair.of(YearMonth.of(2023, 7), 3100)
         );
 
-        YearMonth end = YearMonth.of(2024, 10);
+        List<Pair<YearMonth, Integer>> interests_amounts = List.of(
+                Pair.of(YearMonth.of(2022, 7), 175),
+                Pair.of(YearMonth.of(2023, 7), 25),
+                Pair.of(YearMonth.of(2024, 7), 22)
+        );
+
+        YearMonth end = YearMonth.of(2026, 4);
 
         List<YearMonthRecord> yearMonthRecords = new ArrayList<>();
         for (int i = 0; i < from_amounts.size(); i++) {
@@ -50,6 +56,7 @@ public class CalculateHousingProvidentFundDemoTest {
             }
         }
 
+        int balanceAmount = 190 - 178;
         for (int i = 0; i < yearMonthRecords.size(); i++) {
             YearMonthRecord yearMonthRecord = yearMonthRecords.get(i);
             yearMonthRecord.setI(yearMonthRecords.size() - i);
@@ -59,6 +66,14 @@ public class CalculateHousingProvidentFundDemoTest {
                     yearMonthRecord.setOutAmount(outAmountPair.right());
                 }
             }
+
+            balanceAmount += (yearMonthRecord.getInAmount() - yearMonthRecord.getOutAmount());
+            for (Pair<YearMonth, Integer> interestsAmountPair : interests_amounts) {
+                if (yearMonthRecord.getYearMonth().equals(interestsAmountPair.left())) {
+                    balanceAmount += interestsAmountPair.right();
+                }
+            }
+            yearMonthRecord.setBalanceAmount(balanceAmount);
 
         }
 
@@ -87,7 +102,9 @@ public class CalculateHousingProvidentFundDemoTest {
         BigDecimal finalAmount = yearMonthRecords.stream()
                 .map(YearMonthRecord::getFinalAmount)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
-        System.out.println(finalAmount);
+
+
+        System.out.println("最终可贷金额: " + finalAmount);
 
     }
 
@@ -114,6 +131,7 @@ public class CalculateHousingProvidentFundDemoTest {
          * 系数
          */
         private double coefficient;
+        private Integer balanceAmount;
 
         /**
          * 该月可纳入计算的额度
@@ -140,7 +158,8 @@ public class CalculateHousingProvidentFundDemoTest {
                     "\t 当月应被抵扣的提取额:" + deductAmount +
                     "\t 该月可纳入计算的额度:" + getCanCalAmount() +
                     "\t 系数:" + coefficient +
-                    "\t 该月贷款额度:" + getFinalAmount();
+                    "\t 该月贷款额度:" + getFinalAmount() +
+                    "\t 该月结存:" + balanceAmount;
         }
     }
 
