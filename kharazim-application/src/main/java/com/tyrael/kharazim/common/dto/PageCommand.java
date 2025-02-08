@@ -38,17 +38,4 @@ public class PageCommand {
         return pageIndex == null ? DEFAULT_PAGE_NUM : pageIndex;
     }
 
-    public enum SortDirection {
-        /**
-         * 升序
-         */
-        ASC,
-        /**
-         * 降序
-         */
-        DESC;
-
-        public static final String DESCRIPTION = "ASC-升序，DESC-降序";
-    }
-
 }

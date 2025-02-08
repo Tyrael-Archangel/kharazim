@@ -1,6 +1,6 @@
 package com.tyrael.kharazim.application.pharmacy.vo.inventory;
 
-import com.tyrael.kharazim.common.dto.PageCommand;
+import com.tyrael.kharazim.common.dto.SortPageCommand;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -12,7 +12,7 @@ import java.util.List;
  * @since 2024/6/3
  */
 @Data
-public class PageInventoryRequest extends PageCommand {
+public class PageInventoryRequest extends SortPageCommand<PageInventoryRequest.SortBy> {
 
     @Schema(description = "SKU编码")
     private String skuCode;
@@ -26,12 +26,9 @@ public class PageInventoryRequest extends PageCommand {
     @Schema(description = "排序方式, " + SortBy.DESCRIPTION, implementation = SortBy.class)
     private SortBy sortBy = SortBy.QUANTITY;
 
-    @Schema(description = "排序方向, " + SortDirection.DESCRIPTION, implementation = SortDirection.class)
-    private SortDirection sortDirection = SortDirection.DESC;
-
     @Schema(hidden = true)
-    public SortBy getSortByOrDefault() {
-        return sortBy == null ? SortBy.QUANTITY : sortBy;
+    protected SortBy getDefaultSortBy() {
+        return SortBy.QUANTITY;
     }
 
     public enum SortBy {

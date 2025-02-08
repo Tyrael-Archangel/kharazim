@@ -7,7 +7,6 @@ import com.tyrael.kharazim.application.pharmacy.domain.Inventory;
 import com.tyrael.kharazim.application.pharmacy.vo.inventory.ListInventoryOfClinicRequest;
 import com.tyrael.kharazim.application.pharmacy.vo.inventory.PageInventoryRequest;
 import com.tyrael.kharazim.application.product.mapper.ProductSkuMapper;
-import com.tyrael.kharazim.common.dto.PageCommand;
 import com.tyrael.kharazim.common.dto.PageResponse;
 import com.tyrael.kharazim.common.util.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -60,7 +59,7 @@ public interface InventoryMapper extends BasePageMapper<Inventory> {
         queryWrapper.eqIfHasText(Inventory::getSkuCode, pageRequest.getSkuCode());
 
         PageInventoryRequest.SortBy sortBy = pageRequest.getSortByOrDefault();
-        boolean isAsc = PageCommand.SortDirection.ASC.equals(pageRequest.getSortDirection());
+        boolean isAsc = pageRequest.isAsc();
 
         switch (sortBy) {
             case QUANTITY -> queryWrapper.orderBy(isAsc, Inventory::getQuantity);
