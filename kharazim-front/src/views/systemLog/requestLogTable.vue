@@ -145,7 +145,8 @@
   </div>
   <el-dialog v-model="detailDialogVisible" title="详细信息" width="60%">
     <div style="display: flex; justify-content: flex-end; align-items: flex-end">
-      <el-button @click="formatDialogContent">格式化</el-button>
+      <el-button v-if="!formatted" @click="formatDialogContent">格式化</el-button>
+      <el-button v-if="formatted" @click="cancelFormatDialogContent">取消格式化</el-button>
       <el-button @click="copyToClipboard">复制</el-button>
     </div>
     <pre>{{ dialogContent }}</pre>
@@ -245,11 +246,20 @@ function handleColumnShowChange() {
 }
 
 const detailDialogVisible = ref(false);
+const dialogContentRaw = ref("");
 const dialogContent = ref("");
+const formatted = ref(false);
 
 function showDetailDialog(detail: any) {
   dialogContent.value = detail;
+  dialogContentRaw.value = detail;
   detailDialogVisible.value = true;
+  formatted.value = false;
+}
+
+function cancelFormatDialogContent() {
+  dialogContent.value = dialogContentRaw.value;
+  formatted.value = false;
 }
 
 function formatDialogContent() {
@@ -257,6 +267,7 @@ function formatDialogContent() {
   if (content && content.length > 0) {
     try {
       dialogContent.value = JSON.stringify(JSON.parse(content), null, 2);
+      formatted.value = true;
     } catch (ignore) {
       ElMessage({
         message: "格式化失败",
