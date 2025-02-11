@@ -1,6 +1,5 @@
 package com.tyrael.kharazim.application.config.requestlog;
 
-import com.google.common.collect.Lists;
 import com.tyrael.kharazim.application.base.auth.RequestPathMatcher;
 import com.tyrael.kharazim.application.system.domain.SystemRequestLog;
 import com.tyrael.kharazim.application.system.dto.requestlog.NameAndValue;
@@ -20,6 +19,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.charset.UnsupportedCharsetException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 
@@ -101,7 +101,7 @@ public class RequestLogPrepareFilter implements Filter {
     }
 
     private List<NameAndValue> requestHeaders(HttpServletRequest httpServletRequest) {
-        List<NameAndValue> requestHeaders = Lists.newArrayList();
+        List<NameAndValue> requestHeaders = new ArrayList<>();
         Enumeration<String> headerNames = httpServletRequest.getHeaderNames();
         while (headerNames != null && headerNames.hasMoreElements()) {
             String headerName = headerNames.nextElement();
@@ -112,7 +112,7 @@ public class RequestLogPrepareFilter implements Filter {
     }
 
     private List<NameAndValue> requestParams(HttpServletRequest httpServletRequest) {
-        List<NameAndValue> requestParams = Lists.newArrayList();
+        List<NameAndValue> requestParams = new ArrayList<>();
         Enumeration<String> paramNames = httpServletRequest.getParameterNames();
         while (paramNames != null && paramNames.hasMoreElements()) {
             String paramName = paramNames.nextElement();

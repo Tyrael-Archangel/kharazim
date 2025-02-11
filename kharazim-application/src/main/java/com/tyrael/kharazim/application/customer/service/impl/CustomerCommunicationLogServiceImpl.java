@@ -1,6 +1,5 @@
 package com.tyrael.kharazim.application.customer.service.impl;
 
-import com.google.common.collect.Sets;
 import com.tyrael.kharazim.application.base.auth.AuthUser;
 import com.tyrael.kharazim.application.customer.domain.Customer;
 import com.tyrael.kharazim.application.customer.domain.CustomerCommunicationLog;
@@ -21,10 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -45,8 +41,8 @@ public class CustomerCommunicationLogServiceImpl implements CustomerCommunicatio
         PageResponse<CustomerCommunicationLog> pageResponse = customerCommunicationLogMapper.page(pageRequest);
         Collection<CustomerCommunicationLog> pageLogs = pageResponse.getData();
 
-        Set<String> customerCodes = Sets.newHashSet();
-        Set<String> serviceUserCodes = Sets.newHashSet();
+        Set<String> customerCodes = new HashSet<>();
+        Set<String> serviceUserCodes = new HashSet<>();
         for (CustomerCommunicationLog customerCommunicationLog : pageLogs) {
             customerCodes.add(customerCommunicationLog.getCustomerCode());
             serviceUserCodes.add(customerCommunicationLog.getServiceUserCode());

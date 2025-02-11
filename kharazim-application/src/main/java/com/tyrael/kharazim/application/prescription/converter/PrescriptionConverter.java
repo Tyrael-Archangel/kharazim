@@ -1,6 +1,5 @@
 package com.tyrael.kharazim.application.prescription.converter;
 
-import com.google.common.collect.Sets;
 import com.tyrael.kharazim.application.clinic.domain.Clinic;
 import com.tyrael.kharazim.application.clinic.mapper.ClinicMapper;
 import com.tyrael.kharazim.application.customer.domain.Customer;
@@ -177,8 +176,8 @@ public class PrescriptionConverter {
         }
 
         private void prepare() {
-            Set<String> customerCodes = Sets.newHashSet();
-            Set<String> clinicCodes = Sets.newHashSet();
+            Set<String> customerCodes = new HashSet<>();
+            Set<String> clinicCodes = new HashSet<>();
             for (Prescription prescription : prescriptions) {
                 customerCodes.add(prescription.getCustomerCode());
                 clinicCodes.add(prescription.getClinicCode());

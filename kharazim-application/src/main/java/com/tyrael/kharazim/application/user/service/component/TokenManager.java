@@ -3,8 +3,6 @@ package com.tyrael.kharazim.application.user.service.component;
 import com.alibaba.fastjson.JSON;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import com.tyrael.kharazim.application.base.auth.AuthConfig;
 import com.tyrael.kharazim.application.base.auth.AuthTokenConfig;
 import com.tyrael.kharazim.application.base.auth.AuthUser;
@@ -17,6 +15,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.SetUtils;
 import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -81,7 +80,7 @@ public class TokenManager {
         }
         Long userId = null;
         String loggedUserJson = getLoggedUserJson(token);
-        List<String> tokenKeyAndUserTokenKey = Lists.newArrayList(this.tokenCacheKey(token));
+        List<String> tokenKeyAndUserTokenKey = new ArrayList<>(List.of(this.tokenCacheKey(token)));
         if (StringUtils.hasText(loggedUserJson)) {
             LoggedUser loggedUser = LoggedUser.parse(loggedUserJson);
             if (loggedUser != null) {
@@ -112,7 +111,7 @@ public class TokenManager {
                 .map(this::tokenCacheKey)
                 .collect(Collectors.toSet());
 
-        redisTemplate.delete(Sets.union(keys, tokenCacheKeys));
+        redisTemplate.delete(SetUtils.union(keys, tokenCacheKeys));
     }
 
     private String tokenCacheKey(String token) {

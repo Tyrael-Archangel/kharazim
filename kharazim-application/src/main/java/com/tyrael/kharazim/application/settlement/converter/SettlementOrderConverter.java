@@ -1,6 +1,5 @@
 package com.tyrael.kharazim.application.settlement.converter;
 
-import com.google.common.collect.Sets;
 import com.tyrael.kharazim.application.clinic.domain.Clinic;
 import com.tyrael.kharazim.application.clinic.mapper.ClinicMapper;
 import com.tyrael.kharazim.application.customer.domain.Customer;
@@ -49,8 +48,8 @@ public class SettlementOrderConverter {
             return new ArrayList<>();
         }
 
-        Set<String> customerCodes = Sets.newHashSet();
-        Set<String> clinicCodes = Sets.newHashSet();
+        Set<String> customerCodes = new HashSet<>();
+        Set<String> clinicCodes = new HashSet<>();
         for (SettlementOrder prescription : settlementOrders) {
             customerCodes.add(prescription.getCustomerCode());
             clinicCodes.add(prescription.getClinicCode());

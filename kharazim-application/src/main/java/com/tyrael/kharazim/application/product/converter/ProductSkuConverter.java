@@ -1,6 +1,5 @@
 package com.tyrael.kharazim.application.product.converter;
 
-import com.google.common.collect.Sets;
 import com.tyrael.kharazim.application.product.domain.ProductSku;
 import com.tyrael.kharazim.application.product.domain.ProductUnitDO;
 import com.tyrael.kharazim.application.product.mapper.ProductUnitMapper;
@@ -15,10 +14,7 @@ import com.tyrael.kharazim.application.system.service.FileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -78,8 +74,8 @@ public class ProductSkuConverter {
      * ProductSku -> ProductSkuVO
      */
     public List<ProductSkuVO> skuVOs(Collection<ProductSku> skus) {
-        Set<String> supplierCodes = Sets.newHashSet();
-        Set<String> unitCodes = Sets.newHashSet();
+        Set<String> supplierCodes = new HashSet<>();
+        Set<String> unitCodes = new HashSet<>();
         for (ProductSku sku : skus) {
             supplierCodes.add(sku.getSupplierCode());
             unitCodes.add(sku.getUnitCode());

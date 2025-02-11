@@ -1,6 +1,5 @@
 package com.tyrael.kharazim.application.customer.service.impl;
 
-import com.google.common.collect.Lists;
 import com.tyrael.kharazim.application.base.auth.AuthUser;
 import com.tyrael.kharazim.application.config.BusinessCodeConstants;
 import com.tyrael.kharazim.application.customer.domain.Customer;
@@ -23,10 +22,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -66,7 +62,7 @@ public class CustomerFamilyServiceImpl implements CustomerFamilyService {
                                               Map<String, Customer> customerMap) {
 
         Customer leaderCustomer = customerMap.get(family.getLeaderCode());
-        List<CustomerFamilyVO.FamilyMemberVO> familyMemberVOList = Lists.newArrayList();
+        List<CustomerFamilyVO.FamilyMemberVO> familyMemberVOList = new ArrayList<>();
         CustomerFamilyVO.FamilyMemberVO leader = new CustomerFamilyVO.FamilyMemberVO();
         leader.setName(leaderCustomer.getName());
         leader.setCustomerCode(leaderCustomer.getCode());
@@ -106,7 +102,7 @@ public class CustomerFamilyServiceImpl implements CustomerFamilyService {
 
     private List<CustomerFamilyVO> customerFamilyVO(Collection<Family> families) {
         if (CollectionUtils.isEmpty(families)) {
-            return Lists.newArrayList();
+            return new ArrayList<>();
         }
         Set<String> familyCodes = families.stream()
                 .map(Family::getCode)

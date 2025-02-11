@@ -3,12 +3,12 @@ package com.tyrael.kharazim.application.system.mapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.google.common.collect.Lists;
 import com.tyrael.kharazim.application.system.domain.Address;
 import com.tyrael.kharazim.application.system.enums.AddressLevelEnum;
 import com.tyrael.kharazim.common.util.CollectionUtils;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -35,8 +35,8 @@ public interface AddressMapper extends BaseMapper<Address> {
      * @return addresses
      */
     default List<Address> listByNodeId(Long nodeId) {
-        List<Address> result = Lists.newArrayList();
-        List<Long> tempParentIds = Lists.newArrayList(nodeId);
+        List<Address> result = new ArrayList<>();
+        List<Long> tempParentIds = List.of(nodeId);
         while (true) {
             List<Address> addresses = listByParentId(tempParentIds);
             if (CollectionUtils.isEmpty(addresses)) {
@@ -59,7 +59,7 @@ public interface AddressMapper extends BaseMapper<Address> {
      */
     default List<Address> listByParentId(List<Long> parentIds) {
         if (CollectionUtils.isEmpty(parentIds)) {
-            return Lists.newArrayList();
+            return new ArrayList<>();
         }
         LambdaQueryWrapper<Address> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper.in(Address::getParentId, parentIds);

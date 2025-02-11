@@ -1,6 +1,5 @@
 package com.tyrael.kharazim.application.recharge.service.impl;
 
-import com.google.common.collect.Sets;
 import com.tyrael.kharazim.application.base.auth.AuthUser;
 import com.tyrael.kharazim.application.config.BusinessCodeConstants;
 import com.tyrael.kharazim.application.customer.domain.Customer;
@@ -232,9 +231,9 @@ public class CustomerRechargeCardServiceImpl implements CustomerRechargeCardServ
     }
 
     private List<CustomerRechargeCardVO> customerRechargeCards(Collection<CustomerRechargeCard> customerRechargeCards) {
-        Set<String> customerCodes = Sets.newHashSet();
-        Set<String> userCodes = Sets.newHashSet();
-        Set<String> cardTypeCodes = Sets.newHashSet();
+        Set<String> customerCodes = new HashSet<>();
+        Set<String> userCodes = new HashSet<>();
+        Set<String> cardTypeCodes = new HashSet<>();
         for (CustomerRechargeCard rechargeCard : customerRechargeCards) {
             customerCodes.add(rechargeCard.getCustomerCode());
             userCodes.add(rechargeCard.getTraderUserCode());

@@ -1,6 +1,5 @@
 package com.tyrael.kharazim.application.skupublish.converter;
 
-import com.google.common.collect.Sets;
 import com.tyrael.kharazim.application.clinic.domain.Clinic;
 import com.tyrael.kharazim.application.clinic.mapper.ClinicMapper;
 import com.tyrael.kharazim.application.product.service.ProductSkuRepository;
@@ -32,8 +31,8 @@ public class SkuPublishConverter {
             return new ArrayList<>();
         }
 
-        Set<String> skuCodes = Sets.newHashSet();
-        Set<String> clinicCodes = Sets.newHashSet();
+        Set<String> skuCodes = new HashSet<>();
+        Set<String> clinicCodes = new HashSet<>();
         for (SkuPublish skuPublish : skuPublishes) {
             skuCodes.add(skuPublish.getSkuCode());
             clinicCodes.add(skuPublish.getClinicCode());

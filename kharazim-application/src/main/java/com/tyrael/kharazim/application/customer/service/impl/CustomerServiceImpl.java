@@ -4,7 +4,6 @@ import com.alibaba.excel.EasyExcelFactory;
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.write.metadata.WriteSheet;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.google.common.collect.Lists;
 import com.tyrael.kharazim.application.base.auth.AuthUser;
 import com.tyrael.kharazim.application.config.BusinessCodeConstants;
 import com.tyrael.kharazim.application.customer.converter.CustomerConverter;
@@ -222,7 +221,8 @@ public class CustomerServiceImpl implements CustomerService {
                         .map(c -> c.getName() + "(" + c.getCode() + ")")
                         .collect(Collectors.toCollection(LinkedList::new));
                 circulation.add(customer.getName() + "(" + customer.getCode() + ")");
-                String circulationString = String.join(" -> ", Lists.reverse(circulation));
+                Collections.reverse(circulation);
+                String circulationString = String.join(" -> ", circulation);
                 throw new BusinessException("会员的来源会员关系形成循环：" + circulationString);
             }
         }
@@ -600,7 +600,7 @@ public class CustomerServiceImpl implements CustomerService {
 
         List<CustomerTag> customerTags = customerTagMapper.listByCustomerCode(code);
         if (customerTags.isEmpty()) {
-            return Lists.newArrayList();
+            return new ArrayList<>();
         }
         Map<String, String> dictItemValueToNameMap = dictService.dictItemMap(DictConstants.CUSTOMER_TAG);
 

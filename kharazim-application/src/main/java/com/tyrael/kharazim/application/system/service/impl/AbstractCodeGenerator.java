@@ -1,6 +1,5 @@
 package com.tyrael.kharazim.application.system.service.impl;
 
-
 import com.tyrael.kharazim.application.config.BusinessCodeConstants;
 import com.tyrael.kharazim.application.system.service.CodeGenerator;
 

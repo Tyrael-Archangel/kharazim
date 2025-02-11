@@ -1,6 +1,5 @@
 package com.tyrael.kharazim.application.config.requestlog;
 
-import com.google.common.collect.Lists;
 import com.tyrael.kharazim.application.base.auth.AuthUser;
 import com.tyrael.kharazim.application.base.auth.CurrentUserHolder;
 import com.tyrael.kharazim.application.system.domain.SystemRequestLog;
@@ -28,6 +27,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -131,7 +131,7 @@ public class RequestLogWriteAdvice implements ResponseBodyAdvice<Object> {
 
     private List<NameAndValue> responseHeaders(ServerHttpResponse response) {
 
-        List<NameAndValue> requestHeaders = Lists.newArrayList();
+        List<NameAndValue> requestHeaders = new ArrayList<>();
         if (response instanceof ServletServerHttpResponse servletServerHttpResponse) {
             HttpServletResponse servletResponse = servletServerHttpResponse.getServletResponse();
             Collection<String> headerNames = servletResponse.getHeaderNames();

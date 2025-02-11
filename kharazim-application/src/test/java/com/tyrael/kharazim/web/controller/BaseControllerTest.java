@@ -1,8 +1,6 @@
 package com.tyrael.kharazim.web.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.tyrael.kharazim.application.base.auth.*;
 import com.tyrael.kharazim.application.user.domain.User;
 import com.tyrael.kharazim.application.user.dto.user.request.ListUserRequest;
@@ -248,10 +246,10 @@ public abstract class BaseControllerTest<T> {
             } else if (isCollection(parameterType)) {
                 map.put(parameterName, getParamsFromCollection(argument));
             } else if (isBasicParamType(parameterType)) {
-                map.put(parameterName, Lists.newArrayList(String.valueOf(argument)));
+                map.put(parameterName, List.of(String.valueOf(argument)));
             } else if (isTemporalAccessor(parameterType)) {
                 // Year、YearMonth、LocalDate、MonthDay、LocalDate、LocalDateTime etc.
-                map.put(parameterName, Lists.newArrayList(getTemporalAccessorValue(methodParameter, argument)));
+                map.put(parameterName, List.of(getTemporalAccessorValue(methodParameter, argument)));
             } else {
                 MultiValueMap<String, String> beanParams = getParamsFromNormalBean(parameterType, argument);
                 map.putAll(beanParams);
@@ -260,7 +258,7 @@ public abstract class BaseControllerTest<T> {
         }
 
         private List<String> getParamsFromArray(Object argument) {
-            List<String> values = Lists.newArrayList();
+            List<String> values = new ArrayList<>();
             int length = Array.getLength(argument);
             for (int i = 0; i < length; i++) {
                 values.add(String.valueOf(Array.get(argument, i)));
@@ -269,7 +267,7 @@ public abstract class BaseControllerTest<T> {
         }
 
         private List<String> getParamsFromCollection(Object argument) {
-            List<String> values = Lists.newArrayList();
+            List<String> values = new ArrayList<>();
             Collection<?> collection = (Collection<?>) argument;
             for (Object element : collection) {
                 values.add(String.valueOf(element));
@@ -321,9 +319,9 @@ public abstract class BaseControllerTest<T> {
                     } else if (isCollection(field.getType())) {
                         params.put(fieldName, this.getParamsFromCollection(fieldValue));
                     } else if (isTemporalAccessor(field.getType())) {
-                        params.put(fieldName, Lists.newArrayList(this.getTemporalAccessorValue(field, fieldValue)));
+                        params.put(fieldName, List.of(this.getTemporalAccessorValue(field, fieldValue)));
                     } else {
-                        params.put(fieldName, Lists.newArrayList(String.valueOf(fieldValue)));
+                        params.put(fieldName, List.of(String.valueOf(fieldValue)));
                     }
                 }
             }
@@ -443,7 +441,7 @@ public abstract class BaseControllerTest<T> {
                 return null;
             }
 
-            Map<String, Object> pathVariableNameAndArgumentMap = Maps.newLinkedHashMap();
+            Map<String, Object> pathVariableNameAndArgumentMap = new LinkedHashMap<>();
             for (int i = 0; i < parameters.length; i++) {
                 MethodParameter methodParameter = new MethodParameter(method, i);
                 String pathVariableName = this.getPathVariableName(methodParameter);
@@ -478,7 +476,7 @@ public abstract class BaseControllerTest<T> {
             String groupName = "VARIABLE";
             String pathVariablesRegex = "\\{(?<" + groupName + ">[^}]*)}";
             Matcher matcher = Pattern.compile(pathVariablesRegex).matcher(url);
-            List<String> pathVariables = Lists.newArrayList();
+            List<String> pathVariables = new ArrayList<>();
             while (matcher.find()) {
                 pathVariables.add(matcher.group(groupName));
             }

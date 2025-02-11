@@ -1,6 +1,5 @@
 package com.tyrael.kharazim.application.system.service.impl;
 
-import com.google.common.collect.Lists;
 import com.tyrael.kharazim.application.config.cache.CacheKeyConstants;
 import com.tyrael.kharazim.application.system.domain.Address;
 import com.tyrael.kharazim.application.system.dto.address.AddressDTO;
@@ -15,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,7 +49,7 @@ public class AddressQueryServiceImpl implements AddressQueryService {
 
     private List<AddressTreeNodeDTO> addressTreeNodes(List<Address> addresses) {
         if (CollectionUtils.isEmpty(addresses)) {
-            return Lists.newArrayList();
+            return new ArrayList<>();
         }
         return addresses.stream()
                 .map(address -> {
@@ -107,7 +107,7 @@ public class AddressQueryServiceImpl implements AddressQueryService {
 
     private List<AddressDTO> addressDtoList(List<Address> addresses) {
         if (CollectionUtils.isEmpty(addresses)) {
-            return Lists.newArrayList();
+            return new ArrayList<>();
         }
         return addresses.stream()
                 .map(address -> {
