@@ -1,0 +1,16 @@
+server:
+  port: 25212
+  servlet:
+    context-path: /basic-data
+
+spring:
+  application:
+    name: kharazim-basic-data
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${NACOS_SERVER_HOST:localhost}:${NACOS_SERVER_PORT:8848}
+        namespace: ${NACOS_DISCOVERY_NAMESPACE:kharazim}
+        group: ${NACOS_DISCOVERY_GROUP:kharazim}
+        username: ${NACOS_USERNAME:}
+        password: ${NACOS_PASSWORD:}

@@ -1,0 +1,57 @@
+spring:
+  main:
+    banner-mode: off
+  datasource:
+    url: jdbc:mysql://${MYSQL_SERVER:localhost}:${MYSQL_PORT:3306}/${DB_NAME:kharazim_user_db}?useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true
+    username: ${MYSQL_USER:root}
+    password: ${MYSQL_PASSWORD:123456}
+    hikari:
+      maximum-pool-size: 200
+      minimum-idle: 10
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      database: ${REDIS_DATABASE:0}
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+  mvc:
+    format:
+      date-time: yyyy-MM-dd HH:mm:ss
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+
+  cache:
+    type: redis
+    redis:
+      key-prefix: KHARAZIM_USER_CACHE
+      time-to-live: 20m
+
+logging:
+  level:
+    root: info
+
+knife4j:
+  enable: true
+  production: false
+
+dubbo:
+  application:
+    name: ${spring.application.name:kharazim-user-api}
+    check-serializable: false
+    serialize-check-status: WARN
+    qos-enable: false
+  registry:
+    address: nacos://${NACOS_SERVER_HOST:localhost}:${NACOS_SERVER_PORT:8848}
+    group: kharazim-dubbo
+    username: ${NACOS_USERNAME:}
+    password: ${NACOS_PASSWORD:}
+  protocol:
+    name: dubbo
+    port: -1
+  consumer:
+    check: false

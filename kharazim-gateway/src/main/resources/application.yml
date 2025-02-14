@@ -1,0 +1,32 @@
+auth:
+  login:
+    whitelist:
+      - "/*/auth/login"
+      - "/*/auth/logout"
+      - "/*/v2/api-docs"
+
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: user_api_route
+          uri: lb://kharazim-user-api
+          predicates:
+            - Path=/user-api/**
+
+dubbo:
+  application:
+    name: kharazim-dubbo-gateway
+    check-serializable: false
+    serialize-check-status: WARN
+    qos-enable: false
+  registry:
+    address: nacos://${NACOS_SERVER_HOST:localhost}:${NACOS_SERVER_PORT:8848}
+    group: kharazim-dubbo
+    username: ${NACOS_USERNAME:}
+    password: ${NACOS_PASSWORD:}
+  protocol:
+    name: dubbo
+    port: -1
+  consumer:
+    check: false

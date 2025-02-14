@@ -1,0 +1,4 @@
+currentUserConsumerFilter=com.jay.erp.common.dubbo.filter.CurrentUserConsumerFilter
+currentUserProviderFilter=com.jay.erp.common.dubbo.filter.CurrentUserProviderFilter
+sourceApplicationConsumerFilter=com.tyrael.kharazim.dubbo.filter.SourceApplicationConsumerFilter
+sourceApplicationProviderFilter=com.tyrael.kharazim.dubbo.filter.SourceApplicationProviderFilter

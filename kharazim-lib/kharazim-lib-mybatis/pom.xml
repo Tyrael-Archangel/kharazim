@@ -1,0 +1,48 @@
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.tyrael</groupId>
+        <artifactId>kharazim-lib</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>kharazim-lib-mybatis</artifactId>
+
+    <properties>
+        <mybatis-plus.version>3.5.10.1</mybatis-plus.version>
+        <kharazim-lib.version>1.0-SNAPSHOT</kharazim-lib.version>
+        <kharazim-user.version>1.0-SNAPSHOT</kharazim-user.version>
+    </properties>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>com.tyrael</groupId>
+            <artifactId>kharazim-lib-base</artifactId>
+            <version>${kharazim-lib.version}</version>
+        </dependency>
+
+        <!-- FIXME 不应该引入user-api-sdk，需要考虑优化 -->
+        <dependency>
+            <groupId>com.tyrael</groupId>
+            <artifactId>kharazim-user-api-sdk</artifactId>
+            <version>${kharazim-user.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
+            <version>${mybatis-plus.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-jsqlparser</artifactId>
+            <version>${mybatis-plus.version}</version>
+        </dependency>
+
+    </dependencies>
+
+</project>

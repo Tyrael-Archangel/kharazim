@@ -1,0 +1,144 @@
+package com.tyrael.kharazim.gateway.filter;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tyrael.kharazim.lib.base.dto.Response;
+import com.tyrael.kharazim.lib.base.exception.ShouldNotHappenException;
+import com.tyrael.kharazim.user.sdk.constant.UserHeader;
+import com.tyrael.kharazim.user.sdk.exception.TokenInvalidException;
+import com.tyrael.kharazim.user.sdk.model.AuthUser;
+import com.tyrael.kharazim.user.sdk.service.AuthServiceApi;
+import lombok.RequiredArgsConstructor;
+import org.apache.dubbo.config.annotation.DubboReference;
+import org.springframework.cloud.gateway.filter.GatewayFilterChain;
+import org.springframework.cloud.gateway.filter.GlobalFilter;
+import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.http.HttpCookie;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.server.PathContainer;
+import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.http.server.reactive.ServerHttpResponse;
+import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
+import org.springframework.web.server.ServerWebExchange;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.Map;
+
+/**
+ * @author Tyrael Archangel
+ * @since 2025/2/13
+ */
+@Component
+@RequiredArgsConstructor
+public class AuthFilter implements GlobalFilter {
+
+    private final ObjectMapper objectMapper;
+    private final AuthWhiteListChecker authWhiteListChecker;
+
+    @DubboReference
+    private AuthServiceApi authServiceApi;
+
+    @Override
+    public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+
+        PathContainer pathContainer = exchange.getRequest()
+                .getPath()
+                .pathWithinApplication();
+        boolean whitelist = authWhiteListChecker.isWhite(pathContainer);
+
+        String token = getToken(exchange);
+        if (!whitelist && !StringUtils.hasText(token)) {
+            return writeUnauthorized(exchange);
+        }
+
+        try {
+
+            AuthUser authUser = authServiceApi.verifyToken(token);
+
+            ServerHttpRequest extraRequest = exchange.getRequest()
+                    .mutate()
+                    .header(UserHeader.USER_ID, this.utf8Encode(authUser.getId().toString()))
+                    .header(UserHeader.USER_NAME, this.utf8Encode(authUser.getName()))
+                    .header(UserHeader.TOKEN, this.utf8Encode(token))
+                    .build();
+            exchange.mutate().request(extraRequest).build();
+
+        } catch (TokenInvalidException e) {
+            if (!whitelist) {
+                return writeUnauthorized(exchange);
+            }
+        }
+
+        return chain.filter(exchange);
+    }
+
+    private String getToken(ServerWebExchange exchange) {
+
+        Map<String, String> queryParams = exchange.getRequest()
+                .getQueryParams()
+                .toSingleValueMap();
+        String token = queryParams.get(UserHeader.TOKEN);
+        if (!StringUtils.hasText(token)) {
+            token = queryParams.entrySet()
+                    .stream()
+                    .filter(entry -> UserHeader.TOKEN.equalsIgnoreCase(entry.getKey()))
+                    .map(Map.Entry::getValue)
+                    .findFirst()
+                    .orElse(null);
+        }
+
+        if (!StringUtils.hasText(token)) {
+            token = exchange.getRequest()
+                    .getHeaders()
+                    .getFirst(UserHeader.TOKEN);
+        }
+
+        Map<String, HttpCookie> cookies = exchange.getRequest().getCookies().toSingleValueMap();
+        if (!StringUtils.hasText(token)) {
+            HttpCookie httpCookie = cookies.get(UserHeader.TOKEN);
+            if (httpCookie != null) {
+                token = httpCookie.getValue();
+            }
+        }
+        if (!StringUtils.hasText(token)) {
+            token = cookies.entrySet()
+                    .stream()
+                    .filter(entry -> UserHeader.TOKEN.equalsIgnoreCase(entry.getKey()))
+                    .map(Map.Entry::getValue)
+                    .findFirst()
+                    .map(HttpCookie::getValue)
+                    .orElse(null);
+        }
+        return token;
+    }
+
+    private Mono<Void> writeUnauthorized(ServerWebExchange exchange) {
+        ServerHttpResponse response = exchange.getResponse();
+        response.setStatusCode(HttpStatus.UNAUTHORIZED);
+        response.getHeaders()
+                .add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+        Response failResponse = Response.error(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.getReasonPhrase());
+        byte[] failResponseBytes;
+        try {
+            failResponseBytes = objectMapper.writeValueAsBytes(failResponse);
+        } catch (JsonProcessingException e) {
+            throw new ShouldNotHappenException();
+        }
+        DataBuffer dataBuffer = response.bufferFactory().wrap(failResponseBytes);
+        return response.writeWith(Flux.just(dataBuffer));
+    }
+
+    private String utf8Encode(String value) {
+        if (value == null) {
+            return null;
+        }
+        return URLEncoder.encode(value, StandardCharsets.UTF_8);
+    }
+
+}
