@@ -1,6 +1,6 @@
 package com.tyrael.kharazim.user.sdk.exception;
 
-import com.tyrael.kharazim.lib.base.exception.UnauthorizedException;
+import com.tyrael.kharazim.base.exception.UnauthorizedException;
 
 /**
  * @author Tyrael Archangel

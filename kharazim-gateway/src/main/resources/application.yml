@@ -8,6 +8,7 @@ auth:
 spring:
   cloud:
     gateway:
+      context-path: /kharazim-api
       routes:
         - id: user_api_route
           uri: lb://kharazim-user-api

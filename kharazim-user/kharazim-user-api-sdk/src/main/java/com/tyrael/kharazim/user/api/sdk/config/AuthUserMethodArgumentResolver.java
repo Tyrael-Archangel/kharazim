@@ -1,13 +1,12 @@
 package com.tyrael.kharazim.user.api.sdk.config;
 
-import com.tyrael.kharazim.lib.base.exception.UnauthorizedException;
+import com.tyrael.kharazim.base.exception.UnauthorizedException;
 import com.tyrael.kharazim.user.api.sdk.annotation.CurrentUser;
 import com.tyrael.kharazim.user.api.sdk.handler.AuthUserHolder;
 import com.tyrael.kharazim.user.sdk.model.AuthUser;
 import org.springframework.core.MethodParameter;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;

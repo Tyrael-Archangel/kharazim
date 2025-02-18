@@ -3,7 +3,7 @@ package com.tyrael.kharazim.user.app.mapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.tyrael.kharazim.lib.base.util.CollectionUtils;
+import com.tyrael.kharazim.base.util.CollectionUtils;
 import com.tyrael.kharazim.user.app.domain.Role;
 import com.tyrael.kharazim.user.app.domain.UserRole;
 import org.apache.ibatis.annotations.Mapper;

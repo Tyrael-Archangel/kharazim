@@ -2,8 +2,8 @@ package com.tyrael.kharazim.gateway.config;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tyrael.kharazim.lib.base.dto.DataResponse;
-import com.tyrael.kharazim.lib.base.exception.ShouldNotHappenException;
+import com.tyrael.kharazim.base.dto.DataResponse;
+import com.tyrael.kharazim.base.exception.ShouldNotHappenException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.reactive.error.ErrorWebExceptionHandler;

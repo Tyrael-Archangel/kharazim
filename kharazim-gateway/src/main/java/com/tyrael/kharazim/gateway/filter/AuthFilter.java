@@ -2,8 +2,8 @@ package com.tyrael.kharazim.gateway.filter;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tyrael.kharazim.lib.base.dto.Response;
-import com.tyrael.kharazim.lib.base.exception.ShouldNotHappenException;
+import com.tyrael.kharazim.base.dto.Response;
+import com.tyrael.kharazim.base.exception.ShouldNotHappenException;
 import com.tyrael.kharazim.user.sdk.constant.UserHeader;
 import com.tyrael.kharazim.user.sdk.exception.TokenInvalidException;
 import com.tyrael.kharazim.user.sdk.model.AuthUser;
@@ -47,35 +47,46 @@ public class AuthFilter implements GlobalFilter {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
 
-        PathContainer pathContainer = exchange.getRequest()
-                .getPath()
-                .pathWithinApplication();
-        boolean whitelist = authWhiteListChecker.isWhite(pathContainer);
-
-        String token = getToken(exchange);
-        if (!whitelist && !StringUtils.hasText(token)) {
-            return writeUnauthorized(exchange);
-        }
-
         try {
 
-            AuthUser authUser = authServiceApi.verifyToken(token);
-
-            ServerHttpRequest extraRequest = exchange.getRequest()
-                    .mutate()
-                    .header(UserHeader.USER_ID, this.utf8Encode(authUser.getId().toString()))
-                    .header(UserHeader.USER_NAME, this.utf8Encode(authUser.getName()))
-                    .header(UserHeader.TOKEN, this.utf8Encode(token))
-                    .build();
-            exchange.mutate().request(extraRequest).build();
+            resolveUserHeader(exchange, this.getToken(exchange));
+            return chain.filter(exchange);
 
         } catch (TokenInvalidException e) {
-            if (!whitelist) {
+
+            if (isWhitelist(exchange)) {
+                return chain.filter(exchange);
+            } else {
                 return writeUnauthorized(exchange);
             }
         }
 
-        return chain.filter(exchange);
+    }
+
+    private boolean isWhitelist(ServerWebExchange exchange) {
+        PathContainer pathContainer = exchange.getRequest()
+                .getPath()
+                .pathWithinApplication();
+        return authWhiteListChecker.isWhite(pathContainer);
+    }
+
+    private void resolveUserHeader(ServerWebExchange exchange, String token) throws TokenInvalidException {
+        if (!StringUtils.hasText(token)) {
+            throw new TokenInvalidException("Token is empty");
+        }
+
+        AuthUser authUser = authServiceApi.verifyToken(token);
+        if (authUser == null) {
+            throw new TokenInvalidException("Token validation failed");
+        }
+
+        ServerHttpRequest extraRequest = exchange.getRequest()
+                .mutate()
+                .header(UserHeader.USER_ID, this.utf8Encode(authUser.getId().toString()))
+                .header(UserHeader.USER_NAME, this.utf8Encode(authUser.getName()))
+                .header(UserHeader.TOKEN, this.utf8Encode(token))
+                .build();
+        exchange.mutate().request(extraRequest).build();
     }
 
     private String getToken(ServerWebExchange exchange) {

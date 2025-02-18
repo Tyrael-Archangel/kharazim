@@ -1,7 +1,7 @@
 package com.tyrael.kharazim.lib.web.config;
 
-import com.tyrael.kharazim.lib.base.dto.DataResponse;
-import com.tyrael.kharazim.lib.base.dto.Response;
+import com.tyrael.kharazim.base.dto.DataResponse;
+import com.tyrael.kharazim.base.dto.Response;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.boot.web.servlet.error.ErrorController;

@@ -3,8 +3,8 @@ package com.tyrael.kharazim.mybatis;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.tyrael.kharazim.lib.base.dto.PageCommand;
-import com.tyrael.kharazim.lib.base.dto.PageResponse;
+import com.tyrael.kharazim.base.dto.PageCommand;
+import com.tyrael.kharazim.base.dto.PageResponse;
 
 /**
  * @author Tyrael Archangel

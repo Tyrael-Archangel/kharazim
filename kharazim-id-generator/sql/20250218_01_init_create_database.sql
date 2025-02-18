@@ -1,0 +1,1 @@
+CREATE DATABASE `kharazim_id_generator_db` CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci';

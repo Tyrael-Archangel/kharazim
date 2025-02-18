@@ -1,7 +1,7 @@
 package com.tyrael.kharazim.user.app.enums;
 
 import com.baomidou.mybatisplus.annotation.EnumValue;
-import com.tyrael.kharazim.lib.base.dto.BaseHasNameEnum;
+import com.tyrael.kharazim.base.dto.BaseHasNameEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

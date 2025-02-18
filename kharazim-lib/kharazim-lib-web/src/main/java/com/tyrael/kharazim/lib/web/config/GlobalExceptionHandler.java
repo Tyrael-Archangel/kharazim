@@ -1,11 +1,11 @@
 package com.tyrael.kharazim.lib.web.config;
 
-import com.tyrael.kharazim.lib.base.dto.ExceptionResponse;
-import com.tyrael.kharazim.lib.base.dto.Response;
-import com.tyrael.kharazim.lib.base.exception.BusinessException;
-import com.tyrael.kharazim.lib.base.exception.DomainNotFoundException;
-import com.tyrael.kharazim.lib.base.exception.ForbiddenException;
-import com.tyrael.kharazim.lib.base.exception.UnauthorizedException;
+import com.tyrael.kharazim.base.dto.ExceptionResponse;
+import com.tyrael.kharazim.base.dto.Response;
+import com.tyrael.kharazim.base.exception.BusinessException;
+import com.tyrael.kharazim.base.exception.DomainNotFoundException;
+import com.tyrael.kharazim.base.exception.ForbiddenException;
+import com.tyrael.kharazim.base.exception.UnauthorizedException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

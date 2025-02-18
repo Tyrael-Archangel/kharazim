@@ -1,6 +1,6 @@
 package com.tyrael.kharazim.user.app.service.component;
 
-import com.tyrael.kharazim.lib.base.exception.ShouldNotHappenException;
+import com.tyrael.kharazim.base.exception.ShouldNotHappenException;
 import org.springframework.stereotype.Component;
 
 import java.security.MessageDigest;

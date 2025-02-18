@@ -1,8 +1,8 @@
 package com.tyrael.kharazim.user.app.service.impl;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
-import com.tyrael.kharazim.lib.base.dto.PageCommand;
-import com.tyrael.kharazim.lib.base.exception.BusinessException;
+import com.tyrael.kharazim.base.dto.PageCommand;
+import com.tyrael.kharazim.base.exception.BusinessException;
 import com.tyrael.kharazim.user.app.config.CacheKeyConstants;
 import com.tyrael.kharazim.user.app.converter.UserConverter;
 import com.tyrael.kharazim.user.app.domain.User;

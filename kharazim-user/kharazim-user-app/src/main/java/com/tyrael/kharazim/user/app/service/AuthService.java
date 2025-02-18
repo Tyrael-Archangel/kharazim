@@ -1,6 +1,6 @@
 package com.tyrael.kharazim.user.app.service;
 
-import com.tyrael.kharazim.lib.base.dto.PageCommand;
+import com.tyrael.kharazim.base.dto.PageCommand;
 import com.tyrael.kharazim.user.app.dto.auth.LoginRequest;
 import com.tyrael.kharazim.user.app.dto.auth.OnlineUserDTO;
 import com.tyrael.kharazim.user.sdk.exception.LoginFailedException;

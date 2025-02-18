@@ -2,8 +2,8 @@ package com.tyrael.kharazim.user.app.mapper;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.tyrael.kharazim.lib.base.dto.PageResponse;
-import com.tyrael.kharazim.lib.base.util.CollectionUtils;
+import com.tyrael.kharazim.base.dto.PageResponse;
+import com.tyrael.kharazim.base.util.CollectionUtils;
 import com.tyrael.kharazim.mybatis.BasePageMapper;
 import com.tyrael.kharazim.user.app.domain.Role;
 import com.tyrael.kharazim.user.app.dto.user.request.PageRoleRequest;

@@ -1,6 +1,6 @@
 package com.tyrael.kharazim.user.app.dto.user.request;
 
-import com.tyrael.kharazim.lib.base.dto.PageCommand;
+import com.tyrael.kharazim.base.dto.PageCommand;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
