@@ -1,4 +1,4 @@
-package com.tyrael.kharazim.user.app.enums;
+package com.tyrael.kharazim.user.app.constant;
 
 import com.tyrael.kharazim.idgenerator.BusinessIdConstant;
 import lombok.Getter;
@@ -8,6 +8,7 @@ import lombok.Getter;
  * @since 2025/2/18
  */
 @Getter
+@SuppressWarnings("unused")
 public enum UserBusinessIdConstants implements BusinessIdConstant<UserBusinessIdConstants> {
 
     USER("用户编码", "U"),
@@ -17,7 +18,6 @@ public enum UserBusinessIdConstants implements BusinessIdConstant<UserBusinessId
     private final String desc;
     private final int bit;
 
-    @SuppressWarnings("unused")
     UserBusinessIdConstants(String desc) {
         this(desc, DEFAULT_BIT);
     }

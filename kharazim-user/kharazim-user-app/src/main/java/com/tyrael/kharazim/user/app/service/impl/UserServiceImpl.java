@@ -17,7 +17,7 @@ import com.tyrael.kharazim.user.app.dto.user.response.CurrentUserDTO;
 import com.tyrael.kharazim.user.app.dto.user.response.UserDTO;
 import com.tyrael.kharazim.user.app.dto.user.response.UserRoleDTO;
 import com.tyrael.kharazim.user.app.enums.EnableStatusEnum;
-import com.tyrael.kharazim.user.app.enums.UserBusinessIdConstants;
+import com.tyrael.kharazim.user.app.constant.UserBusinessIdConstants;
 import com.tyrael.kharazim.user.app.mapper.RoleMapper;
 import com.tyrael.kharazim.user.app.mapper.UserMapper;
 import com.tyrael.kharazim.user.app.mapper.UserRoleMapper;

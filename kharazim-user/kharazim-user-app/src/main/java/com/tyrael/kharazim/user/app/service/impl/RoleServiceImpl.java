@@ -11,7 +11,7 @@ import com.tyrael.kharazim.user.app.dto.role.response.RoleDetailDTO;
 import com.tyrael.kharazim.user.app.dto.role.response.RolePageDTO;
 import com.tyrael.kharazim.user.app.dto.user.request.PageRoleRequest;
 import com.tyrael.kharazim.user.app.enums.EnableStatusEnum;
-import com.tyrael.kharazim.user.app.enums.UserBusinessIdConstants;
+import com.tyrael.kharazim.user.app.constant.UserBusinessIdConstants;
 import com.tyrael.kharazim.user.app.mapper.RoleMapper;
 import com.tyrael.kharazim.user.app.service.RoleService;
 import lombok.RequiredArgsConstructor;
