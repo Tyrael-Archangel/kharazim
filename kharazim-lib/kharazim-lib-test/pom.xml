@@ -1,0 +1,63 @@
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.tyrael</groupId>
+        <artifactId>kharazim-lib</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>kharazim-lib-test</artifactId>
+
+    <properties>
+        <kharazim-lib.version>1.0-SNAPSHOT</kharazim-lib.version>
+        <spring-boot.version>3.2.4</spring-boot.version>
+        <junit.version>1.10.2</junit.version>
+        <kharazim-user.version>1.0-SNAPSHOT</kharazim-user.version>
+    </properties>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>com.tyrael</groupId>
+            <artifactId>kharazim-lib-base</artifactId>
+            <version>${kharazim-lib.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.tyrael</groupId>
+            <artifactId>kharazim-lib-web</artifactId>
+            <version>${kharazim-lib.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.tyrael</groupId>
+            <artifactId>kharazim-lib-dubbo</artifactId>
+            <version>${kharazim-lib.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.tyrael</groupId>
+            <artifactId>kharazim-user-api-sdk</artifactId>
+            <version>${kharazim-user.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <version>${spring-boot.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-annotations-jakarta</artifactId>
+            <version>2.2.8</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-suite-engine</artifactId>
+            <version>${junit.version}</version>
+        </dependency>
+
+    </dependencies>
+</project>
