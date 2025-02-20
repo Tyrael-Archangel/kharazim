@@ -48,6 +48,11 @@
 
         <dependency>
             <groupId>com.tyrael</groupId>
+            <artifactId>kharazim-lib-export</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.tyrael</groupId>
             <artifactId>kharazim-basic-data-sdk</artifactId>
         </dependency>
 

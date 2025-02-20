@@ -12,7 +12,8 @@ import lombok.Getter;
 public enum BasicDataBusinessIdConstants implements BusinessIdConstant<BasicDataBusinessIdConstants> {
 
     FILE("文件", 10, "F"),
-    FILE_DIR("文件目录", 5, "dir");
+    FILE_DIR("文件目录", 5, "dir"),
+    CLINIC("诊所（机构）", "CL");
 
     private final String prefix;
     private final String desc;

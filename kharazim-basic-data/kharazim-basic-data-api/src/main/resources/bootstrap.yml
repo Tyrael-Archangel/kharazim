@@ -1,7 +1,5 @@
 server:
   port: 25212
-  servlet:
-    context-path: /basic-data
 
 spring:
   application:

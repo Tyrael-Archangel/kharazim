@@ -16,6 +16,7 @@
         <module>kharazim-lib-mybatis</module>
         <module>kharazim-lib-cache</module>
         <module>kharazim-lib-test</module>
+        <module>kharazim-lib-export</module>
     </modules>
 
     <properties>

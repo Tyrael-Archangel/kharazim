@@ -13,7 +13,14 @@ spring:
         - id: user_api_route
           uri: lb://kharazim-user-api
           predicates:
-            - Path=/user-api/**
+            - Path=/user/**
+            - Path=/auth/**
+            - Path=/roles/**
+        - id: basic_data_api_route
+          uri: lb://kharazim-basic-data
+          predicates:
+            - Path=/system/**
+            - Path=/clinic/**
 
 dubbo:
   application:
