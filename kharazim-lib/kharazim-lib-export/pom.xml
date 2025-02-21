@@ -12,7 +12,7 @@
 
     <properties>
         <kharazim-lib.version>1.0-SNAPSHOT</kharazim-lib.version>
-        <easyexcel.version>3.2.0</easyexcel.version>
+        <fastexcel.version>1.1.0</fastexcel.version>
         <spring-boot.version>3.2.4</spring-boot.version>
     </properties>
 
@@ -25,9 +25,9 @@
         </dependency>
 
         <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>easyexcel</artifactId>
-            <version>${easyexcel.version}</version>
+            <groupId>cn.idev.excel</groupId>
+            <artifactId>fastexcel</artifactId>
+            <version>${fastexcel.version}</version>
         </dependency>
 
         <dependency>
