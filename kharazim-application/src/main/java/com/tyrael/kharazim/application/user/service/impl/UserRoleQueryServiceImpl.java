@@ -44,6 +44,7 @@ public class UserRoleQueryServiceImpl implements UserRoleQueryService {
                             .roleId(roleId)
                             .roleCode(role.getCode())
                             .roleName(role.getName())
+                            .admin(role.getSuperAdmin())
                             .build();
                 })
                 .collect(Collectors.toList());
