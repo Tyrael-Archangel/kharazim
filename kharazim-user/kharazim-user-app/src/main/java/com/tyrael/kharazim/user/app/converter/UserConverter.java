@@ -1,6 +1,6 @@
 package com.tyrael.kharazim.user.app.converter;
 
-import com.tyrael.kharazim.basicdata.file.FileServiceApi;
+import com.tyrael.kharazim.basicdata.sdk.service.FileServiceApi;
 import com.tyrael.kharazim.base.util.CollectionUtils;
 import com.tyrael.kharazim.user.app.domain.User;
 import com.tyrael.kharazim.user.app.dto.auth.LoginClientInfo;

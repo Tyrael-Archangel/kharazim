@@ -83,7 +83,9 @@ public class AuthFilter implements GlobalFilter {
         ServerHttpRequest extraRequest = exchange.getRequest()
                 .mutate()
                 .header(UserHeader.USER_ID, this.utf8Encode(authUser.getId().toString()))
+                .header(UserHeader.USER_CODE, this.utf8Encode(authUser.getCode()))
                 .header(UserHeader.USER_NAME, this.utf8Encode(authUser.getName()))
+                .header(UserHeader.USER_NICKNAME, this.utf8Encode(authUser.getNickName()))
                 .header(UserHeader.TOKEN, this.utf8Encode(token))
                 .build();
         exchange.mutate().request(extraRequest).build();

@@ -1,12 +1,12 @@
 package com.tyrael.kharazim.basicdata.app.dto.clinic;
 
-import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
-import com.alibaba.excel.annotation.ExcelProperty;
-import com.alibaba.excel.annotation.write.style.ColumnWidth;
-import com.alibaba.excel.annotation.write.style.ContentRowHeight;
-import com.alibaba.excel.annotation.write.style.ContentStyle;
-import com.alibaba.excel.enums.poi.HorizontalAlignmentEnum;
-import com.alibaba.excel.enums.poi.VerticalAlignmentEnum;
+import cn.idev.excel.annotation.ExcelIgnoreUnannotated;
+import cn.idev.excel.annotation.ExcelProperty;
+import cn.idev.excel.annotation.write.style.ColumnWidth;
+import cn.idev.excel.annotation.write.style.ContentRowHeight;
+import cn.idev.excel.annotation.write.style.ContentStyle;
+import cn.idev.excel.enums.poi.HorizontalAlignmentEnum;
+import cn.idev.excel.enums.poi.VerticalAlignmentEnum;
 import com.tyrael.kharazim.basicdata.app.enums.ClinicStatus;
 import lombok.Builder;
 import lombok.Data;

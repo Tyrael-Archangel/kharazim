@@ -1,8 +1,8 @@
 package com.tyrael.kharazim.basicdata.app.service.impl;
 
-import com.alibaba.excel.EasyExcelFactory;
-import com.alibaba.excel.ExcelWriter;
-import com.alibaba.excel.write.metadata.WriteSheet;
+import cn.idev.excel.ExcelWriter;
+import cn.idev.excel.FastExcelFactory;
+import cn.idev.excel.write.metadata.WriteSheet;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.tyrael.kharazim.base.dto.PageResponse;
 import com.tyrael.kharazim.base.exception.BusinessException;
@@ -61,12 +61,12 @@ public class ClinicServiceImpl implements ClinicService {
     @Override
     @Transactional(readOnly = true)
     public void export(PageClinicRequest request, HttpServletResponse response) throws IOException {
-        WriteSheet writeSheet = EasyExcelFactory.writerSheet("诊所数据")
+        WriteSheet writeSheet = FastExcelFactory.writerSheet("诊所数据")
                 .head(ClinicExportVO.class)
                 .build();
         int pageSize = 200;
         int pageNum = 1;
-        try (ExcelWriter excelWriter = EasyExcelFactory.write(response.getOutputStream()).build()) {
+        try (ExcelWriter excelWriter = FastExcelFactory.write(response.getOutputStream()).build()) {
             List<ClinicExportVO> exports;
             do {
                 Page<Clinic> pageCondition = new Page<>(pageNum, pageSize, false);

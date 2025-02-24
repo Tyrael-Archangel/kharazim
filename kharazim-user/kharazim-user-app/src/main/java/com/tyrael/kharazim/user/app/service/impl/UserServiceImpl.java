@@ -8,6 +8,7 @@ import com.tyrael.kharazim.base.util.CollectionUtils;
 import com.tyrael.kharazim.base.util.RandomStringUtil;
 import com.tyrael.kharazim.idgenerator.IdGenerator;
 import com.tyrael.kharazim.user.app.config.CacheKeyConstants;
+import com.tyrael.kharazim.user.app.constant.UserBusinessIdConstants;
 import com.tyrael.kharazim.user.app.converter.UserConverter;
 import com.tyrael.kharazim.user.app.domain.Role;
 import com.tyrael.kharazim.user.app.domain.User;
@@ -17,7 +18,6 @@ import com.tyrael.kharazim.user.app.dto.user.response.CurrentUserDTO;
 import com.tyrael.kharazim.user.app.dto.user.response.UserDTO;
 import com.tyrael.kharazim.user.app.dto.user.response.UserRoleDTO;
 import com.tyrael.kharazim.user.app.enums.EnableStatusEnum;
-import com.tyrael.kharazim.user.app.constant.UserBusinessIdConstants;
 import com.tyrael.kharazim.user.app.mapper.RoleMapper;
 import com.tyrael.kharazim.user.app.mapper.UserMapper;
 import com.tyrael.kharazim.user.app.mapper.UserRoleMapper;
@@ -247,7 +247,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateStatus(Long id, EnableStatusEnum status) {
+    public void updateStatus(Long id, EnableStatusEnum status, AuthUser currentUser) {
+        if (currentUser.getId().equals(id)) {
+            throw new ForbiddenException("无法禁用自己");
+        }
+
         User user = userMapper.selectById(id);
         DomainNotFoundException.assertFound(user, id);
 

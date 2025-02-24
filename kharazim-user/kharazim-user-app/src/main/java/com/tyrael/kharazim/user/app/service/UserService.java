@@ -83,9 +83,10 @@ public interface UserService {
     /**
      * 修改用户状态
      *
-     * @param id     ID
-     * @param status 状态
+     * @param id          ID
+     * @param status      状态
+     * @param currentUser CurrentUser
      */
-    void updateStatus(Long id, EnableStatusEnum status);
+    void updateStatus(Long id, EnableStatusEnum status, AuthUser currentUser);
 
 }

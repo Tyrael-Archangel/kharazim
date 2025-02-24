@@ -87,8 +87,9 @@ public class UserController {
     @PutMapping("/update-status/{userId}/{status}")
     @Operation(summary = "修改用户状态")
     public Response updateStatus(@PathVariable("userId") Long userId,
-                                 @PathVariable("status") EnableStatusEnum status) {
-        userService.updateStatus(userId, status);
+                                 @PathVariable("status") EnableStatusEnum status,
+                                 @Schema(hidden = true) @CurrentUser AuthUser currentUser) {
+        userService.updateStatus(userId, status, currentUser);
         return Response.success();
     }
 

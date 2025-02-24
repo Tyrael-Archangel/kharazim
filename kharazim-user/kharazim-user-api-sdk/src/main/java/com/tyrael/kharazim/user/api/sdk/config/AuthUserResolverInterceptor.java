@@ -25,12 +25,16 @@ public class AuthUserResolverInterceptor implements WebRequestInterceptor {
         String userId = this.utf8Decode(webRequest.getHeader(UserHeader.USER_ID));
 
         if (StringUtils.hasText(userId)) {
+            String userCode = this.utf8Decode(webRequest.getHeader(UserHeader.USER_CODE));
             String userName = this.utf8Decode(webRequest.getHeader(UserHeader.USER_NAME));
+            String userNickname = this.utf8Decode(webRequest.getHeader(UserHeader.USER_NICKNAME));
             String token = this.utf8Decode(webRequest.getHeader(UserHeader.TOKEN));
 
             AuthUser authUser = new AuthUser();
             authUser.setId(Long.parseLong(userId));
+            authUser.setCode(userCode);
             authUser.setName(userName);
+            authUser.setNickName(userNickname);
             AuthUserHolder.setCurrentUser(authUser, token);
         }
     }

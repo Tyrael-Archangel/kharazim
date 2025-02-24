@@ -1,4 +1,4 @@
-package com.tyrael.kharazim.basicdata.file;
+package com.tyrael.kharazim.basicdata.sdk.service;
 
 import java.io.IOException;
 

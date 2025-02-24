@@ -120,7 +120,10 @@ interface UserData {
 const userPageData = ref({ totalCount: 0, data: [] as UserData[] });
 
 function switchStatus(user: UserData) {
-  axios.put(`/kharazim-api/user/update-status/${user.id}/${user.status}`).then(() => loadUser());
+  axios
+    .put(`/kharazim-api/user/update-status/${user.id}/${user.status}`)
+    .then(() => loadUser())
+    .catch(() => loadUser());
 }
 
 const initPageRequest = {
