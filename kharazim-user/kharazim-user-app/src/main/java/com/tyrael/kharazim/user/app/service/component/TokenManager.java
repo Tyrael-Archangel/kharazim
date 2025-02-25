@@ -1,16 +1,18 @@
 package com.tyrael.kharazim.user.app.service.component;
 
-import com.alibaba.fastjson.JSON;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.tyrael.kharazim.base.dto.PageCommand;
+import com.tyrael.kharazim.base.exception.ShouldNotHappenException;
 import com.tyrael.kharazim.base.util.CollectionUtils;
 import com.tyrael.kharazim.base.util.RandomStringUtil;
 import com.tyrael.kharazim.user.app.config.AuthConfig;
 import com.tyrael.kharazim.user.app.config.AuthTokenConfig;
-import com.tyrael.kharazim.user.sdk.vo.ClientInfo;
 import com.tyrael.kharazim.user.sdk.exception.TokenInvalidException;
 import com.tyrael.kharazim.user.sdk.model.AuthUser;
+import com.tyrael.kharazim.user.sdk.vo.ClientInfo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -192,6 +194,8 @@ public class TokenManager {
     @AllArgsConstructor
     protected static class LoggedUser {
 
+        private static final ObjectMapper MAPPER = new ObjectMapper();
+
         private String token;
         private AuthUser authUser;
         private ClientInfo clientInfo;
@@ -203,7 +207,7 @@ public class TokenManager {
             }
 
             try {
-                return JSON.parseObject(json, LoggedUser.class);
+                return MAPPER.readValue(json, LoggedUser.class);
             } catch (Exception e) {
                 log.warn("resolve LoggedUser from loggedUserJson error: {}", e.getMessage(), e);
                 return null;
@@ -211,7 +215,11 @@ public class TokenManager {
         }
 
         String toJson() {
-            return JSON.toJSONString(this);
+            try {
+                return MAPPER.writeValueAsString(this);
+            } catch (JsonProcessingException e) {
+                throw new ShouldNotHappenException(e);
+            }
         }
 
     }
