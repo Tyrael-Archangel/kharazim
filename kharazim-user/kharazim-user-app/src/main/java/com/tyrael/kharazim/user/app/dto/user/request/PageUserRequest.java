@@ -1,6 +1,7 @@
 package com.tyrael.kharazim.user.app.dto.user.request;
 
 import com.tyrael.kharazim.base.dto.PageCommand;
+import com.tyrael.kharazim.user.app.constant.UserDictConstants;
 import com.tyrael.kharazim.user.app.enums.EnableStatusEnum;
 import com.tyrael.kharazim.user.app.enums.UserGenderEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -19,13 +20,13 @@ public class PageUserRequest extends PageCommand {
     private String keywords;
 
     /**
-     * {@link DictConstants#ENABLE_STATUS}
+     * {@link UserDictConstants#ENABLE_STATUS}
      */
     @Schema(description = "状态，字典编码: enable_status", implementation = EnableStatusEnum.class)
     private EnableStatusEnum status;
 
     /**
-     * {@link DictConstants#USER_GENDER}
+     * {@link UserDictConstants#USER_GENDER}
      */
     @Schema(description = "性别，字典编码: user_gender", implementation = UserGenderEnum.class)
     private UserGenderEnum gender;

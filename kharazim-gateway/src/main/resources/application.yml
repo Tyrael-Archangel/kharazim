@@ -13,7 +13,10 @@ spring:
         - id: user_api_route
           uri: lb://kharazim-user-api
           predicates:
-            - Path=/user/**, /auth/**, /roles/**
+            - Path=/kharazim-user-api/**, /user/**, /auth/**, /roles/**
+          filters:
+            - RewritePath=/kharazim-user-api/?(?<segment>.*), /$\{segment}
+
         - id: basic_data_api_route
           uri: lb://kharazim-basic-data
           predicates:
@@ -35,3 +38,13 @@ dubbo:
     port: -1
   consumer:
     check: false
+
+knife4j:
+  gateway:
+    enabled: true
+    routes:
+      - name: 用户服务
+        url: /kharazim-user-api/v3/api-docs?group=default
+        service-name: user-api-service
+    basic:
+      enable: true

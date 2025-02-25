@@ -6,10 +6,12 @@ import com.tyrael.kharazim.base.dto.PageCommand;
 import com.tyrael.kharazim.base.dto.Response;
 import com.tyrael.kharazim.base.exception.ForbiddenException;
 import com.tyrael.kharazim.user.api.sdk.handler.AuthUserHolder;
+import com.tyrael.kharazim.user.sdk.vo.ClientInfo;
 import com.tyrael.kharazim.user.app.dto.auth.LoginRequest;
 import com.tyrael.kharazim.user.app.dto.auth.OnlineUserDTO;
 import com.tyrael.kharazim.user.app.service.AuthService;
 import com.tyrael.kharazim.user.sdk.exception.LoginFailedException;
+import eu.bitwalker.useragentutils.UserAgent;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -20,6 +22,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Objects;
 
 /**
  * @author Tyrael Archangel
@@ -38,7 +42,36 @@ public class AuthController {
     @Operation(description = "登录认证，获取token，访问系统其他接口都需要在header头传递ACCESS-TOKEN=获取到的token", summary = "登录认证")
     public DataResponse<String> login(@RequestBody @Valid LoginRequest loginRequest,
                                       HttpServletRequest httpServletRequest) throws LoginFailedException {
-        return DataResponse.success(authService.safetyLogin(loginRequest, httpServletRequest));
+        return DataResponse.success(authService.safetyLogin(loginRequest, getClientInfo(httpServletRequest)));
+    }
+
+    private ClientInfo getClientInfo(HttpServletRequest request) {
+
+        String host = request.getHeader("X-Forwarded-For");
+        if (StringUtils.isBlank(host) || "unknown".equalsIgnoreCase(host)) {
+            host = request.getHeader("X-Real-IP");
+        }
+        if (StringUtils.isBlank(host) || "unknown".equalsIgnoreCase(host)) {
+            host = request.getRemoteAddr();
+        }
+        if (host.contains(",")) {
+            host = host.split(",")[0];
+        }
+
+        ClientInfo clientInfo = new ClientInfo();
+        clientInfo.setHost(host);
+
+        UserAgent userAgent;
+        try {
+            userAgent = UserAgent.parseUserAgentString(request.getHeader("User-Agent"));
+        } catch (Exception e) {
+            return clientInfo;
+        }
+
+        clientInfo.setBrowser(userAgent.getBrowser().getName());
+        clientInfo.setOs(userAgent.getOperatingSystem().getName());
+        clientInfo.setBrowserVersion(Objects.toString(userAgent.getBrowserVersion()));
+        return clientInfo;
     }
 
     @PostMapping("/logout")

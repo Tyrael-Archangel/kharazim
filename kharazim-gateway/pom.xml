@@ -26,6 +26,7 @@
         <dubbo.version>3.3.0</dubbo.version>
         <kharazim-lib-version>1.0-SNAPSHOT</kharazim-lib-version>
         <kharazim-user-version>1.0-SNAPSHOT</kharazim-user-version>
+        <knife4j.version>4.3.0</knife4j.version>
     </properties>
 
     <dependencies>
@@ -79,6 +80,18 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-loadbalancer</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.xiaoymin</groupId>
+            <artifactId>knife4j-gateway-spring-boot-starter</artifactId>
+            <version>${knife4j.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>eu.bitwalker</groupId>
+            <artifactId>UserAgentUtils</artifactId>
+            <version>1.21</version>
         </dependency>
 
     </dependencies>

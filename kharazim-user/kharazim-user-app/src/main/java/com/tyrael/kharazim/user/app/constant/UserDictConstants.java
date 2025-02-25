@@ -10,7 +10,6 @@ import static com.tyrael.kharazim.basicdata.model.DictConstant.dict;
  * @author Tyrael Archangel
  * @since 2025/2/21
  */
-@SuppressWarnings("unused")
 public interface UserDictConstants {
 
     // @formatter:off

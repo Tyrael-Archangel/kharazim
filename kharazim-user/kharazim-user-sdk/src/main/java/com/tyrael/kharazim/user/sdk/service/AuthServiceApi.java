@@ -1,7 +1,9 @@
 package com.tyrael.kharazim.user.sdk.service;
 
+import com.tyrael.kharazim.base.exception.UnauthorizedException;
 import com.tyrael.kharazim.user.sdk.exception.TokenInvalidException;
 import com.tyrael.kharazim.user.sdk.model.AuthUser;
+import com.tyrael.kharazim.user.sdk.vo.ClientInfo;
 
 /**
  * @author Tyrael Archangel
@@ -17,5 +19,16 @@ public interface AuthServiceApi {
      * @throws TokenInvalidException token invalid
      */
     AuthUser verifyToken(String token) throws TokenInvalidException;
+
+    /**
+     * login
+     *
+     * @param username   username
+     * @param password   password
+     * @param clientInfo ClientInfo
+     * @return token
+     * @throws UnauthorizedException UnauthorizedException
+     */
+    String login(String username, String password, ClientInfo clientInfo) throws UnauthorizedException;
 
 }

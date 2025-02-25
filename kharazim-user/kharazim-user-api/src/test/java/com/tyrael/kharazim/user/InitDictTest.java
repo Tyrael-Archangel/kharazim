@@ -34,6 +34,3 @@ class DictServiceApiHolder {
     DictServiceApi dictServiceApi;
 
 }
-
-
-

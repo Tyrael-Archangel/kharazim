@@ -6,7 +6,7 @@ import com.tyrael.kharazim.base.exception.BusinessException;
 import com.tyrael.kharazim.user.app.config.CacheKeyConstants;
 import com.tyrael.kharazim.user.app.converter.UserConverter;
 import com.tyrael.kharazim.user.app.domain.User;
-import com.tyrael.kharazim.user.app.dto.auth.LoginClientInfo;
+import com.tyrael.kharazim.user.sdk.vo.ClientInfo;
 import com.tyrael.kharazim.user.app.dto.auth.LoginRequest;
 import com.tyrael.kharazim.user.app.dto.auth.OnlineUserDTO;
 import com.tyrael.kharazim.user.app.enums.EnableStatusEnum;
@@ -17,10 +17,7 @@ import com.tyrael.kharazim.user.app.service.component.TokenManager;
 import com.tyrael.kharazim.user.sdk.exception.LoginFailedException;
 import com.tyrael.kharazim.user.sdk.exception.TokenInvalidException;
 import com.tyrael.kharazim.user.sdk.model.AuthUser;
-import eu.bitwalker.useragentutils.UserAgent;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
@@ -28,7 +25,6 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -48,14 +44,12 @@ public class AuthServiceImpl implements AuthService {
     private final ViolentLoginManager violentLoginManager = new ViolentLoginManager();
 
     @Override
-    public String safetyLogin(LoginRequest loginRequest, HttpServletRequest httpServletRequest) throws LoginFailedException {
-
-        LoginClientInfo loginClientInfo = getClientInfo(httpServletRequest);
-        String host = loginClientInfo.getHost();
+    public String safetyLogin(LoginRequest loginRequest, ClientInfo clientInfo) throws LoginFailedException {
+        String host = clientInfo.getHost();
         violentLoginManager.checkViolentLogin(host);
 
         try {
-            String token = this.login(loginRequest, loginClientInfo);
+            String token = this.login(loginRequest, clientInfo);
             violentLoginManager.clearLoginFailedCache(host);
             return token;
         } catch (LoginFailedException e) {
@@ -64,7 +58,7 @@ public class AuthServiceImpl implements AuthService {
         }
     }
 
-    private String login(LoginRequest loginRequest, LoginClientInfo loginClientInfo) throws LoginFailedException {
+    private String login(LoginRequest loginRequest, ClientInfo clientInfo) throws LoginFailedException {
 
         String userName = loginRequest.getUserName();
         String requestPassword = loginRequest.getPassword();
@@ -81,39 +75,10 @@ public class AuthServiceImpl implements AuthService {
         boolean matches = passwordEncoder.matches(requestPassword, userPassword);
         if (matches) {
             this.clearCurrentUserInfoCache(user.getId());
-            return tokenManager.create(userConverter.authUser(user), loginClientInfo);
+            return tokenManager.create(userConverter.authUser(user), clientInfo);
         } else {
             throw new LoginFailedException("用户名或密码错误");
         }
-    }
-
-    private LoginClientInfo getClientInfo(HttpServletRequest request) {
-
-        String host = request.getHeader("X-Forwarded-For");
-        if (StringUtils.isBlank(host) || "unknown".equalsIgnoreCase(host)) {
-            host = request.getHeader("X-Real-IP");
-        }
-        if (StringUtils.isBlank(host) || "unknown".equalsIgnoreCase(host)) {
-            host = request.getRemoteAddr();
-        }
-        if (host.contains(",")) {
-            host = host.split(",")[0];
-        }
-
-        LoginClientInfo loginClientInfo = new LoginClientInfo();
-        loginClientInfo.setHost(host);
-
-        UserAgent userAgent;
-        try {
-            userAgent = UserAgent.parseUserAgentString(request.getHeader("User-Agent"));
-        } catch (Exception e) {
-            return loginClientInfo;
-        }
-
-        loginClientInfo.setBrowser(userAgent.getBrowser().getName());
-        loginClientInfo.setOs(userAgent.getOperatingSystem().getName());
-        loginClientInfo.setBrowserVersion(Objects.toString(userAgent.getBrowserVersion()));
-        return loginClientInfo;
     }
 
     @Override

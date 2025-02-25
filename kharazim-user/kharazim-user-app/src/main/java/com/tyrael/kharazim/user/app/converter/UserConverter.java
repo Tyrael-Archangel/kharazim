@@ -3,7 +3,7 @@ package com.tyrael.kharazim.user.app.converter;
 import com.tyrael.kharazim.basicdata.sdk.service.FileServiceApi;
 import com.tyrael.kharazim.base.util.CollectionUtils;
 import com.tyrael.kharazim.user.app.domain.User;
-import com.tyrael.kharazim.user.app.dto.auth.LoginClientInfo;
+import com.tyrael.kharazim.user.sdk.vo.ClientInfo;
 import com.tyrael.kharazim.user.app.dto.auth.OnlineUserDTO;
 import com.tyrael.kharazim.user.app.dto.role.response.RoleDTO;
 import com.tyrael.kharazim.user.app.dto.user.response.CurrentUserDTO;
@@ -119,12 +119,12 @@ public class UserConverter {
         onlineUser.setUserAvatarUrl(fileService.getUrl(user.getAvatar()));
         onlineUser.setLoginTime(loggedUser.getLoggedTime());
         onlineUser.setLastRefreshTime(loggedUser.getLastRefreshTime());
-        LoginClientInfo loginClientInfo = loggedUser.getLoginClientInfo();
-        if (loginClientInfo != null) {
-            onlineUser.setHost(loginClientInfo.getHost());
-            onlineUser.setOs(loginClientInfo.getOs());
-            onlineUser.setBrowser(loginClientInfo.getBrowser());
-            onlineUser.setBrowserVersion(loginClientInfo.getBrowserVersion());
+        ClientInfo clientInfo = loggedUser.getClientInfo();
+        if (clientInfo != null) {
+            onlineUser.setHost(clientInfo.getHost());
+            onlineUser.setOs(clientInfo.getOs());
+            onlineUser.setBrowser(clientInfo.getBrowser());
+            onlineUser.setBrowserVersion(clientInfo.getBrowserVersion());
         }
         return onlineUser;
     }

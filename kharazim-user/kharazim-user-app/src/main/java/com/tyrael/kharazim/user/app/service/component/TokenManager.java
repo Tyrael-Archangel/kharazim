@@ -8,7 +8,7 @@ import com.tyrael.kharazim.base.util.CollectionUtils;
 import com.tyrael.kharazim.base.util.RandomStringUtil;
 import com.tyrael.kharazim.user.app.config.AuthConfig;
 import com.tyrael.kharazim.user.app.config.AuthTokenConfig;
-import com.tyrael.kharazim.user.app.dto.auth.LoginClientInfo;
+import com.tyrael.kharazim.user.sdk.vo.ClientInfo;
 import com.tyrael.kharazim.user.sdk.exception.TokenInvalidException;
 import com.tyrael.kharazim.user.sdk.model.AuthUser;
 import lombok.AllArgsConstructor;
@@ -49,14 +49,14 @@ public class TokenManager {
     /**
      * create token for user
      */
-    public String create(AuthUser user, LoginClientInfo loginClientInfo) {
+    public String create(AuthUser user, ClientInfo clientInfo) {
 
         if (!authConfig.isAllowMultiLogin()) {
             this.removeByUser(user.getId());
         }
 
         String token = RandomStringUtil.make(32);
-        LoggedUser loggedUser = new LoggedUser(token, user, loginClientInfo, LocalDateTime.now());
+        LoggedUser loggedUser = new LoggedUser(token, user, clientInfo, LocalDateTime.now());
 
         redisTemplate.opsForValue().set(
                 this.tokenCacheKey(token),
@@ -194,7 +194,7 @@ public class TokenManager {
 
         private String token;
         private AuthUser authUser;
-        private LoginClientInfo loginClientInfo;
+        private ClientInfo clientInfo;
         private LocalDateTime loggedTime;
 
         static LoggedUser parse(String json) {
@@ -224,7 +224,7 @@ public class TokenManager {
         RefreshLoggedUser(LoggedUser loggedUser, LocalDateTime lastRefreshTime) {
             super.token = loggedUser.token;
             super.authUser = loggedUser.authUser;
-            super.loginClientInfo = loggedUser.loginClientInfo;
+            super.clientInfo = loggedUser.clientInfo;
             super.loggedTime = loggedUser.loggedTime;
             this.lastRefreshTime = lastRefreshTime;
         }

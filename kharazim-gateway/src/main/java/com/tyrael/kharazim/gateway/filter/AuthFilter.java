@@ -23,6 +23,7 @@ import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ServerWebExchange;
+import org.springframework.web.server.WebSession;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -144,7 +145,10 @@ public class AuthFilter implements GlobalFilter {
             throw new ShouldNotHappenException();
         }
         DataBuffer dataBuffer = response.bufferFactory().wrap(failResponseBytes);
-        return response.writeWith(Flux.just(dataBuffer));
+
+        return exchange.getSession()
+                .flatMap(WebSession::invalidate)
+                .then(response.writeWith(Flux.just(dataBuffer)));
     }
 
     private String utf8Encode(String value) {

@@ -6,7 +6,7 @@ import com.tyrael.kharazim.user.app.dto.auth.OnlineUserDTO;
 import com.tyrael.kharazim.user.sdk.exception.LoginFailedException;
 import com.tyrael.kharazim.user.sdk.exception.TokenInvalidException;
 import com.tyrael.kharazim.user.sdk.model.AuthUser;
-import jakarta.servlet.http.HttpServletRequest;
+import com.tyrael.kharazim.user.sdk.vo.ClientInfo;
 
 import java.util.List;
 
@@ -19,12 +19,12 @@ public interface AuthService {
     /**
      * login
      *
-     * @param loginRequest       LoginRequest
-     * @param httpServletRequest HttpServletRequest
+     * @param loginRequest LoginRequest
+     * @param clientInfo   LoginClientInfo
      * @return token
      * @throws LoginFailedException 用户名或密码不对
      */
-    String safetyLogin(LoginRequest loginRequest, HttpServletRequest httpServletRequest) throws LoginFailedException;
+    String safetyLogin(LoginRequest loginRequest, ClientInfo clientInfo) throws LoginFailedException;
 
     /**
      * logout
