@@ -2,6 +2,7 @@ package com.tyrael.kharazim.user.app.service.component;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.tyrael.kharazim.base.dto.PageCommand;
@@ -194,7 +195,11 @@ public class TokenManager {
     @AllArgsConstructor
     protected static class LoggedUser {
 
-        private static final ObjectMapper MAPPER = new ObjectMapper();
+        private static final ObjectMapper MAPPER = new ObjectMapper() {
+            {
+                registerModule(new JavaTimeModule());
+            }
+        };
 
         private String token;
         private AuthUser authUser;

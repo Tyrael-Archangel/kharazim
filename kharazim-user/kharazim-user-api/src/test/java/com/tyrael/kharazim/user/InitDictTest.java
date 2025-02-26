@@ -20,9 +20,8 @@ public class InitDictTest {
 
     @Test
     public void initDict() {
-        DictServiceApi.Defaults defaults = new DictServiceApi.Defaults(dictServiceApiHolder.dictServiceApi);
-        defaults.init(UserDictConstants.ENABLE_STATUS);
-        defaults.init(UserDictConstants.USER_GENDER);
+        dictServiceApiHolder.dictServiceApi.init(UserDictConstants.ENABLE_STATUS);
+        dictServiceApiHolder.dictServiceApi.init(UserDictConstants.USER_GENDER);
     }
 
 }

@@ -24,6 +24,16 @@ public interface DictServiceApi {
     List<DictItemVO> listItems(String dictCode);
 
     /**
+     * list dict items by DictConstant
+     *
+     * @param dict DictConstant
+     * @return dict items
+     */
+    default List<DictItemVO> listItems(DictConstant dict) {
+        return listItems(dict.getCode());
+    }
+
+    /**
      * init system dict
      *
      * @param initDictRequest {@link InitDictRequest}
@@ -31,54 +41,32 @@ public interface DictServiceApi {
     void initSystemDict(InitDictRequest initDictRequest);
 
     /**
-     * dubbo中会default方法也会被代理，因此default不能直接定义在接口中
+     * init DictConstants
+     *
+     * @param dict DictConstant
      */
-    final class Defaults {
+    default void init(DictConstant dict) {
 
-        private final DictServiceApi dictServiceApi;
+        DictVO dictVO;
+        List<DictItemVO> dictItems;
 
-        public Defaults(DictServiceApi dictServiceApi) {
-            this.dictServiceApi = dictServiceApi;
+        if (dict instanceof DictConstant.EnumDict<?> enumDict) {
+            dictVO = new DictVO(dict.getCode(), dict.getDesc(), false);
+            AtomicInteger sort = new AtomicInteger(1);
+            dictItems = enumDict.getDictItems().entrySet()
+                    .stream()
+                    .map(entry -> new DictItemVO(
+                            dictVO.getCode(),
+                            entry.getKey(),
+                            entry.getValue(),
+                            sort.getAndIncrement()))
+                    .toList();
+        } else {
+            dictVO = new DictVO(dict.getCode(), dict.getDesc(), true);
+            dictItems = Collections.emptyList();
         }
 
-        /**
-         * list dict items by DictConstant
-         *
-         * @param dict DictConstant
-         * @return dict items
-         */
-        public List<DictItemVO> listItems(DictConstant dict) {
-            return dictServiceApi.listItems(dict.getCode());
-        }
-
-        /**
-         * init DictConstants
-         *
-         * @param dict DictConstant
-         */
-        public void init(DictConstant dict) {
-
-            DictVO dictVO;
-            List<DictItemVO> dictItems;
-
-            if (dict instanceof DictConstant.EnumDict<?> enumDict) {
-                dictVO = new DictVO(dict.getCode(), dict.getDesc(), false);
-                AtomicInteger sort = new AtomicInteger(1);
-                dictItems = enumDict.getDictItems().entrySet()
-                        .stream()
-                        .map(entry -> new DictItemVO(
-                                dictVO.getCode(),
-                                entry.getKey(),
-                                entry.getValue(),
-                                sort.getAndIncrement()))
-                        .toList();
-            } else {
-                dictVO = new DictVO(dict.getCode(), dict.getDesc(), true);
-                dictItems = Collections.emptyList();
-            }
-
-            dictServiceApi.initSystemDict(new InitDictRequest(dictVO, dictItems));
-        }
+        initSystemDict(new InitDictRequest(dictVO, dictItems));
     }
 
 }

@@ -59,3 +59,4 @@ dubbo:
     port: -1
   consumer:
     check: false
+    proxy: enhancejavassist

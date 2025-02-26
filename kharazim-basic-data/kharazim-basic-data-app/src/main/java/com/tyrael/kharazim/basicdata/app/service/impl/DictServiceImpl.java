@@ -103,7 +103,7 @@ public class DictServiceImpl implements DictService {
         try {
             dictMapper.insert(dict);
         } catch (DuplicateKeyException e) {
-            throw new BusinessException("字典重复", e);
+            throw new BusinessException("字典重复");
         }
 
         List<DictItemVO> initDictItems = initDictRequest.getDictItems();
