@@ -12,7 +12,7 @@
 
     <properties>
         <spring-boot.version>3.2.4</spring-boot.version>
-        <caffeine.version>3.1.6</caffeine.version>
+        <caffeine.version>3.1.8</caffeine.version>
     </properties>
 
     <dependencies>
