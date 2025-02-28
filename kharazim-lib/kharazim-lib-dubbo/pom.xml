@@ -27,6 +27,10 @@
             <version>${dubbo.version}</version>
             <exclusions>
                 <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter</artifactId>
+                </exclusion>
+                <exclusion>
                     <groupId>io.netty</groupId>
                     <artifactId>netty-all</artifactId>
                 </exclusion>
@@ -43,6 +47,12 @@
             <version>4.1.107.Final</version>
             <scope>compile</scope>
         </dependency>
+
+<!--        <dependency>-->
+<!--            <groupId>com.tyrael</groupId>-->
+<!--            <artifactId>kharazim-lib-dubbo-registry-redis</artifactId>-->
+<!--            <version>1.0-SNAPSHOT</version>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>org.apache.dubbo</groupId>

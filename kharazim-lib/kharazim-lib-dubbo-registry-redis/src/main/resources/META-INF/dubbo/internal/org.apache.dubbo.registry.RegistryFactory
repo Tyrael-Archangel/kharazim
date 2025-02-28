@@ -1,0 +1,1 @@
+redis=com.tyrael.kharazim.dubboregistry.redis.RedisRegistryFactory
