@@ -39,6 +39,8 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class AuthFilter implements GlobalFilter {
 
+    public static final String AUTH_USER = "AUTH_USER";
+
     private final ObjectMapper objectMapper;
     private final AuthWhiteListChecker authWhiteListChecker;
 
@@ -80,6 +82,9 @@ public class AuthFilter implements GlobalFilter {
         if (authUser == null) {
             throw new TokenInvalidException("Token validation failed");
         }
+
+        exchange.getAttributes()
+                .put(AUTH_USER, authUser);
 
         ServerHttpRequest extraRequest = exchange.getRequest()
                 .mutate()

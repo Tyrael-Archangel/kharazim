@@ -26,6 +26,7 @@
         <dubbo.version>3.3.0</dubbo.version>
         <kharazim-lib-version>1.0-SNAPSHOT</kharazim-lib-version>
         <kharazim-user-version>1.0-SNAPSHOT</kharazim-user-version>
+        <kharazim-basic-data.version>1.0-SNAPSHOT</kharazim-basic-data.version>
         <knife4j.version>4.3.0</knife4j.version>
     </properties>
 
@@ -43,6 +44,11 @@
         <dependency>
             <groupId>com.tyrael</groupId>
             <artifactId>kharazim-user-sdk</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.tyrael</groupId>
+            <artifactId>kharazim-basic-data-sdk</artifactId>
         </dependency>
 
         <dependency>
@@ -112,6 +118,11 @@
                 <groupId>com.tyrael</groupId>
                 <artifactId>kharazim-user-sdk</artifactId>
                 <version>${kharazim-user-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.tyrael</groupId>
+                <artifactId>kharazim-basic-data-sdk</artifactId>
+                <version>${kharazim-basic-data.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud</groupId>

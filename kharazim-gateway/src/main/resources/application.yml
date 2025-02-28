@@ -54,3 +54,16 @@ knife4j:
         service-name: basic-api-service
     basic:
       enable: true
+
+system:
+  request-log:
+    ignore-urls:
+      - "/*/favicon.ico"
+      - "/*/auth/logout"
+      - "/*/api-docs/*"
+      - "/*/api-docs.yaml/*"
+      - "/*/webjars/*"
+      - "/*/swagger-resources/*"
+      - "/*/actuator/*"
+      - "/*/system/request-log/*"
+      - "/*/system/address/*"

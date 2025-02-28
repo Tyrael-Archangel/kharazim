@@ -10,23 +10,22 @@ import java.util.List;
 
 /**
  * @author Tyrael Archangel
- * @since 2025/2/13
+ * @since 2025/2/28
  */
 @Data
 @Configuration
-@ConfigurationProperties(prefix = "auth.login")
-public class AuthWhiteListChecker {
+@ConfigurationProperties(prefix = "system.request-log")
+public class SystemRequestLogPathMather {
 
     private PathPatternMatcher pathPatternMatcher;
-
-    private List<String> whitelist;
+    private List<String> ignoreUrls;
 
     @PostConstruct
     public void init() {
-        this.pathPatternMatcher = new PathPatternMatcher(this.whitelist);
+        this.pathPatternMatcher = new PathPatternMatcher(this.ignoreUrls);
     }
 
-    public boolean isWhite(PathContainer pathContainer) {
+    public boolean ignoreRequestLog(PathContainer pathContainer) {
         return pathPatternMatcher != null && pathPatternMatcher.match(pathContainer);
     }
 
