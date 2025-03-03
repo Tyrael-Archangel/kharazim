@@ -1,9 +1,11 @@
 package com.tyrael.kharazim.gateway.filter;
 
+import com.tyrael.kharazim.base.exception.ShouldNotHappenException;
 import com.tyrael.kharazim.basicdata.model.SystemRequestLogVO;
 import com.tyrael.kharazim.basicdata.sdk.service.SystemRequestLogServiceApi;
 import com.tyrael.kharazim.user.sdk.model.AuthUser;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.reactivestreams.Publisher;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
@@ -34,11 +36,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * @author Tyrael Archangel
  * @since 2025/2/28
  */
+@Slf4j
 @SuppressWarnings("UastIncorrectHttpHeaderInspection")
 @Component
 @RequiredArgsConstructor
@@ -48,6 +52,7 @@ public class SystemRequestLogFilter implements GlobalFilter {
     private static final String CURRENT_LOG_ATTRIBUTE_KEY = "CURRENT_SYSTEM_REQUEST_LOG";
 
     private final SystemRequestLogPathMather requestLogPathMather;
+    private final LogChannel logChannel = new LogChannel();
 
     @DubboReference
     private SystemRequestLogServiceApi systemRequestLogServiceApi;
@@ -126,7 +131,7 @@ public class SystemRequestLogFilter implements GlobalFilter {
                 logVO.setUserName(authUser.getName());
             }
 
-            systemRequestLogServiceApi.save(logVO);
+            logChannel.save(logVO);
 
             exchange.getAttributes().remove(CURRENT_LOG_ATTRIBUTE_KEY);
         }
@@ -202,6 +207,37 @@ public class SystemRequestLogFilter implements GlobalFilter {
             }
             return super.writeWith(body);
         }
+    }
+
+    /**
+     * log channel
+     */
+    private class LogChannel {
+
+        private final LinkedBlockingQueue<SystemRequestLogVO> logQueue;
+
+        LogChannel() {
+            logQueue = new LinkedBlockingQueue<>();
+            new Thread(this::sendLog, "T-log-channel").start();
+        }
+
+        void save(SystemRequestLogVO logVO) {
+            logQueue.add(logVO);
+        }
+
+        private void sendLog() {
+            while (true) {
+                SystemRequestLogVO logVO;
+                try {
+                    logVO = logQueue.take();
+                } catch (InterruptedException e) {
+                    log.error("take log form queue failed: {}", e.getMessage(), e);
+                    throw new ShouldNotHappenException(e);
+                }
+                systemRequestLogServiceApi.save(logVO);
+            }
+        }
+
     }
 
 }
