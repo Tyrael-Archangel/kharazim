@@ -45,7 +45,9 @@ const endpoints = ref<Endpoint[]>([]);
 
 function loadEndpoints() {
   axios
-    .get("/kharazim-api/system/request-log/endpoints")
+    .get("/kharazim-api/system/request-log/endpoints", {
+      disablePrintGlobalError: true,
+    })
     .then((response: AxiosResponse) => (endpoints.value = response.data.data));
 }
 
