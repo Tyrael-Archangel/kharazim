@@ -13,7 +13,13 @@ public enum BasicDataBusinessIdConstants implements BusinessIdConstant<BasicData
 
     FILE("文件", 10, "F"),
     FILE_DIR("文件目录", 5, "dir"),
-    CLINIC("诊所（机构）", "CL");
+    CLINIC("诊所（机构）", "CL"),
+
+    CUSTOMER("会员编码", 10, "CU"),
+    CUSTOMER_FAMILY("会员家庭", "CF"),
+    CUSTOMER_RECHARGE_CARD("会员储值单", "CRC"),
+    CUSTOMER_WALLET_TRANSACTION("会员交易流水号编码", "TRS"),
+    ;
 
     private final String prefix;
     private final String desc;

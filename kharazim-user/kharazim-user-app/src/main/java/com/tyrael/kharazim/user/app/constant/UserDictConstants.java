@@ -1,10 +1,10 @@
 package com.tyrael.kharazim.user.app.constant;
 
-import com.tyrael.kharazim.basicdata.model.DictConstant;
+import com.tyrael.kharazim.basicdata.sdk.model.DictConstant;
 import com.tyrael.kharazim.user.app.enums.EnableStatusEnum;
 import com.tyrael.kharazim.user.app.enums.UserGenderEnum;
 
-import static com.tyrael.kharazim.basicdata.model.DictConstant.dict;
+import static com.tyrael.kharazim.basicdata.sdk.model.DictConstant.dict;
 
 /**
  * @author Tyrael Archangel

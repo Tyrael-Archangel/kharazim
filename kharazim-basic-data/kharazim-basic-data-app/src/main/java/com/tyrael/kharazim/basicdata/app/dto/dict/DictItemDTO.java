@@ -18,6 +18,9 @@ public class DictItemDTO {
     @Schema(description = "字典编码")
     private String dictCode;
 
+    @Schema(description = "字典描述")
+    private String dictDesc;
+
     @Schema(description = "字典项键")
     private String key;
 

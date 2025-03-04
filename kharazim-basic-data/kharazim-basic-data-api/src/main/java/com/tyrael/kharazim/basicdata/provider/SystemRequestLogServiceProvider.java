@@ -1,7 +1,7 @@
 package com.tyrael.kharazim.basicdata.provider;
 
-import com.tyrael.kharazim.basicdata.app.service.SystemRequestLogService;
-import com.tyrael.kharazim.basicdata.model.SystemRequestLogVO;
+import com.tyrael.kharazim.basicdata.app.service.reqeustlog.SystemRequestLogService;
+import com.tyrael.kharazim.basicdata.sdk.model.SystemRequestLogVO;
 import com.tyrael.kharazim.basicdata.sdk.service.SystemRequestLogServiceApi;
 import lombok.RequiredArgsConstructor;
 import org.apache.dubbo.config.annotation.DubboService;

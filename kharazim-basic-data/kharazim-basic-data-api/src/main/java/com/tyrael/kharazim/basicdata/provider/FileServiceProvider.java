@@ -1,6 +1,6 @@
 package com.tyrael.kharazim.basicdata.provider;
 
-import com.tyrael.kharazim.basicdata.app.service.FileService;
+import com.tyrael.kharazim.basicdata.app.service.file.FileService;
 import com.tyrael.kharazim.basicdata.sdk.service.FileServiceApi;
 import lombok.RequiredArgsConstructor;
 import org.apache.dubbo.config.annotation.DubboService;

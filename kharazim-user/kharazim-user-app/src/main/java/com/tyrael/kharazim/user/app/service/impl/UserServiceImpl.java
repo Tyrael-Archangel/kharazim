@@ -71,6 +71,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<UserDTO> listByCodes(Collection<String> codes) {
+        List<User> users = userMapper.listByCodes(codes);
+        return convertUsers(users);
+    }
+
+    @Override
     @Cacheable(cacheNames = CacheKeyConstants.CURRENT_USER_INFO, key = "#currentUser.id")
     public CurrentUserDTO getCurrentUserInfo(AuthUser currentUser) {
         Long currentUserId = currentUser.getId();

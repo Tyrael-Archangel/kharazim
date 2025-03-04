@@ -1,7 +1,7 @@
 package com.tyrael.kharazim.gateway.filter;
 
 import com.tyrael.kharazim.base.exception.ShouldNotHappenException;
-import com.tyrael.kharazim.basicdata.model.SystemRequestLogVO;
+import com.tyrael.kharazim.basicdata.sdk.model.SystemRequestLogVO;
 import com.tyrael.kharazim.basicdata.sdk.service.SystemRequestLogServiceApi;
 import com.tyrael.kharazim.user.sdk.model.AuthUser;
 import lombok.RequiredArgsConstructor;

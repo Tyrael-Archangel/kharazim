@@ -1,6 +1,6 @@
 package com.tyrael.kharazim.basicdata.sdk.service;
 
-import com.tyrael.kharazim.basicdata.model.SystemRequestLogVO;
+import com.tyrael.kharazim.basicdata.sdk.model.SystemRequestLogVO;
 
 /**
  * @author Tyrael Archangel

@@ -7,6 +7,7 @@ import com.tyrael.kharazim.user.app.dto.user.response.UserDTO;
 import com.tyrael.kharazim.user.app.enums.EnableStatusEnum;
 import com.tyrael.kharazim.user.sdk.model.AuthUser;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -22,6 +23,14 @@ public interface UserService {
      * @return UserDTO
      */
     UserDTO getById(Long id);
+
+    /**
+     * list by codes
+     *
+     * @param codes codes
+     * @return users
+     */
+    List<UserDTO> listByCodes(Collection<String> codes);
 
     /**
      * Get current user info

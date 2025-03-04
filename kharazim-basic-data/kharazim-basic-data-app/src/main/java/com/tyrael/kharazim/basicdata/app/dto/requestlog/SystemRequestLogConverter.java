@@ -1,18 +1,7 @@
 package com.tyrael.kharazim.basicdata.app.dto.requestlog;
 
-import com.tyrael.kharazim.basicdata.app.domain.SystemRequestLog;
+import com.tyrael.kharazim.basicdata.app.domain.requestlog.SystemRequestLog;
 import org.springframework.stereotype.Component;
-import org.springframework.web.servlet.mvc.condition.PathPatternsRequestCondition;
-import org.springframework.web.servlet.mvc.condition.PatternsRequestCondition;
-import org.springframework.web.servlet.mvc.condition.RequestCondition;
-import org.springframework.web.servlet.mvc.condition.RequestMethodsRequestCondition;
-import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
-import org.springframework.web.util.pattern.PathPattern;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * @author Tyrael Archangel
@@ -44,65 +33,5 @@ public class SystemRequestLogConverter {
                 .costMills(systemRequestLog.getCostMills())
                 .build();
     }
-
-    /**
-     * string value of {@linkplain RequestMappingInfo requestMappingInfo}
-     */
-    public String requestMappingInfoEndpoint(RequestMappingInfo requestMappingInfo) {
-        RequestCondition<?> activePatternsCondition = requestMappingInfo.getActivePatternsCondition();
-        List<String> patternConditions;
-        if (activePatternsCondition instanceof PathPatternsRequestCondition pathPatternsRequestCondition) {
-            patternConditions = pathPatternsRequestCondition.getPatterns()
-                    .stream()
-                    .map(PathPattern::toString)
-                    .toList();
-        } else if (activePatternsCondition instanceof PatternsRequestCondition patternsRequestCondition) {
-            Set<String> patterns = patternsRequestCondition.getPatterns();
-            patternConditions = new ArrayList<>(patterns);
-        } else {
-            // will not happen
-            throw new IllegalStateException();
-        }
-
-        String activePatternsConditionString;
-        if (patternConditions.size() == 1) {
-            activePatternsConditionString = patternConditions.iterator().next();
-        } else {
-            // SIGN_THERE_COMBINE @see SIGN_THERE_SPLIT
-            activePatternsConditionString = patternConditions.stream()
-                    .sorted()
-                    .collect(Collectors.joining(" || ", "[", "]"));
-        }
-
-        RequestMethodsRequestCondition methodsCondition = requestMappingInfo.getMethodsCondition();
-        if (!methodsCondition.isEmpty()) {
-            activePatternsConditionString += "  " + methodsCondition.getMethods();
-        }
-
-        return activePatternsConditionString;
-    }
-
-    /**
-     * patternConditions of endpoint
-     */
-    public List<String> patternConditions(String endpoint) {
-        int splitMethodsIndex = endpoint.indexOf("  ");
-        String activePatternsConditionString;
-        if (splitMethodsIndex == -1) {
-            activePatternsConditionString = endpoint;
-        } else {
-            activePatternsConditionString = endpoint.substring(0, splitMethodsIndex);
-        }
-
-        // SIGN_THERE_SPLIT @see SIGN_THERE_COMBINE
-        if (activePatternsConditionString.contains(" || ")
-                && activePatternsConditionString.startsWith("[")
-                && activePatternsConditionString.endsWith("]")) {
-            return List.of(activePatternsConditionString.substring(1, activePatternsConditionString.length() - 2).split(" \\|\\| "));
-        } else {
-            return List.of(activePatternsConditionString);
-        }
-    }
-
 
 }

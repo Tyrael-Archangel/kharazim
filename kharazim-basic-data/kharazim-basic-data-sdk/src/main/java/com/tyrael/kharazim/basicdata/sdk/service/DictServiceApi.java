@@ -1,13 +1,16 @@
 package com.tyrael.kharazim.basicdata.sdk.service;
 
-import com.tyrael.kharazim.basicdata.model.DictConstant;
-import com.tyrael.kharazim.basicdata.model.DictItemVO;
-import com.tyrael.kharazim.basicdata.model.DictVO;
-import com.tyrael.kharazim.basicdata.model.InitDictRequest;
+import com.tyrael.kharazim.base.exception.BusinessException;
+import com.tyrael.kharazim.base.util.CollectionUtils;
+import com.tyrael.kharazim.basicdata.sdk.model.DictConstant;
+import com.tyrael.kharazim.basicdata.sdk.model.DictItemVO;
+import com.tyrael.kharazim.basicdata.sdk.model.DictVO;
+import com.tyrael.kharazim.basicdata.sdk.model.InitDictRequest;
+import org.apache.commons.lang3.StringUtils;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 /**
  * @author Tyrael Archangel
@@ -56,6 +59,7 @@ public interface DictServiceApi {
             dictItems = enumDict.getDictItems().entrySet()
                     .stream()
                     .map(entry -> new DictItemVO(
+                            dictVO.getDesc(),
                             dictVO.getCode(),
                             entry.getKey(),
                             entry.getValue(),
@@ -67,6 +71,107 @@ public interface DictServiceApi {
         }
 
         initSystemDict(new InitDictRequest(dictVO, dictItems));
+    }
+
+    /**
+     * 验证字典值是否有效
+     *
+     * @param dictCode     字典编码
+     * @param dictItemKeys 字典值
+     */
+    default void ensureDictItemEnable(String dictCode, Collection<String> dictItemKeys) {
+        if (CollectionUtils.isEmpty(dictItemKeys)) {
+            return;
+        }
+
+        List<DictItemVO> dictItems = listItems(dictCode);
+        Set<String> availableItemKeys = dictItems.stream()
+                .map(DictItemVO::getValue)
+                .collect(Collectors.toSet());
+
+        String constantsDesc = dictItems.stream()
+                .map(DictItemVO::getDictDesc)
+                .filter(StringUtils::isNotBlank)
+                .findAny()
+                .orElse("");
+        if (availableItemKeys.isEmpty()) {
+            throw new BusinessException(constantsDesc
+                    + "字典项键无效：" + String.join(",", dictItemKeys)
+                    + "，没有可用字典键值");
+        }
+
+        List<String> unavailableKeys = dictItemKeys.stream()
+                .filter(e -> !availableItemKeys.contains(e))
+                .toList();
+        if (!unavailableKeys.isEmpty()) {
+            throw new BusinessException(constantsDesc
+                    + "字典项键无效：" + String.join(",", unavailableKeys)
+                    + "，可用值：" + String.join(",", availableItemKeys));
+        }
+    }
+
+    /**
+     * 验证字典值是否有效
+     *
+     * @param dict         {@link DictConstant}
+     * @param dictItemKeys 字典值
+     */
+    default void ensureDictItemEnable(DictConstant dict, Collection<String> dictItemKeys) {
+        ensureDictItemEnable(dict.getCode(), dictItemKeys);
+    }
+
+    /**
+     * 验证字典值是否有效
+     *
+     * @param dict        {@link DictConstant}
+     * @param dictItemKey 字典键
+     */
+    default void ensureDictItemEnable(DictConstant dict, String dictItemKey) {
+        ensureDictItemEnable(dict, List.of(dictItemKey));
+    }
+
+    /**
+     * 字典项 key -> value
+     *
+     * @param dictCode 字典编码
+     * @return 字典项 key -> value
+     */
+    default Map<String, String> dictItemMap(String dictCode) {
+        return listItems(dictCode)
+                .stream()
+                .collect(Collectors.toMap(DictItemVO::getKey, DictItemVO::getValue));
+    }
+
+    /**
+     * 字典项 key -> value
+     *
+     * @param dict {@link DictConstant}
+     * @return 字典项 key -> value
+     */
+    default Map<String, String> dictItemMap(DictConstant dict) {
+        return dictItemMap(dict.getCode());
+    }
+
+    /**
+     * 查询字典项值
+     *
+     * @param dictCode    字典编码
+     * @param dictItemKey 字典项键
+     * @return 字典项名称
+     */
+    default String findItemValue(String dictCode, String dictItemKey) {
+        return dictItemMap(dictCode).get(dictItemKey);
+    }
+
+    /**
+     * 查询字典项值
+     *
+     * @param dict        {@link DictConstant}
+     * @param dictItemKey 字典项键
+     * @return 字典项名称
+     */
+    default String findItemValue(DictConstant dict, String dictItemKey) {
+        return findItemValue(dict.getCode(), dictItemKey);
     }
 
 }

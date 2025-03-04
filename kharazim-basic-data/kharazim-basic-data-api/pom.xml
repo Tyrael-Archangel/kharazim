@@ -24,6 +24,12 @@
 
         <dependency>
             <groupId>com.tyrael</groupId>
+            <artifactId>kharazim-lib-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.tyrael</groupId>
             <artifactId>kharazim-user-api-sdk</artifactId>
         </dependency>
 
