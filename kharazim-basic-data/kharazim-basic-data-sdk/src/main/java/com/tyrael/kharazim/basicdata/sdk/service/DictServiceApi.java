@@ -27,6 +27,19 @@ public interface DictServiceApi {
     List<DictItemVO> listItems(String dictCode);
 
     /**
+     * list dict item values by dictCodeConstants
+     *
+     * @param dict {@link DictConstant}
+     * @return dict item codes
+     */
+    default Set<String> dictItemKeys(DictConstant dict) {
+        return listItems(dict)
+                .stream()
+                .map(DictItemVO::getValue)
+                .collect(Collectors.toSet());
+    }
+
+    /**
      * list dict items by DictConstant
      *
      * @param dict DictConstant
@@ -35,6 +48,13 @@ public interface DictServiceApi {
     default List<DictItemVO> listItems(DictConstant dict) {
         return listItems(dict.getCode());
     }
+
+    /**
+     * add dict item
+     *
+     * @param dictItem {@link DictItemVO}
+     */
+    void addDictItem(DictItemVO dictItem);
 
     /**
      * init system dict

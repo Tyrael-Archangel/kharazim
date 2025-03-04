@@ -1,5 +1,6 @@
 package com.tyrael.kharazim.user.provider;
 
+import com.tyrael.kharazim.user.app.dto.user.request.ListUserRequest;
 import com.tyrael.kharazim.user.app.dto.user.response.UserDTO;
 import com.tyrael.kharazim.user.app.service.UserService;
 import com.tyrael.kharazim.user.sdk.model.UserSimpleVO;
@@ -39,4 +40,23 @@ public class UserServiceProvider implements UserServiceApi {
                         .build()
         ));
     }
+
+    @Override
+    public List<UserSimpleVO> listAll() {
+        ListUserRequest listRequest = new ListUserRequest();
+        listRequest.setKeywords(null);
+        listRequest.setStatus(null);
+        List<UserDTO> users = userService.list(listRequest);
+        return users.stream()
+                .map(e -> UserSimpleVO.builder()
+                        .id(e.getId())
+                        .code(e.getCode())
+                        .name(e.getName())
+                        .nickName(e.getNickName())
+                        .englishName(e.getEnglishName())
+                        .avatar(e.getAvatar())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
 }

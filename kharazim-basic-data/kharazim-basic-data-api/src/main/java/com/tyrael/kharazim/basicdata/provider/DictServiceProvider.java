@@ -1,5 +1,6 @@
 package com.tyrael.kharazim.basicdata.provider;
 
+import com.tyrael.kharazim.basicdata.app.dto.dict.SaveDictItemRequest;
 import com.tyrael.kharazim.basicdata.app.service.dict.DictService;
 import com.tyrael.kharazim.basicdata.sdk.model.DictItemVO;
 import com.tyrael.kharazim.basicdata.sdk.model.InitDictRequest;
@@ -34,6 +35,16 @@ public class DictServiceProvider implements DictServiceApi {
                         .sort(e.getSort())
                         .build())
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public void addDictItem(DictItemVO dictItem) {
+        SaveDictItemRequest saveDictItemRequest = new SaveDictItemRequest();
+        saveDictItemRequest.setDictCode(dictItem.getDictCode());
+        saveDictItemRequest.setKey(dictItem.getKey());
+        saveDictItemRequest.setValue(dictItem.getValue());
+        saveDictItemRequest.setSort(dictItem.getSort());
+        dictService.addDictItem(saveDictItemRequest);
     }
 
     @Override

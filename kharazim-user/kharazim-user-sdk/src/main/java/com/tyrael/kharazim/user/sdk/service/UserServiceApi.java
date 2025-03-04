@@ -13,7 +13,6 @@ import java.util.Map;
  */
 public interface UserServiceApi {
 
-
     /**
      * map by codes
      *
@@ -21,6 +20,13 @@ public interface UserServiceApi {
      * @return Map<code, UserSimpleVO>
      */
     Map<String, UserSimpleVO> mapByCodes(Collection<String> codes);
+
+    /**
+     * all user
+     *
+     * @return users
+     */
+    List<UserSimpleVO> listAll();
 
     /**
      * find by code
