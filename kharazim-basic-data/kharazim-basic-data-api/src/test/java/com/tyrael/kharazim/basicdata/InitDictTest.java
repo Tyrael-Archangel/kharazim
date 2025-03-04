@@ -2,11 +2,9 @@ package com.tyrael.kharazim.basicdata;
 
 import com.tyrael.kharazim.basicdata.app.constant.BasicDataDictConstants;
 import com.tyrael.kharazim.basicdata.sdk.service.DictServiceApi;
-import org.apache.dubbo.config.annotation.DubboReference;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.stereotype.Component;
 
 /**
  * @author Tyrael Archangel
@@ -16,26 +14,19 @@ import org.springframework.stereotype.Component;
 public class InitDictTest {
 
     @Autowired
-    private DictServiceApiHolder dictServiceApiHolder;
+    private DictServiceApi dictServiceApi;
 
     @Test
     public void initDict() {
-        dictServiceApiHolder.dictServiceApi.init(BasicDataDictConstants.CUSTOMER_GENDER);
-        dictServiceApiHolder.dictServiceApi.init(BasicDataDictConstants.CUSTOMER_CERTIFICATE_TYPE);
+        dictServiceApi.init(BasicDataDictConstants.CUSTOMER_GENDER);
+        dictServiceApi.init(BasicDataDictConstants.CUSTOMER_CERTIFICATE_TYPE);
+        dictServiceApi.init(BasicDataDictConstants.SYSTEM_ADDRESS_LEVEL);
 
-        dictServiceApiHolder.dictServiceApi.init(BasicDataDictConstants.CUSTOMER_SOURCE_CHANNEL);
-        dictServiceApiHolder.dictServiceApi.init(BasicDataDictConstants.INSURANCE_COMPANY);
-        dictServiceApiHolder.dictServiceApi.init(BasicDataDictConstants.CUSTOMER_TAG);
-        dictServiceApiHolder.dictServiceApi.init(BasicDataDictConstants.COMMUNICATION_TYPE);
-        dictServiceApiHolder.dictServiceApi.init(BasicDataDictConstants.COMMUNICATION_EVALUATE);
+        dictServiceApi.init(BasicDataDictConstants.CUSTOMER_SOURCE_CHANNEL);
+        dictServiceApi.init(BasicDataDictConstants.INSURANCE_COMPANY);
+        dictServiceApi.init(BasicDataDictConstants.CUSTOMER_TAG);
+        dictServiceApi.init(BasicDataDictConstants.COMMUNICATION_TYPE);
+        dictServiceApi.init(BasicDataDictConstants.COMMUNICATION_EVALUATE);
     }
-
-}
-
-@Component
-class DictServiceApiHolder {
-
-    @DubboReference
-    DictServiceApi dictServiceApi;
 
 }
