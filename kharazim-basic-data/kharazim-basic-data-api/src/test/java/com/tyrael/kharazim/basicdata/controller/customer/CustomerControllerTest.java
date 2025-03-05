@@ -2,6 +2,7 @@ package com.tyrael.kharazim.basicdata.controller.customer;
 
 import com.tyrael.kharazim.base.dto.Pair;
 import com.tyrael.kharazim.base.dto.Pairs;
+import com.tyrael.kharazim.basicdata.BasicDataApiApplication;
 import com.tyrael.kharazim.basicdata.app.constant.BasicDataDictConstants;
 import com.tyrael.kharazim.basicdata.app.dto.address.AddressTreeNodeDTO;
 import com.tyrael.kharazim.basicdata.app.dto.customer.customer.AddCustomerAddressRequest;
@@ -12,8 +13,10 @@ import com.tyrael.kharazim.basicdata.app.service.address.AddressQueryService;
 import com.tyrael.kharazim.basicdata.sdk.model.DictItemVO;
 import com.tyrael.kharazim.basicdata.sdk.service.DictServiceApi;
 import com.tyrael.kharazim.test.mock.BaseControllerTest;
+import com.tyrael.kharazim.user.sdk.model.MockAuthUser;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -22,6 +25,7 @@ import java.util.*;
  * @author Tyrael Archangel
  * @since 2024/1/8
  */
+@SpringBootTest(classes = BasicDataApiApplication.class)
 class CustomerControllerTest extends BaseControllerTest<CustomerController> {
 
     @Autowired
@@ -181,7 +185,7 @@ class CustomerControllerTest extends BaseControllerTest<CustomerController> {
     void assignCustomerServiceUser() {
         String customerCode = "CU0000000001";
         String serviceUserCode = "U000002";
-        super.performWhenCall(mockController.assignCustomerServiceUser(customerCode, serviceUserCode, super.mockAdmin()));
+        super.performWhenCall(mockController.assignCustomerServiceUser(customerCode, serviceUserCode, MockAuthUser.mock()));
     }
 
     @Test
@@ -194,7 +198,7 @@ class CustomerControllerTest extends BaseControllerTest<CustomerController> {
     void assignCustomerSalesConsultant() {
         String customerCode = "CU0000000001";
         String salesConsultantCode = "U000002";
-        super.performWhenCall(mockController.assignCustomerSalesConsultant(customerCode, salesConsultantCode, super.mockAdmin()));
+        super.performWhenCall(mockController.assignCustomerSalesConsultant(customerCode, salesConsultantCode, MockAuthUser.mock()));
     }
 
     @Test

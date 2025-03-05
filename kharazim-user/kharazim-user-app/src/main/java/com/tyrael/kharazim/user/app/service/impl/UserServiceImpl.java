@@ -1,6 +1,5 @@
 package com.tyrael.kharazim.user.app.service.impl;
 
-import com.tyrael.kharazim.authentication.Principal;
 import com.tyrael.kharazim.base.dto.PageResponse;
 import com.tyrael.kharazim.base.exception.BusinessException;
 import com.tyrael.kharazim.base.exception.DomainNotFoundException;
@@ -26,6 +25,7 @@ import com.tyrael.kharazim.user.app.service.AuthService;
 import com.tyrael.kharazim.user.app.service.UserRoleQueryService;
 import com.tyrael.kharazim.user.app.service.UserService;
 import com.tyrael.kharazim.user.app.service.component.PasswordEncoder;
+import com.tyrael.kharazim.user.sdk.model.AuthUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -75,7 +75,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Cacheable(cacheNames = CacheKeyConstants.CURRENT_USER_INFO, key = "#currentUser.id")
-    public CurrentUserDTO getCurrentUserInfo(Principal currentUser) {
+    public CurrentUserDTO getCurrentUserInfo(AuthUser currentUser) {
         Long currentUserId = currentUser.getId();
         User user = userMapper.selectById(currentUserId);
         List<UserRoleDTO> userRoles = userRoleQueryService.queryUserRoles(currentUserId);
@@ -138,7 +138,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void modify(ModifyUserRequest modifyUserRequest, Principal currentUser) {
+    public void modify(ModifyUserRequest modifyUserRequest, AuthUser currentUser) {
         Long userId = modifyUserRequest.getId();
         User user = userMapper.selectById(userId);
         DomainNotFoundException.assertFound(user, userId);
@@ -208,7 +208,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     @CacheEvict(cacheNames = CacheKeyConstants.CURRENT_USER_INFO, key = "#currentUser.id")
-    public void changePassword(Principal currentUser, ChangePasswordRequest changePasswordRequest) {
+    public void changePassword(AuthUser currentUser, ChangePasswordRequest changePasswordRequest) {
         User user = userMapper.selectById(currentUser.getId());
 
         boolean matches = passwordEncoder.matches(changePasswordRequest.getOldPassword(), user.getPassword());
@@ -225,7 +225,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     @CacheEvict(cacheNames = CacheKeyConstants.CURRENT_USER_INFO, key = "#userId")
-    public String resetPassword(Principal currentUser, Long userId) {
+    public String resetPassword(AuthUser currentUser, Long userId) {
         List<Long> currentUserRoleIds = userRoleMapper.listByUserId(currentUser.getId())
                 .stream()
                 .map(UserRole::getRoleId)
@@ -250,7 +250,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateStatus(Long id, EnableStatusEnum status, Principal currentUser) {
+    public void updateStatus(Long id, EnableStatusEnum status, AuthUser currentUser) {
         if (currentUser.getId().equals(id)) {
             throw new ForbiddenException("无法禁用自己");
         }

@@ -3,6 +3,8 @@ package com.tyrael.kharazim.basicdata.controller.customer;
 import com.tyrael.kharazim.base.dto.Pair;
 import com.tyrael.kharazim.base.dto.Pairs;
 import com.tyrael.kharazim.base.util.CollectionUtils;
+import com.tyrael.kharazim.basicdata.BasicDataApiApplication;
+import com.tyrael.kharazim.basicdata.DubboReferenceHolder;
 import com.tyrael.kharazim.basicdata.app.constant.BasicDataDictConstants;
 import com.tyrael.kharazim.basicdata.app.dto.address.AddressTreeNodeDTO;
 import com.tyrael.kharazim.basicdata.app.dto.customer.customer.*;
@@ -14,13 +16,12 @@ import com.tyrael.kharazim.basicdata.sdk.model.DictItemVO;
 import com.tyrael.kharazim.basicdata.sdk.service.DictServiceApi;
 import com.tyrael.kharazim.test.mock.BaseControllerTest;
 import com.tyrael.kharazim.test.mock.MockRandomPoetry;
+import com.tyrael.kharazim.user.sdk.model.MockAuthUser;
 import com.tyrael.kharazim.user.sdk.model.UserSimpleVO;
-import com.tyrael.kharazim.user.sdk.service.UserServiceApi;
-import org.apache.dubbo.config.annotation.DubboReference;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -29,6 +30,7 @@ import java.util.*;
  * @author Tyrael Archangel
  * @since 2024/1/8
  */
+@SpringBootTest(classes = BasicDataApiApplication.class)
 public class AddCustomerTest extends BaseControllerTest<CustomerController> {
 
     @Autowired
@@ -41,7 +43,7 @@ public class AddCustomerTest extends BaseControllerTest<CustomerController> {
     private CustomerService customerService;
 
     @Autowired
-    private UserServiceApiHolder userServiceApiHolder;
+    private DubboReferenceHolder dubboReferenceHolder;
 
     public AddCustomerTest() {
         super(CustomerController.class);
@@ -54,11 +56,11 @@ public class AddCustomerTest extends BaseControllerTest<CustomerController> {
         List<AddressTreeNodeDTO> addressTree = addressQueryService.fullTree();
         Pairs<String, CustomerGenderEnum> mockUsers = this.mockUsers();
         Set<String> mockCommunityNames = this.mockCommunityNames();
-        List<String> serviceUserCodes = userServiceApiHolder.userServiceApi.listAll()
+        List<String> serviceUserCodes = dubboReferenceHolder.userServiceApi.listAll()
                 .stream()
                 .map(UserSimpleVO::getCode)
                 .toList();
-         Set<String> companyItems = dictService.dictItemKeys(BasicDataDictConstants.INSURANCE_COMPANY);
+        Set<String> companyItems = dictService.dictItemKeys(BasicDataDictConstants.INSURANCE_COMPANY);
         if (companyItems.isEmpty()) {
             companyItems = addInsuranceCompanyDict();
         }
@@ -87,7 +89,7 @@ public class AddCustomerTest extends BaseControllerTest<CustomerController> {
             addCustomerRequest.setSalesConsultantCode(CollectionUtils.random(serviceUserCodes));
             addCustomerRequest.setCustomerAddresses(this.mockAddress(name, phone, addressTree, mockCommunityNames));
             addCustomerRequest.setCustomerInsurances(this.mockInsurances(companyItemValues));
-            super.performWhenCall(mockController.add(addCustomerRequest, super.mockAdmin()));
+            super.performWhenCall(mockController.add(addCustomerRequest, MockAuthUser.mock()));
         }
 
     }
@@ -296,7 +298,7 @@ public class AddCustomerTest extends BaseControllerTest<CustomerController> {
                 AddCustomerTagRequest addCustomerTagRequest = new AddCustomerTagRequest();
                 addCustomerTagRequest.setCustomerCode(customer.getCode());
                 addCustomerTagRequest.setTagDictKeys(tagDictKeys);
-                super.performWhenCall(mockController.addCustomerTag(addCustomerTagRequest, super.mockAdmin()));
+                super.performWhenCall(mockController.addCustomerTag(addCustomerTagRequest, MockAuthUser.mock()));
             }
         }
     }
@@ -338,13 +340,5 @@ public class AddCustomerTest extends BaseControllerTest<CustomerController> {
         }
         return dictItemKeys;
     }
-
-}
-
-@Component
-class UserServiceApiHolder {
-
-    @DubboReference
-    UserServiceApi userServiceApi;
 
 }

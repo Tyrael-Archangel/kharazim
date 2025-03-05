@@ -1,5 +1,6 @@
 package com.tyrael.kharazim.user.controller;
 
+import com.tyrael.kharazim.authentication.Principal;
 import com.tyrael.kharazim.authentication.PrincipalHolder;
 import com.tyrael.kharazim.base.dto.DataResponse;
 import com.tyrael.kharazim.base.dto.MultiResponse;
@@ -24,6 +25,7 @@ import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * @author Tyrael Archangel
@@ -77,7 +79,9 @@ public class AuthController {
     @PostMapping("/logout")
     @Operation(description = "退出登录", summary = "退出登录")
     public Response logout(HttpServletRequest httpServletRequest) {
-        authService.logout(PrincipalHolder.getPrincipalToken());
+        Optional.ofNullable(PrincipalHolder.getPrincipal())
+                .map(e -> ((Principal) e).getCode())
+                .ifPresent(authService::logout);
         httpServletRequest.getSession().invalidate();
         return Response.success();
     }
@@ -92,7 +96,10 @@ public class AuthController {
     @Operation(summary = "强制退出登录")
     public Response forceLogout(@Parameter(description = "token", required = true)
                                 @RequestParam("token") String token) {
-        if (StringUtils.equals(PrincipalHolder.getPrincipalToken(), token)) {
+        String principalToken = Optional.ofNullable(PrincipalHolder.getPrincipal())
+                .map(e -> ((Principal) e).getCode())
+                .orElse(null);
+        if (StringUtils.equals(principalToken, token)) {
             throw new ForbiddenException("can't force logout yourself");
         }
         authService.logout(token);

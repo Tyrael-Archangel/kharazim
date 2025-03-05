@@ -1,8 +1,8 @@
 package com.tyrael.kharazim.basicdata.app.service.file;
 
-import com.tyrael.kharazim.authentication.Principal;
-import com.tyrael.kharazim.basicdata.app.dto.file.FileVO;
-import com.tyrael.kharazim.basicdata.app.dto.file.UploadFileVO;
+import com.tyrael.kharazim.basicdata.app.dto.file.FileDTO;
+import com.tyrael.kharazim.basicdata.app.dto.file.UploadFileRequest;
+import com.tyrael.kharazim.user.sdk.model.AuthUser;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
@@ -17,12 +17,12 @@ public interface FileService {
     /**
      * 上传文件，返回文件ID
      *
-     * @param fileVO      {@link UploadFileVO}
+     * @param fileVO      {@link UploadFileRequest}
      * @param currentUser 操作人
      * @return 文件ID + 文件URL
      * @throws IOException IOException
      */
-    FileVO upload(UploadFileVO fileVO, Principal currentUser) throws IOException;
+    FileDTO upload(UploadFileRequest fileVO, AuthUser currentUser) throws IOException;
 
     /**
      * 下载文件
@@ -56,6 +56,6 @@ public interface FileService {
      * @param fileIds 文件IDs
      * @return 文件链接地址
      */
-    List<FileVO> getFiles(List<String> fileIds);
+    List<FileDTO> getFiles(List<String> fileIds);
 
 }

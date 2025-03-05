@@ -1,14 +1,14 @@
 package com.tyrael.kharazim.basicdata.app.service.file;
 
-import com.tyrael.kharazim.authentication.Principal;
 import com.tyrael.kharazim.base.exception.DomainNotFoundException;
 import com.tyrael.kharazim.basicdata.app.config.FileConfig;
 import com.tyrael.kharazim.basicdata.app.constant.BasicDataBusinessIdConstants;
 import com.tyrael.kharazim.basicdata.app.domain.file.FileDO;
-import com.tyrael.kharazim.basicdata.app.dto.file.FileVO;
-import com.tyrael.kharazim.basicdata.app.dto.file.UploadFileVO;
+import com.tyrael.kharazim.basicdata.app.dto.file.FileDTO;
+import com.tyrael.kharazim.basicdata.app.dto.file.UploadFileRequest;
 import com.tyrael.kharazim.basicdata.app.mapper.file.FileMapper;
 import com.tyrael.kharazim.lib.idgenerator.IdGenerator;
+import com.tyrael.kharazim.user.sdk.model.AuthUser;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +17,6 @@ import org.springframework.http.CacheControl;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.nio.file.NotDirectoryException;
@@ -42,20 +41,16 @@ public class FileServiceImpl implements FileService {
     private final IdGenerator idGenerator;
 
     @Override
-    public FileVO upload(UploadFileVO fileVO, Principal currentUser) throws IOException {
+    public FileDTO upload(UploadFileRequest fileVO, AuthUser currentUser) throws IOException {
 
         File root = fileRoot();
         File targetDir = nextDir(root);
 
-        MultipartFile sourceFile = fileVO.getFile();
         String fileName = fileVO.getFileName();
-        if (StringUtils.isBlank(fileName)) {
-            fileName = sourceFile.getOriginalFilename();
-        }
         String fileId = idGenerator.next(BasicDataBusinessIdConstants.FILE);
         File targetFile = new File(targetDir, fileId + "_" + fileName);
 
-        try (InputStream inputStream = sourceFile.getInputStream();
+        try (InputStream inputStream = fileVO.getInput();
              FileOutputStream outputStream = new FileOutputStream(targetFile)) {
             inputStream.transferTo(outputStream);
         }
@@ -69,14 +64,14 @@ public class FileServiceImpl implements FileService {
         fileDO.setId(fileId);
         fileDO.setName(fileName);
         fileDO.setPath(path);
-        fileDO.setContentType(sourceFile.getContentType());
+        fileDO.setContentType(fileVO.getContentType());
         fileDO.setCreator(currentUser.getNickName());
         fileDO.setCreatorCode(currentUser.getCode());
         fileDO.setCreateTime(LocalDateTime.now());
 
         fileMapper.insert(fileDO);
 
-        return new FileVO(fileId, this.getUrl(fileId));
+        return new FileDTO(fileId, this.getUrl(fileId));
     }
 
     private File fileRoot() throws IOException {
@@ -204,13 +199,13 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public List<FileVO> getFiles(List<String> fileIds) {
+    public List<FileDTO> getFiles(List<String> fileIds) {
         if (fileIds == null || fileIds.isEmpty()) {
             return new ArrayList<>();
         }
         return fileIds.stream()
                 .filter(StringUtils::isNotBlank)
-                .map(fileId -> new FileVO(fileId, this.getUrl(fileId)))
+                .map(fileId -> new FileDTO(fileId, this.getUrl(fileId)))
                 .collect(Collectors.toList());
     }
 

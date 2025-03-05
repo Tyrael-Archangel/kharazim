@@ -4,7 +4,6 @@ import cn.idev.excel.ExcelWriter;
 import cn.idev.excel.FastExcelFactory;
 import cn.idev.excel.write.metadata.WriteSheet;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.tyrael.kharazim.authentication.Principal;
 import com.tyrael.kharazim.base.dto.PageResponse;
 import com.tyrael.kharazim.base.exception.BusinessException;
 import com.tyrael.kharazim.basicdata.app.constant.BasicDataBusinessIdConstants;
@@ -13,6 +12,7 @@ import com.tyrael.kharazim.basicdata.app.dto.clinic.*;
 import com.tyrael.kharazim.basicdata.app.mapper.clinic.ClinicMapper;
 import com.tyrael.kharazim.basicdata.app.service.file.FileService;
 import com.tyrael.kharazim.lib.idgenerator.IdGenerator;
+import com.tyrael.kharazim.user.sdk.model.AuthUser;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -137,7 +137,7 @@ public class ClinicServiceImpl implements ClinicService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void modify(ModifyClinicRequest modifyClinicRequest, Principal currentUser) {
+    public void modify(ModifyClinicRequest modifyClinicRequest, AuthUser currentUser) {
         Clinic clinic = clinicMapper.exactlyFindByCode(modifyClinicRequest.getCode());
 
         if (StringUtils.isNotBlank(modifyClinicRequest.getName())) {

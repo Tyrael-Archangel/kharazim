@@ -1,6 +1,5 @@
 package com.tyrael.kharazim.basicdata.app.service.dict;
 
-import com.tyrael.kharazim.authentication.Principal;
 import com.tyrael.kharazim.base.dto.PageResponse;
 import com.tyrael.kharazim.base.exception.BusinessException;
 import com.tyrael.kharazim.base.exception.DomainNotFoundException;
@@ -17,6 +16,7 @@ import com.tyrael.kharazim.basicdata.app.mapper.dict.DictMapper;
 import com.tyrael.kharazim.basicdata.sdk.model.DictItemVO;
 import com.tyrael.kharazim.basicdata.sdk.model.DictVO;
 import com.tyrael.kharazim.basicdata.sdk.model.InitDictRequest;
+import com.tyrael.kharazim.user.sdk.model.AuthUser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -156,7 +156,7 @@ public class DictServiceImpl implements DictService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void modifyDictItem(Long dictItemId, SaveDictItemRequest modifyDictItemRequest, Principal currentUser) {
+    public void modifyDictItem(Long dictItemId, SaveDictItemRequest modifyDictItemRequest, AuthUser currentUser) {
         DictItem dictItem = dictItemMapper.selectById(dictItemId);
         DomainNotFoundException.assertFound(dictItem, dictItemId);
 

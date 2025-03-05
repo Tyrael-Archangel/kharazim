@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tyrael.kharazim.base.dto.Response;
 import com.tyrael.kharazim.base.exception.ShouldNotHappenException;
-import com.tyrael.kharazim.user.sdk.constant.UserHeader;
+import com.tyrael.kharazim.authentication.PrincipalHeader;
 import com.tyrael.kharazim.user.sdk.exception.TokenInvalidException;
 import com.tyrael.kharazim.user.sdk.model.AuthUser;
 import com.tyrael.kharazim.user.sdk.service.AuthServiceApi;
@@ -88,11 +88,11 @@ public class AuthFilter implements GlobalFilter {
 
         ServerHttpRequest extraRequest = exchange.getRequest()
                 .mutate()
-                .header(UserHeader.USER_ID, this.utf8Encode(authUser.getId().toString()))
-                .header(UserHeader.USER_CODE, this.utf8Encode(authUser.getCode()))
-                .header(UserHeader.USER_NAME, this.utf8Encode(authUser.getName()))
-                .header(UserHeader.USER_NICKNAME, this.utf8Encode(authUser.getNickName()))
-                .header(UserHeader.TOKEN, this.utf8Encode(token))
+                .header(PrincipalHeader.USER_ID, this.utf8Encode(authUser.getId().toString()))
+                .header(PrincipalHeader.USER_CODE, this.utf8Encode(authUser.getCode()))
+                .header(PrincipalHeader.USER_NAME, this.utf8Encode(authUser.getName()))
+                .header(PrincipalHeader.USER_NICKNAME, this.utf8Encode(authUser.getNickName()))
+                .header(PrincipalHeader.TOKEN, this.utf8Encode(token))
                 .build();
         exchange.mutate().request(extraRequest).build();
     }
@@ -102,11 +102,11 @@ public class AuthFilter implements GlobalFilter {
         Map<String, String> queryParams = exchange.getRequest()
                 .getQueryParams()
                 .toSingleValueMap();
-        String token = queryParams.get(UserHeader.TOKEN);
+        String token = queryParams.get(PrincipalHeader.TOKEN);
         if (!StringUtils.hasText(token)) {
             token = queryParams.entrySet()
                     .stream()
-                    .filter(entry -> UserHeader.TOKEN.equalsIgnoreCase(entry.getKey()))
+                    .filter(entry -> PrincipalHeader.TOKEN.equalsIgnoreCase(entry.getKey()))
                     .map(Map.Entry::getValue)
                     .findFirst()
                     .orElse(null);
@@ -115,12 +115,12 @@ public class AuthFilter implements GlobalFilter {
         if (!StringUtils.hasText(token)) {
             token = exchange.getRequest()
                     .getHeaders()
-                    .getFirst(UserHeader.TOKEN);
+                    .getFirst(PrincipalHeader.TOKEN);
         }
 
         Map<String, HttpCookie> cookies = exchange.getRequest().getCookies().toSingleValueMap();
         if (!StringUtils.hasText(token)) {
-            HttpCookie httpCookie = cookies.get(UserHeader.TOKEN);
+            HttpCookie httpCookie = cookies.get(PrincipalHeader.TOKEN);
             if (httpCookie != null) {
                 token = httpCookie.getValue();
             }
@@ -128,7 +128,7 @@ public class AuthFilter implements GlobalFilter {
         if (!StringUtils.hasText(token)) {
             token = cookies.entrySet()
                     .stream()
-                    .filter(entry -> UserHeader.TOKEN.equalsIgnoreCase(entry.getKey()))
+                    .filter(entry -> PrincipalHeader.TOKEN.equalsIgnoreCase(entry.getKey()))
                     .map(Map.Entry::getValue)
                     .findFirst()
                     .map(HttpCookie::getValue)

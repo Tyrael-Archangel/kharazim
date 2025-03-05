@@ -22,7 +22,7 @@ public class AuthUserMethodArgumentResolver implements HandlerMethodArgumentReso
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        if (!parameter.getParameterType().isAssignableFrom(Principal.class)) {
+        if (!Principal.class.isAssignableFrom(parameter.getParameterType())) {
             return false;
         }
         Annotation[] annotations = parameter.getParameterAnnotations();

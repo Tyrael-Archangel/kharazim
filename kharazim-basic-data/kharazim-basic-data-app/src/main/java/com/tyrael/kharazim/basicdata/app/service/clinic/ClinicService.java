@@ -1,8 +1,8 @@
 package com.tyrael.kharazim.basicdata.app.service.clinic;
 
-import com.tyrael.kharazim.authentication.Principal;
 import com.tyrael.kharazim.base.dto.PageResponse;
 import com.tyrael.kharazim.basicdata.app.dto.clinic.*;
+import com.tyrael.kharazim.user.sdk.model.AuthUser;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
@@ -53,6 +53,6 @@ public interface ClinicService {
      * @param modifyClinicRequest {@link ModifyClinicRequest}
      * @param currentUser         操作人
      */
-    void modify(ModifyClinicRequest modifyClinicRequest, Principal currentUser);
+    void modify(ModifyClinicRequest modifyClinicRequest, AuthUser currentUser);
 
 }

@@ -1,5 +1,7 @@
 package com.tyrael.kharazim.basicdata.sdk.service;
 
+import com.tyrael.kharazim.basicdata.sdk.model.UploadFileVO;
+
 import java.io.IOException;
 
 /**
@@ -24,5 +26,14 @@ public interface FileServiceApi {
      * @throws IOException IOException
      */
     byte[] readBytes(String fileId) throws IOException;
+
+    /**
+     * upload file
+     *
+     * @param file 文件
+     * @return 文件ID
+     * @throws IOException IOException
+     */
+    String upload(UploadFileVO file) throws IOException;
 
 }

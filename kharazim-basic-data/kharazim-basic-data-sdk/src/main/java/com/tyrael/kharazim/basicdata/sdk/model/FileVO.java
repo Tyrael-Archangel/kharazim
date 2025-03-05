@@ -1,9 +1,10 @@
-package com.tyrael.kharazim.basicdata.app.dto.file;
+package com.tyrael.kharazim.basicdata.sdk.model;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
 
 /**
  * @author Tyrael Archangel
@@ -12,12 +13,10 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class FileVO {
+public class FileVO implements Serializable {
 
-    @Schema(description = "文件ID")
     private String fileId;
 
-    @Schema(description = "文件链接地址")
     private String url;
 
 }

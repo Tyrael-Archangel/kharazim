@@ -1,6 +1,6 @@
 package com.tyrael.kharazim.basicdata.controller.customer;
 
-import com.tyrael.kharazim.authentication.Principal;
+import com.tyrael.kharazim.authentication.CurrentPrincipal;
 import com.tyrael.kharazim.base.dto.DataResponse;
 import com.tyrael.kharazim.base.dto.PageResponse;
 import com.tyrael.kharazim.base.dto.Response;
@@ -8,7 +8,7 @@ import com.tyrael.kharazim.basicdata.app.dto.customer.communication.AddCustomerC
 import com.tyrael.kharazim.basicdata.app.dto.customer.communication.CustomerCommunicationLogPageRequest;
 import com.tyrael.kharazim.basicdata.app.dto.customer.communication.CustomerCommunicationLogVO;
 import com.tyrael.kharazim.basicdata.app.service.customer.CustomerCommunicationLogService;
-import com.tyrael.kharazim.authentication.CurrentPrincipal;
+import com.tyrael.kharazim.user.sdk.model.AuthUser;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -38,7 +38,7 @@ public class CustomerCommunicationLogController {
     @PostMapping
     @Operation(summary = "新建沟通记录")
     public Response add(@RequestBody @Valid AddCustomerCommunicationLogRequest addRequest,
-                        @Schema(hidden = true) @CurrentPrincipal Principal currentUser) {
+                        @Schema(hidden = true) @CurrentPrincipal AuthUser currentUser) {
         return DataResponse.success(customerCommunicationLogService.add(addRequest, currentUser));
     }
 }

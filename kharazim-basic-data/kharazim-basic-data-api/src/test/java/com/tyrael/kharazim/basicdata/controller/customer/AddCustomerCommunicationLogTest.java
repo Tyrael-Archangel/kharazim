@@ -3,6 +3,7 @@ package com.tyrael.kharazim.basicdata.controller.customer;
 import com.tyrael.kharazim.base.dto.Pair;
 import com.tyrael.kharazim.base.dto.Pairs;
 import com.tyrael.kharazim.base.util.CollectionUtils;
+import com.tyrael.kharazim.basicdata.BasicDataApiApplication;
 import com.tyrael.kharazim.basicdata.app.constant.BasicDataDictConstants;
 import com.tyrael.kharazim.basicdata.app.dto.customer.communication.AddCustomerCommunicationLogRequest;
 import com.tyrael.kharazim.basicdata.app.dto.customer.customer.CustomerSimpleVO;
@@ -12,8 +13,10 @@ import com.tyrael.kharazim.basicdata.sdk.model.DictItemVO;
 import com.tyrael.kharazim.basicdata.sdk.service.DictServiceApi;
 import com.tyrael.kharazim.test.mock.BaseControllerTest;
 import com.tyrael.kharazim.test.mock.MockRandomPoetry;
+import com.tyrael.kharazim.user.sdk.model.MockAuthUser;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
@@ -24,6 +27,7 @@ import java.util.Set;
  * @author Tyrael Archangel
  * @since 2024/1/24
  */
+@SpringBootTest(classes = BasicDataApiApplication.class)
 public class AddCustomerCommunicationLogTest extends BaseControllerTest<CustomerCommunicationLogController> {
 
     @Autowired
@@ -53,14 +57,14 @@ public class AddCustomerCommunicationLogTest extends BaseControllerTest<Customer
             for (int i = 0; i < logCount; i++) {
                 AddCustomerCommunicationLogRequest addRequest = new AddCustomerCommunicationLogRequest();
                 addRequest.setCustomerCode(customer.getCode());
-                addRequest.setServiceUserCode(super.mockAdmin().getCode());
+                addRequest.setServiceUserCode(MockAuthUser.mock().getCode());
                 addRequest.setTypeDictKey(CollectionUtils.random(customerCommunicationTypes));
                 addRequest.setEvaluateDictKey(CollectionUtils.random(customerCommunicationEvaluates));
                 addRequest.setContent(MockRandomPoetry.random());
                 addRequest.setCommunicationTime(LocalDateTime.now()
                         .minusHours(random.nextInt(300))
                         .minusSeconds(random.nextInt(1000)));
-                super.performWhenCall(mockController.add(addRequest, super.mockAdmin()));
+                super.performWhenCall(mockController.add(addRequest, MockAuthUser.mock()));
             }
         }
 

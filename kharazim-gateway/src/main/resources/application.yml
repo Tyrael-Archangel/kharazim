@@ -4,6 +4,7 @@ auth:
       - "/*/auth/login"
       - "/*/auth/logout"
       - "/*/v2/api-docs"
+      - "/*/system/file/fetch/*"
 
 spring:
   cloud:
@@ -37,7 +38,7 @@ dubbo:
     password: ${NACOS_PASSWORD:}
   protocol:
     name: dubbo
-    port: -1
+    port: ${DUBBO_PORT:-1}
   consumer:
     check: false
     proxy: enhancejavassist

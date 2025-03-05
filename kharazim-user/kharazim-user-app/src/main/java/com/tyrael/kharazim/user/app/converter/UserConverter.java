@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 public class UserConverter {
 
     @DubboReference
-    private final FileServiceApi fileService;
+    private FileServiceApi fileService;
 
     /**
      * User、UserRoleDTO -> UserDTO
@@ -111,7 +111,7 @@ public class UserConverter {
      */
     public OnlineUserDTO onlineUser(TokenManager.RefreshLoggedUser loggedUser, User user) {
         OnlineUserDTO onlineUser = new OnlineUserDTO();
-        onlineUser.setToken(loggedUser.getToken());
+        onlineUser.setToken(loggedUser.token());
         onlineUser.setUserCode(user.getCode());
         onlineUser.setUsername(user.getName());
         onlineUser.setUserNickName(user.getNickName());

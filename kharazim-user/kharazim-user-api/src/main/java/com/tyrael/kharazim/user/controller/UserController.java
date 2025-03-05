@@ -1,7 +1,6 @@
 package com.tyrael.kharazim.user.controller;
 
 import com.tyrael.kharazim.authentication.CurrentPrincipal;
-import com.tyrael.kharazim.authentication.Principal;
 import com.tyrael.kharazim.base.dto.DataResponse;
 import com.tyrael.kharazim.base.dto.MultiResponse;
 import com.tyrael.kharazim.base.dto.PageResponse;
@@ -11,6 +10,7 @@ import com.tyrael.kharazim.user.app.dto.user.response.CurrentUserDTO;
 import com.tyrael.kharazim.user.app.dto.user.response.UserDTO;
 import com.tyrael.kharazim.user.app.enums.EnableStatusEnum;
 import com.tyrael.kharazim.user.app.service.UserService;
+import com.tyrael.kharazim.user.sdk.model.AuthUser;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -57,7 +57,7 @@ public class UserController {
 
     @PostMapping("/modify")
     @Operation(description = "修改用户", summary = "修改用户")
-    public Response modify(@Schema(hidden = true) @CurrentPrincipal Principal currentUser,
+    public Response modify(@Schema(hidden = true) @CurrentPrincipal AuthUser currentUser,
                            @RequestBody @Valid ModifyUserRequest modifyUserRequest) {
         userService.modify(modifyUserRequest, currentUser);
         return Response.success();
@@ -65,7 +65,7 @@ public class UserController {
 
     @PostMapping("/change-password")
     @Operation(description = "修改账户密码", summary = "修改密码")
-    public Response changePassword(@Schema(hidden = true) @CurrentPrincipal Principal currentUser,
+    public Response changePassword(@Schema(hidden = true) @CurrentPrincipal AuthUser currentUser,
                                    @RequestBody @Valid ChangePasswordRequest changePasswordRequest) {
         userService.changePassword(currentUser, changePasswordRequest);
         return Response.success();
@@ -73,14 +73,14 @@ public class UserController {
 
     @PostMapping("/reset-password/{userId}")
     @Operation(description = "重置账户密码，返回新密码", summary = "重置账户密码")
-    public DataResponse<String> resetPassword(@Schema(hidden = true) @CurrentPrincipal Principal currentUser,
+    public DataResponse<String> resetPassword(@Schema(hidden = true) @CurrentPrincipal AuthUser currentUser,
                                               @PathVariable("userId") Long userId) {
         return DataResponse.success(userService.resetPassword(currentUser, userId));
     }
 
     @GetMapping("/current-user")
     @Operation(description = "获取当前登录用户信息", summary = "获取当前登录用户信息")
-    public DataResponse<CurrentUserDTO> currentUser(@Schema(hidden = true) @CurrentPrincipal Principal currentUser) {
+    public DataResponse<CurrentUserDTO> currentUser(@Schema(hidden = true) @CurrentPrincipal AuthUser currentUser) {
         return DataResponse.success(userService.getCurrentUserInfo(currentUser));
     }
 
@@ -88,7 +88,7 @@ public class UserController {
     @Operation(summary = "修改用户状态")
     public Response updateStatus(@PathVariable("userId") Long userId,
                                  @PathVariable("status") EnableStatusEnum status,
-                                 @Schema(hidden = true) @CurrentPrincipal Principal currentUser) {
+                                 @Schema(hidden = true) @CurrentPrincipal AuthUser currentUser) {
         userService.updateStatus(userId, status, currentUser);
         return Response.success();
     }

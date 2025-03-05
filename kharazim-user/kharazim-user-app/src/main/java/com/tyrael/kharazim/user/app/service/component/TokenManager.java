@@ -179,9 +179,9 @@ public class TokenManager {
         return loggedUserJsons.stream()
                 .map(LoggedUser::parse)
                 .filter(Objects::nonNull)
-                .map(e -> new RefreshLoggedUser(e, tokenRefresher.getLastRefreshTime(e.getToken())))
+                .map(e -> new RefreshLoggedUser(e, tokenRefresher.getLastRefreshTime(e.token())))
                 .sorted(Comparator.comparing(LoggedUser::getLoggedTime).reversed()
-                        .thenComparing(LoggedUser::getToken))
+                        .thenComparing(LoggedUser::token))
                 .skip((pageCommand.getPageIndex() - 1L) * pageCommand.getPageSize())
                 .limit(pageCommand.getPageSize())
                 .toList();
@@ -215,7 +215,7 @@ public class TokenManager {
             }
         }
 
-        public String getToken() {
+        public String token() {
             return authUser.getToken();
         }
 

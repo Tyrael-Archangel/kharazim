@@ -4,11 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tyrael.kharazim.authentication.CurrentPrincipal;
 import com.tyrael.kharazim.authentication.Principal;
 import com.tyrael.kharazim.authentication.PrincipalHolder;
-import com.tyrael.kharazim.base.util.RandomStringUtil;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
-import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mockito;
 import org.mockito.internal.configuration.plugins.Plugins;
 import org.mockito.internal.handler.MockHandlerImpl;
@@ -71,42 +69,6 @@ public abstract class BaseControllerTest<T> {
         MockCreationSettings<T> settings = Mockito.withSettings().build(controller);
         this.mockController = Plugins.getMockMaker()
                 .createMock(settings, new ControllerRequestMappingParseMockHandler<>(settings));
-    }
-
-    protected Principal mockAdmin() {
-        Principal currentUser = PrincipalHolder.getPrincipal();
-        if (currentUser == null) {
-            currentUser = new Principal() {
-                private final String token = RandomStringUtil.make(32);
-
-                @Override
-                public Long getId() {
-                    return 0L;
-                }
-
-                @Override
-                public String getCode() {
-                    return "000000";
-                }
-
-                @Override
-                public String getNickName() {
-                    return "超级管理员";
-                }
-
-                @Override
-                public String getToken() {
-                    return token;
-                }
-            };
-            PrincipalHolder.setPrincipal(currentUser);
-        }
-        return currentUser;
-    }
-
-    @BeforeEach
-    public synchronized void initGlobalAuthInterceptorMockBean() {
-        mockAdmin();
     }
 
     /**

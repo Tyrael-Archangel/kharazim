@@ -1,6 +1,5 @@
 package com.tyrael.kharazim.basicdata.app.service.customer;
 
-import com.tyrael.kharazim.authentication.Principal;
 import com.tyrael.kharazim.base.dto.PageResponse;
 import com.tyrael.kharazim.base.exception.BusinessException;
 import com.tyrael.kharazim.base.exception.DomainNotFoundException;
@@ -14,6 +13,7 @@ import com.tyrael.kharazim.basicdata.app.mapper.customer.CustomerMapper;
 import com.tyrael.kharazim.basicdata.app.mapper.customer.FamilyMapper;
 import com.tyrael.kharazim.basicdata.app.mapper.customer.FamilyMemberMapper;
 import com.tyrael.kharazim.lib.idgenerator.IdGenerator;
+import com.tyrael.kharazim.user.sdk.model.AuthUser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -166,7 +166,7 @@ public class CustomerFamilyServiceImpl implements CustomerFamilyService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void setLeader(String customerCode, String familyCode, Principal currentUser) {
+    public void setLeader(String customerCode, String familyCode, AuthUser currentUser) {
         Family family = familyMapper.findByCode(familyCode);
         DomainNotFoundException.assertFound(family, familyCode);
 
@@ -185,7 +185,7 @@ public class CustomerFamilyServiceImpl implements CustomerFamilyService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void modifyFamilyMemberRelation(ModifyFamilyMemberRelationRequest modifyRelationRequest,
-                                           Principal currentUser) {
+                                           AuthUser currentUser) {
         String familyCode = modifyRelationRequest.getFamilyCode();
         Family family = familyMapper.findByCode(familyCode);
         DomainNotFoundException.assertFound(family, familyCode);

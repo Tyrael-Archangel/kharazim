@@ -2,6 +2,7 @@ package com.tyrael.kharazim.basicdata.controller.customer;
 
 import com.tyrael.kharazim.basicdata.app.dto.customer.family.*;
 import com.tyrael.kharazim.test.mock.BaseControllerTest;
+import com.tyrael.kharazim.user.sdk.model.MockAuthUser;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -48,7 +49,7 @@ class FamilyControllerTest extends BaseControllerTest<FamilyController> {
     void setLeader() {
         String customerCode = "CU0000000002";
         String familyCode = "CF000001";
-        super.performWhenCall(mockController.setLeader(customerCode, familyCode, super.mockAdmin()));
+        super.performWhenCall(mockController.setLeader(customerCode, familyCode, MockAuthUser.mock()));
     }
 
     @Test
@@ -57,7 +58,7 @@ class FamilyControllerTest extends BaseControllerTest<FamilyController> {
         modifyRelationRequest.setFamilyCode("CF000001");
         modifyRelationRequest.setCustomerCode("CU0000000001");
         modifyRelationRequest.setRelationToLeader("都是魔王");
-        super.performWhenCall(mockController.modifyFamilyMemberRelation(modifyRelationRequest, super.mockAdmin()));
+        super.performWhenCall(mockController.modifyFamilyMemberRelation(modifyRelationRequest, MockAuthUser.mock()));
     }
 
     @Test

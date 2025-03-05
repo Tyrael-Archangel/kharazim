@@ -3,7 +3,7 @@ package com.tyrael.kharazim.gateway.filter;
 import com.github.xiaoymin.knife4j.spring.gateway.conf.GlobalConstants;
 import com.github.xiaoymin.knife4j.spring.gateway.filter.basic.WebFluxSecurityBasicAuthFilter;
 import com.tyrael.kharazim.base.exception.UnauthorizedException;
-import com.tyrael.kharazim.user.sdk.constant.UserHeader;
+import com.tyrael.kharazim.authentication.PrincipalHeader;
 import com.tyrael.kharazim.user.sdk.service.AuthServiceApi;
 import com.tyrael.kharazim.user.sdk.vo.ClientInfo;
 import eu.bitwalker.useragentutils.UserAgent;
@@ -60,10 +60,10 @@ public class Knife4jAuthFilter extends WebFluxSecurityBasicAuthFilter {
 
             ServerHttpRequest extraRequest = exchange.getRequest()
                     .mutate()
-                    .header(UserHeader.TOKEN, token)
+                    .header(PrincipalHeader.TOKEN, token)
                     .build();
             ServerWebExchange mutatedExchange = exchange.mutate().request(extraRequest).build();
-            ResponseCookie tokenCookie = ResponseCookie.from(UserHeader.TOKEN, token).build();
+            ResponseCookie tokenCookie = ResponseCookie.from(PrincipalHeader.TOKEN, token).build();
             mutatedExchange.getResponse().addCookie(tokenCookie);
             return chain.filter(mutatedExchange);
         });

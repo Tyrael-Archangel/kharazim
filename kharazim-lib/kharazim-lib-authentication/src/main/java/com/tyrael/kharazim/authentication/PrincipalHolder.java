@@ -22,14 +22,4 @@ public class PrincipalHolder {
         PRINCIPAL.remove();
     }
 
-    public static String getPrincipalCode() {
-        Principal principal = PRINCIPAL.get();
-        return principal == null ? null : principal.getCode();
-    }
-
-    public static String getPrincipalToken() {
-        Principal principal = PRINCIPAL.get();
-        return principal == null ? null : principal.getToken();
-    }
-
 }

@@ -1,7 +1,7 @@
 package com.tyrael.kharazim.user.api.sdk.config;
 
 import com.tyrael.kharazim.authentication.PrincipalHolder;
-import com.tyrael.kharazim.user.sdk.constant.UserHeader;
+import com.tyrael.kharazim.authentication.PrincipalHeader;
 import com.tyrael.kharazim.user.sdk.model.AuthUser;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
@@ -22,13 +22,13 @@ public class AuthUserResolverInterceptor implements WebRequestInterceptor {
     @Override
     public void preHandle(@NonNull WebRequest webRequest) {
 
-        String userId = this.utf8Decode(webRequest.getHeader(UserHeader.USER_ID));
+        String userId = this.utf8Decode(webRequest.getHeader(PrincipalHeader.USER_ID));
 
         if (StringUtils.hasText(userId)) {
-            String userCode = this.utf8Decode(webRequest.getHeader(UserHeader.USER_CODE));
-            String userName = this.utf8Decode(webRequest.getHeader(UserHeader.USER_NAME));
-            String userNickname = this.utf8Decode(webRequest.getHeader(UserHeader.USER_NICKNAME));
-            String token = this.utf8Decode(webRequest.getHeader(UserHeader.TOKEN));
+            String userCode = this.utf8Decode(webRequest.getHeader(PrincipalHeader.USER_CODE));
+            String userName = this.utf8Decode(webRequest.getHeader(PrincipalHeader.USER_NAME));
+            String userNickname = this.utf8Decode(webRequest.getHeader(PrincipalHeader.USER_NICKNAME));
+            String token = this.utf8Decode(webRequest.getHeader(PrincipalHeader.TOKEN));
 
             AuthUser authUser = new AuthUser();
             authUser.setId(Long.parseLong(userId));
