@@ -1,16 +1,16 @@
 package com.tyrael.kharazim.user.controller;
 
+import com.tyrael.kharazim.authentication.PrincipalHolder;
 import com.tyrael.kharazim.base.dto.DataResponse;
 import com.tyrael.kharazim.base.dto.MultiResponse;
 import com.tyrael.kharazim.base.dto.PageCommand;
 import com.tyrael.kharazim.base.dto.Response;
 import com.tyrael.kharazim.base.exception.ForbiddenException;
-import com.tyrael.kharazim.user.api.sdk.handler.AuthUserHolder;
-import com.tyrael.kharazim.user.sdk.vo.ClientInfo;
 import com.tyrael.kharazim.user.app.dto.auth.LoginRequest;
 import com.tyrael.kharazim.user.app.dto.auth.OnlineUserDTO;
 import com.tyrael.kharazim.user.app.service.AuthService;
 import com.tyrael.kharazim.user.sdk.exception.LoginFailedException;
+import com.tyrael.kharazim.user.sdk.vo.ClientInfo;
 import eu.bitwalker.useragentutils.UserAgent;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -77,7 +77,7 @@ public class AuthController {
     @PostMapping("/logout")
     @Operation(description = "退出登录", summary = "退出登录")
     public Response logout(HttpServletRequest httpServletRequest) {
-        authService.logout(AuthUserHolder.getCurrentUserToken());
+        authService.logout(PrincipalHolder.getPrincipalToken());
         httpServletRequest.getSession().invalidate();
         return Response.success();
     }
@@ -92,7 +92,7 @@ public class AuthController {
     @Operation(summary = "强制退出登录")
     public Response forceLogout(@Parameter(description = "token", required = true)
                                 @RequestParam("token") String token) {
-        if (StringUtils.equals(AuthUserHolder.getCurrentUserToken(), token)) {
+        if (StringUtils.equals(PrincipalHolder.getPrincipalToken(), token)) {
             throw new ForbiddenException("can't force logout yourself");
         }
         authService.logout(token);

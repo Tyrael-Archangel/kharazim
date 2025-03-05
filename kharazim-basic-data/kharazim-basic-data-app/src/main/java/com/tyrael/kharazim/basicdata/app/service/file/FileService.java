@@ -1,8 +1,8 @@
 package com.tyrael.kharazim.basicdata.app.service.file;
 
+import com.tyrael.kharazim.authentication.Principal;
 import com.tyrael.kharazim.basicdata.app.dto.file.FileVO;
 import com.tyrael.kharazim.basicdata.app.dto.file.UploadFileVO;
-import com.tyrael.kharazim.user.sdk.model.AuthUser;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
@@ -22,7 +22,7 @@ public interface FileService {
      * @return 文件ID + 文件URL
      * @throws IOException IOException
      */
-    FileVO upload(UploadFileVO fileVO, AuthUser currentUser) throws IOException;
+    FileVO upload(UploadFileVO fileVO, Principal currentUser) throws IOException;
 
     /**
      * 下载文件

@@ -20,7 +20,7 @@
 
         <dependency>
             <groupId>com.tyrael</groupId>
-            <artifactId>kharazim-id-generator-sdk</artifactId>
+            <artifactId>kharazim-lib-id-generator</artifactId>
         </dependency>
 
         <dependency>

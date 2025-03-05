@@ -1,13 +1,13 @@
 package com.tyrael.kharazim.basicdata.controller.customer;
 
+import com.tyrael.kharazim.authentication.CurrentPrincipal;
+import com.tyrael.kharazim.authentication.Principal;
 import com.tyrael.kharazim.base.dto.DataResponse;
 import com.tyrael.kharazim.base.dto.MultiResponse;
 import com.tyrael.kharazim.base.dto.PageResponse;
 import com.tyrael.kharazim.base.dto.Response;
 import com.tyrael.kharazim.basicdata.app.dto.customer.family.*;
 import com.tyrael.kharazim.basicdata.app.service.customer.CustomerFamilyService;
-import com.tyrael.kharazim.user.api.sdk.annotation.CurrentUser;
-import com.tyrael.kharazim.user.sdk.model.AuthUser;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -59,7 +59,7 @@ public class FamilyController {
     @Operation(summary = "设置家庭的户主")
     public Response setLeader(@PathVariable("customerCode") String customerCode,
                               @PathVariable("familyCode") String familyCode,
-                              @Schema(hidden = true) @CurrentUser AuthUser currentUser) {
+                              @Schema(hidden = true) @CurrentPrincipal Principal currentUser) {
         customerFamilyService.setLeader(customerCode, familyCode, currentUser);
         return Response.success();
     }
@@ -67,7 +67,7 @@ public class FamilyController {
     @PostMapping("/family-member/relation")
     @Operation(summary = "修改会员与户主的关系")
     public Response modifyFamilyMemberRelation(@RequestBody @Valid ModifyFamilyMemberRelationRequest modifyRelationRequest,
-                                               @Schema(hidden = true) @CurrentUser AuthUser currentUser) {
+                                               @Schema(hidden = true) @CurrentPrincipal Principal currentUser) {
         customerFamilyService.modifyFamilyMemberRelation(modifyRelationRequest, currentUser);
         return Response.success();
     }

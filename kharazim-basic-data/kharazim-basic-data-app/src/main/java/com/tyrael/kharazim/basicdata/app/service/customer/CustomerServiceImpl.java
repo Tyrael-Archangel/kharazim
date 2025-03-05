@@ -4,6 +4,7 @@ import cn.idev.excel.ExcelWriter;
 import cn.idev.excel.FastExcelFactory;
 import cn.idev.excel.write.metadata.WriteSheet;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.tyrael.kharazim.authentication.Principal;
 import com.tyrael.kharazim.base.dto.PageResponse;
 import com.tyrael.kharazim.base.exception.BusinessException;
 import com.tyrael.kharazim.base.exception.DomainNotFoundException;
@@ -15,8 +16,7 @@ import com.tyrael.kharazim.basicdata.app.domain.customer.*;
 import com.tyrael.kharazim.basicdata.app.dto.customer.customer.*;
 import com.tyrael.kharazim.basicdata.app.mapper.customer.*;
 import com.tyrael.kharazim.basicdata.sdk.service.DictServiceApi;
-import com.tyrael.kharazim.idgenerator.IdGenerator;
-import com.tyrael.kharazim.user.sdk.model.AuthUser;
+import com.tyrael.kharazim.lib.idgenerator.IdGenerator;
 import com.tyrael.kharazim.user.sdk.model.UserSimpleVO;
 import com.tyrael.kharazim.user.sdk.service.UserServiceApi;
 import jakarta.servlet.http.HttpServletResponse;
@@ -55,9 +55,8 @@ public class CustomerServiceImpl implements CustomerService {
     private final CustomerSalesConsultantMapper customerSalesConsultantMapper;
     private final CustomerTagMapper customerTagMapper;
     private final DictServiceApi dictService;
+    private final IdGenerator idGenerator;
 
-    @DubboReference
-    private IdGenerator codeGenerator;
     @DubboReference
     private UserServiceApi userServiceApi;
 
@@ -107,7 +106,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public String add(AddCustomerRequest addCustomerRequest, AuthUser currentUser) {
+    public String add(AddCustomerRequest addCustomerRequest, Principal currentUser) {
 
         Customer customer = buildCustomer(addCustomerRequest);
         customerMapper.insert(customer);
@@ -149,7 +148,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void modify(String code, ModifyCustomerRequest modifyCustomerRequest, AuthUser currentUser) {
+    public void modify(String code, ModifyCustomerRequest modifyCustomerRequest, Principal currentUser) {
         Customer customer = customerMapper.exactlyFindByCode(code);
 
         Integer birthYear = modifyCustomerRequest.getBirthYear();
@@ -178,7 +177,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void modifySource(ModifyCustomerSourceRequest modifySourceRequest, AuthUser currentUser) {
+    public void modifySource(ModifyCustomerSourceRequest modifySourceRequest, Principal currentUser) {
         String customerCode = modifySourceRequest.getCustomerCode();
         Customer customer = customerMapper.exactlyFindByCode(customerCode);
 
@@ -231,7 +230,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void bindPhone(BindCustomerPhoneRequest request, AuthUser currentUser) {
+    public void bindPhone(BindCustomerPhoneRequest request, Principal currentUser) {
         String customerCode = request.getCustomerCode();
         Customer customer = customerMapper.exactlyFindByCode(customerCode);
 
@@ -243,7 +242,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void unbindPhone(String code, AuthUser currentUser) {
+    public void unbindPhone(String code, Principal currentUser) {
         Customer customer = customerMapper.exactlyFindByCode(code);
 
         customer.setPhoneVerified(false);
@@ -263,7 +262,7 @@ public class CustomerServiceImpl implements CustomerService {
         }
 
         checkBirthday(request.getBirthYear(), request.getBirthMonth(), request.getBirthDayOfMonth());
-        String code = codeGenerator.next(BasicDataBusinessIdConstants.CUSTOMER);
+        String code = idGenerator.next(BasicDataBusinessIdConstants.CUSTOMER);
 
         Customer customer = new Customer();
         customer.setCode(code);
@@ -382,7 +381,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void modifyCustomerAddress(ModifyCustomerAddressRequest modifyCustomerAddressRequest, AuthUser currentUser) {
+    public void modifyCustomerAddress(ModifyCustomerAddressRequest modifyCustomerAddressRequest, Principal currentUser) {
         Long customerAddressId = modifyCustomerAddressRequest.getCustomerAddressId();
         CustomerAddress customerAddress = customerAddressMapper.selectById(customerAddressId);
         DomainNotFoundException.assertFound(customerAddress, customerAddressId);
@@ -485,7 +484,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void modifyCustomerInsurance(ModifyCustomerInsuranceRequest modifyCustomerInsuranceRequest, AuthUser currentUser) {
+    public void modifyCustomerInsurance(ModifyCustomerInsuranceRequest modifyCustomerInsuranceRequest, Principal currentUser) {
         Long customerInsuranceId = modifyCustomerInsuranceRequest.getCustomerInsuranceId();
         CustomerInsurance customerInsurance = customerInsuranceMapper.selectById(customerInsuranceId);
 
@@ -529,7 +528,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void assignCustomerServiceUser(String customerCode, String serviceUserCode, AuthUser currentUser) {
+    public void assignCustomerServiceUser(String customerCode, String serviceUserCode, Principal currentUser) {
         customerMapper.ensureCustomerExist(customerCode);
         userServiceApi.ensureUserExist(serviceUserCode);
 
@@ -562,7 +561,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void assignCustomerSalesConsultant(String customerCode, String salesConsultantCode, AuthUser currentUser) {
+    public void assignCustomerSalesConsultant(String customerCode, String salesConsultantCode, Principal currentUser) {
         customerMapper.ensureCustomerExist(customerCode);
         userServiceApi.ensureUserExist(salesConsultantCode);
 
@@ -604,7 +603,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void addCustomerTag(AddCustomerTagRequest addCustomerTagRequest, AuthUser currentUser) {
+    public void addCustomerTag(AddCustomerTagRequest addCustomerTagRequest, Principal currentUser) {
         String customerCode = addCustomerTagRequest.getCustomerCode();
         customerMapper.ensureCustomerExist(customerCode);
 

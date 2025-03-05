@@ -14,7 +14,6 @@
         <kharazim-lib.version>1.0-SNAPSHOT</kharazim-lib.version>
         <spring-boot.version>3.2.4</spring-boot.version>
         <junit.version>1.10.2</junit.version>
-        <kharazim-user.version>1.0-SNAPSHOT</kharazim-user.version>
     </properties>
 
     <dependencies>
@@ -26,6 +25,11 @@
         </dependency>
         <dependency>
             <groupId>com.tyrael</groupId>
+            <artifactId>kharazim-lib-authentication</artifactId>
+            <version>${kharazim-lib.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.tyrael</groupId>
             <artifactId>kharazim-lib-web</artifactId>
             <version>${kharazim-lib.version}</version>
         </dependency>
@@ -33,12 +37,6 @@
             <groupId>com.tyrael</groupId>
             <artifactId>kharazim-lib-dubbo</artifactId>
             <version>${kharazim-lib.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.tyrael</groupId>
-            <artifactId>kharazim-user-api-sdk</artifactId>
-            <version>${kharazim-user.version}</version>
         </dependency>
 
         <dependency>

@@ -8,7 +8,6 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.tyrael.kharazim.base.dto.PageCommand;
 import com.tyrael.kharazim.base.exception.ShouldNotHappenException;
 import com.tyrael.kharazim.base.util.CollectionUtils;
-import com.tyrael.kharazim.base.util.RandomStringUtil;
 import com.tyrael.kharazim.user.app.config.AuthConfig;
 import com.tyrael.kharazim.user.app.config.AuthTokenConfig;
 import com.tyrael.kharazim.user.sdk.exception.TokenInvalidException;
@@ -52,25 +51,23 @@ public class TokenManager {
     /**
      * create token for user
      */
-    public String create(AuthUser user, ClientInfo clientInfo) {
+    public void create(AuthUser user, ClientInfo clientInfo) {
 
         if (!authConfig.isAllowMultiLogin()) {
             this.removeByUser(user.getId());
         }
 
-        String token = RandomStringUtil.make(32);
-        LoggedUser loggedUser = new LoggedUser(token, user, clientInfo, LocalDateTime.now());
+        LoggedUser loggedUser = new LoggedUser(user, clientInfo, LocalDateTime.now());
 
         redisTemplate.opsForValue().set(
-                this.tokenCacheKey(token),
+                this.tokenCacheKey(user.getToken()),
                 loggedUser.toJson(),
                 authTokenConfig.getTokenExpire());
         redisTemplate.opsForValue().set(
-                this.userTokenCacheKey(user.getId(), token),
+                this.userTokenCacheKey(user.getId(), user.getToken()),
                 loggedUser.getLoggedTime().toString(),
                 authTokenConfig.getTokenExpire());
 
-        return token;
     }
 
     /**
@@ -201,7 +198,6 @@ public class TokenManager {
             }
         };
 
-        private String token;
         private AuthUser authUser;
         private ClientInfo clientInfo;
         private LocalDateTime loggedTime;
@@ -217,6 +213,10 @@ public class TokenManager {
                 log.warn("resolve LoggedUser from loggedUserJson error: {}", e.getMessage(), e);
                 return null;
             }
+        }
+
+        public String getToken() {
+            return authUser.getToken();
         }
 
         String toJson() {
@@ -235,7 +235,6 @@ public class TokenManager {
         private LocalDateTime lastRefreshTime;
 
         RefreshLoggedUser(LoggedUser loggedUser, LocalDateTime lastRefreshTime) {
-            super.token = loggedUser.token;
             super.authUser = loggedUser.authUser;
             super.clientInfo = loggedUser.clientInfo;
             super.loggedTime = loggedUser.loggedTime;

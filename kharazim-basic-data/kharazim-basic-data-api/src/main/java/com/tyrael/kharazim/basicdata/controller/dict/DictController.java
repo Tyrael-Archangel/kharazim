@@ -1,5 +1,6 @@
 package com.tyrael.kharazim.basicdata.controller.dict;
 
+import com.tyrael.kharazim.authentication.Principal;
 import com.tyrael.kharazim.base.dto.DataResponse;
 import com.tyrael.kharazim.base.dto.MultiResponse;
 import com.tyrael.kharazim.base.dto.PageResponse;
@@ -9,8 +10,7 @@ import com.tyrael.kharazim.basicdata.app.dto.dict.DictItemDTO;
 import com.tyrael.kharazim.basicdata.app.dto.dict.PageDictRequest;
 import com.tyrael.kharazim.basicdata.app.dto.dict.SaveDictItemRequest;
 import com.tyrael.kharazim.basicdata.app.service.dict.DictService;
-import com.tyrael.kharazim.user.api.sdk.annotation.CurrentUser;
-import com.tyrael.kharazim.user.sdk.model.AuthUser;
+import com.tyrael.kharazim.authentication.CurrentPrincipal;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -55,7 +55,7 @@ public class DictController {
     @Operation(summary = "修改字典项")
     public Response modifyDictItem(@Parameter(description = "字典项ID", required = true) @PathVariable("itemId") Long itemId,
                                    @RequestBody @Valid SaveDictItemRequest modifyDictItemRequest,
-                                   @Schema(hidden = true) @CurrentUser AuthUser currentUser) {
+                                   @Schema(hidden = true) @CurrentPrincipal Principal currentUser) {
         dictService.modifyDictItem(itemId, modifyDictItemRequest, currentUser);
         return Response.success();
     }

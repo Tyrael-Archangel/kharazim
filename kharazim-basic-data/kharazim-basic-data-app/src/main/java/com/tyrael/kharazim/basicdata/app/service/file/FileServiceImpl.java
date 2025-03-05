@@ -1,5 +1,6 @@
 package com.tyrael.kharazim.basicdata.app.service.file;
 
+import com.tyrael.kharazim.authentication.Principal;
 import com.tyrael.kharazim.base.exception.DomainNotFoundException;
 import com.tyrael.kharazim.basicdata.app.config.FileConfig;
 import com.tyrael.kharazim.basicdata.app.constant.BasicDataBusinessIdConstants;
@@ -7,13 +8,11 @@ import com.tyrael.kharazim.basicdata.app.domain.file.FileDO;
 import com.tyrael.kharazim.basicdata.app.dto.file.FileVO;
 import com.tyrael.kharazim.basicdata.app.dto.file.UploadFileVO;
 import com.tyrael.kharazim.basicdata.app.mapper.file.FileMapper;
-import com.tyrael.kharazim.idgenerator.IdGenerator;
-import com.tyrael.kharazim.user.sdk.model.AuthUser;
+import com.tyrael.kharazim.lib.idgenerator.IdGenerator;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.http.CacheControl;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
@@ -40,12 +39,10 @@ public class FileServiceImpl implements FileService {
 
     private final FileMapper fileMapper;
     private final FileConfig fileConfig;
-
-    @DubboReference
-    private IdGenerator idGenerator;
+    private final IdGenerator idGenerator;
 
     @Override
-    public FileVO upload(UploadFileVO fileVO, AuthUser currentUser) throws IOException {
+    public FileVO upload(UploadFileVO fileVO, Principal currentUser) throws IOException {
 
         File root = fileRoot();
         File targetDir = nextDir(root);

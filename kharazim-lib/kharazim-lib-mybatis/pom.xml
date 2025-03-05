@@ -11,10 +11,9 @@
     <artifactId>kharazim-lib-mybatis</artifactId>
 
     <properties>
+        <spring-boot.version>3.2.4</spring-boot.version>
         <mybatis-plus.version>3.5.10.1</mybatis-plus.version>
         <kharazim-lib.version>1.0-SNAPSHOT</kharazim-lib.version>
-        <kharazim-user.version>1.0-SNAPSHOT</kharazim-user.version>
-        <spring-boot.version>3.2.4</spring-boot.version>
     </properties>
 
     <dependencies>
@@ -25,11 +24,10 @@
             <version>${kharazim-lib.version}</version>
         </dependency>
 
-        <!-- FIXME 不应该引入user-api-sdk，需要考虑优化 -->
         <dependency>
             <groupId>com.tyrael</groupId>
-            <artifactId>kharazim-user-api-sdk</artifactId>
-            <version>${kharazim-user.version}</version>
+            <artifactId>kharazim-lib-authentication</artifactId>
+            <version>${kharazim-lib.version}</version>
         </dependency>
 
         <dependency>

@@ -1,8 +1,8 @@
 package com.tyrael.kharazim.basicdata.app.service.customer;
 
+import com.tyrael.kharazim.authentication.Principal;
 import com.tyrael.kharazim.base.dto.PageResponse;
 import com.tyrael.kharazim.basicdata.app.dto.customer.customer.*;
-import com.tyrael.kharazim.user.sdk.model.AuthUser;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
@@ -46,7 +46,7 @@ public interface CustomerService {
      * @param currentUser        操作人
      * @return 新增的会员编码
      */
-    String add(AddCustomerRequest addCustomerRequest, AuthUser currentUser);
+    String add(AddCustomerRequest addCustomerRequest, Principal currentUser);
 
     /**
      * 修改会员信息
@@ -55,7 +55,7 @@ public interface CustomerService {
      * @param modifyCustomerRequest {@link ModifyCustomerRequest}
      * @param currentUser           操作人
      */
-    void modify(String code, ModifyCustomerRequest modifyCustomerRequest, AuthUser currentUser);
+    void modify(String code, ModifyCustomerRequest modifyCustomerRequest, Principal currentUser);
 
     /**
      * 修改会员的来源会员
@@ -63,7 +63,7 @@ public interface CustomerService {
      * @param modifySourceRequest {@link ModifyCustomerSourceRequest}
      * @param currentUser         操作人
      */
-    void modifySource(ModifyCustomerSourceRequest modifySourceRequest, AuthUser currentUser);
+    void modifySource(ModifyCustomerSourceRequest modifySourceRequest, Principal currentUser);
 
     /**
      * 绑定手机号
@@ -71,7 +71,7 @@ public interface CustomerService {
      * @param bindCustomerPhoneRequest {@link BindCustomerPhoneRequest}
      * @param currentUser              操作人
      */
-    void bindPhone(BindCustomerPhoneRequest bindCustomerPhoneRequest, AuthUser currentUser);
+    void bindPhone(BindCustomerPhoneRequest bindCustomerPhoneRequest, Principal currentUser);
 
     /**
      * 解绑手机号
@@ -79,7 +79,7 @@ public interface CustomerService {
      * @param code        会员编码
      * @param currentUser 操作人
      */
-    void unbindPhone(String code, AuthUser currentUser);
+    void unbindPhone(String code, Principal currentUser);
 
     /**
      * 根据指定条件（姓名、电话、证件号码）过滤用户
@@ -119,7 +119,7 @@ public interface CustomerService {
      * @param modifyCustomerAddressRequest {@link ModifyCustomerAddressRequest}
      * @param currentUser                  操作人
      */
-    void modifyCustomerAddress(ModifyCustomerAddressRequest modifyCustomerAddressRequest, AuthUser currentUser);
+    void modifyCustomerAddress(ModifyCustomerAddressRequest modifyCustomerAddressRequest, Principal currentUser);
 
     /**
      * 将指定的会员地址设置为默认地址
@@ -159,7 +159,7 @@ public interface CustomerService {
      * @param modifyCustomerInsuranceRequest {@link ModifyCustomerInsuranceRequest}
      * @param currentUser                    操作人
      */
-    void modifyCustomerInsurance(ModifyCustomerInsuranceRequest modifyCustomerInsuranceRequest, AuthUser currentUser);
+    void modifyCustomerInsurance(ModifyCustomerInsuranceRequest modifyCustomerInsuranceRequest, Principal currentUser);
 
     /**
      * 将指定的会员保险设置为默认保险
@@ -184,7 +184,7 @@ public interface CustomerService {
      * @param serviceUserCode 客服人员编码
      * @param currentUser     操作人
      */
-    void assignCustomerServiceUser(String customerCode, String serviceUserCode, AuthUser currentUser);
+    void assignCustomerServiceUser(String customerCode, String serviceUserCode, Principal currentUser);
 
     /**
      * 查询会员的专属销售顾问
@@ -201,7 +201,7 @@ public interface CustomerService {
      * @param salesConsultantCode 销售顾问编码
      * @param currentUser         操作人
      */
-    void assignCustomerSalesConsultant(String customerCode, String salesConsultantCode, AuthUser currentUser);
+    void assignCustomerSalesConsultant(String customerCode, String salesConsultantCode, Principal currentUser);
 
     /**
      * 查询会员的标签
@@ -217,7 +217,7 @@ public interface CustomerService {
      * @param addCustomerTagRequest AddCustomerTagRequest
      * @param currentUser           操作人
      */
-    void addCustomerTag(AddCustomerTagRequest addCustomerTagRequest, AuthUser currentUser);
+    void addCustomerTag(AddCustomerTagRequest addCustomerTagRequest, Principal currentUser);
 
     /**
      * 删除会员的标签

@@ -1,9 +1,8 @@
 package com.tyrael.kharazim.user.app.converter;
 
-import com.tyrael.kharazim.basicdata.sdk.service.FileServiceApi;
 import com.tyrael.kharazim.base.util.CollectionUtils;
+import com.tyrael.kharazim.basicdata.sdk.service.FileServiceApi;
 import com.tyrael.kharazim.user.app.domain.User;
-import com.tyrael.kharazim.user.sdk.vo.ClientInfo;
 import com.tyrael.kharazim.user.app.dto.auth.OnlineUserDTO;
 import com.tyrael.kharazim.user.app.dto.role.response.RoleDTO;
 import com.tyrael.kharazim.user.app.dto.user.response.CurrentUserDTO;
@@ -11,6 +10,7 @@ import com.tyrael.kharazim.user.app.dto.user.response.UserDTO;
 import com.tyrael.kharazim.user.app.dto.user.response.UserRoleDTO;
 import com.tyrael.kharazim.user.app.service.component.TokenManager;
 import com.tyrael.kharazim.user.sdk.model.AuthUser;
+import com.tyrael.kharazim.user.sdk.vo.ClientInfo;
 import lombok.RequiredArgsConstructor;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.stereotype.Component;
@@ -96,13 +96,13 @@ public class UserConverter {
     /**
      * User -> AuthUser
      */
-    public AuthUser authUser(User user) {
-
+    public AuthUser authUser(User user, String token) {
         AuthUser authUser = new AuthUser();
         authUser.setId(user.getId());
         authUser.setCode(user.getCode());
         authUser.setName(user.getName());
         authUser.setNickName(user.getNickName());
+        authUser.setToken(token);
         return authUser;
     }
 

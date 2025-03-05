@@ -33,12 +33,12 @@
 
         <dependency>
             <groupId>com.tyrael</groupId>
-            <artifactId>kharazim-user-sdk</artifactId>
+            <artifactId>kharazim-lib-id-generator</artifactId>
         </dependency>
 
         <dependency>
             <groupId>com.tyrael</groupId>
-            <artifactId>kharazim-id-generator-sdk</artifactId>
+            <artifactId>kharazim-user-sdk</artifactId>
         </dependency>
 
         <dependency>

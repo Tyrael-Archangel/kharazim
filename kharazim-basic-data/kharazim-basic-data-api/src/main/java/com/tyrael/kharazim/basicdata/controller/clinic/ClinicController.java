@@ -1,13 +1,13 @@
 package com.tyrael.kharazim.basicdata.controller.clinic;
 
+import com.tyrael.kharazim.authentication.Principal;
 import com.tyrael.kharazim.base.dto.DataResponse;
 import com.tyrael.kharazim.base.dto.MultiResponse;
 import com.tyrael.kharazim.base.dto.PageResponse;
 import com.tyrael.kharazim.base.dto.Response;
 import com.tyrael.kharazim.basicdata.app.dto.clinic.*;
 import com.tyrael.kharazim.basicdata.app.service.clinic.ClinicService;
-import com.tyrael.kharazim.user.api.sdk.annotation.CurrentUser;
-import com.tyrael.kharazim.user.sdk.model.AuthUser;
+import com.tyrael.kharazim.authentication.CurrentPrincipal;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -59,7 +59,7 @@ public class ClinicController {
     @PostMapping("/modify")
     @Operation(summary = "修改诊所（机构）")
     public Response modify(@RequestBody @Valid ModifyClinicRequest modifyClinicRequest,
-                           @Schema(hidden = true) @CurrentUser AuthUser currentUser) {
+                           @Schema(hidden = true) @CurrentPrincipal Principal currentUser) {
         clinicService.modify(modifyClinicRequest, currentUser);
         return Response.success();
     }

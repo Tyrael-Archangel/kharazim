@@ -53,6 +53,11 @@
             </dependency>
             <dependency>
                 <groupId>com.tyrael</groupId>
+                <artifactId>kharazim-lib-authentication</artifactId>
+                <version>${kharazim-lib.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.tyrael</groupId>
                 <artifactId>kharazim-lib-web</artifactId>
                 <version>${kharazim-lib.version}</version>
             </dependency>
@@ -69,6 +74,11 @@
             <dependency>
                 <groupId>com.tyrael</groupId>
                 <artifactId>kharazim-lib-mybatis</artifactId>
+                <version>${kharazim-lib.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.tyrael</groupId>
+                <artifactId>kharazim-lib-id-generator</artifactId>
                 <version>${kharazim-lib.version}</version>
             </dependency>
             <dependency>
@@ -95,11 +105,6 @@
                 <groupId>com.tyrael</groupId>
                 <artifactId>kharazim-basic-data-sdk</artifactId>
                 <version>${kharazim-basic-data.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.tyrael</groupId>
-                <artifactId>kharazim-id-generator-sdk</artifactId>
-                <version>${kharazim-id-generator.version}</version>
             </dependency>
 
             <dependency>

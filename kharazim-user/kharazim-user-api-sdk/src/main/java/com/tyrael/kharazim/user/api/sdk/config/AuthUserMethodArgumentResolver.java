@@ -1,9 +1,9 @@
 package com.tyrael.kharazim.user.api.sdk.config;
 
+import com.tyrael.kharazim.authentication.Principal;
+import com.tyrael.kharazim.authentication.PrincipalHolder;
 import com.tyrael.kharazim.base.exception.UnauthorizedException;
-import com.tyrael.kharazim.user.api.sdk.annotation.CurrentUser;
-import com.tyrael.kharazim.user.api.sdk.handler.AuthUserHolder;
-import com.tyrael.kharazim.user.sdk.model.AuthUser;
+import com.tyrael.kharazim.authentication.CurrentPrincipal;
 import org.springframework.core.MethodParameter;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
@@ -22,12 +22,12 @@ public class AuthUserMethodArgumentResolver implements HandlerMethodArgumentReso
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        if (!parameter.getParameterType().isAssignableFrom(AuthUser.class)) {
+        if (!parameter.getParameterType().isAssignableFrom(Principal.class)) {
             return false;
         }
         Annotation[] annotations = parameter.getParameterAnnotations();
         for (Annotation annotation : annotations) {
-            if (annotation instanceof CurrentUser) {
+            if (annotation instanceof CurrentPrincipal) {
                 return true;
             }
         }
@@ -39,13 +39,13 @@ public class AuthUserMethodArgumentResolver implements HandlerMethodArgumentReso
                                   @Nullable ModelAndViewContainer mavContainer,
                                   @NonNull NativeWebRequest webRequest,
                                   @Nullable WebDataBinderFactory binderFactory) {
-        AuthUser authUser = AuthUserHolder.getCurrentUser();
-        if (authUser != null) {
-            return authUser;
+        Principal principal = PrincipalHolder.getPrincipal();
+        if (principal != null) {
+            return principal;
         }
 
-        CurrentUser currentUser = parameter.getMethodAnnotation(CurrentUser.class);
-        if (currentUser != null && currentUser.required()) {
+        CurrentPrincipal currentPrincipal = parameter.getMethodAnnotation(CurrentPrincipal.class);
+        if (currentPrincipal != null && currentPrincipal.required()) {
             throw new UnauthorizedException("can not resolve current user");
         } else {
             return null;

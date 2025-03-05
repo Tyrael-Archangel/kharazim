@@ -1,6 +1,6 @@
 package com.tyrael.kharazim.user.api.sdk.config;
 
-import com.tyrael.kharazim.user.api.sdk.handler.AuthUserHolder;
+import com.tyrael.kharazim.authentication.PrincipalHolder;
 import com.tyrael.kharazim.user.sdk.constant.UserHeader;
 import com.tyrael.kharazim.user.sdk.model.AuthUser;
 import org.springframework.lang.NonNull;
@@ -35,7 +35,8 @@ public class AuthUserResolverInterceptor implements WebRequestInterceptor {
             authUser.setCode(userCode);
             authUser.setName(userName);
             authUser.setNickName(userNickname);
-            AuthUserHolder.setCurrentUser(authUser, token);
+            authUser.setToken(token);
+            PrincipalHolder.setPrincipal(authUser);
         }
     }
 
@@ -46,7 +47,7 @@ public class AuthUserResolverInterceptor implements WebRequestInterceptor {
 
     @Override
     public void afterCompletion(@NonNull WebRequest webRequest, @Nullable Exception ex) {
-        AuthUserHolder.remove();
+        PrincipalHolder.remove();
     }
 
     private String utf8Decode(String value) {

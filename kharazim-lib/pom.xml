@@ -10,6 +10,7 @@
     <name>kharazim-lib</name>
 
     <modules>
+        <module>kharazim-lib-authentication</module>
         <module>kharazim-lib-base</module>
         <module>kharazim-lib-web</module>
         <module>kharazim-lib-dubbo</module>
@@ -18,6 +19,7 @@
         <module>kharazim-lib-cache</module>
         <module>kharazim-lib-test</module>
         <module>kharazim-lib-export</module>
+        <module>kharazim-lib-id-generator</module>
     </modules>
 
     <properties>

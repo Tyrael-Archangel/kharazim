@@ -1,12 +1,12 @@
 package com.tyrael.kharazim.basicdata.app.service.dict;
 
+import com.tyrael.kharazim.authentication.Principal;
 import com.tyrael.kharazim.base.dto.PageResponse;
 import com.tyrael.kharazim.basicdata.app.dto.dict.DictDTO;
 import com.tyrael.kharazim.basicdata.app.dto.dict.DictItemDTO;
 import com.tyrael.kharazim.basicdata.app.dto.dict.PageDictRequest;
 import com.tyrael.kharazim.basicdata.app.dto.dict.SaveDictItemRequest;
 import com.tyrael.kharazim.basicdata.sdk.model.InitDictRequest;
-import com.tyrael.kharazim.user.sdk.model.AuthUser;
 
 import java.util.List;
 
@@ -54,6 +54,6 @@ public interface DictService {
      * @param modifyDictItemRequest SaveDictItemRequest
      * @param currentUser           操作人
      */
-    void modifyDictItem(Long dictItemId, SaveDictItemRequest modifyDictItemRequest, AuthUser currentUser);
+    void modifyDictItem(Long dictItemId, SaveDictItemRequest modifyDictItemRequest, Principal currentUser);
 
 }

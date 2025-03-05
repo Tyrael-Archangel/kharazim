@@ -1,9 +1,9 @@
 package com.tyrael.kharazim.basicdata.app.service.customer;
 
 
+import com.tyrael.kharazim.authentication.Principal;
 import com.tyrael.kharazim.base.dto.PageResponse;
 import com.tyrael.kharazim.basicdata.app.dto.customer.family.*;
-import com.tyrael.kharazim.user.sdk.model.AuthUser;
 
 import java.util.List;
 
@@ -51,7 +51,7 @@ public interface CustomerFamilyService {
      * @param familyCode   家庭编码
      * @param currentUser  操作人
      */
-    void setLeader(String customerCode, String familyCode, AuthUser currentUser);
+    void setLeader(String customerCode, String familyCode, Principal currentUser);
 
     /**
      * 修改会员与户主的关系
@@ -60,7 +60,7 @@ public interface CustomerFamilyService {
      * @param currentUser                       操作人
      */
     void modifyFamilyMemberRelation(ModifyFamilyMemberRelationRequest modifyFamilyMemberRelationRequest,
-                                    AuthUser currentUser);
+                                    Principal currentUser);
 
     /**
      * 会员退出指定的家庭

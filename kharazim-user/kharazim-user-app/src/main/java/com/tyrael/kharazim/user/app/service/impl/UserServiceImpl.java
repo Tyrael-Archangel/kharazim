@@ -1,12 +1,13 @@
 package com.tyrael.kharazim.user.app.service.impl;
 
+import com.tyrael.kharazim.authentication.Principal;
 import com.tyrael.kharazim.base.dto.PageResponse;
 import com.tyrael.kharazim.base.exception.BusinessException;
 import com.tyrael.kharazim.base.exception.DomainNotFoundException;
 import com.tyrael.kharazim.base.exception.ForbiddenException;
 import com.tyrael.kharazim.base.util.CollectionUtils;
 import com.tyrael.kharazim.base.util.RandomStringUtil;
-import com.tyrael.kharazim.idgenerator.IdGenerator;
+import com.tyrael.kharazim.lib.idgenerator.IdGenerator;
 import com.tyrael.kharazim.user.app.config.CacheKeyConstants;
 import com.tyrael.kharazim.user.app.constant.UserBusinessIdConstants;
 import com.tyrael.kharazim.user.app.converter.UserConverter;
@@ -25,9 +26,7 @@ import com.tyrael.kharazim.user.app.service.AuthService;
 import com.tyrael.kharazim.user.app.service.UserRoleQueryService;
 import com.tyrael.kharazim.user.app.service.UserService;
 import com.tyrael.kharazim.user.app.service.component.PasswordEncoder;
-import com.tyrael.kharazim.user.sdk.model.AuthUser;
 import lombok.RequiredArgsConstructor;
-import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DuplicateKeyException;
@@ -57,9 +56,7 @@ public class UserServiceImpl implements UserService {
     private final UserConverter userConverter;
     private final AuthService authService;
     private final UserRoleQueryService userRoleQueryService;
-
-    @DubboReference
-    private IdGenerator idGenerator;
+    private final IdGenerator idGenerator;
 
     @Override
     public UserDTO getById(Long id) {
@@ -78,7 +75,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Cacheable(cacheNames = CacheKeyConstants.CURRENT_USER_INFO, key = "#currentUser.id")
-    public CurrentUserDTO getCurrentUserInfo(AuthUser currentUser) {
+    public CurrentUserDTO getCurrentUserInfo(Principal currentUser) {
         Long currentUserId = currentUser.getId();
         User user = userMapper.selectById(currentUserId);
         List<UserRoleDTO> userRoles = userRoleQueryService.queryUserRoles(currentUserId);
@@ -141,7 +138,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void modify(ModifyUserRequest modifyUserRequest, AuthUser currentUser) {
+    public void modify(ModifyUserRequest modifyUserRequest, Principal currentUser) {
         Long userId = modifyUserRequest.getId();
         User user = userMapper.selectById(userId);
         DomainNotFoundException.assertFound(user, userId);
@@ -211,7 +208,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     @CacheEvict(cacheNames = CacheKeyConstants.CURRENT_USER_INFO, key = "#currentUser.id")
-    public void changePassword(AuthUser currentUser, ChangePasswordRequest changePasswordRequest) {
+    public void changePassword(Principal currentUser, ChangePasswordRequest changePasswordRequest) {
         User user = userMapper.selectById(currentUser.getId());
 
         boolean matches = passwordEncoder.matches(changePasswordRequest.getOldPassword(), user.getPassword());
@@ -228,7 +225,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     @CacheEvict(cacheNames = CacheKeyConstants.CURRENT_USER_INFO, key = "#userId")
-    public String resetPassword(AuthUser currentUser, Long userId) {
+    public String resetPassword(Principal currentUser, Long userId) {
         List<Long> currentUserRoleIds = userRoleMapper.listByUserId(currentUser.getId())
                 .stream()
                 .map(UserRole::getRoleId)
@@ -253,7 +250,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateStatus(Long id, EnableStatusEnum status, AuthUser currentUser) {
+    public void updateStatus(Long id, EnableStatusEnum status, Principal currentUser) {
         if (currentUser.getId().equals(id)) {
             throw new ForbiddenException("无法禁用自己");
         }

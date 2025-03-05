@@ -12,4 +12,11 @@
 
     <artifactId>kharazim-user-sdk</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.tyrael</groupId>
+            <artifactId>kharazim-lib-authentication</artifactId>
+        </dependency>
+    </dependencies>
+
 </project>

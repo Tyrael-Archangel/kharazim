@@ -3,6 +3,7 @@ package com.tyrael.kharazim.user.app.service.impl;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.tyrael.kharazim.base.dto.PageCommand;
 import com.tyrael.kharazim.base.exception.BusinessException;
+import com.tyrael.kharazim.base.util.RandomStringUtil;
 import com.tyrael.kharazim.user.app.config.CacheKeyConstants;
 import com.tyrael.kharazim.user.app.converter.UserConverter;
 import com.tyrael.kharazim.user.app.domain.User;
@@ -75,7 +76,9 @@ public class AuthServiceImpl implements AuthService {
         boolean matches = passwordEncoder.matches(requestPassword, userPassword);
         if (matches) {
             this.clearCurrentUserInfoCache(user.getId());
-            return tokenManager.create(userConverter.authUser(user), clientInfo);
+            String token = RandomStringUtil.make(32);
+            tokenManager.create(userConverter.authUser(user, token), clientInfo);
+            return token;
         } else {
             throw new LoginFailedException("用户名或密码错误");
         }

@@ -1,10 +1,10 @@
 package com.tyrael.kharazim.basicdata.app.service.customer;
 
+import com.tyrael.kharazim.authentication.Principal;
 import com.tyrael.kharazim.base.dto.PageResponse;
 import com.tyrael.kharazim.basicdata.app.dto.customer.communication.AddCustomerCommunicationLogRequest;
 import com.tyrael.kharazim.basicdata.app.dto.customer.communication.CustomerCommunicationLogPageRequest;
 import com.tyrael.kharazim.basicdata.app.dto.customer.communication.CustomerCommunicationLogVO;
-import com.tyrael.kharazim.user.sdk.model.AuthUser;
 
 /**
  * @author Tyrael Archangel
@@ -27,6 +27,6 @@ public interface CustomerCommunicationLogService {
      * @param currentUser 操作客服
      * @return 返回沟通记录ID
      */
-    Long add(AddCustomerCommunicationLogRequest addRequest, AuthUser currentUser);
+    Long add(AddCustomerCommunicationLogRequest addRequest, Principal currentUser);
 
 }

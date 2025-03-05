@@ -1,6 +1,6 @@
 package com.tyrael.kharazim.user.app.constant;
 
-import com.tyrael.kharazim.idgenerator.BusinessIdConstant;
+import com.tyrael.kharazim.lib.idgenerator.BusinessIdConstant;
 import lombok.Getter;
 
 /**

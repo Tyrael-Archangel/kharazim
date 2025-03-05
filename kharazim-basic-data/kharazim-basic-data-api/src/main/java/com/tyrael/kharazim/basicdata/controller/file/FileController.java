@@ -1,11 +1,11 @@
 package com.tyrael.kharazim.basicdata.controller.file;
 
+import com.tyrael.kharazim.authentication.CurrentPrincipal;
+import com.tyrael.kharazim.authentication.Principal;
 import com.tyrael.kharazim.base.dto.DataResponse;
 import com.tyrael.kharazim.basicdata.app.dto.file.FileVO;
 import com.tyrael.kharazim.basicdata.app.dto.file.UploadFileVO;
 import com.tyrael.kharazim.basicdata.app.service.file.FileService;
-import com.tyrael.kharazim.user.api.sdk.annotation.CurrentUser;
-import com.tyrael.kharazim.user.sdk.model.AuthUser;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -33,7 +33,7 @@ public class FileController {
     @Operation(summary = "上传文件", description = "上传文件，返回文件ID")
     public DataResponse<FileVO> upload(@Parameter(description = "文件") MultipartFile file,
                                        @Parameter(description = "文件名") String fileName,
-                                       @Schema(hidden = true) @CurrentUser AuthUser currentUser) throws IOException {
+                                       @Schema(hidden = true) @CurrentPrincipal Principal currentUser) throws IOException {
         UploadFileVO fileVO = new UploadFileVO();
         fileVO.setFile(file);
         fileVO.setFileName(fileName);

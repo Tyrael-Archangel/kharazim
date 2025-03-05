@@ -6,7 +6,7 @@ package com.tyrael.kharazim.dubbo.filter;
  */
 interface FilterAttachmentConstants {
 
-    String CURRENT_USER = "CURRENT_USER";
+    String CURRENT_PRINCIPAL = "CURRENT_PRINCIPAL";
     String SOURCE_APPLICATION = "SOURCE_APPLICATION";
 
 }

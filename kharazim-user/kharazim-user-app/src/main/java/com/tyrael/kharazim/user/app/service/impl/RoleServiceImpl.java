@@ -4,18 +4,17 @@ import com.tyrael.kharazim.base.dto.PageResponse;
 import com.tyrael.kharazim.base.exception.BusinessException;
 import com.tyrael.kharazim.base.exception.DomainNotFoundException;
 import com.tyrael.kharazim.base.exception.ForbiddenException;
-import com.tyrael.kharazim.idgenerator.IdGenerator;
+import com.tyrael.kharazim.lib.idgenerator.IdGenerator;
+import com.tyrael.kharazim.user.app.constant.UserBusinessIdConstants;
 import com.tyrael.kharazim.user.app.domain.Role;
 import com.tyrael.kharazim.user.app.dto.role.request.SaveRoleRequest;
 import com.tyrael.kharazim.user.app.dto.role.response.RoleDetailDTO;
 import com.tyrael.kharazim.user.app.dto.role.response.RolePageDTO;
 import com.tyrael.kharazim.user.app.dto.user.request.PageRoleRequest;
 import com.tyrael.kharazim.user.app.enums.EnableStatusEnum;
-import com.tyrael.kharazim.user.app.constant.UserBusinessIdConstants;
 import com.tyrael.kharazim.user.app.mapper.RoleMapper;
 import com.tyrael.kharazim.user.app.service.RoleService;
 import lombok.RequiredArgsConstructor;
-import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
@@ -37,9 +36,7 @@ public class RoleServiceImpl implements RoleService {
 
     private final RoleMapper roleMapper;
     private final TransactionTemplate transactionTemplate;
-
-    @DubboReference
-    private IdGenerator idGenerator;
+    private final IdGenerator idGenerator;
 
     @Override
     public PageResponse<RolePageDTO> rolePage(PageRoleRequest pageRoleRequest) {

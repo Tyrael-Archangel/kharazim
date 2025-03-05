@@ -1,13 +1,13 @@
 package com.tyrael.kharazim.basicdata.controller.customer;
 
+import com.tyrael.kharazim.authentication.CurrentPrincipal;
+import com.tyrael.kharazim.authentication.Principal;
 import com.tyrael.kharazim.base.dto.DataResponse;
 import com.tyrael.kharazim.base.dto.MultiResponse;
 import com.tyrael.kharazim.base.dto.PageResponse;
 import com.tyrael.kharazim.base.dto.Response;
 import com.tyrael.kharazim.basicdata.app.dto.customer.customer.*;
 import com.tyrael.kharazim.basicdata.app.service.customer.CustomerService;
-import com.tyrael.kharazim.user.api.sdk.annotation.CurrentUser;
-import com.tyrael.kharazim.user.sdk.model.AuthUser;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -55,7 +55,7 @@ public class CustomerController {
     @PostMapping
     @Operation(summary = "新建会员")
     public DataResponse<String> add(@RequestBody @Valid AddCustomerRequest addCustomerRequest,
-                                    @Schema(hidden = true) @CurrentUser AuthUser currentUser) {
+                                    @Schema(hidden = true) @CurrentPrincipal Principal currentUser) {
         return DataResponse.success(customerService.add(addCustomerRequest, currentUser));
     }
 
@@ -63,7 +63,7 @@ public class CustomerController {
     @Operation(summary = "修改会员")
     public Response modify(@PathVariable("code") @Parameter(description = "会员编码", required = true) String code,
                            @RequestBody @Valid ModifyCustomerRequest modifyCustomerRequest,
-                           @Schema(hidden = true) @CurrentUser AuthUser currentUser) {
+                           @Schema(hidden = true) @CurrentPrincipal Principal currentUser) {
         customerService.modify(code, modifyCustomerRequest, currentUser);
         return Response.success();
     }
@@ -71,7 +71,7 @@ public class CustomerController {
     @PostMapping("/modify-source")
     @Operation(summary = "修改会员的来源会员")
     public Response modifySource(@RequestBody @Valid ModifyCustomerSourceRequest modifySourceRequest,
-                                 @Schema(hidden = true) @CurrentUser AuthUser currentUser) {
+                                 @Schema(hidden = true) @CurrentPrincipal Principal currentUser) {
         customerService.modifySource(modifySourceRequest, currentUser);
         return Response.success();
     }
@@ -79,7 +79,7 @@ public class CustomerController {
     @PostMapping("/bind-phone")
     @Operation(summary = "会员绑定手机号")
     public Response bindPhone(@RequestBody @Valid BindCustomerPhoneRequest bindCustomerPhoneRequest,
-                              @Schema(hidden = true) @CurrentUser AuthUser currentUser) {
+                              @Schema(hidden = true) @CurrentPrincipal Principal currentUser) {
         customerService.bindPhone(bindCustomerPhoneRequest, currentUser);
         return Response.success();
     }
@@ -87,7 +87,7 @@ public class CustomerController {
     @PutMapping("/unbind-phone/{code}")
     @Operation(summary = "会员解绑手机号")
     public Response unbindPhone(@PathVariable("code") @Parameter(description = "会员编码", required = true) String code,
-                                @Schema(hidden = true) @CurrentUser AuthUser currentUser) {
+                                @Schema(hidden = true) @CurrentPrincipal Principal currentUser) {
         customerService.unbindPhone(code, currentUser);
         return Response.success();
     }
@@ -123,7 +123,7 @@ public class CustomerController {
     @PostMapping("/address/modify")
     @Operation(summary = "修改会员地址")
     public Response modifyCustomerAddress(@RequestBody @Valid ModifyCustomerAddressRequest modifyCustomerAddressRequest,
-                                          @Schema(hidden = true) @CurrentUser AuthUser currentUser) {
+                                          @Schema(hidden = true) @CurrentPrincipal Principal currentUser) {
         customerService.modifyCustomerAddress(modifyCustomerAddressRequest, currentUser);
         return Response.success();
     }
@@ -164,7 +164,7 @@ public class CustomerController {
     @PostMapping("/insurance/modify")
     @Operation(summary = "修改会员保险")
     public Response modifyCustomerInsurance(@RequestBody @Valid ModifyCustomerInsuranceRequest modifyCustomerInsuranceRequest,
-                                            @Schema(hidden = true) @CurrentUser AuthUser currentUser) {
+                                            @Schema(hidden = true) @CurrentPrincipal Principal currentUser) {
         customerService.modifyCustomerInsurance(modifyCustomerInsuranceRequest, currentUser);
         return Response.success();
     }
@@ -190,7 +190,7 @@ public class CustomerController {
     public Response assignCustomerServiceUser(
             @PathVariable("customerCode") @Parameter(description = "会员编码", required = true) String customerCode,
             @PathVariable("serviceUserCode") @Parameter(description = "客服人员编码", required = true) String serviceUserCode,
-            @Schema(hidden = true) @CurrentUser AuthUser currentUser) {
+            @Schema(hidden = true) @CurrentPrincipal Principal currentUser) {
         customerService.assignCustomerServiceUser(customerCode, serviceUserCode, currentUser);
         return Response.success();
     }
@@ -207,7 +207,7 @@ public class CustomerController {
     public Response assignCustomerSalesConsultant(
             @PathVariable("customerCode") @Parameter(description = "会员编码", required = true) String customerCode,
             @PathVariable("salesConsultantCode") @Parameter(description = "销售顾问编码", required = true) String salesConsultantCode,
-            @Schema(hidden = true) @CurrentUser AuthUser currentUser) {
+            @Schema(hidden = true) @CurrentPrincipal Principal currentUser) {
         customerService.assignCustomerSalesConsultant(customerCode, salesConsultantCode, currentUser);
         return Response.success();
     }
@@ -222,7 +222,7 @@ public class CustomerController {
     @PostMapping("/tags")
     @Operation(summary = "为会员添加标签")
     public Response addCustomerTag(@RequestBody @Valid AddCustomerTagRequest addCustomerTagRequest,
-                                   @Schema(hidden = true) @CurrentUser AuthUser currentUser) {
+                                   @Schema(hidden = true) @CurrentPrincipal Principal currentUser) {
         customerService.addCustomerTag(addCustomerTagRequest, currentUser);
         return Response.success();
     }

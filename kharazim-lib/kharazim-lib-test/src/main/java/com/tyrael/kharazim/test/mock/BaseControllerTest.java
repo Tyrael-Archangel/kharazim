@@ -1,11 +1,10 @@
 package com.tyrael.kharazim.test.mock;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tyrael.kharazim.authentication.CurrentPrincipal;
+import com.tyrael.kharazim.authentication.Principal;
+import com.tyrael.kharazim.authentication.PrincipalHolder;
 import com.tyrael.kharazim.base.util.RandomStringUtil;
-import com.tyrael.kharazim.user.api.sdk.annotation.CurrentUser;
-import com.tyrael.kharazim.user.api.sdk.config.AuthUserMethodArgumentResolver;
-import com.tyrael.kharazim.user.api.sdk.handler.AuthUserHolder;
-import com.tyrael.kharazim.user.sdk.model.AuthUser;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
@@ -38,6 +37,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.Temporal;
@@ -73,15 +73,33 @@ public abstract class BaseControllerTest<T> {
                 .createMock(settings, new ControllerRequestMappingParseMockHandler<>(settings));
     }
 
-    protected AuthUser mockAdmin() {
-        AuthUser currentUser = AuthUserHolder.getCurrentUser();
+    protected Principal mockAdmin() {
+        Principal currentUser = PrincipalHolder.getPrincipal();
         if (currentUser == null) {
-            currentUser = new AuthUser();
-            currentUser.setId(1L);
-            currentUser.setCode("000000");
-            currentUser.setName("admin");
-            currentUser.setNickName("超级管理员");
-            AuthUserHolder.setCurrentUser(currentUser, RandomStringUtil.make(32));
+            currentUser = new Principal() {
+                private final String token = RandomStringUtil.make(32);
+
+                @Override
+                public Long getId() {
+                    return 0L;
+                }
+
+                @Override
+                public String getCode() {
+                    return "000000";
+                }
+
+                @Override
+                public String getNickName() {
+                    return "超级管理员";
+                }
+
+                @Override
+                public String getToken() {
+                    return token;
+                }
+            };
+            PrincipalHolder.setPrincipal(currentUser);
         }
         return currentUser;
     }
@@ -303,21 +321,33 @@ public abstract class BaseControllerTest<T> {
 
         private boolean ignoreParam(Parameter parameter, Object argument) {
             return argument == null
-                    || parameter.isAnnotationPresent(CurrentUser.class)
+                    || parameter.isAnnotationPresent(CurrentPrincipal.class)
                     || parameter.getType().isAssignableFrom(ServletRequest.class)
                     || parameter.getType().isAssignableFrom(ServletResponse.class)
                     || parameter.getType().isAssignableFrom(InputStreamSource.class);
         }
 
         private void resolveCurrentUser(Method method, Parameter[] parameters, Object... arguments) {
-            AuthUserMethodArgumentResolver resolver = new AuthUserMethodArgumentResolver();
             for (int i = 0; i < parameters.length; i++) {
                 MethodParameter methodParameter = new MethodParameter(method, i);
-                if (arguments[i] != null && resolver.supportsParameter(methodParameter)) {
-                    AuthUserHolder.setCurrentUser((AuthUser) arguments[i], RandomStringUtil.make());
+                if (arguments[i] != null && supportsParameter(methodParameter)) {
+                    PrincipalHolder.setPrincipal((Principal) arguments[i]);
                     return;
                 }
             }
+        }
+
+        private boolean supportsParameter(MethodParameter parameter) {
+            if (!parameter.getParameterType().isAssignableFrom(Principal.class)) {
+                return false;
+            }
+            Annotation[] annotations = parameter.getParameterAnnotations();
+            for (Annotation annotation : annotations) {
+                if (annotation instanceof CurrentPrincipal) {
+                    return true;
+                }
+            }
+            return false;
         }
 
         private Object getRequestBody(Parameter[] parameters, Object... arguments) {

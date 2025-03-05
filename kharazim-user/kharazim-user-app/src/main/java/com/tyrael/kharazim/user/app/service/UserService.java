@@ -1,11 +1,11 @@
 package com.tyrael.kharazim.user.app.service;
 
+import com.tyrael.kharazim.authentication.Principal;
 import com.tyrael.kharazim.base.dto.PageResponse;
 import com.tyrael.kharazim.user.app.dto.user.request.*;
 import com.tyrael.kharazim.user.app.dto.user.response.CurrentUserDTO;
 import com.tyrael.kharazim.user.app.dto.user.response.UserDTO;
 import com.tyrael.kharazim.user.app.enums.EnableStatusEnum;
-import com.tyrael.kharazim.user.sdk.model.AuthUser;
 
 import java.util.Collection;
 import java.util.List;
@@ -38,7 +38,7 @@ public interface UserService {
      * @param currentUser 当前登录用户
      * @return CurrentUserDTO
      */
-    CurrentUserDTO getCurrentUserInfo(AuthUser currentUser);
+    CurrentUserDTO getCurrentUserInfo(Principal currentUser);
 
     /**
      * page user
@@ -70,7 +70,7 @@ public interface UserService {
      * @param modifyUserRequest ModifyUserRequest
      * @param currentUser       操作人
      */
-    void modify(ModifyUserRequest modifyUserRequest, AuthUser currentUser);
+    void modify(ModifyUserRequest modifyUserRequest, Principal currentUser);
 
     /**
      * 修改用户密码
@@ -78,7 +78,7 @@ public interface UserService {
      * @param currentUser           CurrentUser
      * @param changePasswordRequest UpdatePasswordRequest
      */
-    void changePassword(AuthUser currentUser, ChangePasswordRequest changePasswordRequest);
+    void changePassword(Principal currentUser, ChangePasswordRequest changePasswordRequest);
 
     /**
      * 重置密码
@@ -87,7 +87,7 @@ public interface UserService {
      * @param userId      重置密码目标用户
      * @return newPassword
      */
-    String resetPassword(AuthUser currentUser, Long userId);
+    String resetPassword(Principal currentUser, Long userId);
 
     /**
      * 修改用户状态
@@ -96,6 +96,6 @@ public interface UserService {
      * @param status      状态
      * @param currentUser CurrentUser
      */
-    void updateStatus(Long id, EnableStatusEnum status, AuthUser currentUser);
+    void updateStatus(Long id, EnableStatusEnum status, Principal currentUser);
 
 }

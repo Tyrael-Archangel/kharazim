@@ -17,9 +17,16 @@
         <spring-boot.version>3.2.4</spring-boot.version>
         <nacos-client.version>2.3.2</nacos-client.version>
         <jackson.version>2.15.4</jackson.version>
+        <kharazim-lib.version>1.0-SNAPSHOT</kharazim-lib.version>
     </properties>
 
     <dependencies>
+
+        <dependency>
+            <groupId>com.tyrael</groupId>
+            <artifactId>kharazim-lib-authentication</artifactId>
+            <version>${kharazim-lib.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>org.apache.dubbo</groupId>

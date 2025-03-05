@@ -1,5 +1,6 @@
 package com.tyrael.kharazim.basicdata.app.service.customer;
 
+import com.tyrael.kharazim.authentication.Principal;
 import com.tyrael.kharazim.base.dto.PageResponse;
 import com.tyrael.kharazim.basicdata.app.constant.BasicDataDictConstants;
 import com.tyrael.kharazim.basicdata.app.domain.customer.Customer;
@@ -10,7 +11,6 @@ import com.tyrael.kharazim.basicdata.app.dto.customer.communication.CustomerComm
 import com.tyrael.kharazim.basicdata.app.mapper.customer.CustomerCommunicationLogMapper;
 import com.tyrael.kharazim.basicdata.app.mapper.customer.CustomerMapper;
 import com.tyrael.kharazim.basicdata.sdk.service.DictServiceApi;
-import com.tyrael.kharazim.user.sdk.model.AuthUser;
 import com.tyrael.kharazim.user.sdk.model.UserSimpleVO;
 import com.tyrael.kharazim.user.sdk.service.UserServiceApi;
 import lombok.RequiredArgsConstructor;
@@ -92,7 +92,7 @@ public class CustomerCommunicationLogServiceImpl implements CustomerCommunicatio
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Long add(AddCustomerCommunicationLogRequest addRequest, AuthUser currentUser) {
+    public Long add(AddCustomerCommunicationLogRequest addRequest, Principal currentUser) {
         customerMapper.ensureCustomerExist(addRequest.getCustomerCode());
         String serviceUserCode = addRequest.getServiceUserCode();
         if (StringUtils.isNotBlank(serviceUserCode)) {

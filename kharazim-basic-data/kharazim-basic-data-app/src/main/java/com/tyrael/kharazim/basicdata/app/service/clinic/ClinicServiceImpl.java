@@ -4,6 +4,7 @@ import cn.idev.excel.ExcelWriter;
 import cn.idev.excel.FastExcelFactory;
 import cn.idev.excel.write.metadata.WriteSheet;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.tyrael.kharazim.authentication.Principal;
 import com.tyrael.kharazim.base.dto.PageResponse;
 import com.tyrael.kharazim.base.exception.BusinessException;
 import com.tyrael.kharazim.basicdata.app.constant.BasicDataBusinessIdConstants;
@@ -11,12 +12,10 @@ import com.tyrael.kharazim.basicdata.app.domain.clinic.Clinic;
 import com.tyrael.kharazim.basicdata.app.dto.clinic.*;
 import com.tyrael.kharazim.basicdata.app.mapper.clinic.ClinicMapper;
 import com.tyrael.kharazim.basicdata.app.service.file.FileService;
-import com.tyrael.kharazim.idgenerator.IdGenerator;
-import com.tyrael.kharazim.user.sdk.model.AuthUser;
+import com.tyrael.kharazim.lib.idgenerator.IdGenerator;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,9 +38,7 @@ public class ClinicServiceImpl implements ClinicService {
 
     private final ClinicMapper clinicMapper;
     private final FileService fileService;
-
-    @DubboReference
-    private IdGenerator idGenerator;
+    private final IdGenerator idGenerator;
 
     @Override
     @Transactional(readOnly = true)
@@ -140,7 +137,7 @@ public class ClinicServiceImpl implements ClinicService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void modify(ModifyClinicRequest modifyClinicRequest, AuthUser currentUser) {
+    public void modify(ModifyClinicRequest modifyClinicRequest, Principal currentUser) {
         Clinic clinic = clinicMapper.exactlyFindByCode(modifyClinicRequest.getCode());
 
         if (StringUtils.isNotBlank(modifyClinicRequest.getName())) {
