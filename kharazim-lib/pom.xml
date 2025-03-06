@@ -20,6 +20,8 @@
         <module>kharazim-lib-test</module>
         <module>kharazim-lib-export</module>
         <module>kharazim-lib-id-generator</module>
+        <module>kharazim-lib-discovery-nacos</module>
+        <module>kharazim-lib-discovery-redis</module>
     </modules>
 
     <properties>

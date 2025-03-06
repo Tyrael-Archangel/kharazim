@@ -27,10 +27,9 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <kharazim-user-version>1.0-SNAPSHOT</kharazim-user-version>
-        <kharazim-lib-version>1.0-SNAPSHOT</kharazim-lib-version>
+        <kharazim-lib.version>1.0-SNAPSHOT</kharazim-lib.version>
         <kharazim-basic-data-version>1.0-SNAPSHOT</kharazim-basic-data-version>
         <kharazim-id-generator.version>1.0-SNAPSHOT</kharazim-id-generator.version>
-        <spring-cloud-alibaba.version>2023.0.1.0</spring-cloud-alibaba.version>
         <spring-cloud.version>2023.0.1</spring-cloud.version>
         <knife4j.version>4.3.0</knife4j.version>
     </properties>
@@ -57,42 +56,47 @@
             <dependency>
                 <groupId>com.tyrael</groupId>
                 <artifactId>kharazim-lib-base</artifactId>
-                <version>${kharazim-lib-version}</version>
+                <version>${kharazim-lib.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.tyrael</groupId>
                 <artifactId>kharazim-lib-web</artifactId>
-                <version>${kharazim-lib-version}</version>
+                <version>${kharazim-lib.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.tyrael</groupId>
                 <artifactId>kharazim-lib-test</artifactId>
-                <version>${kharazim-lib-version}</version>
+                <version>${kharazim-lib.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.tyrael</groupId>
                 <artifactId>kharazim-lib-dubbo</artifactId>
-                <version>${kharazim-lib-version}</version>
+                <version>${kharazim-lib.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.tyrael</groupId>
                 <artifactId>kharazim-lib-cache</artifactId>
-                <version>${kharazim-lib-version}</version>
+                <version>${kharazim-lib.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.tyrael</groupId>
+                <artifactId>kharazim-lib-discovery-nacos</artifactId>
+                <version>${kharazim-lib.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.tyrael</groupId>
                 <artifactId>kharazim-lib-mybatis</artifactId>
-                <version>${kharazim-lib-version}</version>
+                <version>${kharazim-lib.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.tyrael</groupId>
                 <artifactId>kharazim-lib-id-generator</artifactId>
-                <version>${kharazim-lib-version}</version>
+                <version>${kharazim-lib.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.tyrael</groupId>
                 <artifactId>kharazim-lib-export</artifactId>
-                <version>${kharazim-lib-version}</version>
+                <version>${kharazim-lib.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.tyrael</groupId>
@@ -108,13 +112,6 @@
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
                 <version>${spring-cloud.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.alibaba.cloud</groupId>
-                <artifactId>spring-cloud-alibaba-dependencies</artifactId>
-                <version>${spring-cloud-alibaba.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
