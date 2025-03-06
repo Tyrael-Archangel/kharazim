@@ -80,11 +80,11 @@
       <el-table :data="communicationPageData.data" border style="width: 100%; margin-top: 10px">
         <el-table-column type="index" width="50" />
         <el-table-column label="会员姓名" prop="customerName" width="120" />
-        <el-table-column label="沟通类型" prop="type" width="150" />
+        <el-table-column label="沟通类型" prop="type" width="120" />
         <el-table-column label="沟通评价" prop="evaluate" width="160" />
         <el-table-column label="客服人员" prop="serviceUserName" width="130" />
-        <el-table-column label="沟通时间" prop="communicationTime" width="170" />
-        <el-table-column label="创建时间" prop="createTime" width="170" />
+        <el-table-column label="沟通时间" prop="communicationTime" width="180" />
+        <el-table-column label="创建时间" prop="createTime" width="180" />
         <el-table-column label="创建人" prop="creator" width="130" />
         <el-table-column label="沟通内容" min-width="160" prop="content" />
       </el-table>

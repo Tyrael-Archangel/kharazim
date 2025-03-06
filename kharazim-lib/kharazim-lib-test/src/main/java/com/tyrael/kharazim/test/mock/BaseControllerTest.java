@@ -3,6 +3,7 @@ package com.tyrael.kharazim.test.mock;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tyrael.kharazim.authentication.CurrentPrincipal;
 import com.tyrael.kharazim.authentication.Principal;
+import com.tyrael.kharazim.authentication.PrincipalHeader;
 import com.tyrael.kharazim.authentication.PrincipalHolder;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.servlet.ServletRequest;
@@ -121,8 +122,6 @@ public abstract class BaseControllerTest<T> {
                 Parameter[] parameters = method.getParameters();
                 parameters = parameters == null ? new Parameter[0] : parameters;
 
-                resolveCurrentUser(method, parameters, arguments);
-
                 RequestMethod requestMethod = this.getRequestMethod(classRequestMapping, methodRequestMapping);
                 String url = this.getUrl(classRequestMapping, methodRequestMapping);
                 MultiValueMap<String, String> params = this.getParams(method, parameters, arguments);
@@ -132,6 +131,8 @@ public abstract class BaseControllerTest<T> {
                 MockHttpServletRequestBuilder requestBuilder = uriVariables == null
                         ? MockMvcRequestBuilders.request(requestMethod.asHttpMethod(), url)
                         : MockMvcRequestBuilders.request(requestMethod.asHttpMethod(), url, uriVariables);
+
+                resolveCurrentUser(method, parameters, requestBuilder, arguments);
 
                 if (!params.isEmpty()) {
                     requestBuilder.params(params);
@@ -289,18 +290,28 @@ public abstract class BaseControllerTest<T> {
                     || parameter.getType().isAssignableFrom(InputStreamSource.class);
         }
 
-        private void resolveCurrentUser(Method method, Parameter[] parameters, Object... arguments) {
+        private void resolveCurrentUser(Method method,
+                                        Parameter[] parameters,
+                                        MockHttpServletRequestBuilder requestBuilder,
+                                        Object... arguments) {
             for (int i = 0; i < parameters.length; i++) {
                 MethodParameter methodParameter = new MethodParameter(method, i);
                 if (arguments[i] != null && supportsParameter(methodParameter)) {
-                    PrincipalHolder.setPrincipal((Principal) arguments[i]);
+                    Principal principal = (Principal) arguments[i];
+                    PrincipalHolder.setPrincipal(principal);
+                    requestBuilder.header(PrincipalHeader.USER_ID, principal.getId());
+                    requestBuilder.header(PrincipalHeader.TOKEN, principal.getToken());
+                    requestBuilder.header(PrincipalHeader.USER_ID, principal.getId());
+                    requestBuilder.header(PrincipalHeader.USER_CODE, principal.getCode());
+                    requestBuilder.header(PrincipalHeader.USER_NAME, principal.getName());
+                    requestBuilder.header(PrincipalHeader.USER_NICKNAME, principal.getNickName());
                     return;
                 }
             }
         }
 
         private boolean supportsParameter(MethodParameter parameter) {
-            if (!parameter.getParameterType().isAssignableFrom(Principal.class)) {
+            if (!Principal.class.isAssignableFrom(parameter.getParameterType())) {
                 return false;
             }
             Annotation[] annotations = parameter.getParameterAnnotations();

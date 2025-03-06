@@ -21,6 +21,13 @@ public interface Principal {
     String getCode();
 
     /**
+     * get name
+     *
+     * @return name
+     */
+    String getName();
+
+    /**
      * get nickName
      *
      * @return nickName
