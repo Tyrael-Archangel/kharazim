@@ -1,5 +1,6 @@
 package com.tyrael.kharazim.user.controller;
 
+import com.tyrael.kharazim.authentication.PrincipalHolder;
 import com.tyrael.kharazim.base.dto.Pair;
 import com.tyrael.kharazim.base.dto.Pairs;
 import com.tyrael.kharazim.base.exception.ShouldNotHappenException;
@@ -13,7 +14,7 @@ import com.tyrael.kharazim.user.app.dto.user.request.AddUserRequest;
 import com.tyrael.kharazim.user.app.enums.UserCertificateTypeEnum;
 import com.tyrael.kharazim.user.app.enums.UserGenderEnum;
 import com.tyrael.kharazim.user.app.mapper.RoleMapper;
-import com.tyrael.kharazim.user.sdk.model.MockAuthUser;
+import com.tyrael.kharazim.user.sdk.service.UserServiceApi;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -51,7 +52,8 @@ public class AddUserTest extends BaseControllerTest<UserController> {
 
     @Autowired
     private RoleMapper roleMapper;
-
+    @Autowired
+    private UserServiceApi userServiceApi;
     @Autowired
     private DubboReferenceHolder dubboReferenceHolder;
 
@@ -75,7 +77,7 @@ public class AddUserTest extends BaseControllerTest<UserController> {
 
         Consumer<Hero> addHero = hero -> {
 
-            MockAuthUser.mock();
+            PrincipalHolder.setPrincipal(userServiceApi.mock());
 
             Role role = roleMap.get(hero.getRole());
 

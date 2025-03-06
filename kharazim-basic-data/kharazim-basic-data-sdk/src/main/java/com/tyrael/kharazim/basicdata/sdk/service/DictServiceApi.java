@@ -35,7 +35,7 @@ public interface DictServiceApi {
     default Set<String> dictItemKeys(DictConstant dict) {
         return listItems(dict)
                 .stream()
-                .map(DictItemVO::getValue)
+                .map(DictItemVO::getKey)
                 .collect(Collectors.toSet());
     }
 
@@ -106,7 +106,7 @@ public interface DictServiceApi {
 
         List<DictItemVO> dictItems = listItems(dictCode);
         Set<String> availableItemKeys = dictItems.stream()
-                .map(DictItemVO::getValue)
+                .map(DictItemVO::getKey)
                 .collect(Collectors.toSet());
 
         String constantsDesc = dictItems.stream()

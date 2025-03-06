@@ -4,6 +4,7 @@ import com.tyrael.kharazim.base.dto.Pair;
 import com.tyrael.kharazim.base.dto.Pairs;
 import com.tyrael.kharazim.base.util.CollectionUtils;
 import com.tyrael.kharazim.basicdata.BasicDataApiApplication;
+import com.tyrael.kharazim.basicdata.DubboReferenceHolder;
 import com.tyrael.kharazim.basicdata.app.constant.BasicDataDictConstants;
 import com.tyrael.kharazim.basicdata.app.dto.customer.communication.AddCustomerCommunicationLogRequest;
 import com.tyrael.kharazim.basicdata.app.dto.customer.customer.CustomerSimpleVO;
@@ -13,7 +14,6 @@ import com.tyrael.kharazim.basicdata.sdk.model.DictItemVO;
 import com.tyrael.kharazim.basicdata.sdk.service.DictServiceApi;
 import com.tyrael.kharazim.test.mock.BaseControllerTest;
 import com.tyrael.kharazim.test.mock.MockRandomPoetry;
-import com.tyrael.kharazim.user.sdk.model.MockAuthUser;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -34,6 +34,8 @@ public class AddCustomerCommunicationLogTest extends BaseControllerTest<Customer
     private DictServiceApi dictService;
     @Autowired
     private CustomerService customerService;
+    @Autowired
+    private DubboReferenceHolder dubboReferenceHolder;
 
     AddCustomerCommunicationLogTest() {
         super(CustomerCommunicationLogController.class);
@@ -57,14 +59,14 @@ public class AddCustomerCommunicationLogTest extends BaseControllerTest<Customer
             for (int i = 0; i < logCount; i++) {
                 AddCustomerCommunicationLogRequest addRequest = new AddCustomerCommunicationLogRequest();
                 addRequest.setCustomerCode(customer.getCode());
-                addRequest.setServiceUserCode(MockAuthUser.mock().getCode());
+                addRequest.setServiceUserCode(dubboReferenceHolder.userServiceApi.mock().getCode());
                 addRequest.setTypeDictKey(CollectionUtils.random(customerCommunicationTypes));
                 addRequest.setEvaluateDictKey(CollectionUtils.random(customerCommunicationEvaluates));
                 addRequest.setContent(MockRandomPoetry.random());
                 addRequest.setCommunicationTime(LocalDateTime.now()
                         .minusHours(random.nextInt(300))
                         .minusSeconds(random.nextInt(1000)));
-                super.performWhenCall(mockController.add(addRequest, MockAuthUser.mock()));
+                super.performWhenCall(mockController.add(addRequest, dubboReferenceHolder.userServiceApi.mock()));
             }
         }
 

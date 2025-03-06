@@ -16,7 +16,6 @@ import com.tyrael.kharazim.basicdata.sdk.model.DictItemVO;
 import com.tyrael.kharazim.basicdata.sdk.service.DictServiceApi;
 import com.tyrael.kharazim.test.mock.BaseControllerTest;
 import com.tyrael.kharazim.test.mock.MockRandomPoetry;
-import com.tyrael.kharazim.user.sdk.model.MockAuthUser;
 import com.tyrael.kharazim.user.sdk.model.UserSimpleVO;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -54,7 +53,7 @@ public class AddCustomerTest extends BaseControllerTest<CustomerController> {
     void add() {
 
         List<AddressTreeNodeDTO> addressTree = addressQueryService.fullTree();
-        Pairs<String, CustomerGenderEnum> mockUsers = this.mockUsers();
+        Pairs<String, CustomerGenderEnum> mockCustomers = this.mockCustomers();
         Set<String> mockCommunityNames = this.mockCommunityNames();
         List<String> serviceUserCodes = dubboReferenceHolder.userServiceApi.listAll()
                 .stream()
@@ -66,7 +65,13 @@ public class AddCustomerTest extends BaseControllerTest<CustomerController> {
         }
         List<String> companyItemValues = new ArrayList<>(companyItems);
 
-        for (Pair<String, CustomerGenderEnum> userNameAndGender : mockUsers) {
+        Set<String> customerSourceChannels = dictService.dictItemKeys(BasicDataDictConstants.CUSTOMER_SOURCE_CHANNEL);
+        if (customerSourceChannels.isEmpty()) {
+            customerSourceChannels = addCustomerSourceChannelDict();
+        }
+        List<String> customerSourceChannelValues = new ArrayList<>(customerSourceChannels);
+
+        for (Pair<String, CustomerGenderEnum> userNameAndGender : mockCustomers) {
 
             String name = userNameAndGender.left();
             CustomerGenderEnum gender = userNameAndGender.right();
@@ -83,18 +88,18 @@ public class AddCustomerTest extends BaseControllerTest<CustomerController> {
             addCustomerRequest.setPhone(phone);
             addCustomerRequest.setCertificateType(CustomerCertificateTypeEnum.ID_CARD);
             addCustomerRequest.setCertificateCode("510123111122334444");
-            addCustomerRequest.setSourceChannelDictKey("OFFLINE");
+            addCustomerRequest.setSourceChannelDictKey(CollectionUtils.random(customerSourceChannelValues));
             addCustomerRequest.setRemark(MockRandomPoetry.random());
             addCustomerRequest.setServiceUserCode(CollectionUtils.random(serviceUserCodes));
             addCustomerRequest.setSalesConsultantCode(CollectionUtils.random(serviceUserCodes));
             addCustomerRequest.setCustomerAddresses(this.mockAddress(name, phone, addressTree, mockCommunityNames));
             addCustomerRequest.setCustomerInsurances(this.mockInsurances(companyItemValues));
-            super.performWhenCall(mockController.add(addCustomerRequest, MockAuthUser.mock()));
+            super.performWhenCall(mockController.add(addCustomerRequest, dubboReferenceHolder.userServiceApi.mock()));
         }
 
     }
 
-    private Pairs<String, CustomerGenderEnum> mockUsers() {
+    private Pairs<String, CustomerGenderEnum> mockCustomers() {
         Set<String> familyNames = familyNames();
         List<String> boyNames = new ArrayList<>(popularBoyNames());
         List<String> girlNames = new ArrayList<>(popularGirlNames());
@@ -281,6 +286,18 @@ public class AddCustomerTest extends BaseControllerTest<CustomerController> {
         return addDictItems(BasicDataDictConstants.INSURANCE_COMPANY.getCode(), insuranceCompanies);
     }
 
+    private Set<String> addCustomerSourceChannelDict() {
+        Pairs<String, String> customerSourceChannels = new Pairs<String, String>()
+                .append("OFFLINE", "线下")
+                .append("MEI_TUAN", "美团")
+                .append("BAI_DU", "百度")
+                .append("TIK_TOK", "抖音")
+                .append("WE_CHAT", "微信")
+                .append("OTHER", "其他");
+
+        return addDictItems(BasicDataDictConstants.CUSTOMER_SOURCE_CHANNEL.getCode(), customerSourceChannels);
+    }
+
     @Test
     @Order(2)
     void addCustomerTag() {
@@ -298,7 +315,7 @@ public class AddCustomerTest extends BaseControllerTest<CustomerController> {
                 AddCustomerTagRequest addCustomerTagRequest = new AddCustomerTagRequest();
                 addCustomerTagRequest.setCustomerCode(customer.getCode());
                 addCustomerTagRequest.setTagDictKeys(tagDictKeys);
-                super.performWhenCall(mockController.addCustomerTag(addCustomerTagRequest, MockAuthUser.mock()));
+                super.performWhenCall(mockController.addCustomerTag(addCustomerTagRequest, dubboReferenceHolder.userServiceApi.mock()));
             }
         }
     }

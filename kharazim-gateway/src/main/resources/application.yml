@@ -68,3 +68,4 @@ system:
       - "/*/actuator/*"
       - "/*/system/request-log/*"
       - "/*/system/address/*"
+      - "/*/system/file/*"

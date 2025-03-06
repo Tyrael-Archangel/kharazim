@@ -1,6 +1,9 @@
 package com.tyrael.kharazim.user.sdk.service;
 
 import com.tyrael.kharazim.base.exception.DomainNotFoundException;
+import com.tyrael.kharazim.base.util.CollectionUtils;
+import com.tyrael.kharazim.base.util.RandomStringUtil;
+import com.tyrael.kharazim.user.sdk.model.AuthUser;
 import com.tyrael.kharazim.user.sdk.model.UserSimpleVO;
 
 import java.util.Collection;
@@ -46,6 +49,22 @@ public interface UserServiceApi {
     default void ensureUserExist(String code) throws DomainNotFoundException {
         UserSimpleVO user = findByCode(code);
         DomainNotFoundException.assertFound(user, code);
+    }
+
+    /**
+     * mock user, just for test
+     *
+     * @return AuthUser
+     */
+    default AuthUser mock() {
+        UserSimpleVO user = CollectionUtils.random(listAll());
+        AuthUser authUser = new AuthUser();
+        authUser.setId(user.getId());
+        authUser.setCode(user.getCode());
+        authUser.setName(user.getName());
+        authUser.setNickName(user.getNickName());
+        authUser.setToken(RandomStringUtil.make(32));
+        return authUser;
     }
 
 }
