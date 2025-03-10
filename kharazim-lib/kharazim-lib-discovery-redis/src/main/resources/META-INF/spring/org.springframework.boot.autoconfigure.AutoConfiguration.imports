@@ -1,2 +1,1 @@
-com.tyrael.kharazim.discovery.redis.registry.RedisRegistryAutoConfiguration
-com.tyrael.kharazim.discovery.redis.discovery.RedisDiscoveryAutoConfiguration
+com.tyrael.kharazim.discovery.redis.RedisDiscoveryAutoConfiguration

@@ -69,7 +69,7 @@
 
         <dependency>
             <groupId>com.tyrael</groupId>
-            <artifactId>kharazim-lib-discovery-nacos</artifactId>
+            <artifactId>kharazim-lib-discovery-redis</artifactId>
         </dependency>
 
         <dependency>
@@ -111,6 +111,11 @@
             <dependency>
                 <groupId>com.tyrael</groupId>
                 <artifactId>kharazim-lib-discovery-nacos</artifactId>
+                <version>${kharazim-lib.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.tyrael</groupId>
+                <artifactId>kharazim-lib-discovery-redis</artifactId>
                 <version>${kharazim-lib.version}</version>
             </dependency>
             <dependency>

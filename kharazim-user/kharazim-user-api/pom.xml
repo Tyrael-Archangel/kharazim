@@ -59,7 +59,7 @@
 
         <dependency>
             <groupId>com.tyrael</groupId>
-            <artifactId>kharazim-lib-discovery-nacos</artifactId>
+            <artifactId>kharazim-lib-discovery-redis</artifactId>
         </dependency>
 
         <dependency>
