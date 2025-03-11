@@ -50,10 +50,12 @@ dubbo:
     serialize-check-status: WARN
     qos-enable: false
   registry:
-    address: nacos://${NACOS_SERVER_HOST:localhost}:${NACOS_SERVER_PORT:8848}?namespace=kharazim
     group: kharazim-dubbo
-    username: ${NACOS_USERNAME:}
-    password: ${NACOS_PASSWORD:}
+    address: redis://${REDIS_HOST:localhost}:${REDIS_PORT:6379}?db.index=${REDIS_DATABASE:0}
+    password: ${REDIS_PASSWORD:}
+  #  address: nacos://${NACOS_SERVER_HOST:localhost}:${NACOS_SERVER_PORT:8848}?namespace=kharazim
+  #  username: ${NACOS_USERNAME:}
+  #  password: ${NACOS_PASSWORD:}
   protocol:
     name: dubbo
     port: ${DUBBO_PORT:-1}

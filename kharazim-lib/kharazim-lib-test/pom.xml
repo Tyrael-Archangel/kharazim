@@ -14,6 +14,7 @@
         <kharazim-lib.version>1.0-SNAPSHOT</kharazim-lib.version>
         <spring-boot.version>3.2.4</spring-boot.version>
         <junit.version>1.10.2</junit.version>
+        <slf4j.version>2.0.12</slf4j.version>
     </properties>
 
     <dependencies>
@@ -36,6 +37,11 @@
         <dependency>
             <groupId>com.tyrael</groupId>
             <artifactId>kharazim-lib-dubbo</artifactId>
+            <version>${kharazim-lib.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.tyrael</groupId>
+            <artifactId>kharazim-lib-dubbo-registry-redis</artifactId>
             <version>${kharazim-lib.version}</version>
         </dependency>
 
@@ -78,6 +84,12 @@
             <groupId>org.junit.platform</groupId>
             <artifactId>junit-platform-suite-engine</artifactId>
             <version>${junit.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
         </dependency>
 
     </dependencies>

@@ -1,61 +1,32 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns="http://maven.apache.org/POM/4.0.0"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <parent>
         <groupId>com.tyrael</groupId>
         <artifactId>kharazim-lib</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>kharazim-lib-dubbo</artifactId>
+    <artifactId>kharazim-lib-dubbo-registry-nacos</artifactId>
 
     <properties>
         <dubbo.version>3.3.0</dubbo.version>
-        <spring-boot.version>3.2.4</spring-boot.version>
-        <nacos-client.version>2.3.2</nacos-client.version>
         <jackson.version>2.15.4</jackson.version>
-        <kharazim-lib.version>1.0-SNAPSHOT</kharazim-lib.version>
+        <nacos-client.version>2.3.2</nacos-client.version>
     </properties>
 
     <dependencies>
 
         <dependency>
-            <groupId>com.tyrael</groupId>
-            <artifactId>kharazim-lib-authentication</artifactId>
-            <version>${kharazim-lib.version}</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.apache.dubbo</groupId>
-            <artifactId>dubbo-spring-boot-starter</artifactId>
+            <artifactId>dubbo-nacos-spring-boot-starter</artifactId>
             <version>${dubbo.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.alibaba.nacos</groupId>
                     <artifactId>nacos-client</artifactId>
                 </exclusion>
-                <exclusion>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>io.netty</groupId>
-                    <artifactId>netty-all</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.yaml</groupId>
-                    <artifactId>snakeyaml</artifactId>
-                </exclusion>
             </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-autoconfigure</artifactId>
-            <version>${spring-boot.version}</version>
         </dependency>
 
         <dependency>
@@ -140,27 +111,6 @@
             <artifactId>snakeyaml</artifactId>
             <version>2.2</version>
         </dependency>
-
-        <dependency>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-all</artifactId>
-            <version>4.1.107.Final</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.tyrael</groupId>
-            <artifactId>kharazim-lib-dubbo-registry-nacos</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <optional>true</optional>
-        </dependency>
-
-        <dependency>
-            <groupId>com.tyrael</groupId>
-            <artifactId>kharazim-lib-dubbo-registry-redis</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <optional>true</optional>
-        </dependency>
-
     </dependencies>
 
 </project>

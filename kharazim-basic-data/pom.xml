@@ -45,6 +45,13 @@
         <dependencies>
             <dependency>
                 <groupId>com.tyrael</groupId>
+                <artifactId>kharazim-lib-pom</artifactId>
+                <version>${kharazim-lib.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.tyrael</groupId>
                 <artifactId>kharazim-basic-data-sdk</artifactId>
                 <version>${kharazim-basic-data-version}</version>
             </dependency>
@@ -52,56 +59,6 @@
                 <groupId>com.tyrael</groupId>
                 <artifactId>kharazim-basic-data-app</artifactId>
                 <version>${kharazim-basic-data-version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.tyrael</groupId>
-                <artifactId>kharazim-lib-base</artifactId>
-                <version>${kharazim-lib.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.tyrael</groupId>
-                <artifactId>kharazim-lib-web</artifactId>
-                <version>${kharazim-lib.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.tyrael</groupId>
-                <artifactId>kharazim-lib-test</artifactId>
-                <version>${kharazim-lib.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.tyrael</groupId>
-                <artifactId>kharazim-lib-dubbo</artifactId>
-                <version>${kharazim-lib.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.tyrael</groupId>
-                <artifactId>kharazim-lib-cache</artifactId>
-                <version>${kharazim-lib.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.tyrael</groupId>
-                <artifactId>kharazim-lib-discovery-nacos</artifactId>
-                <version>${kharazim-lib.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.tyrael</groupId>
-                <artifactId>kharazim-lib-discovery-redis</artifactId>
-                <version>${kharazim-lib.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.tyrael</groupId>
-                <artifactId>kharazim-lib-mybatis</artifactId>
-                <version>${kharazim-lib.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.tyrael</groupId>
-                <artifactId>kharazim-lib-id-generator</artifactId>
-                <version>${kharazim-lib.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.tyrael</groupId>
-                <artifactId>kharazim-lib-export</artifactId>
-                <version>${kharazim-lib.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.tyrael</groupId>

@@ -15,6 +15,7 @@
         <module>kharazim-lib-web</module>
         <module>kharazim-lib-dubbo</module>
         <module>kharazim-lib-dubbo-registry-redis</module>
+        <module>kharazim-lib-dubbo-registry-nacos</module>
         <module>kharazim-lib-mybatis</module>
         <module>kharazim-lib-cache</module>
         <module>kharazim-lib-test</module>
@@ -22,6 +23,7 @@
         <module>kharazim-lib-id-generator</module>
         <module>kharazim-lib-discovery-nacos</module>
         <module>kharazim-lib-discovery-redis</module>
+        <module>kharazim-lib-pom</module>
     </modules>
 
     <properties>

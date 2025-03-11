@@ -42,6 +42,11 @@
 
         <dependency>
             <groupId>com.tyrael</groupId>
+            <artifactId>kharazim-lib-dubbo-registry-redis</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.tyrael</groupId>
             <artifactId>kharazim-user-sdk</artifactId>
         </dependency>
 
@@ -105,23 +110,10 @@
         <dependencies>
             <dependency>
                 <groupId>com.tyrael</groupId>
-                <artifactId>kharazim-lib-base</artifactId>
+                <artifactId>kharazim-lib-pom</artifactId>
                 <version>${kharazim-lib.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.tyrael</groupId>
-                <artifactId>kharazim-lib-discovery-nacos</artifactId>
-                <version>${kharazim-lib.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.tyrael</groupId>
-                <artifactId>kharazim-lib-discovery-redis</artifactId>
-                <version>${kharazim-lib.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.tyrael</groupId>
-                <artifactId>kharazim-lib-dubbo</artifactId>
-                <version>${kharazim-lib.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>com.tyrael</groupId>
