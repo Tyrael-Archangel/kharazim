@@ -8,9 +8,14 @@ import com.tyrael.kharazim.base.dto.BaseHasNameEnum;
 import com.tyrael.kharazim.export.excel.converter.*;
 import org.reflections.Reflections;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.util.ObjectUtils;
 
+import java.util.Arrays;
+import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author Tyrael Archangel
@@ -18,6 +23,9 @@ import java.util.Set;
  */
 @Configuration
 public class ExcelConfig implements InitializingBean {
+
+    @Value("${excel.enum.scans:com.tyrael.kharazim}")
+    private String enumScanPaths;
 
     @Override
     public void afterPropertiesSet() {
@@ -33,8 +41,16 @@ public class ExcelConfig implements InitializingBean {
 
     @SuppressWarnings({"rawtypes", "unchecked"})
     private void registerBaseNameAndValueEnumConverter() {
-        Reflections reflections = new Reflections();
-        Set<Class<? extends BaseHasNameEnum>> subTypes = reflections.getSubTypesOf(BaseHasNameEnum.class);
+        if (ObjectUtils.isEmpty(enumScanPaths)) {
+            return;
+        }
+        String[] enumScanPathArray = enumScanPaths.split(",");
+        Set<Class<? extends BaseHasNameEnum>> subTypes = Arrays.stream(enumScanPathArray)
+                .filter(path -> !ObjectUtils.isEmpty(path))
+                .map(path -> new Reflections(path).getSubTypesOf(BaseHasNameEnum.class))
+                .filter(Objects::nonNull)
+                .flatMap(Set::stream)
+                .collect(Collectors.toSet());
         for (Class<? extends BaseHasNameEnum> subType : subTypes) {
             if (subType.isEnum()) {
                 registerConverter((BaseNameAndValueEnumConverter) () -> subType);
