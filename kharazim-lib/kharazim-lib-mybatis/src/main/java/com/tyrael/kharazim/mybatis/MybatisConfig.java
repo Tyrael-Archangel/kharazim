@@ -51,12 +51,10 @@ public class MybatisConfig {
                 Principal principal = PrincipalHolder.getPrincipal();
                 if (principal != null) {
                     if (baseDO.getCreator() == null && baseDO.getCreatorCode() == null) {
-                        baseDO.setCreator(principal.getNickName());
-                        baseDO.setCreatorCode(principal.getCode());
+                        baseDO.setCreateUser(principal.getCode(), principal.getNickName());
                     }
                     if (baseDO.getUpdater() == null && baseDO.getUpdaterCode() == null) {
-                        baseDO.setUpdater(principal.getNickName());
-                        baseDO.setUpdaterCode(principal.getCode());
+                        baseDO.setUpdateUser(principal.getCode(), principal.getNickName());
                     }
                 }
             }

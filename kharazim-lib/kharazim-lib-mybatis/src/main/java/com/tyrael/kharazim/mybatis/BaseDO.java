@@ -40,9 +40,13 @@ public class BaseDO {
     private Long deleted;
 
     public void setCreateUser(String creatorCode, String creator) {
+        this.setCreateUser(creatorCode, creator, LocalDateTime.now());
+    }
+
+    public void setCreateUser(String creatorCode, String creator, LocalDateTime createTime) {
         this.creatorCode = creatorCode;
         this.creator = creator;
-        this.createTime = LocalDateTime.now();
+        this.createTime = createTime;
     }
 
     public void setUpdateUser(String updaterCode, String updater) {
