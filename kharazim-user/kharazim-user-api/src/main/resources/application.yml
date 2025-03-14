@@ -31,6 +31,10 @@ spring:
       key-prefix: KHARAZIM_USER_CACHE
       time-to-live: 20m
 
+mybatis-plus:
+  global-config:
+    banner: false
+
 logging:
   level:
     root: info

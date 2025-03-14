@@ -3,6 +3,7 @@ server:
 
 spring:
   main:
+    banner-mode: off
     web-application-type: reactive
   application:
     name: kharazim-gateway

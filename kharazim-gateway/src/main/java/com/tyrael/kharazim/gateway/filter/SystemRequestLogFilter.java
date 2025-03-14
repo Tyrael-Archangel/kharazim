@@ -15,6 +15,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
+import org.springframework.http.MediaType;
 import org.springframework.http.server.PathContainer;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpRequestDecorator;
@@ -23,6 +24,7 @@ import org.springframework.http.server.reactive.ServerHttpResponseDecorator;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
+import org.springframework.util.StringUtils;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -49,8 +51,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 @Order(Ordered.HIGHEST_PRECEDENCE + 1)
 public class SystemRequestLogFilter implements GlobalFilter {
 
-    private static final String CURRENT_LOG_ATTRIBUTE_KEY = "CURRENT_SYSTEM_REQUEST_LOG";
-
     private final SystemRequestLogPathMather requestLogPathMather;
     private final LogChannel logChannel = new LogChannel();
 
@@ -70,22 +70,22 @@ public class SystemRequestLogFilter implements GlobalFilter {
         return exchange.getRequest()
                 .getBody()
                 .collectList() // 收集所有的请求体数据
-                .flatMap(body -> {
+                .flatMap(requestBody -> {
 
-                    byte[] bodyBytes = mergeBytes(body);
-                    prepareLogRequest(exchange, bodyBytes);
+                    byte[] requestBodyBytes = mergeBytes(requestBody);
+                    SystemRequestLogVO logVO = prepareLogRequest(exchange, requestBodyBytes);
 
-                    DataBuffer dataBuffer = exchange.getResponse().bufferFactory().wrap(bodyBytes);
+                    DataBuffer requestBodyBuffer = exchange.getResponse().bufferFactory().wrap(requestBodyBytes);
                     ServerWebExchange build = exchange.mutate()
-                            .request(new BodyCacheServerHttpRequestDecorator(exchange.getRequest(), dataBuffer))
-                            .response(new BodyCacheServerHttpResponseDecorator(exchange))
+                            .request(new BodyCacheServerHttpRequestDecorator(exchange.getRequest(), requestBodyBuffer))
+                            .response(new LogResolveServerHttpResponseDecorator(exchange.getResponse(), logVO))
                             .build();
                     return chain.filter(build);
                 });
 
     }
 
-    private void prepareLogRequest(ServerWebExchange exchange, byte[] bodyBytes) {
+    private SystemRequestLogVO prepareLogRequest(ServerWebExchange exchange, byte[] bodyBytes) {
         ServerHttpRequest request = exchange.getRequest();
         HttpHeaders headers = request.getHeaders();
         String uri = URLDecoder.decode(request.getURI().toString(), StandardCharsets.UTF_8);
@@ -93,48 +93,21 @@ public class SystemRequestLogFilter implements GlobalFilter {
                 .map(InetSocketAddress::getHostString)
                 .orElse(null);
 
-        SystemRequestLogVO logVO = SystemRequestLogVO.builder()
+        AuthUser authUser = exchange.getAttribute(AuthUser.class.getName());
+
+        return SystemRequestLogVO.builder()
                 .uri(uri)
                 .remoteAddr(remoteAddr)
                 .forwardedFor(headers.getFirst("X-Forwarded-For"))
                 .realIp(headers.getFirst("X-Real-IP"))
                 .httpMethod(request.getMethod().toString())
-                .requestHeaders(this.nameValues(request.getHeaders()))
+                .requestHeaders(this.nameValues(headers))
                 .requestParams(this.nameValues(request.getQueryParams()))
                 .requestBody(new String(bodyBytes, StandardCharsets.UTF_8))
+                .userCode(authUser == null ? null : authUser.getCode())
+                .userName(authUser == null ? null : authUser.getNickName())
                 .startTime(LocalDateTime.now())
                 .build();
-
-        exchange.getAttributes()
-                .put(CURRENT_LOG_ATTRIBUTE_KEY, logVO);
-
-    }
-
-    private void saveRequestLog(ServerWebExchange exchange, byte[] responseBytes) {
-
-        SystemRequestLogVO logVO = exchange.getAttribute(CURRENT_LOG_ATTRIBUTE_KEY);
-        if (logVO != null) {
-            ServerHttpResponse exchangeResponse = exchange.getResponse();
-            Integer responseStatus = Optional.ofNullable(exchangeResponse.getStatusCode())
-                    .map(HttpStatusCode::value)
-                    .orElse(null);
-
-            HttpHeaders headers = exchangeResponse.getHeaders();
-            logVO.setResponseHeaders(this.nameValues(headers));
-            logVO.setResponseStatus(responseStatus);
-            logVO.setResponseBody(new String(responseBytes, StandardCharsets.UTF_8));
-            logVO.setEndTime(LocalDateTime.now());
-
-            AuthUser authUser = exchange.getAttribute(AuthFilter.AUTH_USER);
-            if (authUser != null) {
-                logVO.setUserCode(authUser.getCode());
-                logVO.setUserName(authUser.getName());
-            }
-
-            logChannel.save(logVO);
-
-            exchange.getAttributes().remove(CURRENT_LOG_ATTRIBUTE_KEY);
-        }
     }
 
     private List<SystemRequestLogVO.NameAndValue> nameValues(MultiValueMap<String, String> headers) {
@@ -183,29 +156,45 @@ public class SystemRequestLogFilter implements GlobalFilter {
 
     }
 
-    private class BodyCacheServerHttpResponseDecorator extends ServerHttpResponseDecorator {
+    private class LogResolveServerHttpResponseDecorator extends ServerHttpResponseDecorator {
 
-        private final ServerWebExchange exchange;
+        private final SystemRequestLogVO logVO;
 
-        public BodyCacheServerHttpResponseDecorator(ServerWebExchange exchange) {
-            super(exchange.getResponse());
-            this.exchange = exchange;
+        public LogResolveServerHttpResponseDecorator(ServerHttpResponse serverHttpResponse, SystemRequestLogVO logVO) {
+            super(serverHttpResponse);
+            this.logVO = logVO;
         }
 
         @Override
         @NonNull
         public Mono<Void> writeWith(@NonNull Publisher<? extends DataBuffer> body) {
-            if (body instanceof Flux<? extends DataBuffer> fluxBody) {
-
+            String contentType = this.getHeaders().getFirst("Content-Type");
+            if (StringUtils.hasText(contentType)
+                    && contentType.toLowerCase().contains(MediaType.APPLICATION_JSON_VALUE)
+                    && body instanceof Flux<? extends DataBuffer> fluxBody) {
                 return fluxBody.collectList().flatMap(dataBuffers -> {
 
                     byte[] responseBytes = mergeBytes(dataBuffers);
-                    saveRequestLog(exchange, responseBytes);
+                    saveRequestLog(responseBytes);
 
                     return super.writeWith(Flux.just(this.bufferFactory().wrap(responseBytes)));
                 });
             }
             return super.writeWith(body);
+        }
+
+        private void saveRequestLog(byte[] responseBytes) {
+
+            Integer responseStatus = Optional.ofNullable(this.getStatusCode())
+                    .map(HttpStatusCode::value)
+                    .orElse(null);
+
+            logVO.setResponseHeaders(nameValues(this.getHeaders()));
+            logVO.setResponseStatus(responseStatus);
+            logVO.setResponseBody(new String(responseBytes, StandardCharsets.UTF_8));
+            logVO.setEndTime(LocalDateTime.now());
+
+            logChannel.save(logVO);
         }
     }
 

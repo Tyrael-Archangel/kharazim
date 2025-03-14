@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tyrael.kharazim.base.dto.Response;
 import com.tyrael.kharazim.base.exception.ShouldNotHappenException;
-import com.tyrael.kharazim.authentication.PrincipalHeader;
 import com.tyrael.kharazim.user.sdk.exception.TokenInvalidException;
 import com.tyrael.kharazim.user.sdk.model.AuthUser;
 import com.tyrael.kharazim.user.sdk.service.AuthServiceApi;
@@ -31,6 +30,8 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
+import static com.tyrael.kharazim.authentication.PrincipalHeader.*;
+
 /**
  * @author Tyrael Archangel
  * @since 2025/2/13
@@ -38,8 +39,6 @@ import java.util.Map;
 @Component
 @RequiredArgsConstructor
 public class AuthFilter implements GlobalFilter {
-
-    public static final String AUTH_USER = "AUTH_USER";
 
     private final ObjectMapper objectMapper;
     private final AuthWhiteListChecker authWhiteListChecker;
@@ -50,13 +49,10 @@ public class AuthFilter implements GlobalFilter {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
 
+        AuthUser authUser;
         try {
-
-            resolveUserHeader(exchange, this.getToken(exchange));
-            return chain.filter(exchange);
-
+            authUser = this.resolveUser(exchange);
         } catch (TokenInvalidException e) {
-
             if (isWhitelist(exchange)) {
                 return chain.filter(exchange);
             } else {
@@ -64,6 +60,17 @@ public class AuthFilter implements GlobalFilter {
             }
         }
 
+        exchange.getAttributes().put(AuthUser.class.getName(), authUser);
+        ServerHttpRequest extraRequest = exchange.getRequest()
+                .mutate()
+                .header(USER_ID, this.utf8Encode(authUser.getId().toString()))
+                .header(USER_CODE, this.utf8Encode(authUser.getCode()))
+                .header(USER_NAME, this.utf8Encode(authUser.getName()))
+                .header(USER_NICKNAME, this.utf8Encode(authUser.getNickName()))
+                .header(TOKEN, this.utf8Encode(authUser.getToken()))
+                .build();
+
+        return chain.filter(exchange.mutate().request(extraRequest).build());
     }
 
     private boolean isWhitelist(ServerWebExchange exchange) {
@@ -73,7 +80,8 @@ public class AuthFilter implements GlobalFilter {
         return authWhiteListChecker.isWhite(pathContainer);
     }
 
-    private void resolveUserHeader(ServerWebExchange exchange, String token) throws TokenInvalidException {
+    private AuthUser resolveUser(ServerWebExchange exchange) throws TokenInvalidException {
+        String token = this.getToken(exchange);
         if (!StringUtils.hasText(token)) {
             throw new TokenInvalidException("Token is empty");
         }
@@ -83,57 +91,47 @@ public class AuthFilter implements GlobalFilter {
             throw new TokenInvalidException("Token validation failed");
         }
 
-        exchange.getAttributes()
-                .put(AUTH_USER, authUser);
-
-        ServerHttpRequest extraRequest = exchange.getRequest()
-                .mutate()
-                .header(PrincipalHeader.USER_ID, this.utf8Encode(authUser.getId().toString()))
-                .header(PrincipalHeader.USER_CODE, this.utf8Encode(authUser.getCode()))
-                .header(PrincipalHeader.USER_NAME, this.utf8Encode(authUser.getName()))
-                .header(PrincipalHeader.USER_NICKNAME, this.utf8Encode(authUser.getNickName()))
-                .header(PrincipalHeader.TOKEN, this.utf8Encode(token))
-                .build();
-        exchange.mutate().request(extraRequest).build();
+        return authUser;
     }
 
     private String getToken(ServerWebExchange exchange) {
 
-        Map<String, String> queryParams = exchange.getRequest()
-                .getQueryParams()
-                .toSingleValueMap();
-        String token = queryParams.get(PrincipalHeader.TOKEN);
+        String token = exchange.getRequest()
+                .getHeaders()
+                .getFirst(TOKEN);
+
         if (!StringUtils.hasText(token)) {
-            token = queryParams.entrySet()
-                    .stream()
-                    .filter(entry -> PrincipalHeader.TOKEN.equalsIgnoreCase(entry.getKey()))
-                    .map(Map.Entry::getValue)
-                    .findFirst()
-                    .orElse(null);
+            Map<String, String> queryParams = exchange.getRequest()
+                    .getQueryParams()
+                    .toSingleValueMap();
+            token = queryParams.get(TOKEN);
+            if (!StringUtils.hasText(token)) {
+                token = queryParams.entrySet()
+                        .stream()
+                        .filter(entry -> TOKEN.equalsIgnoreCase(entry.getKey()))
+                        .map(Map.Entry::getValue)
+                        .findFirst()
+                        .orElse(null);
+            }
         }
 
         if (!StringUtils.hasText(token)) {
-            token = exchange.getRequest()
-                    .getHeaders()
-                    .getFirst(PrincipalHeader.TOKEN);
-        }
-
-        Map<String, HttpCookie> cookies = exchange.getRequest().getCookies().toSingleValueMap();
-        if (!StringUtils.hasText(token)) {
-            HttpCookie httpCookie = cookies.get(PrincipalHeader.TOKEN);
+            Map<String, HttpCookie> cookies = exchange.getRequest().getCookies().toSingleValueMap();
+            HttpCookie httpCookie = cookies.get(TOKEN);
             if (httpCookie != null) {
                 token = httpCookie.getValue();
             }
+            if (!StringUtils.hasText(token)) {
+                token = cookies.entrySet()
+                        .stream()
+                        .filter(entry -> TOKEN.equalsIgnoreCase(entry.getKey()))
+                        .map(Map.Entry::getValue)
+                        .findFirst()
+                        .map(HttpCookie::getValue)
+                        .orElse(null);
+            }
         }
-        if (!StringUtils.hasText(token)) {
-            token = cookies.entrySet()
-                    .stream()
-                    .filter(entry -> PrincipalHeader.TOKEN.equalsIgnoreCase(entry.getKey()))
-                    .map(Map.Entry::getValue)
-                    .findFirst()
-                    .map(HttpCookie::getValue)
-                    .orElse(null);
-        }
+
         return token;
     }
 
@@ -147,7 +145,7 @@ public class AuthFilter implements GlobalFilter {
         try {
             failResponseBytes = objectMapper.writeValueAsBytes(failResponse);
         } catch (JsonProcessingException e) {
-            throw new ShouldNotHappenException();
+            throw new ShouldNotHappenException(e);
         }
         DataBuffer dataBuffer = response.bufferFactory().wrap(failResponseBytes);
 
