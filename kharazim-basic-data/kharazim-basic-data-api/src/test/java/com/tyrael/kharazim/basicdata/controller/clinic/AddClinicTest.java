@@ -41,7 +41,7 @@ public class AddClinicTest extends BaseControllerTest<ClinicController> {
         List<Battleground> battlegrounds = battlegrounds();
         for (Battleground battleground : battlegrounds) {
             if (random.nextInt(100) > 60) {
-                PrincipalHolder.setPrincipal(dubboReferenceHolder.userServiceApi.mock());
+                PrincipalHolder.setPrincipal(dubboReferenceHolder.mockUser());
                 String name = battleground.name();
                 String image = battleground.image();
                 String imageFileId = null;

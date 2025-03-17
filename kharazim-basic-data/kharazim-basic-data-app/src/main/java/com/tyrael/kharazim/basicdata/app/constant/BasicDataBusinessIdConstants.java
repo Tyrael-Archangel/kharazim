@@ -19,6 +19,8 @@ public enum BasicDataBusinessIdConstants implements BusinessIdConstant<BasicData
     CUSTOMER_FAMILY("会员家庭", "CF"),
     CUSTOMER_RECHARGE_CARD("会员储值单", "CRC"),
     CUSTOMER_WALLET_TRANSACTION("会员交易流水号编码", "TRS"),
+
+    RECHARGE_CARD_TYPE("储值卡项", "RCT"),
     ;
 
     private final String prefix;

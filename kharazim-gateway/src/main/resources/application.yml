@@ -21,7 +21,7 @@ spring:
         - id: basic_data_api_route
           uri: lb://kharazim-basic-data
           predicates:
-            - Path=/basic-api/**, /system/**, /clinic/**, /customer/**
+            - Path=/basic-api/**, /system/**, /clinic/**, /customer/**, /recharge-card-type/**, /recharge-card/**
           filters:
             - RewritePath=/basic-api/?(?<segment>.*), /$\{segment}
 

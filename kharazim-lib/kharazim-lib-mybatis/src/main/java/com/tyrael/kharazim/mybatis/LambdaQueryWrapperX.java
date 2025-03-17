@@ -2,6 +2,7 @@ package com.tyrael.kharazim.mybatis;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
+import com.tyrael.kharazim.base.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.Collection;
@@ -27,7 +28,7 @@ public class LambdaQueryWrapperX<T> extends LambdaQueryWrapper<T> {
     }
 
     public LambdaQueryWrapperX<T> inIfPresent(SFunction<T, ?> column, Collection<?> values) {
-        if (values == null || values.isEmpty()) {
+        if (CollectionUtils.isNotEmpty(values)) {
             return (LambdaQueryWrapperX<T>) super.in(column, values);
         }
         return this;
