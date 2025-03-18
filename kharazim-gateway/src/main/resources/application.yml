@@ -14,14 +14,25 @@ spring:
         - id: user_api_route
           uri: lb://kharazim-user-api
           predicates:
-            - Path=/user-api/**, /user/**, /auth/**, /roles/**
+            - Path=
+              /user-api/**,
+              /user/**,
+              /auth/**,
+              /roles/**
           filters:
             - RewritePath=/user-api/?(?<segment>.*), /$\{segment}
 
         - id: basic_data_api_route
           uri: lb://kharazim-basic-data
           predicates:
-            - Path=/basic-api/**, /system/**, /clinic/**, /customer/**, /recharge-card-type/**, /recharge-card/**, /supplier/**
+            - Path=
+              /basic-api/**,
+              /system/**,
+              /clinic/**,
+              /customer/**,
+              /recharge-card-type/**,
+              /recharge-card/**,
+              /supplier/**
           filters:
             - RewritePath=/basic-api/?(?<segment>.*), /$\{segment}
 
