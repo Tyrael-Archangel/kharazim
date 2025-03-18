@@ -299,7 +299,6 @@ public abstract class BaseControllerTest<T> {
                 if (arguments[i] != null && supportsParameter(methodParameter)) {
                     Principal principal = (Principal) arguments[i];
                     PrincipalHolder.setPrincipal(principal);
-                    requestBuilder.header(PrincipalHeader.USER_ID, principal.getId());
                     requestBuilder.header(PrincipalHeader.TOKEN, principal.getToken());
                     requestBuilder.header(PrincipalHeader.USER_ID, principal.getId());
                     requestBuilder.header(PrincipalHeader.USER_CODE, principal.getCode());

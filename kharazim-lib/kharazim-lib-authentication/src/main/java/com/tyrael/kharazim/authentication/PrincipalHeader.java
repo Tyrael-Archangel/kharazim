@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class PrincipalHeader {
 
-    public static final String TOKEN = "ACCESS-TOKEN";
+    public static final String TOKEN = "access-token";
     public static final String USER_ID = "principal-user-id";
     public static final String USER_CODE = "principal-user-code";
     public static final String USER_NAME = "principal-user-name";

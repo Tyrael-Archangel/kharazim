@@ -51,6 +51,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 @Order(Ordered.HIGHEST_PRECEDENCE + 1)
 public class SystemRequestLogFilter implements GlobalFilter {
 
+    private final AuthUserResolver authUserResolver;
     private final SystemRequestLogPathMather requestLogPathMather;
     private final LogChannel logChannel = new LogChannel();
 
@@ -86,14 +87,21 @@ public class SystemRequestLogFilter implements GlobalFilter {
     }
 
     private SystemRequestLogVO prepareLogRequest(ServerWebExchange exchange, byte[] bodyBytes) {
+
+        AuthUser authUser;
+        try {
+            authUser = authUserResolver.resolveUser(exchange);
+        } catch (Exception ignore) {
+            // ignore
+            authUser = null;
+        }
+
         ServerHttpRequest request = exchange.getRequest();
         HttpHeaders headers = request.getHeaders();
         String uri = URLDecoder.decode(request.getURI().toString(), StandardCharsets.UTF_8);
         String remoteAddr = Optional.ofNullable(request.getRemoteAddress())
                 .map(InetSocketAddress::getHostString)
                 .orElse(null);
-
-        AuthUser authUser = exchange.getAttribute(AuthUser.class.getName());
 
         return SystemRequestLogVO.builder()
                 .uri(uri)
