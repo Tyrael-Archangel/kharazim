@@ -1,6 +1,5 @@
 package com.tyrael.kharazim.dubbo;
 
-import org.apache.dubbo.spring.boot.context.event.WelcomeLogoApplicationListener;
 import org.springframework.boot.context.event.ApplicationEnvironmentPreparedEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.core.Ordered;
@@ -25,14 +24,16 @@ public class DisableDubboWelcomeLogoApplicationListener implements ApplicationLi
             return;
         }
         try {
-            Field processedField = WelcomeLogoApplicationListener.class.getDeclaredField("processed");
+            String className = "org.apache.dubbo.spring.boot.context.event.WelcomeLogoApplicationListener";
+            Field processedField = Class.forName(className).getDeclaredField("processed");
             processedField.setAccessible(true);
             AtomicBoolean processed = (AtomicBoolean) processedField.get(null);
             processed.set(true);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
+        } catch (ClassNotFoundException | NoSuchFieldException | IllegalAccessException e) {
             // ignore
+        } finally {
+            thisProcessed.compareAndSet(false, true);
         }
-        thisProcessed.compareAndSet(false, true);
     }
 
 }
