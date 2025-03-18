@@ -39,11 +39,6 @@
             <artifactId>kharazim-lib-dubbo</artifactId>
             <version>${kharazim-lib.version}</version>
         </dependency>
-        <dependency>
-            <groupId>com.tyrael</groupId>
-            <artifactId>kharazim-lib-dubbo-registry-redis</artifactId>
-            <version>${kharazim-lib.version}</version>
-        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>

@@ -12,6 +12,31 @@
 
     <artifactId>kharazim-user-api</artifactId>
 
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>com.tyrael</groupId>
+                    <artifactId>kharazim-lib-discovery-redis</artifactId>
+                </dependency>
+            </dependencies>
+        </profile>
+
+        <profile>
+            <id>prod</id>
+            <dependencies>
+                <dependency>
+                    <groupId>com.tyrael</groupId>
+                    <artifactId>kharazim-lib-discovery-nacos</artifactId>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
+
     <dependencies>
 
         <dependency>
@@ -55,11 +80,6 @@
                     <artifactId>undertow-websockets-jsr</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>com.tyrael</groupId>
-            <artifactId>kharazim-lib-discovery-redis</artifactId>
         </dependency>
 
         <dependency>

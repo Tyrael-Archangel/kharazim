@@ -14,6 +14,31 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>com.tyrael</groupId>
+                    <artifactId>kharazim-lib-dubbo-registry-redis</artifactId>
+                </dependency>
+            </dependencies>
+        </profile>
+
+        <profile>
+            <id>prod</id>
+            <dependencies>
+                <dependency>
+                    <groupId>com.tyrael</groupId>
+                    <artifactId>kharazim-lib-dubbo-registry-nacos</artifactId>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
+
     <dependencies>
 
         <dependency>
@@ -24,10 +49,6 @@
         <dependency>
             <groupId>com.tyrael</groupId>
             <artifactId>kharazim-lib-dubbo</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.tyrael</groupId>
-            <artifactId>kharazim-lib-dubbo-registry-redis</artifactId>
         </dependency>
 
         <dependency>

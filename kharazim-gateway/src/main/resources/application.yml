@@ -25,29 +25,8 @@ spring:
           filters:
             - RewritePath=/basic-api/?(?<segment>.*), /$\{segment}
 
-dubbo:
-  application:
-    name: kharazim-dubbo-gateway
-    check-serializable: false
-    serialize-check-status: WARN
-    qos-enable: false
-  registry:
-    group: kharazim-dubbo
-    address: redis://${REDIS_HOST:localhost}:${REDIS_PORT:6379}?db.index=${REDIS_DATABASE:0}
-    password: ${REDIS_PASSWORD:}
-  #  address: nacos://${NACOS_SERVER_HOST:localhost}:${NACOS_SERVER_PORT:8848}?namespace=kharazim
-  #  username: ${NACOS_USERNAME:}
-  #  password: ${NACOS_PASSWORD:}
-  protocol:
-    name: dubbo
-    port: ${DUBBO_PORT:-1}
-  consumer:
-    check: false
-    proxy: enhancejavassist
-
 knife4j:
   gateway:
-    enabled: true
     routes:
       - name: 用户服务
         url: /user-api/v3/api-docs?group=default
