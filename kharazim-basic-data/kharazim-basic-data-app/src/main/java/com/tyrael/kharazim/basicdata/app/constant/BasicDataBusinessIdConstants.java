@@ -14,6 +14,7 @@ public enum BasicDataBusinessIdConstants implements BusinessIdConstant<BasicData
     FILE("文件", 10, "F"),
     FILE_DIR("文件目录", 5, "dir"),
     CLINIC("诊所（机构）", "CL"),
+    SUPPLIER("供应商", "SU"),
 
     CUSTOMER("会员编码", 10, "CU"),
     CUSTOMER_FAMILY("会员家庭", "CF"),

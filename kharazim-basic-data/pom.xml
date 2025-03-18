@@ -45,9 +45,9 @@
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <kharazim-user-version>1.0-SNAPSHOT</kharazim-user-version>
+        <kharazim-user.version>1.0-SNAPSHOT</kharazim-user.version>
         <kharazim-lib.version>1.0-SNAPSHOT</kharazim-lib.version>
-        <kharazim-basic-data-version>1.0-SNAPSHOT</kharazim-basic-data-version>
+        <kharazim-basic-data.version>1.0-SNAPSHOT</kharazim-basic-data.version>
         <kharazim-id-generator.version>1.0-SNAPSHOT</kharazim-id-generator.version>
         <spring-cloud.version>2023.0.1</spring-cloud.version>
         <knife4j.version>4.3.0</knife4j.version>
@@ -72,22 +72,22 @@
             <dependency>
                 <groupId>com.tyrael</groupId>
                 <artifactId>kharazim-basic-data-sdk</artifactId>
-                <version>${kharazim-basic-data-version}</version>
+                <version>${kharazim-basic-data.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.tyrael</groupId>
                 <artifactId>kharazim-basic-data-app</artifactId>
-                <version>${kharazim-basic-data-version}</version>
+                <version>${kharazim-basic-data.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.tyrael</groupId>
                 <artifactId>kharazim-user-sdk</artifactId>
-                <version>${kharazim-user-version}</version>
+                <version>${kharazim-user.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.tyrael</groupId>
                 <artifactId>kharazim-user-api-sdk</artifactId>
-                <version>${kharazim-user-version}</version>
+                <version>${kharazim-user.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
