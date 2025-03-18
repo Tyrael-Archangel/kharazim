@@ -2,8 +2,8 @@ package com.tyrael.kharazim.gateway.filter;
 
 import com.github.xiaoymin.knife4j.spring.gateway.conf.GlobalConstants;
 import com.github.xiaoymin.knife4j.spring.gateway.filter.basic.WebFluxSecurityBasicAuthFilter;
-import com.tyrael.kharazim.base.exception.UnauthorizedException;
 import com.tyrael.kharazim.authentication.PrincipalHeader;
+import com.tyrael.kharazim.base.exception.UnauthorizedException;
 import com.tyrael.kharazim.user.sdk.service.AuthServiceApi;
 import com.tyrael.kharazim.user.sdk.vo.ClientInfo;
 import eu.bitwalker.useragentutils.UserAgent;
@@ -103,16 +103,15 @@ public class Knife4jAuthFilter extends WebFluxSecurityBasicAuthFilter {
         ClientInfo clientInfo = new ClientInfo();
         clientInfo.setHost(host);
 
-        UserAgent userAgent;
         try {
-            userAgent = UserAgent.parseUserAgentString(headers.getFirst("User-Agent"));
-        } catch (Exception e) {
-            return clientInfo;
+            UserAgent userAgent = UserAgent.parseUserAgentString(headers.getFirst("User-Agent"));
+            clientInfo.setOs(userAgent.getOperatingSystem().getName());
+            clientInfo.setBrowser(userAgent.getBrowser().getName());
+            clientInfo.setBrowserVersion(Objects.toString(userAgent.getBrowserVersion()));
+        } catch (Exception ignore) {
+            // ignore
         }
 
-        clientInfo.setBrowser(userAgent.getBrowser().getName());
-        clientInfo.setOs(userAgent.getOperatingSystem().getName());
-        clientInfo.setBrowserVersion(Objects.toString(userAgent.getBrowserVersion()));
         return clientInfo;
     }
 

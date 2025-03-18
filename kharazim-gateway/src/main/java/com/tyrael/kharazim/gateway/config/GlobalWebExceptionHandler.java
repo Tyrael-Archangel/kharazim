@@ -9,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.reactive.error.ErrorWebExceptionHandler;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
-import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.*;
 import org.springframework.http.server.PathContainer;
 import org.springframework.http.server.reactive.ServerHttpRequest;
@@ -26,9 +25,9 @@ import reactor.core.publisher.Mono;
  * @author Tyrael Archangel
  * @since 2025/2/12
  */
+@Slf4j
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
-@Slf4j
 @RequiredArgsConstructor
 public class GlobalWebExceptionHandler implements ErrorWebExceptionHandler {
 
@@ -58,19 +57,17 @@ public class GlobalWebExceptionHandler implements ErrorWebExceptionHandler {
     }
 
     private Mono<Void> writeError(ServerWebExchange exchange, HttpStatusCode httpStatus, String reason) {
-        ServerHttpResponse response = exchange.getResponse();
-        response.setStatusCode(httpStatus);
-        response.getHeaders()
-                .add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-        DataResponse<Object> failResponse = DataResponse.fail(httpStatus.value(), reason);
         byte[] failResponseBytes;
         try {
-            failResponseBytes = objectMapper.writeValueAsBytes(failResponse);
+            failResponseBytes = objectMapper.writeValueAsBytes(DataResponse.fail(httpStatus.value(), reason));
         } catch (JsonProcessingException e) {
             throw new ShouldNotHappenException();
         }
-        DataBuffer dataBuffer = response.bufferFactory().wrap(failResponseBytes);
-        return response.writeWith(Flux.just(dataBuffer));
+
+        ServerHttpResponse response = exchange.getResponse();
+        response.setStatusCode(httpStatus);
+        response.getHeaders().add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+        return response.writeWith(Flux.just(response.bufferFactory().wrap(failResponseBytes)));
     }
 
 }
