@@ -5,4 +5,4 @@ dubbo:
 
 knife4j:
   gateway:
-    enabled: false
+    enabled: true
