@@ -11,10 +11,7 @@
     <artifactId>kharazim-lib-discovery-redis</artifactId>
 
     <properties>
-        <spring-boot.version>3.2.4</spring-boot.version>
         <spring-cloud.version>2023.0.1</spring-cloud.version>
-        <jackson.version>2.15.4</jackson.version>
-        <slf4j.version>2.0.12</slf4j.version>
     </properties>
 
     <dependencies>
@@ -29,17 +26,10 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
-            <version>${spring-boot.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>${jackson.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${slf4j.version}</version>
         </dependency>
     </dependencies>
 
