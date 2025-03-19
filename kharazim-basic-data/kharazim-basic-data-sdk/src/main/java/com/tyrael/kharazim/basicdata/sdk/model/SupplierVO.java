@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
@@ -13,7 +14,7 @@ import java.time.LocalDateTime;
 @Getter
 @Builder
 @ToString
-public class SupplierVO {
+public class SupplierVO implements Serializable {
 
     private String code;
 

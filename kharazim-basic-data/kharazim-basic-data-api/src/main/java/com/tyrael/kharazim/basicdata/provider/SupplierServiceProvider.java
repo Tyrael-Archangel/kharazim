@@ -1,5 +1,6 @@
 package com.tyrael.kharazim.basicdata.provider;
 
+import com.tyrael.kharazim.basicdata.app.dto.supplier.ListSupplierRequest;
 import com.tyrael.kharazim.basicdata.app.dto.supplier.SupplierDTO;
 import com.tyrael.kharazim.basicdata.app.service.supplier.SupplierService;
 import com.tyrael.kharazim.basicdata.sdk.model.SupplierVO;
@@ -36,6 +37,14 @@ public class SupplierServiceProvider implements SupplierServiceApi {
         return suppliers.stream()
                 .map(this::supplierVO)
                 .collect(Collectors.toMap(SupplierVO::getCode, e -> e));
+    }
+
+    @Override
+    public List<SupplierVO> listAll() {
+        List<SupplierDTO> suppliers = supplierService.list(new ListSupplierRequest());
+        return suppliers.stream()
+                .map(this::supplierVO)
+                .collect(Collectors.toList());
     }
 
     private SupplierVO supplierVO(SupplierDTO supplierDTO) {

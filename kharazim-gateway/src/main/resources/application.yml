@@ -36,6 +36,15 @@ spring:
           filters:
             - RewritePath=/basic-api/?(?<segment>.*), /$\{segment}
 
+        - id: product_api_route
+          uri: lb://kharazim-product
+          predicates:
+            - Path=
+              /product-api/**,
+              /product/**
+          filters:
+            - RewritePath=/product-api/?(?<segment>.*), /$\{segment}
+
 knife4j:
   gateway:
     routes:
@@ -44,6 +53,9 @@ knife4j:
         service-name: user-api-service
       - name: 基础服务
         url: /basic-api/v3/api-docs?group=default
+        service-name: basic-api-service
+      - name: 商品服务
+        url: /product-api/v3/api-docs?group=default
         service-name: basic-api-service
     basic:
       enable: true

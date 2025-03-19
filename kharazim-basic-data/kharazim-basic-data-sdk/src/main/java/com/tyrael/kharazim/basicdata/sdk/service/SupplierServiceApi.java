@@ -4,6 +4,7 @@ import com.tyrael.kharazim.base.exception.DomainNotFoundException;
 import com.tyrael.kharazim.basicdata.sdk.model.SupplierVO;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -27,6 +28,13 @@ public interface SupplierServiceApi {
      * @return code -> SupplierVO
      */
     Map<String, SupplierVO> mapByCodes(Collection<String> codes);
+
+    /**
+     * list all supplier
+     *
+     * @return suppliers
+     */
+    List<SupplierVO> listAll();
 
     /**
      * ensure supplier code exist
