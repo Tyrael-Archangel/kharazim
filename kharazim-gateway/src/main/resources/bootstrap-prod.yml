@@ -10,7 +10,7 @@ spring:
 
 dubbo:
   registry:
-    address: nacos://${NACOS_SERVER_HOST:localhost}:${NACOS_SERVER_PORT:8848}?namespace=kharazim
+    address: nacos://${NACOS_SERVER_HOST:localhost}:${NACOS_SERVER_PORT:8848}?namespace=dubbo_kharazim
     username: ${NACOS_USERNAME:}
     password: ${NACOS_PASSWORD:}
 
