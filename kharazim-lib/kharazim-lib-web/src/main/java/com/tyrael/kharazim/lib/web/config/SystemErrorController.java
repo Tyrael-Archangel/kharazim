@@ -2,6 +2,7 @@ package com.tyrael.kharazim.lib.web.config;
 
 import com.tyrael.kharazim.base.dto.DataResponse;
 import com.tyrael.kharazim.base.dto.Response;
+import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.boot.web.servlet.error.ErrorController;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Tyrael Archangel
  * @since 2024/1/5
  */
+@Hidden
 @RestController
 public class SystemErrorController implements ErrorController {
 
