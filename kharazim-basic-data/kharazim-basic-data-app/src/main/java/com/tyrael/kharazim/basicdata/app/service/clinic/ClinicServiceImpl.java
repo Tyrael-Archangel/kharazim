@@ -41,14 +41,36 @@ public class ClinicServiceImpl implements ClinicService {
     private final IdGenerator idGenerator;
 
     @Override
+    public List<ClinicDTO> listAll() {
+        List<Clinic> clinics = clinicMapper.list(new ListClinicRequest());
+        return clinics.stream()
+                .map(this::clinicDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ClinicDTO> listByCodes(Collection<String> codes) {
+        List<Clinic> clinics = clinicMapper.listByCodes(codes);
+        return clinics.stream()
+                .map(this::clinicDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public ClinicDTO findByCode(String code) {
+        Clinic clinic = clinicMapper.findByCode(code);
+        return clinic == null ? null : this.clinicDto(clinic);
+    }
+
+    @Override
     @Transactional(readOnly = true)
-    public PageResponse<ClinicVO> page(PageClinicRequest pageRequest) {
+    public PageResponse<ClinicDTO> page(PageClinicRequest pageRequest) {
         Page<Clinic> pageCondition = new Page<>(pageRequest.getPageIndex(), pageRequest.getPageSize());
         PageResponse<Clinic> pageData = clinicMapper.page(pageRequest, pageCondition);
 
-        List<ClinicVO> clinics = pageData.getData()
+        List<ClinicDTO> clinics = pageData.getData()
                 .stream()
-                .map(this::clinicVO)
+                .map(this::clinicDto)
                 .collect(Collectors.toList());
 
         return PageResponse.success(clinics, pageData.getTotalCount());
@@ -96,15 +118,15 @@ public class ClinicServiceImpl implements ClinicService {
     }
 
     @Override
-    public List<ClinicVO> list(ListClinicRequest request) {
+    public List<ClinicDTO> list(ListClinicRequest request) {
         List<Clinic> clinics = clinicMapper.list(request);
         return clinics.stream()
-                .map(this::clinicVO)
+                .map(this::clinicDto)
                 .collect(Collectors.toList());
     }
 
-    private ClinicVO clinicVO(Clinic clinic) {
-        return ClinicVO.builder()
+    private ClinicDTO clinicDto(Clinic clinic) {
+        return ClinicDTO.builder()
                 .code(clinic.getCode())
                 .name(clinic.getName())
                 .englishName(clinic.getEnglishName())

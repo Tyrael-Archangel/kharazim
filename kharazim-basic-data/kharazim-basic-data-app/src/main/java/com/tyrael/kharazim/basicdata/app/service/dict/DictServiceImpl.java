@@ -75,7 +75,7 @@ public class DictServiceImpl implements DictService {
     @Override
     public List<DictItemDTO> listItems(String dictCode) {
         Dict dict = dictMapper.findByCode(dictCode);
-        DomainNotFoundException.assertFound(dict, dictCode);
+        DomainNotFoundException.assertFound(dict, "dict code: " + dictCode);
 
         return dictItemMapper.listByDictCode(dict.getCode())
                 .stream()

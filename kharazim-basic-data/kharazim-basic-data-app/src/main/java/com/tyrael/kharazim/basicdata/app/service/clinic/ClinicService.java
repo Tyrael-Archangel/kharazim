@@ -6,6 +6,7 @@ import com.tyrael.kharazim.user.sdk.model.AuthUser;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -15,12 +16,35 @@ import java.util.List;
 public interface ClinicService {
 
     /**
+     * list all
+     *
+     * @return clinics
+     */
+    List<ClinicDTO> listAll();
+
+    /**
+     * list by codes
+     *
+     * @param codes codes
+     * @return clinics
+     */
+    List<ClinicDTO> listByCodes(Collection<String> codes);
+
+    /**
+     * find by code
+     *
+     * @param code code
+     * @return clinic
+     */
+    ClinicDTO findByCode(String code);
+
+    /**
      * page
      *
      * @param pageRequest ClinicPageRequest
      * @return Clinics
      */
-    PageResponse<ClinicVO> page(PageClinicRequest pageRequest);
+    PageResponse<ClinicDTO> page(PageClinicRequest pageRequest);
 
     /**
      * export
@@ -37,7 +61,7 @@ public interface ClinicService {
      * @param request {@link ListClinicRequest}
      * @return Clinics
      */
-    List<ClinicVO> list(ListClinicRequest request);
+    List<ClinicDTO> list(ListClinicRequest request);
 
     /**
      * 新增诊所（机构）

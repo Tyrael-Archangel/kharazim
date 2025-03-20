@@ -33,7 +33,7 @@ public class ClinicController {
 
     @GetMapping("/page")
     @Operation(summary = "诊所（机构）分页")
-    public PageResponse<ClinicVO> page(@ParameterObject PageClinicRequest pageRequest) {
+    public PageResponse<ClinicDTO> page(@ParameterObject PageClinicRequest pageRequest) {
         return clinicService.page(pageRequest);
     }
 
@@ -46,7 +46,7 @@ public class ClinicController {
 
     @GetMapping("/list")
     @Operation(summary = "诊所（机构）列表")
-    public MultiResponse<ClinicVO> list(@ParameterObject ListClinicRequest request) {
+    public MultiResponse<ClinicDTO> list(@ParameterObject ListClinicRequest request) {
         return MultiResponse.success(clinicService.list(request));
     }
 
