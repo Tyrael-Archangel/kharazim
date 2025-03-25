@@ -1,0 +1,23 @@
+server:
+  port: 25214
+
+spring:
+  application:
+    name: kharazim-purchase
+  profiles:
+    active: @profiles.active@
+
+dubbo:
+  application:
+    name: ${spring.application.name:kharazim-purchase}
+    check-serializable: false
+    serialize-check-status: WARN
+    qos-enable: false
+  registry:
+    group: kharazim-dubbo
+  protocol:
+    name: dubbo
+    port: ${DUBBO_PORT:-1}
+  consumer:
+    check: false
+    proxy: enhancejavassist

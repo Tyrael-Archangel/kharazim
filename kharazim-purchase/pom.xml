@@ -10,13 +10,14 @@
     </parent>
 
     <groupId>com.tyrael</groupId>
-    <artifactId>kharazim-product</artifactId>
+    <artifactId>kharazim-purchase</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <modules>
-        <module>kharazim-product-api</module>
-        <module>kharazim-product-app</module>
+        <module>kharazim-purchase-app</module>
+        <module>kharazim-purchase-api</module>
+        <module>kharazim-purchase-sdk</module>
     </modules>
 
     <profiles>
@@ -44,11 +45,11 @@
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <kharazim-purchase.version>1.0-SNAPSHOT</kharazim-purchase.version>
         <kharazim-product.version>1.0-SNAPSHOT</kharazim-product.version>
         <kharazim-lib.version>1.0-SNAPSHOT</kharazim-lib.version>
         <kharazim-user.version>1.0-SNAPSHOT</kharazim-user.version>
         <kharazim-basic-data.version>1.0-SNAPSHOT</kharazim-basic-data.version>
-        <kharazim-purchase.version>1.0-SNAPSHOT</kharazim-purchase.version>
         <kharazim-id-generator.version>1.0-SNAPSHOT</kharazim-id-generator.version>
         <spring-cloud-alibaba.version>2023.0.1.0</spring-cloud-alibaba.version>
         <spring-cloud.version>2023.0.1</spring-cloud.version>
@@ -66,8 +67,13 @@
         <dependencies>
             <dependency>
                 <groupId>com.tyrael</groupId>
-                <artifactId>kharazim-product-app</artifactId>
-                <version>${kharazim-product.version}</version>
+                <artifactId>kharazim-purchase-app</artifactId>
+                <version>${kharazim-purchase.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.tyrael</groupId>
+                <artifactId>kharazim-purchase-sdk</artifactId>
+                <version>${kharazim-purchase.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.tyrael</groupId>
@@ -92,11 +98,6 @@
                 <version>${kharazim-user.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.tyrael</groupId>
-                <artifactId>kharazim-purchase-sdk</artifactId>
-                <version>${kharazim-purchase.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
                 <version>${spring-cloud.version}</version>
@@ -115,4 +116,5 @@
             </resource>
         </resources>
     </build>
+
 </project>

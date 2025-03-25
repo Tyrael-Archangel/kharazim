@@ -3,7 +3,7 @@ package com.tyrael.kharazim.product;
 import com.tyrael.kharazim.basicdata.sdk.service.ClinicServiceApi;
 import com.tyrael.kharazim.basicdata.sdk.service.DictServiceApi;
 import com.tyrael.kharazim.basicdata.sdk.service.FileServiceApi;
-import com.tyrael.kharazim.basicdata.sdk.service.SupplierServiceApi;
+import com.tyrael.kharazim.purchase.sdk.service.SupplierServiceApi;
 import com.tyrael.kharazim.user.sdk.model.AuthUser;
 import com.tyrael.kharazim.user.sdk.service.UserServiceApi;
 import org.apache.dubbo.config.annotation.DubboReference;

@@ -2,7 +2,6 @@ package com.tyrael.kharazim.product.app.service.impl;
 
 import com.tyrael.kharazim.base.dto.PageResponse;
 import com.tyrael.kharazim.base.exception.DomainNotFoundException;
-import com.tyrael.kharazim.basicdata.sdk.service.SupplierServiceApi;
 import com.tyrael.kharazim.lib.idgenerator.IdGenerator;
 import com.tyrael.kharazim.product.app.constant.ProductBusinessIdConstants;
 import com.tyrael.kharazim.product.app.converter.ProductSkuConverter;
@@ -14,6 +13,7 @@ import com.tyrael.kharazim.product.app.service.ProductSkuService;
 import com.tyrael.kharazim.product.app.vo.sku.AddProductRequest;
 import com.tyrael.kharazim.product.app.vo.sku.PageProductSkuRequest;
 import com.tyrael.kharazim.product.app.vo.sku.ProductSkuVO;
+import com.tyrael.kharazim.purchase.sdk.service.SupplierServiceApi;
 import lombok.RequiredArgsConstructor;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.stereotype.Service;

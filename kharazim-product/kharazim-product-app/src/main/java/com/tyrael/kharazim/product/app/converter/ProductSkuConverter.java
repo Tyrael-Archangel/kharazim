@@ -1,9 +1,7 @@
 package com.tyrael.kharazim.product.app.converter;
 
 import com.tyrael.kharazim.basicdata.sdk.model.FileVO;
-import com.tyrael.kharazim.basicdata.sdk.model.SupplierVO;
 import com.tyrael.kharazim.basicdata.sdk.service.FileServiceApi;
-import com.tyrael.kharazim.basicdata.sdk.service.SupplierServiceApi;
 import com.tyrael.kharazim.product.app.domain.ProductSku;
 import com.tyrael.kharazim.product.app.domain.ProductUnitDO;
 import com.tyrael.kharazim.product.app.mapper.ProductUnitMapper;
@@ -11,6 +9,8 @@ import com.tyrael.kharazim.product.app.service.ProductCategoryService;
 import com.tyrael.kharazim.product.app.vo.category.ProductCategoryVO;
 import com.tyrael.kharazim.product.app.vo.sku.Attribute;
 import com.tyrael.kharazim.product.app.vo.sku.ProductSkuVO;
+import com.tyrael.kharazim.purchase.sdk.model.SupplierVO;
+import com.tyrael.kharazim.purchase.sdk.service.SupplierServiceApi;
 import lombok.RequiredArgsConstructor;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.stereotype.Component;

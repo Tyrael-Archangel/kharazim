@@ -3,11 +3,11 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.tyrael</groupId>
-        <artifactId>kharazim-product</artifactId>
+        <artifactId>kharazim-purchase</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>kharazim-product-app</artifactId>
+    <artifactId>kharazim-purchase-api</artifactId>
 
     <profiles>
         <profile>
@@ -18,7 +18,7 @@
             <dependencies>
                 <dependency>
                     <groupId>com.tyrael</groupId>
-                    <artifactId>kharazim-lib-dubbo-registry-redis</artifactId>
+                    <artifactId>kharazim-lib-discovery-redis</artifactId>
                 </dependency>
             </dependencies>
         </profile>
@@ -28,7 +28,7 @@
             <dependencies>
                 <dependency>
                     <groupId>com.tyrael</groupId>
-                    <artifactId>kharazim-lib-dubbo-registry-nacos</artifactId>
+                    <artifactId>kharazim-lib-discovery-nacos</artifactId>
                 </dependency>
             </dependencies>
         </profile>
@@ -38,69 +38,55 @@
 
         <dependency>
             <groupId>com.tyrael</groupId>
-            <artifactId>kharazim-basic-data-sdk</artifactId>
+            <artifactId>kharazim-purchase-app</artifactId>
         </dependency>
-
-        <dependency>
-            <groupId>com.tyrael</groupId>
-            <artifactId>kharazim-user-sdk</artifactId>
-        </dependency>
-
         <dependency>
             <groupId>com.tyrael</groupId>
             <artifactId>kharazim-purchase-sdk</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-bootstrap</artifactId>
+            <groupId>com.tyrael</groupId>
+            <artifactId>kharazim-lib-web</artifactId>
         </dependency>
 
         <dependency>
             <groupId>com.tyrael</groupId>
-            <artifactId>kharazim-lib-dubbo</artifactId>
+            <artifactId>kharazim-lib-test</artifactId>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>com.tyrael</groupId>
-            <artifactId>kharazim-lib-cache</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.tyrael</groupId>
-            <artifactId>kharazim-lib-id-generator</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.tyrael</groupId>
-            <artifactId>kharazim-lib-mybatis</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.tyrael</groupId>
-            <artifactId>kharazim-lib-export</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>jakarta.servlet</groupId>
-            <artifactId>jakarta.servlet-api</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.github.xiaoymin</groupId>
-            <artifactId>knife4j-openapi3-jakarta-spring-boot-starter</artifactId>
-            <version>${knife4j.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.mysql</groupId>
-            <artifactId>mysql-connector-j</artifactId>
-            <scope>runtime</scope>
+            <artifactId>kharazim-user-api-sdk</artifactId>
         </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-validation</artifactId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-tomcat</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-undertow</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>io.undertow</groupId>
+                    <artifactId>undertow-websockets-jsr</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
     </dependencies>

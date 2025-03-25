@@ -15,10 +15,10 @@ spring:
           uri: lb://kharazim-user-api
           predicates:
             - Path=
-              /user-api/**,
               /user/**,
               /auth/**,
-              /roles/**
+              /roles/**,
+              /user-api/**
           filters:
             - RewritePath=/user-api/?(?<segment>.*), /$\{segment}
 
@@ -26,13 +26,12 @@ spring:
           uri: lb://kharazim-basic-data
           predicates:
             - Path=
-              /basic-api/**,
               /system/**,
               /clinic/**,
               /customer/**,
               /recharge-card-type/**,
               /recharge-card/**,
-              /supplier/**
+              /basic-api/**
           filters:
             - RewritePath=/basic-api/?(?<segment>.*), /$\{segment}
 
@@ -40,23 +39,31 @@ spring:
           uri: lb://kharazim-product
           predicates:
             - Path=
-              /product-api/**,
-              /product/**
+              /product/**,
+              /product-api/**
           filters:
             - RewritePath=/product-api/?(?<segment>.*), /$\{segment}
+
+        - id: purchase_api_route
+          uri: lb://kharazim-purchase
+          predicates:
+            - Path=
+              /supplier/**,
+              /purchase-api/**
+          filters:
+            - RewritePath=/purchase-api/?(?<segment>.*), /$\{segment}
 
 knife4j:
   gateway:
     routes:
       - name: 用户服务
-        url: /user-api/v3/api-docs?group=default
-        service-name: user-api-service
+        url: /user-api/v3/api-docs
       - name: 基础服务
-        url: /basic-api/v3/api-docs?group=default
-        service-name: basic-api-service
+        url: /basic-api/v3/api-docs
       - name: 商品服务
-        url: /product-api/v3/api-docs?group=default
-        service-name: basic-api-service
+        url: /product-api/v3/api-docs
+      - name: 采购服务
+        url: /purchase-api/v3/api-docs
     basic:
       enable: true
 
