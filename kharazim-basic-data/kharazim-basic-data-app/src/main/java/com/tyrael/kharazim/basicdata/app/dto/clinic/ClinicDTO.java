@@ -29,9 +29,6 @@ public class ClinicDTO {
     @Schema(description = "诊所（机构）图片")
     private String image;
 
-    @Schema(description = "诊所（机构）图片地址")
-    private String imageUrl;
-
     @Schema(description = "状态")
     private ClinicStatus status;
 

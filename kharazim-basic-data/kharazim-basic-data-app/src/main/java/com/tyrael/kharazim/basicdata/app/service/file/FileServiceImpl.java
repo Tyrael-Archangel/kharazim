@@ -21,10 +21,7 @@ import org.springframework.stereotype.Service;
 import java.io.*;
 import java.nio.file.NotDirectoryException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -196,17 +193,6 @@ public class FileServiceImpl implements FileService {
 
 //      String url = "http://localhost:9408/kharazim-api/system/file/fetch/" + fileId;
         return "/kharazim-api/system/file/fetch/" + fileId;
-    }
-
-    @Override
-    public List<FileDTO> getFiles(List<String> fileIds) {
-        if (fileIds == null || fileIds.isEmpty()) {
-            return new ArrayList<>();
-        }
-        return fileIds.stream()
-                .filter(StringUtils::isNotBlank)
-                .map(fileId -> new FileDTO(fileId, this.getUrl(fileId)))
-                .collect(Collectors.toList());
     }
 
 }

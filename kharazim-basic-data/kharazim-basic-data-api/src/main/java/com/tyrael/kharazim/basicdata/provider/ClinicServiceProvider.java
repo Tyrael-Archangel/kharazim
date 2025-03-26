@@ -51,7 +51,6 @@ public class ClinicServiceProvider implements ClinicServiceApi {
                 .name(clinicDTO.getName())
                 .englishName(clinicDTO.getEnglishName())
                 .image(clinicDTO.getImage())
-                .imageUrl(clinicDTO.getImageUrl())
                 .build();
     }
 

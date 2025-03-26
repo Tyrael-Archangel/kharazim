@@ -26,9 +26,6 @@ public class CustomerSalesConsultantVO {
     @Schema(description = "专属销售顾问头像")
     private String salesConsultantAvatar;
 
-    @Schema(description = "专属销售顾问头像链接")
-    private String salesConsultantAvatarUrl;
-
     @Schema(description = "更新时间")
     private LocalDateTime updateTime;
 

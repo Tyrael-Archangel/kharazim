@@ -4,7 +4,6 @@ import com.tyrael.kharazim.base.exception.BusinessException;
 import com.tyrael.kharazim.basicdata.app.constant.BasicDataDictConstants;
 import com.tyrael.kharazim.basicdata.app.domain.customer.*;
 import com.tyrael.kharazim.basicdata.app.dto.customer.customer.*;
-import com.tyrael.kharazim.basicdata.app.service.file.FileService;
 import com.tyrael.kharazim.basicdata.sdk.service.DictServiceApi;
 import com.tyrael.kharazim.user.sdk.model.UserSimpleVO;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +24,6 @@ import java.util.stream.Collectors;
 public class CustomerConverter {
 
     private final DictServiceApi dictService;
-    private final FileService fileService;
 
     /**
      * Customers -> CustomerBaseVOs
@@ -134,7 +132,6 @@ public class CustomerConverter {
                 .serviceUserCode(customerServiceUser.getServiceUserCode())
                 .serviceUserName(user.getNickName())
                 .serviceUserAvatar(user.getAvatar())
-                .serviceUserAvatarUrl(fileService.getUrl(user.getAvatar()))
                 .updateTime(customerServiceUser.getUpdateTime())
                 .build();
     }
@@ -148,7 +145,6 @@ public class CustomerConverter {
                 .salesConsultantCode(customerSalesConsultant.getSalesConsultantCode())
                 .salesConsultantName(user.getNickName())
                 .salesConsultantAvatar(user.getAvatar())
-                .salesConsultantAvatarUrl(fileService.getUrl(user.getAvatar()))
                 .updateTime(customerSalesConsultant.getUpdateTime())
                 .build();
     }

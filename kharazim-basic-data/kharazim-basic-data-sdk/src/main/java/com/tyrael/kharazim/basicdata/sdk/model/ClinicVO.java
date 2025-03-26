@@ -25,6 +25,4 @@ public class ClinicVO implements Serializable {
 
     private String image;
 
-    private String imageUrl;
-
 }

@@ -6,7 +6,6 @@ import com.tyrael.kharazim.user.sdk.model.AuthUser;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.util.List;
 
 /**
  * @author Tyrael Archangel
@@ -49,13 +48,5 @@ public interface FileService {
      * @return 文件链接地址
      */
     String getUrl(String fileId);
-
-    /**
-     * 批量获取文件链接地址
-     *
-     * @param fileIds 文件IDs
-     * @return 文件链接地址
-     */
-    List<FileDTO> getFiles(List<String> fileIds);
 
 }
