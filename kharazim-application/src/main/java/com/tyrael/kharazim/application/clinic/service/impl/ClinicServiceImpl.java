@@ -110,7 +110,6 @@ public class ClinicServiceImpl implements ClinicService {
                 .name(clinic.getName())
                 .englishName(clinic.getEnglishName())
                 .image(clinic.getImage())
-                .imageUrl(fileService.getUrl(clinic.getImage()))
                 .status(clinic.getStatus())
                 .build();
     }

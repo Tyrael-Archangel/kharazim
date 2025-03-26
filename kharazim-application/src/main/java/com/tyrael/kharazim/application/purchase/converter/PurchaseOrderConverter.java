@@ -8,8 +8,6 @@ import com.tyrael.kharazim.application.purchase.domain.*;
 import com.tyrael.kharazim.application.purchase.vo.PurchaseOrderVO;
 import com.tyrael.kharazim.application.supplier.domain.SupplierDO;
 import com.tyrael.kharazim.application.supplier.mapper.SupplierMapper;
-import com.tyrael.kharazim.application.system.dto.file.FileVO;
-import com.tyrael.kharazim.application.system.service.FileService;
 import com.tyrael.kharazim.common.util.CollectionUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -28,7 +26,6 @@ public class PurchaseOrderConverter {
 
     private final ClinicMapper clinicMapper;
     private final SupplierMapper supplierMapper;
-    private final FileService fileService;
     private final ProductSkuRepository productSkuRepository;
 
     /**
@@ -53,7 +50,7 @@ public class PurchaseOrderConverter {
                                                   List<PurchaseOrderPaymentRecord> paymentRecords,
                                                   List<PurchaseOrderReceiveRecord> receiveRecords) {
 
-        ConverterHelper converterHelper = new ConverterHelper(purchaseOrders, purchaseOrderItems, paymentRecords, receiveRecords);
+        ConverterHelper converterHelper = new ConverterHelper(purchaseOrders, purchaseOrderItems, receiveRecords);
 
         Map<String, List<PurchaseOrderItem>> purchaseOrderItemGroups = CollectionUtils.safeStream(purchaseOrderItems)
                 .collect(Collectors.groupingBy(PurchaseOrderItem::getPurchaseOrderCode));
@@ -93,7 +90,7 @@ public class PurchaseOrderConverter {
                 .paymentStatus(purchaseOrder.getPaymentStatus())
                 .remark(purchaseOrder.getRemark())
                 .items(this.purchaseOrderItemVOs(purchaseOrderItems, converterHelper))
-                .paymentRecords(this.paymentRecordVOs(paymentRecords, converterHelper))
+                .paymentRecords(this.paymentRecordVOs(paymentRecords))
                 .receiveRecords(this.receiveRecordVOs(receiveRecords, converterHelper))
                 .createTime(purchaseOrder.getCreateTime())
                 .creator(purchaseOrder.getCreator())
@@ -118,7 +115,7 @@ public class PurchaseOrderConverter {
                             .categoryName(skuVO.getCategoryName())
                             .unitCode(skuVO.getUnitCode())
                             .unitName(skuVO.getUnitName())
-                            .defaultImageUrl(skuVO.getDefaultImageUrl())
+                            .defaultImage(skuVO.getDefaultImage())
                             .description(skuVO.getDescription())
                             .quantity(item.getQuantity())
                             .receivedQuantity(item.getReceivedQuantity())
@@ -130,7 +127,7 @@ public class PurchaseOrderConverter {
     }
 
     private List<PurchaseOrderVO.PurchaseOrderPaymentRecordVO> paymentRecordVOs(
-            List<PurchaseOrderPaymentRecord> paymentRecords, ConverterHelper converterHelper) {
+            List<PurchaseOrderPaymentRecord> paymentRecords) {
         return CollectionUtils.safeStream(paymentRecords)
                 .map(paymentRecord -> PurchaseOrderVO.PurchaseOrderPaymentRecordVO.builder()
                         .serialCode(paymentRecord.getSerialCode())
@@ -139,8 +136,6 @@ public class PurchaseOrderConverter {
                         .paymentUser(paymentRecord.getPaymentUser())
                         .paymentUserCode(paymentRecord.getPaymentUserCode())
                         .vouchers(paymentRecord.getVouchers())
-                        .voucherUrls(converterHelper.getFileUrls(paymentRecord.getVouchers()))
-                        .voucherFiles(converterHelper.getFiles(paymentRecord.getVouchers()))
                         .build())
                 .collect(Collectors.toList());
     }
@@ -172,7 +167,7 @@ public class PurchaseOrderConverter {
                             .categoryName(skuVO.getCategoryName())
                             .unitCode(skuVO.getUnitCode())
                             .unitName(skuVO.getUnitName())
-                            .defaultImageUrl(skuVO.getDefaultImageUrl())
+                            .defaultImage(skuVO.getDefaultImage())
                             .build();
                 }).collect(Collectors.toList());
     }
@@ -181,21 +176,17 @@ public class PurchaseOrderConverter {
 
         private final Collection<PurchaseOrder> purchaseOrders;
         private final List<PurchaseOrderItem> purchaseOrderItems;
-        private final List<PurchaseOrderPaymentRecord> paymentRecords;
         private final List<PurchaseOrderReceiveRecord> receiveRecords;
 
         private Map<String, Clinic> clinicMap;
         private Map<String, SupplierDO> supplierMap;
         private Map<String, ProductSkuVO> skuMap;
-        private Map<String, FileVO> fileMap;
 
         ConverterHelper(Collection<PurchaseOrder> purchaseOrders,
                         List<PurchaseOrderItem> purchaseOrderItems,
-                        List<PurchaseOrderPaymentRecord> paymentRecords,
                         List<PurchaseOrderReceiveRecord> receiveRecords) {
             this.purchaseOrders = purchaseOrders;
             this.purchaseOrderItems = purchaseOrderItems;
-            this.paymentRecords = paymentRecords;
             this.receiveRecords = receiveRecords;
             this.prepare();
         }
@@ -223,16 +214,6 @@ public class PurchaseOrderConverter {
                     .collect(Collectors.toSet());
             this.skuMap = productSkuRepository.mapByCodes(skuCodes);
 
-            List<String> vouchers = CollectionUtils.safeStream(paymentRecords)
-                    .map(PurchaseOrderPaymentRecord::getVouchers)
-                    .filter(Objects::nonNull)
-                    .flatMap(List::stream)
-                    .filter(Objects::nonNull)
-                    .distinct()
-                    .collect(Collectors.toList());
-            this.fileMap = fileService.getFiles(vouchers)
-                    .stream()
-                    .collect(Collectors.toMap(FileVO::getFileId, e -> e));
         }
 
         public Clinic getClinic(String clinicCode) {
@@ -247,22 +228,6 @@ public class PurchaseOrderConverter {
             return supplierMap.get(supplierCode);
         }
 
-        public List<FileVO> getFiles(List<String> vouchers) {
-            return CollectionUtils.safeStream(vouchers)
-                    .filter(Objects::nonNull)
-                    .map(fileMap::get)
-                    .filter(Objects::nonNull)
-                    .collect(Collectors.toList());
-        }
-
-        public List<String> getFileUrls(List<String> vouchers) {
-            return CollectionUtils.safeStream(vouchers)
-                    .filter(Objects::nonNull)
-                    .map(fileMap::get)
-                    .filter(Objects::nonNull)
-                    .map(FileVO::getUrl)
-                    .collect(Collectors.toList());
-        }
     }
 
 }

@@ -1,6 +1,5 @@
 package com.tyrael.kharazim.application.product.vo.sku;
 
-import com.tyrael.kharazim.application.system.dto.file.FileVO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -43,17 +42,8 @@ public class ProductSkuVO {
     @Schema(description = "默认图片")
     private String defaultImage;
 
-    @Schema(description = "默认图片链接")
-    private String defaultImageUrl;
-
     @Schema(description = "图片")
     private List<String> images;
-
-    @Schema(description = "图片链接")
-    private List<String> imageUrls;
-
-    @Schema(description = "图片链接")
-    private List<FileVO> imageFiles;
 
     @Schema(description = "描述信息")
     private String description;
