@@ -71,7 +71,7 @@ public class OutboundOrderVO {
         private String unitName;
 
         @Schema(description = "默认图片链接")
-        private String defaultImageUrl;
+        private String defaultImage;
 
         @Schema(description = "数量")
         private Integer quantity;
