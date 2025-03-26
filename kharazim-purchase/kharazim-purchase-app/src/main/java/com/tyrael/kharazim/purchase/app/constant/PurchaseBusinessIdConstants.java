@@ -12,6 +12,8 @@ import lombok.Getter;
 public enum PurchaseBusinessIdConstants implements BusinessIdConstant<PurchaseBusinessIdConstants> {
 
     SUPPLIER("供应商", "SU"),
+    PURCHASE_ORDER("采购订单", 3, "PO"),
+    PURCHASE_ORDER_RECEIVE("采购单收货流水", "POI"),
 
     ;
 

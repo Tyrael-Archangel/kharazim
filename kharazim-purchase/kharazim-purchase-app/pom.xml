@@ -44,6 +44,11 @@
 
         <dependency>
             <groupId>com.tyrael</groupId>
+            <artifactId>kharazim-product-sdk</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.tyrael</groupId>
             <artifactId>kharazim-user-sdk</artifactId>
         </dependency>
 

@@ -5,7 +5,7 @@ import com.tyrael.kharazim.base.dto.PageResponse;
 import com.tyrael.kharazim.product.app.service.ProductSkuService;
 import com.tyrael.kharazim.product.app.vo.sku.AddProductRequest;
 import com.tyrael.kharazim.product.app.vo.sku.PageProductSkuRequest;
-import com.tyrael.kharazim.product.app.vo.sku.ProductSkuVO;
+import com.tyrael.kharazim.product.app.vo.sku.ProductSkuDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -27,7 +27,7 @@ public class ProductSkuController {
 
     @GetMapping("/{code}")
     @Operation(summary = "商品信息")
-    public DataResponse<ProductSkuVO> getByCode(@PathVariable("code") String code) {
+    public DataResponse<ProductSkuDTO> getByCode(@PathVariable("code") String code) {
         return DataResponse.success(productSkuService.getByCode(code));
     }
 
@@ -39,7 +39,7 @@ public class ProductSkuController {
 
     @GetMapping("/page")
     @Operation(summary = "商品分页")
-    public PageResponse<ProductSkuVO> page(@ParameterObject PageProductSkuRequest pageRequest) {
+    public PageResponse<ProductSkuDTO> page(@ParameterObject PageProductSkuRequest pageRequest) {
         return productSkuService.page(pageRequest);
     }
 

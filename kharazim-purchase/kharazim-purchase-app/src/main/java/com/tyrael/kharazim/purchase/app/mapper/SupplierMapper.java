@@ -15,6 +15,8 @@ import org.apache.ibatis.annotations.Mapper;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 
 /**
@@ -75,6 +77,18 @@ public interface SupplierMapper extends BasePageMapper<SupplierDO> {
         LambdaQueryWrapper<SupplierDO> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper.in(SupplierDO::getCode, codes);
         return selectList(queryWrapper);
+    }
+
+    /**
+     * map by codes
+     *
+     * @param codes codes
+     * @return code -> SupplierDO
+     */
+    default Map<String, SupplierDO> mapByCodes(Collection<String> codes) {
+        List<SupplierDO> suppliers = this.listByCodes(codes);
+        return suppliers.stream()
+                .collect(Collectors.toMap(SupplierDO::getCode, e -> e));
     }
 
     /**

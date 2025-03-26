@@ -10,7 +10,7 @@ import com.tyrael.kharazim.product.DubboReferenceHolder;
 import com.tyrael.kharazim.product.ProductApiApplication;
 import com.tyrael.kharazim.product.app.service.ProductSkuService;
 import com.tyrael.kharazim.product.app.vo.sku.PageProductSkuRequest;
-import com.tyrael.kharazim.product.app.vo.sku.ProductSkuVO;
+import com.tyrael.kharazim.product.app.vo.sku.ProductSkuDTO;
 import com.tyrael.kharazim.product.app.vo.skupublish.PublishSkuRequest;
 import com.tyrael.kharazim.test.mock.BaseControllerTest;
 import org.junit.jupiter.api.Test;
@@ -46,7 +46,7 @@ public class PublishSkuTest extends BaseControllerTest<SkuPublishController> {
         List<String> skuCodes = productSkuService.page(pageSkuRequest)
                 .getData()
                 .stream()
-                .map(ProductSkuVO::getCode)
+                .map(ProductSkuDTO::getCode)
                 .toList();
         List<String> clinicCodes = dubboReferenceHolder.clinicServiceApi.listAll()
                 .stream()

@@ -1,7 +1,6 @@
-package com.tyrael.kharazim.product.app.service;
+package com.tyrael.kharazim.product.sdk.service;
 
-
-import com.tyrael.kharazim.product.app.vo.sku.ProductSkuDTO;
+import com.tyrael.kharazim.product.sdk.model.ProductSkuVO;
 
 import java.util.Collection;
 import java.util.List;
@@ -10,9 +9,9 @@ import java.util.stream.Collectors;
 
 /**
  * @author Tyrael Archangel
- * @since 2024/3/28
+ * @since 2025/3/25
  */
-public interface ProductSkuRepository {
+public interface ProductServiceApi {
 
     /**
      * list sku info by codes
@@ -20,7 +19,7 @@ public interface ProductSkuRepository {
      * @param skuCodes SKU codes
      * @return sku info
      */
-    List<ProductSkuDTO> listByCodes(Collection<String> skuCodes);
+    List<ProductSkuVO> listByCodes(Collection<String> skuCodes);
 
     /**
      * map sku info by codes
@@ -28,10 +27,10 @@ public interface ProductSkuRepository {
      * @param skuCodes SKU codes
      * @return sku info map
      */
-    default Map<String, ProductSkuDTO> mapByCodes(Collection<String> skuCodes) {
+    default Map<String, ProductSkuVO> mapByCodes(Collection<String> skuCodes) {
         return this.listByCodes(skuCodes)
                 .stream()
-                .collect(Collectors.toMap(ProductSkuDTO::getCode, e -> e));
+                .collect(Collectors.toMap(ProductSkuVO::getCode, e -> e));
     }
 
 }

@@ -17,6 +17,7 @@
     <modules>
         <module>kharazim-product-api</module>
         <module>kharazim-product-app</module>
+        <module>kharazim-product-sdk</module>
     </modules>
 
     <profiles>
@@ -67,6 +68,11 @@
             <dependency>
                 <groupId>com.tyrael</groupId>
                 <artifactId>kharazim-product-app</artifactId>
+                <version>${kharazim-product.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.tyrael</groupId>
+                <artifactId>kharazim-product-sdk</artifactId>
                 <version>${kharazim-product.version}</version>
             </dependency>
             <dependency>

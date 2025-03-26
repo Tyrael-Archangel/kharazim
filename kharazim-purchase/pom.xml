@@ -89,6 +89,11 @@
             </dependency>
             <dependency>
                 <groupId>com.tyrael</groupId>
+                <artifactId>kharazim-product-sdk</artifactId>
+                <version>${kharazim-product.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.tyrael</groupId>
                 <artifactId>kharazim-user-sdk</artifactId>
                 <version>${kharazim-user.version}</version>
             </dependency>

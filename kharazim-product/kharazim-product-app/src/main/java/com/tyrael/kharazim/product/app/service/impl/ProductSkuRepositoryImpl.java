@@ -4,7 +4,7 @@ import com.tyrael.kharazim.product.app.converter.ProductSkuConverter;
 import com.tyrael.kharazim.product.app.domain.ProductSku;
 import com.tyrael.kharazim.product.app.mapper.ProductSkuMapper;
 import com.tyrael.kharazim.product.app.service.ProductSkuRepository;
-import com.tyrael.kharazim.product.app.vo.sku.ProductSkuVO;
+import com.tyrael.kharazim.product.app.vo.sku.ProductSkuDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +24,7 @@ public class ProductSkuRepositoryImpl implements ProductSkuRepository {
     private final ProductSkuMapper productSkuMapper;
 
     @Override
-    public List<ProductSkuVO> listByCodes(Collection<String> skuCodes) {
+    public List<ProductSkuDTO> listByCodes(Collection<String> skuCodes) {
         if (skuCodes == null || skuCodes.isEmpty()) {
             return new ArrayList<>();
         }

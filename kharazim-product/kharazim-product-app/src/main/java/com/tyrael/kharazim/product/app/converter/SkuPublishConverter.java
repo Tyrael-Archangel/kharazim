@@ -4,7 +4,7 @@ import com.tyrael.kharazim.basicdata.sdk.model.ClinicVO;
 import com.tyrael.kharazim.basicdata.sdk.service.ClinicServiceApi;
 import com.tyrael.kharazim.product.app.domain.SkuPublish;
 import com.tyrael.kharazim.product.app.service.ProductSkuRepository;
-import com.tyrael.kharazim.product.app.vo.sku.ProductSkuVO;
+import com.tyrael.kharazim.product.app.vo.sku.ProductSkuDTO;
 import com.tyrael.kharazim.product.app.vo.skupublish.SkuPublishVO;
 import lombok.RequiredArgsConstructor;
 import org.apache.dubbo.config.annotation.DubboReference;
@@ -41,7 +41,7 @@ public class SkuPublishConverter {
             clinicCodes.add(skuPublish.getClinicCode());
         }
 
-        Map<String, ProductSkuVO> skuMap = productSkuRepository.mapByCodes(skuCodes);
+        Map<String, ProductSkuDTO> skuMap = productSkuRepository.mapByCodes(skuCodes);
         Map<String, ClinicVO> clinicMap = clinicServiceApi.mapByCodes(clinicCodes);
 
         return skuPublishes.stream()
@@ -52,7 +52,7 @@ public class SkuPublishConverter {
     }
 
     public SkuPublishVO skuPublishVO(SkuPublish skuPublish,
-                                     ProductSkuVO sku,
+                                     ProductSkuDTO sku,
                                      ClinicVO clinic) {
         SkuPublishVO skuPublishVO = new SkuPublishVO();
         skuPublishVO.setCode(skuPublish.getCode());
@@ -72,7 +72,6 @@ public class SkuPublishConverter {
         skuPublishVO.setEffectBegin(skuPublish.getEffectBegin());
         skuPublishVO.setEffectEnd(skuPublish.getEffectEnd());
         skuPublishVO.setDefaultImage(sku.getDefaultImage());
-        skuPublishVO.setDefaultImageUrl(sku.getDefaultImageUrl());
         return skuPublishVO;
     }
 

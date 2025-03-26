@@ -1,14 +1,12 @@
 package com.tyrael.kharazim.product.app.converter;
 
-import com.tyrael.kharazim.basicdata.sdk.model.FileVO;
-import com.tyrael.kharazim.basicdata.sdk.service.FileServiceApi;
 import com.tyrael.kharazim.product.app.domain.ProductSku;
 import com.tyrael.kharazim.product.app.domain.ProductUnitDO;
 import com.tyrael.kharazim.product.app.mapper.ProductUnitMapper;
 import com.tyrael.kharazim.product.app.service.ProductCategoryService;
 import com.tyrael.kharazim.product.app.vo.category.ProductCategoryVO;
 import com.tyrael.kharazim.product.app.vo.sku.Attribute;
-import com.tyrael.kharazim.product.app.vo.sku.ProductSkuVO;
+import com.tyrael.kharazim.product.app.vo.sku.ProductSkuDTO;
 import com.tyrael.kharazim.purchase.sdk.model.SupplierVO;
 import com.tyrael.kharazim.purchase.sdk.service.SupplierServiceApi;
 import lombok.RequiredArgsConstructor;
@@ -31,24 +29,22 @@ public class ProductSkuConverter {
 
     @DubboReference
     private SupplierServiceApi supplierServiceApi;
-    @DubboReference
-    private FileServiceApi fileServiceApi;
 
     /**
      * ProductSku -> ProductSkuVO
      */
-    public ProductSkuVO skuVO(ProductSku sku) {
+    public ProductSkuDTO skuVO(ProductSku sku) {
         return this.skuVO(sku,
                 productCategoryService.find(sku.getCategoryCode()),
                 supplierServiceApi.findByCode(sku.getSupplierCode()),
                 unitMapper.findByCode(sku.getUnitCode()));
     }
 
-    private ProductSkuVO skuVO(ProductSku sku,
-                               ProductCategoryVO category,
-                               SupplierVO supplier,
-                               ProductUnitDO unit) {
-        ProductSkuVO skuVO = new ProductSkuVO();
+    private ProductSkuDTO skuVO(ProductSku sku,
+                                ProductCategoryVO category,
+                                SupplierVO supplier,
+                                ProductUnitDO unit) {
+        ProductSkuDTO skuVO = new ProductSkuDTO();
         skuVO.setCode(sku.getCode());
         skuVO.setName(sku.getName());
         skuVO.setCategoryCode(category.getCode());
@@ -59,14 +55,7 @@ public class ProductSkuConverter {
         skuVO.setUnitCode(unit.getCode());
         skuVO.setUnitName(unit.getName());
         skuVO.setDefaultImage(sku.getDefaultImage());
-        skuVO.setDefaultImageUrl(fileServiceApi.getUrl(sku.getDefaultImage()));
         skuVO.setImages(sku.getImages());
-        List<FileVO> files = fileServiceApi.getFiles(sku.getImages());
-        List<String> imageUrls = files.stream()
-                .map(FileVO::getUrl)
-                .collect(Collectors.toList());
-        skuVO.setImageUrls(imageUrls);
-        skuVO.setImageFiles(files);
         skuVO.setDescription(sku.getDescription());
         skuVO.setAttributes(sku.getAttributes());
         skuVO.setAttributesDesc(Attribute.join(sku.getAttributes()));
@@ -77,7 +66,7 @@ public class ProductSkuConverter {
     /**
      * ProductSku -> ProductSkuVO
      */
-    public List<ProductSkuVO> skuVOs(Collection<ProductSku> skus) {
+    public List<ProductSkuDTO> skuVOs(Collection<ProductSku> skus) {
         Set<String> supplierCodes = new HashSet<>();
         Set<String> unitCodes = new HashSet<>();
         for (ProductSku sku : skus) {

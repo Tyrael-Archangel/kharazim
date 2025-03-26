@@ -1,7 +1,6 @@
 package com.tyrael.kharazim.user.app.converter;
 
 import com.tyrael.kharazim.base.util.CollectionUtils;
-import com.tyrael.kharazim.basicdata.sdk.service.FileServiceApi;
 import com.tyrael.kharazim.user.app.domain.User;
 import com.tyrael.kharazim.user.app.dto.auth.OnlineUserDTO;
 import com.tyrael.kharazim.user.app.dto.role.response.RoleDTO;
@@ -12,7 +11,6 @@ import com.tyrael.kharazim.user.app.service.component.TokenManager;
 import com.tyrael.kharazim.user.sdk.model.AuthUser;
 import com.tyrael.kharazim.user.sdk.vo.ClientInfo;
 import lombok.RequiredArgsConstructor;
-import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -27,9 +25,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserConverter {
 
-    @DubboReference
-    private FileServiceApi fileService;
-
     /**
      * User、UserRoleDTO -> UserDTO
      */
@@ -41,7 +36,6 @@ public class UserConverter {
                 .nickName(user.getNickName())
                 .englishName(user.getEnglishName())
                 .avatar(user.getAvatar())
-                .avatarUrl(fileService.getUrl(user.getAvatar()))
                 .gender(user.getGender())
                 .birthday(user.getBirthday())
                 .phone(user.getPhone())
@@ -72,7 +66,6 @@ public class UserConverter {
                 .nickName(user.getNickName())
                 .englishName(user.getEnglishName())
                 .avatar(user.getAvatar())
-                .avatarUrl(fileService.getUrl(user.getAvatar()))
                 .gender(user.getGender())
                 .birthday(user.getBirthday())
                 .phone(user.getPhone())
@@ -116,7 +109,6 @@ public class UserConverter {
         onlineUser.setUsername(user.getName());
         onlineUser.setUserNickName(user.getNickName());
         onlineUser.setUserAvatar(user.getAvatar());
-        onlineUser.setUserAvatarUrl(fileService.getUrl(user.getAvatar()));
         onlineUser.setLoginTime(loggedUser.getLoggedTime());
         onlineUser.setLastRefreshTime(loggedUser.getLastRefreshTime());
         ClientInfo clientInfo = loggedUser.getClientInfo();

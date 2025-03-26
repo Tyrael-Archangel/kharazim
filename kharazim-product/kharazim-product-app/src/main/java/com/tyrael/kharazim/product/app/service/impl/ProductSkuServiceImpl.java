@@ -12,7 +12,7 @@ import com.tyrael.kharazim.product.app.mapper.ProductUnitMapper;
 import com.tyrael.kharazim.product.app.service.ProductSkuService;
 import com.tyrael.kharazim.product.app.vo.sku.AddProductRequest;
 import com.tyrael.kharazim.product.app.vo.sku.PageProductSkuRequest;
-import com.tyrael.kharazim.product.app.vo.sku.ProductSkuVO;
+import com.tyrael.kharazim.product.app.vo.sku.ProductSkuDTO;
 import com.tyrael.kharazim.purchase.sdk.service.SupplierServiceApi;
 import lombok.RequiredArgsConstructor;
 import org.apache.dubbo.config.annotation.DubboReference;
@@ -43,7 +43,7 @@ public class ProductSkuServiceImpl implements ProductSkuService {
 
     @Override
     @Transactional(readOnly = true)
-    public ProductSkuVO getByCode(String code) {
+    public ProductSkuDTO getByCode(String code) {
         ProductSku sku = productSkuMapper.getByCode(code);
         DomainNotFoundException.assertFound(sku, code);
 
@@ -85,7 +85,7 @@ public class ProductSkuServiceImpl implements ProductSkuService {
     }
 
     @Override
-    public PageResponse<ProductSkuVO> page(PageProductSkuRequest pageRequest) {
+    public PageResponse<ProductSkuDTO> page(PageProductSkuRequest pageRequest) {
         PageResponse<ProductSku> skuPage = productSkuMapper.page(pageRequest);
         return PageResponse.success(
                 productSkuConverter.skuVOs(skuPage.getData()),
