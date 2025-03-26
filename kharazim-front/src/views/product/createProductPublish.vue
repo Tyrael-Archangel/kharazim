@@ -70,7 +70,7 @@
 
     <div style="float: right; margin-top: 15px">
       <el-button @click="cancelCreateProductPublish">取消</el-button>
-      <el-button type="primary" @click="confirmCreateProductPublish"> 确定 </el-button>
+      <el-button type="primary" @click="confirmCreateProductPublish"> 确定</el-button>
     </div>
   </div>
   <br />
@@ -113,7 +113,7 @@
         </el-form-item>
         <el-form-item class="page-form-block-search-block">
           <el-button type="primary" @click="loadProducts">查询</el-button>
-          <el-button type="primary" @click="clearPageRequestAndLoadProducts"> 重置 </el-button>
+          <el-button type="primary" @click="clearPageRequestAndLoadProducts"> 重置</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -159,7 +159,7 @@
     <template #footer>
       <div class="dialog-footer">
         <el-button @click="closeSelectDialog">取消</el-button>
-        <el-button :disabled="selectedAtTable === null" type="primary" @click="confirmSelectProduct"> 确定 </el-button>
+        <el-button :disabled="selectedAtTable === null" type="primary" @click="confirmSelectProduct"> 确定</el-button>
       </div>
     </template>
   </el-dialog>
@@ -169,6 +169,7 @@
 import { onMounted, reactive, ref, toRaw } from "vue";
 import { AxiosResponse } from "axios";
 import axios from "@/utils/http.js";
+import { fileUrl, fileUrls } from "@/utils/fileUrl.ts";
 import { ElMessage, ElTable } from "element-plus";
 import { dateTimeFormat } from "@/utils/DateUtil.js";
 import { ProductCategory, ProductInfo } from "./productInfo.vue";
@@ -264,6 +265,10 @@ const productPageData = ref({ totalCount: 0, data: [] });
 
 function loadProducts() {
   axios.get("/kharazim-api/product/sku/page", { params: toRaw(pageRequest) }).then((response: AxiosResponse) => {
+    response.data.data.forEach((product: ProductInfo) => {
+      product.defaultImageUrl = fileUrl(product.defaultImage);
+      product.imageUrls = fileUrls(product.images);
+    });
     productPageData.value = response.data;
   });
 }

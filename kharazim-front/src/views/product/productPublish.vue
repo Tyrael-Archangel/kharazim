@@ -68,7 +68,7 @@
       <el-table-column label="商品名称" prop="skuName" width="160" />
       <el-table-column align="center" label="商品主图" width="110">
         <template v-slot="{ row }">
-          <el-image v-if="row.defaultImageUrl" :src="row.defaultImageUrl" style="width: 80px"></el-image>
+          <el-image v-if="row.defaultImageUrl" :src="row.defaultImageUrl" style="width: 80px" />
         </template>
       </el-table-column>
       <el-table-column align="center" label="发布价格" prop="price" width="120" />
@@ -116,6 +116,7 @@ import { ElMessage, ElMessageBox } from "element-plus";
 import { ClinicVO, loadClinics } from "@/views/clinic/clinicManagement.vue";
 import { DictOption, loadDictOptions } from "@/views/dict/dict-item";
 import { useRouter } from "vue-router";
+import { fileUrl } from "@/utils/fileUrl.ts";
 
 const router = useRouter();
 
@@ -180,6 +181,9 @@ function clearPageRequestAndLoadProductPublish() {
 
 function loadProductPublish() {
   axios.get("/kharazim-api/product/publish/page", { params: toRaw(pageRequest) }).then((response: AxiosResponse) => {
+    response.data.data.forEach((item: SkuPublish) => {
+      item.defaultImageUrl = fileUrl(item.defaultImage);
+    });
     skuPublishPageData.value = response.data;
   });
 }

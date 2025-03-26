@@ -57,7 +57,7 @@
         <el-table-column align="center" label="单位" prop="unitName" width="80" />
         <el-table-column align="center" label="商品主图">
           <template v-slot="{ row }">
-            <el-image v-if="row.defaultImageUrl" :src="row.defaultImageUrl" style="width: 40px"></el-image>
+            <el-image v-if="fileUrl(row.defaultImage)" :src="fileUrl(row.defaultImage)" style="width: 40px"/>
           </template>
         </el-table-column>
       </el-table>
@@ -84,6 +84,7 @@ import { AxiosResponse } from "axios";
 import { dateTimeFormat } from "@/utils/DateUtil";
 import { ClinicVO, loadClinics } from "@/views/clinic/clinicManagement.vue";
 import { DictOption, loadDictOptions } from "@/views/dict/dict-item";
+import { fileUrl } from "@/utils/fileUrl";
 
 const inventoryLogPageData = ref({ totalCount: 0, data: [] });
 
