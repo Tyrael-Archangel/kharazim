@@ -62,7 +62,7 @@
         </el-table-column>
         <el-table-column align="center" label="商品主图">
           <template v-slot="{ row }">
-            <el-image v-if="row.defaultImageUrl" :src="row.defaultImageUrl" style="width: 40px" />
+            <el-image v-if="fileUrl(row.defaultImage)" :src="fileUrl(row.defaultImage)" style="width: 40px" />
           </template>
         </el-table-column>
         <el-table-column align="center" label="单位" prop="unitName" />
@@ -104,6 +104,7 @@
 <script lang="ts" setup>
 import { onMounted, reactive, ref, toRaw } from "vue";
 import axios from "@/utils/http.js";
+import { fileUrl } from "@/utils/fileUrl.ts";
 import { AxiosResponse } from "axios";
 import { ClinicVO, loadClinics } from "@/views/clinic/clinicManagement.vue";
 

@@ -142,6 +142,7 @@ import { dateFormat } from "@/utils/DateUtil";
 import { loadSuppliers, SupplierVO } from "@/views/supplier/supplier.vue";
 import { ClinicVO, loadClinics } from "@/views/clinic/clinicManagement.vue";
 import { DictOption, loadDictOptions } from "@/views/dict/dict-item";
+import { fileUrl } from "@/utils/fileUrl.ts";
 
 const purchaseOrderPageData = ref({ totalCount: 0, data: [] });
 
@@ -191,6 +192,9 @@ function loadPurchaseOrders() {
       },
     })
     .then((response: AxiosResponse) => {
+      response.data.data.forEach((item: any) => {
+        item.defaultImageUrl = fileUrl(item.defaultImage);
+      });
       purchaseOrderPageData.value = response.data;
     });
 }

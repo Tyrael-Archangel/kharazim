@@ -25,7 +25,7 @@
       <el-table-column label="用户名" min-width="120" prop="name" />
       <el-table-column align="center" label="头像" width="80">
         <template v-slot="{ row }">
-          <el-avatar v-if="row.avatarUrl" :src="row.avatarUrl" />
+          <el-avatar v-if="fileUrl(row.avatar)" :src="fileUrl(row.avatar)" />
         </template>
       </el-table-column>
       <el-table-column label="用户昵称" min-width="120" prop="nickName" />
@@ -81,6 +81,7 @@
 
 <script lang="ts" setup>
 import axios from "@/utils/http.js";
+import { fileUrl } from "@/utils/fileUrl.ts";
 import { DictOption, loadDictOptions } from "@/views/dict/dict-item";
 
 import { onMounted, reactive, ref, toRaw } from "vue";

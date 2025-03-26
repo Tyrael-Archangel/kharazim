@@ -14,7 +14,7 @@
                   <el-text>{{ currentUser.nickName }}</el-text>
                 </div>
                 <div class="current-user-avatar">
-                  <el-avatar v-if="currentUser && currentUser.avatarUrl" :src="currentUser.avatarUrl" />
+                  <el-avatar v-if="currentUser && fileUrl(currentUser.avatar)" :src="fileUrl(currentUser.avatar)" />
                 </div>
                 <el-button class="change-password" @click="showChangeCurrentUserPassword">修改密码</el-button>
                 <el-button class="logout" @click="logout">注销</el-button>
@@ -61,6 +61,7 @@ import { getToken, removeToken } from "@/utils/auth.js";
 import { useRouter } from "vue-router";
 import { onMounted, reactive, ref } from "vue";
 import axios from "@/utils/http.js";
+import { fileUrl } from "@/utils/fileUrl.ts";
 import { AxiosResponse } from "axios";
 import type { FormRules } from "element-plus";
 import { ElMessage, FormInstance } from "element-plus";
@@ -85,7 +86,6 @@ const currentUser = ref({
   nickName: "",
   englishName: "",
   avatar: "",
-  avatarUrl: "",
   gender: "",
   birthday: "",
   phone: "",

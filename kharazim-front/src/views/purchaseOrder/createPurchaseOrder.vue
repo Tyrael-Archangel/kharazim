@@ -137,6 +137,7 @@ import Decimal from "decimal.js";
 import { useRouter } from "vue-router";
 import { loadSuppliers, SupplierVO } from "@/views/supplier/supplier.vue";
 import { ClinicVO, loadClinics } from "@/views/clinic/clinicManagement.vue";
+import { fileUrl } from "@/utils/fileUrl.ts";
 
 const router = useRouter();
 
@@ -243,6 +244,9 @@ function loadProductSku() {
       params: pageProductSkuRequest,
     })
     .then((response: AxiosResponse) => {
+      response.data.data.forEach((item: ProductSku) => {
+        item.defaultImageUrl = fileUrl(item.defaultImage);
+      });
       productSkuPage.value = response.data.data;
       pageInfo.totalCount = response.data.totalCount;
       showSelectedSku();

@@ -59,8 +59,7 @@
             :src="row.defaultImageUrl"
             preview-teleported
             style="width: 80px"
-          >
-          </el-image>
+          />
         </template>
       </el-table-column>
       <el-table-column label="商品单位" prop="unitName" width="100" />
@@ -158,6 +157,7 @@
 import { onMounted, reactive, ref, toRaw } from "vue";
 import { AxiosResponse } from "axios";
 import axios from "@/utils/http.js";
+import { fileUrl, fileUrls } from "@/utils/fileUrl.ts";
 import MultiImageUpload from "@/components/upload/MultiImageUpload.vue";
 import SingleImageUpload from "@/components/upload/SingleImageUpload.vue";
 import { UploadFileObj } from "@/components/upload/UploadFileObj";
@@ -208,9 +208,13 @@ function clearPageRequestAndLoadProducts() {
 }
 
 function loadProducts() {
-  axios
-    .get("/kharazim-api/product/sku/page", { params: toRaw(pageRequest) })
-    .then((response: AxiosResponse) => (productPageData.value = response.data));
+  axios.get("/kharazim-api/product/sku/page", { params: toRaw(pageRequest) }).then((response: AxiosResponse) => {
+    productPageData.value = response.data;
+    productPageData.value.data.forEach((item: ProductInfo) => {
+      item.defaultImageUrl = fileUrl(item.defaultImage);
+      item.imageUrls = fileUrls(item.images);
+    });
+  });
 }
 
 export interface ProductCategory {

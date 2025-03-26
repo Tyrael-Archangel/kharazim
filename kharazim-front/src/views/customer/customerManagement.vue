@@ -123,7 +123,7 @@
           <el-text class="customer-block-header">会员专属客服</el-text>
           <div class="customer-service-user">
             <div class="customer-service-user-avatar">
-              <el-avatar :src="customerServiceUserData.serviceUserAvatarUrl" />
+              <el-avatar :src="fileUrl(customerServiceUserData.serviceUserAvatar)" />
             </div>
             <el-text>{{ customerServiceUserData.serviceUserName }}</el-text>
           </div>
@@ -132,7 +132,7 @@
           <el-text class="customer-block-header">会员专属销售顾问</el-text>
           <div class="customer-service-user">
             <div class="customer-service-user-avatar">
-              <el-avatar :src="customerConsultant.salesConsultantAvatarUrl" />
+              <el-avatar :src="fileUrl(customerConsultant.salesConsultantAvatar)" />
             </div>
             <el-text>{{ customerConsultant.salesConsultantName }}</el-text>
           </div>
@@ -225,6 +225,7 @@ import * as echarts from "echarts/core";
 import { FormInstance } from "element-plus";
 import { DictOption, loadDictOptions } from "@/views/dict/dict-item";
 import { useRouter } from "vue-router";
+import { fileUrl } from "@/utils/fileUrl.ts";
 
 const router = useRouter();
 
@@ -446,7 +447,6 @@ interface CustomerServiceUser {
   serviceUserCode: string;
   serviceUserName: string;
   serviceUserAvatar: string;
-  serviceUserAvatarUrl: string;
   updateTime: string;
 }
 
@@ -454,7 +454,6 @@ const customerServiceUserData = ref<CustomerServiceUser>({
   serviceUserCode: "",
   serviceUserName: "",
   serviceUserAvatar: "",
-  serviceUserAvatarUrl: "",
   updateTime: "",
 });
 
@@ -468,7 +467,6 @@ interface CustomerSalesConsultant {
   salesConsultantCode: string;
   salesConsultantName: string;
   salesConsultantAvatar: string;
-  salesConsultantAvatarUrl: string;
   updateTime: string;
 }
 
@@ -476,7 +474,6 @@ const customerConsultant = ref<CustomerSalesConsultant>({
   salesConsultantCode: "",
   salesConsultantName: "",
   salesConsultantAvatar: "",
-  salesConsultantAvatarUrl: "",
   updateTime: "",
 });
 

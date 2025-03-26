@@ -105,6 +105,8 @@ onMounted(() => {
 <script lang="ts">
 // @ts-ignore
 import axios from "@/utils/http.js";
+// @ts-ignore
+import { fileUrl } from "@/utils/fileUrl.ts";
 
 export interface ClinicVO {
   code: string;
@@ -118,6 +120,9 @@ export interface ClinicVO {
 
 export async function loadClinics(): Promise<ClinicVO[]> {
   let res = await axios.get("/kharazim-api/clinic/list");
+  res.data.data.forEach((clinic: ClinicVO) => {
+    clinic.imageUrl = fileUrl(clinic.image);
+  });
   return res.data.data;
 }
 </script>

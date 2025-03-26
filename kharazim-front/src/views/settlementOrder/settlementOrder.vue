@@ -61,8 +61,11 @@
                 <el-table-column align="center" type="index" width="50" />
                 <el-table-column align="center" label="商品主图" width="160">
                   <template v-slot="{ row: product }">
-                    <el-image v-if="product.defaultImageUrl" :src="product.defaultImageUrl" style="width: 50px">
-                    </el-image>
+                    <el-image
+                      v-if="fileUrl(product.defaultImage)"
+                      :src="fileUrl(product.defaultImage)"
+                      style="width: 50px"
+                    />
                   </template>
                 </el-table-column>
                 <el-table-column label="商品编码" prop="skuCode" />
@@ -199,6 +202,7 @@ import { ClinicVO, loadClinics } from "@/views/clinic/clinicManagement.vue";
 import { loadSimpleCustomers, SimpleCustomer } from "@/views/customer/customer-list";
 import { DictOption, loadDictOptions } from "@/views/dict/dict-item";
 import { useRouter } from "vue-router";
+import { fileUrl } from "@/utils/fileUrl.ts";
 
 const router = useRouter();
 
@@ -211,7 +215,6 @@ interface SettlementOrderItem {
   supplierName: string;
   unitCode: string;
   unitName: string;
-  defaultImageUrl: string;
   description: string;
   quantity: number;
   price: number;

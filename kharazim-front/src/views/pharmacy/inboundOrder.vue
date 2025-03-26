@@ -57,7 +57,11 @@
                 <el-table-column align="center" type="index" width="50" />
                 <el-table-column align="center" label="商品主图" width="120">
                   <template v-slot="{ row: item }">
-                    <el-image v-if="item.defaultImageUrl" :src="item.defaultImageUrl" style="width: 50px"></el-image>
+                    <el-image
+                      v-if="fileUrl(item.defaultImage)"
+                      :src="fileUrl(item.defaultImage)"
+                      style="width: 50px"
+                    />
                   </template>
                 </el-table-column>
                 <el-table-column label="商品编码" prop="skuCode" />
@@ -123,7 +127,7 @@
       <el-table-column align="center" type="index" width="50" />
       <el-table-column align="center" label="商品主图" width="100">
         <template v-slot="{ row: item }">
-          <el-image v-if="item.defaultImageUrl" :src="item.defaultImageUrl" style="width: 50px"></el-image>
+          <el-image v-if="fileUrl(item.defaultImage)" :src="fileUrl(item.defaultImage)" style="width: 50px" />
         </template>
       </el-table-column>
       <el-table-column label="商品编码" prop="skuCode" width="160" />
@@ -152,6 +156,7 @@
 import { onMounted, reactive, ref, toRaw } from "vue";
 import { AxiosResponse } from "axios";
 import axios from "@/utils/http.js";
+import { fileUrl } from "@/utils/fileUrl.ts";
 import { ElMessage } from "element-plus";
 import { loadSuppliers, SupplierVO } from "@/views/supplier/supplier.vue";
 import { ClinicVO, loadClinics } from "@/views/clinic/clinicManagement.vue";
