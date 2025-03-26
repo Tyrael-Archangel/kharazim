@@ -40,8 +40,8 @@ public class InventoryVO {
     @Schema(description = "单位名称")
     private String unitName;
 
-    @Schema(description = "默认图片链接")
-    private String defaultImageUrl;
+    @Schema(description = "默认图片")
+    private String defaultImage;
 
     @Schema(description = "描述信息")
     private String description;

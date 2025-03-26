@@ -1,7 +1,6 @@
 package com.tyrael.kharazim.application.user.converter;
 
 import com.tyrael.kharazim.application.base.auth.AuthUser;
-import com.tyrael.kharazim.application.system.service.FileService;
 import com.tyrael.kharazim.application.user.domain.User;
 import com.tyrael.kharazim.application.user.dto.auth.LoginClientInfo;
 import com.tyrael.kharazim.application.user.dto.auth.OnlineUserDTO;
@@ -26,8 +25,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserConverter {
 
-    private final FileService fileService;
-
     /**
      * User、UserRoleDTO -> UserDTO
      */
@@ -39,7 +36,6 @@ public class UserConverter {
                 .nickName(user.getNickName())
                 .englishName(user.getEnglishName())
                 .avatar(user.getAvatar())
-                .avatarUrl(fileService.getUrl(user.getAvatar()))
                 .gender(user.getGender())
                 .birthday(user.getBirthday())
                 .phone(user.getPhone())
@@ -70,7 +66,6 @@ public class UserConverter {
                 .nickName(user.getNickName())
                 .englishName(user.getEnglishName())
                 .avatar(user.getAvatar())
-                .avatarUrl(fileService.getUrl(user.getAvatar()))
                 .gender(user.getGender())
                 .birthday(user.getBirthday())
                 .phone(user.getPhone())
@@ -114,7 +109,6 @@ public class UserConverter {
         onlineUser.setUsername(user.getName());
         onlineUser.setUserNickName(user.getNickName());
         onlineUser.setUserAvatar(user.getAvatar());
-        onlineUser.setUserAvatarUrl(fileService.getUrl(user.getAvatar()));
         onlineUser.setLoginTime(loggedUser.getLoggedTime());
         onlineUser.setLastRefreshTime(loggedUser.getLastRefreshTime());
         LoginClientInfo loginClientInfo = loggedUser.getLoginClientInfo();

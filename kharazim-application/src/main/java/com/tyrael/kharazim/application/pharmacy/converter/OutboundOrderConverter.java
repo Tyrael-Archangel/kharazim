@@ -92,7 +92,7 @@ public class OutboundOrderConverter {
                 .categoryName(skuVO.getCategoryName())
                 .unitCode(skuVO.getUnitCode())
                 .unitName(skuVO.getUnitName())
-                .defaultImageUrl(skuVO.getDefaultImageUrl())
+                .defaultImage(skuVO.getDefaultImage())
                 .quantity(outboundOrderItem.getQuantity())
                 .build();
     }

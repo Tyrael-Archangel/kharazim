@@ -27,9 +27,6 @@ public class OnlineUserDTO {
     @Schema(description = "用户昵称")
     private String userAvatar;
 
-    @Schema(description = "用户昵称")
-    private String userAvatarUrl;
-
     @Schema(description = "登录时间")
     private LocalDateTime loginTime;
 
