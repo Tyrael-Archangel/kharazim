@@ -2,7 +2,6 @@ package com.tyrael.kharazim.application.purchase.vo;
 
 import com.tyrael.kharazim.application.purchase.enums.PurchasePaymentStatus;
 import com.tyrael.kharazim.application.purchase.enums.PurchaseReceiveStatus;
-import com.tyrael.kharazim.application.system.dto.file.FileVO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -95,8 +94,8 @@ public class PurchaseOrderVO {
         @Schema(description = "单位名称")
         private String unitName;
 
-        @Schema(description = "默认图片链接")
-        private String defaultImageUrl;
+        @Schema(description = "默认图片")
+        private String defaultImage;
 
         @Schema(description = "描述信息")
         private String description;
@@ -138,12 +137,6 @@ public class PurchaseOrderVO {
 
         @Schema(description = "支付凭证")
         private List<String> vouchers;
-
-        @Schema(description = "支付凭证链接地址")
-        private List<String> voucherUrls;
-
-        @Schema(description = "支付凭证链接文件信息")
-        private List<FileVO> voucherFiles;
 
     }
 
@@ -201,7 +194,7 @@ public class PurchaseOrderVO {
         private String unitName;
 
         @Schema(description = "默认图片链接")
-        private String defaultImageUrl;
+        private String defaultImage;
 
     }
 

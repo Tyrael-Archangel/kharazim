@@ -93,7 +93,7 @@ public class InboundOrderConverter {
                 .categoryName(skuVO.getCategoryName())
                 .unitCode(skuVO.getUnitCode())
                 .unitName(skuVO.getUnitName())
-                .defaultImageUrl(skuVO.getDefaultImageUrl())
+                .defaultImage(skuVO.getDefaultImage())
                 .quantity(inboundOrderItem.getQuantity())
                 .inboundedQuantity(inboundOrderItem.getInboundedQuantity())
                 .remainQuantity(inboundOrderItem.getRemainQuantity())

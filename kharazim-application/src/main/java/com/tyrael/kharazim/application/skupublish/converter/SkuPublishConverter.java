@@ -69,7 +69,6 @@ public class SkuPublishConverter {
         skuPublishVO.setEffectBegin(skuPublish.getEffectBegin());
         skuPublishVO.setEffectEnd(skuPublish.getEffectEnd());
         skuPublishVO.setDefaultImage(sku.getDefaultImage());
-        skuPublishVO.setDefaultImageUrl(sku.getDefaultImageUrl());
         return skuPublishVO;
     }
 

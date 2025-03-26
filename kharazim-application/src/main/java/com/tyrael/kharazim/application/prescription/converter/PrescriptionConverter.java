@@ -93,7 +93,7 @@ public class PrescriptionConverter {
         product.setSupplierName(skuInfo.getSupplierName());
         product.setUnitCode(skuInfo.getUnitCode());
         product.setUnitName(skuInfo.getUnitName());
-        product.setDefaultImageUrl(skuInfo.getDefaultImageUrl());
+        product.setDefaultImage(skuInfo.getDefaultImage());
         product.setDescription(skuInfo.getDescription());
         product.setQuantity(prescriptionProduct.getQuantity());
         product.setPrice(prescriptionProduct.getPrice());

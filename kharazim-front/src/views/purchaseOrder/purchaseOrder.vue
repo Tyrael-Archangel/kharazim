@@ -192,8 +192,10 @@ function loadPurchaseOrders() {
       },
     })
     .then((response: AxiosResponse) => {
-      response.data.data.forEach((item: any) => {
-        item.defaultImageUrl = fileUrl(item.defaultImage);
+      response.data.data.forEach((purchaseOrder: any) => {
+        purchaseOrder.items.forEach((purchaseOrderItem: any) => {
+          purchaseOrderItem.defaultImageUrl = fileUrl(purchaseOrderItem.defaultImage);
+        });
       });
       purchaseOrderPageData.value = response.data;
     });
