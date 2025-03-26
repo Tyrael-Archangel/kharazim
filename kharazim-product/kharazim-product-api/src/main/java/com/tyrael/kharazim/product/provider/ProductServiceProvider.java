@@ -25,6 +25,14 @@ public class ProductServiceProvider implements ProductServiceApi {
     private final ProductSkuRepository productSkuRepository;
 
     @Override
+    public List<ProductSkuVO> listAll() {
+        List<ProductSkuDTO> products = productSkuRepository.listAll();
+        return products.stream()
+                .map(this::convertProduct)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public List<ProductSkuVO> listByCodes(Collection<String> skuCodes) {
         List<ProductSkuDTO> products = productSkuRepository.listByCodes(skuCodes);
         return products.stream()

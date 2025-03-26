@@ -15,6 +15,13 @@ import java.util.stream.Collectors;
 public interface ProductSkuRepository {
 
     /**
+     * all products
+     *
+     * @return products
+     */
+    List<ProductSkuDTO> listAll();
+
+    /**
      * list sku info by codes
      *
      * @param skuCodes SKU codes

@@ -1,5 +1,7 @@
 package com.tyrael.kharazim.purchase;
 
+import com.tyrael.kharazim.basicdata.sdk.service.ClinicServiceApi;
+import com.tyrael.kharazim.product.sdk.service.ProductServiceApi;
 import com.tyrael.kharazim.user.sdk.model.AuthUser;
 import com.tyrael.kharazim.user.sdk.service.UserServiceApi;
 import org.apache.dubbo.config.annotation.DubboReference;
@@ -14,6 +16,12 @@ public class DubboReferenceHolder {
 
     @DubboReference
     public UserServiceApi userServiceApi;
+
+    @DubboReference
+    public ClinicServiceApi clinicServiceApi;
+
+    @DubboReference
+    public ProductServiceApi productServiceApi;
 
     public AuthUser mockUser() {
         return userServiceApi.mock();

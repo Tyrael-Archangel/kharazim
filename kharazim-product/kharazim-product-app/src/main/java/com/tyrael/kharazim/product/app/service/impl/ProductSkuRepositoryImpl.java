@@ -24,6 +24,12 @@ public class ProductSkuRepositoryImpl implements ProductSkuRepository {
     private final ProductSkuMapper productSkuMapper;
 
     @Override
+    public List<ProductSkuDTO> listAll() {
+        List<ProductSku> productSkus = productSkuMapper.listAll();
+        return productSkuConverter.skuVOs(productSkus);
+    }
+
+    @Override
     public List<ProductSkuDTO> listByCodes(Collection<String> skuCodes) {
         if (skuCodes == null || skuCodes.isEmpty()) {
             return new ArrayList<>();

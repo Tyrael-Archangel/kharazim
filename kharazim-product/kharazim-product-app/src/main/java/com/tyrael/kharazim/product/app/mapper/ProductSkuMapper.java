@@ -29,9 +29,19 @@ public interface ProductSkuMapper extends BasePageMapper<ProductSku> {
      * @return skuCodes
      */
     static List<String> filterSkuCodesByName(String name) {
+        @SuppressWarnings("deprecation")
         ProductSkuMapper productSkuMapper = SqlHelper.getMapper(
                 ProductSku.class, SqlHelper.sqlSession(ProductSku.class));
         return productSkuMapper.filterCodesByName(name);
+    }
+
+    /**
+     * list all
+     *
+     * @return all skus
+     */
+    default List<ProductSku> listAll() {
+        return selectList(new LambdaQueryWrapper<>());
     }
 
     /**

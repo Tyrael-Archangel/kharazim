@@ -14,6 +14,13 @@ import java.util.stream.Collectors;
 public interface ProductServiceApi {
 
     /**
+     * list all product
+     *
+     * @return products
+     */
+    List<ProductSkuVO> listAll();
+
+    /**
      * list sku info by codes
      *
      * @param skuCodes SKU codes
