@@ -65,8 +65,11 @@
                 <el-table-column align="center" type="index" width="50" />
                 <el-table-column align="center" label="商品主图" width="160">
                   <template v-slot="{ row: product }">
-                    <el-image v-if="product.defaultImageUrl" :src="product.defaultImageUrl" style="width: 50px">
-                    </el-image>
+                    <el-image
+                      v-if="fileUrl(product.defaultImage)"
+                      :src="fileUrl(product.defaultImage)"
+                      style="width: 50px"
+                    />
                   </template>
                 </el-table-column>
                 <el-table-column label="商品编码" prop="skuCode" />
@@ -109,6 +112,7 @@
 import { onMounted, reactive, ref } from "vue";
 import { AxiosResponse } from "axios";
 import axios from "@/utils/http.js";
+import { fileUrl } from "@/utils/fileUrl.ts";
 import { ACCESS_TOKEN, getToken } from "@/utils/auth.js";
 import { dateFormat } from "@/utils/DateUtil.js";
 import { ifNullEmpty, join } from "@/utils/StringUtil.ts";

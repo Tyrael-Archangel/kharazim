@@ -13,7 +13,7 @@
       <el-table-column label="用户名" prop="username" width="120" />
       <el-table-column align="center" label="头像" width="80">
         <template v-slot="{ row }">
-          <el-avatar v-if="row.userAvatarUrl" :src="row.userAvatarUrl" />
+          <el-avatar v-if="fileUrl(row.userAvatar)" :src="fileUrl(row.userAvatar)" />
         </template>
       </el-table-column>
       <el-table-column label="登录时间" prop="loginTime" width="170" />
@@ -48,6 +48,7 @@ import axios from "@/utils/http.js";
 import { onMounted, reactive, ref, toRaw } from "vue";
 import { AxiosResponse } from "axios";
 import { ElMessage } from "element-plus";
+import { fileUrl } from "@/utils/fileUrl.ts";
 
 const initPageRequest = {
   pageIndex: 1,
@@ -61,7 +62,6 @@ interface OnlineUserData {
   userCode: number;
   userNickName: number;
   userAvatar: number;
-  userAvatarUrl: number;
   loginTime: string;
   lastRefreshTime: string;
   host: number;

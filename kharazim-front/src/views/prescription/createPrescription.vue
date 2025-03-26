@@ -45,7 +45,7 @@
       </el-table-column>
       <el-table-column align="center" label="商品主图" width="160">
         <template v-slot="{ row }">
-          <el-image v-if="row.defaultImageUrl" :src="row.defaultImageUrl" style="width: 80px"></el-image>
+          <el-image v-if="fileUrl(row.defaultImage)" :src="fileUrl(row.defaultImage)" style="width: 80px" />
         </template>
       </el-table-column>
       <el-table-column label="商品编码" prop="skuCode" width="160" />
@@ -99,7 +99,7 @@
       <el-table-column label="商品编码" prop="skuCode" width="180" />
       <el-table-column align="center" label="商品主图" width="120">
         <template v-slot="{ row }">
-          <el-image v-if="row.defaultImageUrl" :src="row.defaultImageUrl" style="width: 80px"></el-image>
+          <el-image v-if="fileUrl(row.defaultImage)" :src="fileUrl(row.defaultImage)" style="width: 80px" />
         </template>
       </el-table-column>
       <el-table-column label="商品名称" prop="skuName" width="260" />
@@ -131,6 +131,7 @@
 import { nextTick, onMounted, reactive, ref } from "vue";
 import { AxiosResponse } from "axios";
 import axios from "@/utils/http.js";
+import { fileUrl } from "@/utils/fileUrl.ts";
 import { ElMessage, ElTable } from "element-plus";
 import { Delete } from "@element-plus/icons-vue";
 import Decimal from "decimal.js";
