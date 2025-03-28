@@ -19,22 +19,26 @@ import static com.tyrael.kharazim.demo.CareerCompensationDemoTest.CompensationTy
  */
 public class CareerCompensationDemoTest {
 
+    private static final String RESET = "\u001B[0m";   // 重置颜色
+    private static final String GREEN = "\u001B[32m";  // 绿色
+    private static final String BRIGHT_GREEN = "\u001B[92m";  // 亮绿色
+    private static final String MAGENTA = "\u001B[35m";  // 紫色
+    private static final String CYAN = "\u001B[36m";  // 青色
+    private static final String YELLOW = "\u001B[33m"; // 黄色
+    private static final String BLUE = "\u001B[34m";   // 蓝色
+
     @Test
     public void careerCompensation() {
         List<Compensation> compensations = new ArrayList<>(getCompensations());
-        compensations.sort(Comparator.comparing(Compensation::getDate).thenComparing(Compensation::getSalary));
+        compensations.sort(Comparator.comparing(Compensation::getDate).thenComparing(Compensation::getAmount));
 
         Map<String, CompanySummary> companySummaryMap = new HashMap<>();
         for (Compensation compensation : compensations) {
-            String company = compensation.getCompany();
-            CompanySummary companySummary = companySummaryMap.get(company);
-            if (companySummary == null) {
-                companySummaryMap.put(company, new CompanySummary());
-            } else {
-                companySummary.merge(new CompanySummary(compensation));
-            }
+            companySummaryMap.merge(
+                    compensation.getCompany(),
+                    new CompanySummary(compensation),
+                    CompanySummary::merge);
         }
-
 
         int sumMonths = 0;
         BigDecimal sumCompensation = BigDecimal.ZERO;
@@ -48,10 +52,10 @@ public class CareerCompensationDemoTest {
         String summaryLineHeader = pretty("company", 12) +
                 pretty("sum", 12) +
                 pretty("months", 8) +
-                pretty("sumSalary", 12) +
+                pretty("sumSalary", 14) +
                 pretty("avg", 12) +
                 pretty("salaryAvg", 12) +
-                pretty("compensationPercent", 24) +
+                pretty("compensationPercent", 23) +
                 pretty("monthPercent", 16) +
                 pretty("sumOther", 12);
         int lineHeaderLength = summaryLineHeader.length();
@@ -81,44 +85,51 @@ public class CareerCompensationDemoTest {
                             .divide(finalSumCompensation, 2, RoundingMode.HALF_UP);
                     BigDecimal monthPercent = BigDecimal.valueOf(e.getMonths()).multiply(BigDecimal.valueOf(100))
                             .divide(BigDecimal.valueOf(finalSumMonths), 2, RoundingMode.HALF_UP);
-                    System.out.println(pretty(e.getCompany(), 12) +
-                            pretty(e.getSum(), 12) +
-                            pretty(e.getMonths(), 8) +
-                            pretty(e.getSumSalary(), 12) +
-                            pretty(e.getAvg(), 12) +
+                    System.out.println(pretty(e.getCompany(), 12, BRIGHT_GREEN) +
+                            pretty(e.getSum(), 12, BLUE) +
+                            pretty(e.getMonths(), 8, CYAN) +
+                            pretty(e.getSumSalary(), 14) +
+                            pretty(e.getAvg(), 12, GREEN) +
                             pretty(e.getSalaryAvg(), 12) +
-                            pretty(compensationPercent + "%", 24) +
-                            pretty(monthPercent + "%", 16) +
+                            pretty(compensationPercent + "%", 23, YELLOW) +
+                            pretty(monthPercent + "%", 16, MAGENTA) +
                             pretty(e.getSumOther(), 12)
                     );
                 });
 
         System.out.println("=".repeat(lineHeaderLength));
         String detailLineHeader = pretty("company", 12) +
-                pretty("datetime", 12) +
-                pretty("compensation", 16) +
+                pretty("datetime", 16) +
+                pretty("compensation", 14) +
                 pretty("type", 26);
         System.out.println(detailLineHeader);
         for (Compensation compensation : compensations) {
             System.out.println(pretty(compensation.getCompany(), 12)
-                    + pretty(compensation.getDate(), 12)
-                    + pretty(compensation.getSalary(), 16)
+                    + pretty(compensation.getDate(), 16)
+                    + pretty(compensation.getAmount(), 14)
                     + pretty(compensation.getType(), 26));
         }
         System.out.println("=".repeat(lineHeaderLength));
 
     }
 
-    private String pretty(Object name, int length) {
-        if (name instanceof BigDecimal decimal) {
-            name = decimal.setScale(2, RoundingMode.HALF_UP);
-        }
+    private String pretty(Object name, int length, String color) {
         int repeatCount = length - name.toString().length();
         int halfRepeatCount = repeatCount / 2;
         if (name instanceof BigDecimal) {
             halfRepeatCount = repeatCount - 2;
         }
-        return "|" + " ".repeat(halfRepeatCount) + name + " ".repeat(repeatCount - halfRepeatCount) + "|";
+        String colorName;
+        if (color != null && !color.isEmpty()) {
+            colorName = color + name + RESET;
+        } else {
+            colorName = name.toString();
+        }
+        return "|" + " ".repeat(halfRepeatCount) + colorName + " ".repeat(repeatCount - halfRepeatCount) + "|";
+    }
+
+    private String pretty(Object name, int length) {
+        return pretty(name, length, null);
     }
 
     private List<Compensation> getCompensations() {
@@ -265,13 +276,13 @@ public class CareerCompensationDemoTest {
 
         private final String company;
         private final LocalDate date;
-        private final BigDecimal salary;
+        private final BigDecimal amount;
         private final CompensationType type;
 
-        private Compensation(String company, LocalDate date, double salary, CompensationType type) {
+        private Compensation(String company, LocalDate date, double amount, CompensationType type) {
             this.company = company;
             this.date = date;
-            this.salary = BigDecimal.valueOf(salary);
+            this.amount = BigDecimal.valueOf(amount).setScale(2, RoundingMode.HALF_UP);
             this.type = type;
         }
 
@@ -285,25 +296,18 @@ public class CareerCompensationDemoTest {
         private BigDecimal sumSalary;
         private BigDecimal sumOther;
 
-        CompanySummary() {
-            this.months = 0;
-            this.sum = BigDecimal.ZERO;
-            this.sumSalary = BigDecimal.ZERO;
-            this.sumOther = BigDecimal.ZERO;
-        }
-
         CompanySummary(Compensation compensation) {
             this.company = compensation.getCompany();
             if (SALARY.equals(compensation.getType())) {
                 this.months = 1;
-                this.sumSalary = compensation.getSalary();
+                this.sumSalary = compensation.getAmount();
                 this.sumOther = BigDecimal.ZERO;
             } else {
                 this.months = 0;
                 this.sumSalary = BigDecimal.ZERO;
-                this.sumOther = compensation.getSalary();
+                this.sumOther = compensation.getAmount();
             }
-            this.sum = compensation.getSalary();
+            this.sum = compensation.getAmount();
         }
 
         BigDecimal getAvg() {
@@ -314,14 +318,15 @@ public class CareerCompensationDemoTest {
             return sumSalary.divide(BigDecimal.valueOf(months), 2, RoundingMode.HALF_UP);
         }
 
-        void merge(CompanySummary other) {
-            if (this.company == null) {
-                this.company = other.company;
+        CompanySummary merge(CompanySummary other) {
+            if (!this.company.equals(other.company)) {
+                throw new IllegalStateException("Cannot merge companies with different companies");
             }
             this.months += other.months;
             this.sum = this.sum.add(other.sum);
             this.sumOther = this.sumOther.add(other.sumOther);
             this.sumSalary = this.sumSalary.add(other.sumSalary);
+            return this;
         }
 
         @Override
