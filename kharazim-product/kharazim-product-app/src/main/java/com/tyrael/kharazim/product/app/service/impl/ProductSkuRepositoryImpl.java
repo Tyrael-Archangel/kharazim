@@ -38,4 +38,9 @@ public class ProductSkuRepositoryImpl implements ProductSkuRepository {
         return productSkuConverter.skuVOs(productSkus);
     }
 
+    @Override
+    public List<String> filterCodesByName(String skuName) {
+        return productSkuMapper.filterCodesByName(skuName);
+    }
+
 }
