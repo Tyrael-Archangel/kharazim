@@ -41,4 +41,12 @@ public interface ProductSkuRepository {
                 .collect(Collectors.toMap(ProductSkuDTO::getCode, e -> e));
     }
 
+    /**
+     * filter sku codes by name
+     *
+     * @param skuName skuName
+     * @return skuCodes
+     */
+    List<String> filterCodesByName(String skuName);
+
 }

@@ -7,6 +7,7 @@ import com.tyrael.kharazim.purchase.app.domain.PurchaseOrder;
 import com.tyrael.kharazim.purchase.app.domain.PurchaseOrderItem;
 import com.tyrael.kharazim.purchase.app.enums.PurchasePaymentStatus;
 import com.tyrael.kharazim.purchase.app.enums.PurchaseReceiveStatus;
+import com.tyrael.kharazim.purchase.app.event.PurchaseOrderCreatedEvent;
 import com.tyrael.kharazim.purchase.app.mapper.PurchaseOrderItemMapper;
 import com.tyrael.kharazim.purchase.app.mapper.PurchaseOrderMapper;
 import com.tyrael.kharazim.purchase.app.mapper.SupplierMapper;
@@ -51,8 +52,7 @@ public class CreatePurchaseOrderServiceImpl implements CreatePurchaseOrderServic
         purchaseOrderMapper.insert(purchaseOrder);
         purchaseOrderItemMapper.batchInsert(purchaseOrder.getItems());
 
-        // TODO
-//        publisher.publishEvent(new CreateInboundOrderEvent(this, purchaseOrder));
+        publisher.publishEvent(new PurchaseOrderCreatedEvent(this, purchaseOrder));
 
         return purchaseOrder.getCode();
     }

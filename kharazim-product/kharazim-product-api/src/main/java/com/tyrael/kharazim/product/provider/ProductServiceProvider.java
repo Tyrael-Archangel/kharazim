@@ -6,9 +6,11 @@ import com.tyrael.kharazim.product.app.vo.sku.ProductSkuDTO;
 import com.tyrael.kharazim.product.sdk.model.ProductSkuVO;
 import com.tyrael.kharazim.product.sdk.service.ProductServiceApi;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -38,6 +40,15 @@ public class ProductServiceProvider implements ProductServiceApi {
         return products.stream()
                 .map(this::convertProduct)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<String> filterByName(String skuName) {
+        if (StringUtils.isNotBlank(skuName)) {
+            return productSkuRepository.filterCodesByName(skuName);
+        } else {
+            return new ArrayList<>();
+        }
     }
 
     private ProductSkuVO convertProduct(ProductSkuDTO product) {
