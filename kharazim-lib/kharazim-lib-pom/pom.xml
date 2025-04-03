@@ -51,6 +51,16 @@
             </dependency>
             <dependency>
                 <groupId>com.tyrael</groupId>
+                <artifactId>kharazim-lib-mq-redis</artifactId>
+                <version>${kharazim-lib.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.tyrael</groupId>
+                <artifactId>kharazim-lib-mq-kafka</artifactId>
+                <version>${kharazim-lib.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.tyrael</groupId>
                 <artifactId>kharazim-lib-mybatis</artifactId>
                 <version>${kharazim-lib.version}</version>
             </dependency>

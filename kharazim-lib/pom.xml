@@ -24,6 +24,9 @@
         <module>kharazim-lib-discovery-nacos</module>
         <module>kharazim-lib-discovery-redis</module>
         <module>kharazim-lib-pom</module>
+        <module>kharazim-lib-mq</module>
+        <module>kharazim-lib-mq-redis</module>
+        <module>kharazim-lib-mq-kafka</module>
     </modules>
 
     <properties>
