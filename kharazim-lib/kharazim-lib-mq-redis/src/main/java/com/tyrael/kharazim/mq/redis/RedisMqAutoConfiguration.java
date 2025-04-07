@@ -40,20 +40,25 @@ import static com.tyrael.kharazim.mq.redis.RedisMqProducer.MESSAGE_BODY_KEY;
 @ConditionalOnProperty(value = "mq.redis.enable", havingValue = "true", matchIfMissing = true)
 public class RedisMqAutoConfiguration {
 
+    private final String defaultTopicPrefix = "MQ_TOPIC:";
+
     @Bean
     @ConditionalOnMissingBean(MqProducer.class)
     public MqProducer mqProducer(StringRedisTemplate redisTemplate,
-                                 ObjectMapper objectMapper) {
-        return new RedisMqProducer(redisTemplate, objectMapper);
+                                 ObjectMapper objectMapper,
+                                 @Value("${mq.redis.topic-prefix:" + defaultTopicPrefix + "}") String topicPrefix) {
+        return new RedisMqProducer(redisTemplate, objectMapper, topicPrefix);
     }
 
     @Bean
     @ConditionalOnBean(MqConsumer.class)
-    public RedisMqConsumerContainer redisMqConsumerContainer(StringRedisTemplate redisTemplate,
-                                                             ObjectMapper objectMapper,
-                                                             @Value("${spring.application.name:}") String consumerGroup,
-                                                             @Value("${server.port:}") Integer serverPort,
-                                                             List<MqConsumer<?>> mqConsumers) {
+    public RedisMqConsumerContainer redisMqConsumerContainer(
+            StringRedisTemplate redisTemplate,
+            ObjectMapper objectMapper,
+            @Value("${spring.application.name:}") String consumerGroup,
+            @Value("${server.port:}") Integer serverPort,
+            @Value("${mq.redis.topic-prefix:" + defaultTopicPrefix + "}") String topicPrefix,
+            List<MqConsumer<?>> mqConsumers) {
         String hostName;
         try {
             InetAddress localHost = InetAddress.getLocalHost();
@@ -62,13 +67,14 @@ public class RedisMqAutoConfiguration {
             hostName = "unknown";
         }
         String consumerName = consumerGroup + "-" + hostName + "-" + serverPort;
-        return new RedisMqConsumerContainer(redisTemplate, objectMapper, mqConsumers, consumerGroup, consumerName);
+        return new RedisMqConsumerContainer(redisTemplate, objectMapper, topicPrefix, mqConsumers, consumerGroup, consumerName);
     }
 
     public static class RedisMqConsumerContainer {
 
         private final AtomicInteger threadId = new AtomicInteger(0);
         private final StringRedisTemplate redisTemplate;
+        private final String topicPrefix;
         private final String consumerGroup;
         private final String consumerName;
         private final Map<String, MqConsumerWrapper<?>> consumerMap;
@@ -85,10 +91,12 @@ public class RedisMqAutoConfiguration {
 
         public RedisMqConsumerContainer(StringRedisTemplate redisTemplate,
                                         ObjectMapper objectMapper,
+                                        String topicPrefix,
                                         List<MqConsumer<?>> mqConsumers,
                                         String consumerGroup,
                                         String consumerName) {
             this.redisTemplate = redisTemplate;
+            this.topicPrefix = topicPrefix;
             this.consumerGroup = consumerGroup;
             this.consumerName = consumerName;
             this.consumerMap = mqConsumers.stream()
@@ -103,14 +111,14 @@ public class RedisMqAutoConfiguration {
             @SuppressWarnings({"unchecked"})
             StreamOffset<String>[] streamOffsets = consumerMap.keySet()
                     .stream()
-                    .map(topic -> StreamOffset.create(topic, ReadOffset.lastConsumed()))
+                    .map(topic -> StreamOffset.create(topicPrefix + topic, ReadOffset.lastConsumed()))
                     .toList()
                     .toArray(new StreamOffset[0]);
 
             new Thread(() -> {
 
                 for (String topic : consumerMap.keySet()) {
-                    autoCreateTopicAndGroup(topic, consumerGroup);
+                    autoCreateTopicAndGroup(topicPrefix + topic, consumerGroup);
                 }
 
                 while (running) {

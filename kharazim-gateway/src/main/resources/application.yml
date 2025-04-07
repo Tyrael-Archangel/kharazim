@@ -49,9 +49,20 @@ spring:
           predicates:
             - Path=
               /supplier/**,
+              /purchase-order/**,
               /purchase-api/**
           filters:
             - RewritePath=/purchase-api/?(?<segment>.*), /$\{segment}
+
+        - id: pharmacy_api_route
+          uri: lb://kharazim-pharmacy
+          predicates:
+            - Path=
+              /inventory/**,
+              /inbound-order/**,
+              /pharmacy-api/**
+          filters:
+            - RewritePath=/pharmacy-api/?(?<segment>.*), /$\{segment}
 
 knife4j:
   gateway:
@@ -64,6 +75,9 @@ knife4j:
         url: /product-api/v3/api-docs
       - name: 采购服务
         url: /purchase-api/v3/api-docs
+      - name: 药房服务
+        url: /pharmacy-api/v3/api-docs
+
     basic:
       enable: true
 

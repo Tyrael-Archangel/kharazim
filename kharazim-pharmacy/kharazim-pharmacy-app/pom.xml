@@ -62,6 +62,11 @@
 
         <dependency>
             <groupId>com.tyrael</groupId>
+            <artifactId>kharazim-purchase-sdk</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.tyrael</groupId>
             <artifactId>kharazim-user-sdk</artifactId>
         </dependency>
 

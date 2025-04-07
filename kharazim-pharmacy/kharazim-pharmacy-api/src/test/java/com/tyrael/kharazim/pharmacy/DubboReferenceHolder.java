@@ -1,4 +1,4 @@
-package com.tyrael.kharazim.purchase;
+package com.tyrael.kharazim.pharmacy;
 
 import com.tyrael.kharazim.basicdata.sdk.service.ClinicServiceApi;
 import com.tyrael.kharazim.basicdata.sdk.service.DictServiceApi;

@@ -11,6 +11,8 @@ import lombok.Getter;
 @SuppressWarnings("unused")
 public enum PharmacyBusinessIdConstants implements BusinessIdConstant<PharmacyBusinessIdConstants> {
 
+    INBOUND_ORDER("入库单", 5, "IO"),
+    INVENTORY_INBOUND("库存入库流水", "IIN"),
     ;
 
     private final String prefix;

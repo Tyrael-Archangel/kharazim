@@ -47,6 +47,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <kharazim-purchase.version>1.0-SNAPSHOT</kharazim-purchase.version>
         <kharazim-product.version>1.0-SNAPSHOT</kharazim-product.version>
+        <kharazim-pharmacy.version>1.0-SNAPSHOT</kharazim-pharmacy.version>
         <kharazim-lib.version>1.0-SNAPSHOT</kharazim-lib.version>
         <kharazim-user.version>1.0-SNAPSHOT</kharazim-user.version>
         <kharazim-basic-data.version>1.0-SNAPSHOT</kharazim-basic-data.version>
@@ -91,6 +92,11 @@
                 <groupId>com.tyrael</groupId>
                 <artifactId>kharazim-product-sdk</artifactId>
                 <version>${kharazim-product.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.tyrael</groupId>
+                <artifactId>kharazim-pharmacy-sdk</artifactId>
+                <version>${kharazim-pharmacy.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.tyrael</groupId>
