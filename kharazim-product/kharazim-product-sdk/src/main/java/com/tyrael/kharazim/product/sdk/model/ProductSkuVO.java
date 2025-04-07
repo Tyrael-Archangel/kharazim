@@ -12,7 +12,7 @@ import java.util.List;
  * @since 2024/3/4
  */
 @Data
-public class ProductSkuVO {
+public class ProductSkuVO implements Serializable {
 
     private String code;
 

@@ -6,10 +6,10 @@ import com.tyrael.kharazim.mq.Message;
 import com.tyrael.kharazim.mq.MessageSerializeException;
 import com.tyrael.kharazim.mq.MqProducer;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.connection.stream.ObjectRecord;
 import org.springframework.data.redis.connection.stream.StreamRecords;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -23,6 +23,7 @@ public class RedisMqProducer implements MqProducer {
 
     private final StringRedisTemplate redisTemplate;
     private final ObjectMapper objectMapper;
+    private final String topicPrefix;
 
     @Override
     public <T> void send(Message<T> message) {
@@ -34,10 +35,10 @@ public class RedisMqProducer implements MqProducer {
             throw new MessageSerializeException(e);
         }
 
-        Map<String, String> streamMessage = new HashMap<>();
-        streamMessage.put(MESSAGE_BODY_KEY, messageBody);
-        redisTemplate.opsForStream()
-                .add(StreamRecords.newRecord().ofObject(streamMessage).withStreamKey(message.getTopic()));
+        ObjectRecord<String, Map<String, String>> record = StreamRecords.newRecord()
+                .ofObject(Map.of(MESSAGE_BODY_KEY, messageBody))
+                .withStreamKey(topicPrefix + message.getTopic());
+        redisTemplate.opsForStream().add(record);
     }
 
 }

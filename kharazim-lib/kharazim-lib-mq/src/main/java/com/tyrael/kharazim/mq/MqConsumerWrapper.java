@@ -32,9 +32,8 @@ public class MqConsumerWrapper<T> {
     private Class<?> getConsumerBodyType(Type type) {
         if (type instanceof Class<?> clazz) {
 
-            List<Type> supers = new ArrayList<>();
-            Type genericSuperclass = clazz.getGenericSuperclass();
-            supers.add(genericSuperclass);
+            List<Type> supers = new ArrayList<>(List.of(clazz.getGenericInterfaces()));
+            supers.add(clazz.getGenericSuperclass());
 
             for (Type superType : supers) {
                 if (superType instanceof ParameterizedType parameterizedType) {
