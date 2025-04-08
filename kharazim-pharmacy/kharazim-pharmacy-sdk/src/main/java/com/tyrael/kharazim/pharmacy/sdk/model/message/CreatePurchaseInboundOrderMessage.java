@@ -1,4 +1,4 @@
-package com.tyrael.kharazim.pharmacy.model.message;
+package com.tyrael.kharazim.pharmacy.sdk.model.message;
 
 import lombok.Data;
 

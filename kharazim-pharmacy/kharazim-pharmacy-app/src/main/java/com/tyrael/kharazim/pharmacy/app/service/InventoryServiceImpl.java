@@ -41,7 +41,7 @@ public class InventoryServiceImpl implements InventoryService {
 
     @Override
     @Transactional(readOnly = true)
-    public PageResponse<InventoryVO> page(PageInventoryRequest pageRequest) {
+    public PageResponse<InventoryDTO> page(PageInventoryRequest pageRequest) {
 
         String skuCode = pageRequest.getSkuCode();
         String skuName = pageRequest.getSkuName();
@@ -56,7 +56,7 @@ public class InventoryServiceImpl implements InventoryService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<InventoryVO> listOfClinic(ListInventoryOfClinicRequest listRequest) {
+    public List<InventoryDTO> listOfClinic(ListInventoryOfClinicRequest listRequest) {
         List<Inventory> inventories = inventoryMapper.listOfClinic(listRequest);
         return inventoryConverter.inventories(inventories);
     }
@@ -88,6 +88,7 @@ public class InventoryServiceImpl implements InventoryService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void occupy(InventoryOccupyCommand occupyCommand) {
 
         List<InventoryChangeCommand.Item> sortedItems = occupyCommand.getItems()

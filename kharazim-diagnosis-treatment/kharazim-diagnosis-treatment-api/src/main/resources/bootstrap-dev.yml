@@ -1,0 +1,8 @@
+dubbo:
+  registry:
+    address: redis://${REDIS_HOST:localhost}:${REDIS_PORT:6379}?db.index=${REDIS_DATABASE:0}
+    password: ${REDIS_PASSWORD:}
+
+knife4j:
+  enable: true
+  production: false

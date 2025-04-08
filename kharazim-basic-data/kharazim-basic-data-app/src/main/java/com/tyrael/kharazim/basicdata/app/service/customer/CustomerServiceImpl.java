@@ -3,6 +3,7 @@ package com.tyrael.kharazim.basicdata.app.service.customer;
 import cn.idev.excel.ExcelWriter;
 import cn.idev.excel.FastExcelFactory;
 import cn.idev.excel.write.metadata.WriteSheet;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.tyrael.kharazim.base.dto.PageResponse;
 import com.tyrael.kharazim.base.exception.BusinessException;
@@ -64,6 +65,18 @@ public class CustomerServiceImpl implements CustomerService {
     public CustomerBaseVO findByCode(String code) {
         Customer customer = customerMapper.exactlyFindByCode(code);
         return customerConverter.customerBaseVO(customer);
+    }
+
+    @Override
+    public List<CustomerBaseVO> listByCodes(Collection<String> codes) {
+        List<Customer> customers = customerMapper.listByCodes(codes);
+        return customerConverter.customerBaseVOs(customers);
+    }
+
+    @Override
+    public List<CustomerBaseVO> listAll() {
+        List<Customer> customers = customerMapper.selectList(new QueryWrapper<>());
+        return customerConverter.customerBaseVOs(customers);
     }
 
     @Override

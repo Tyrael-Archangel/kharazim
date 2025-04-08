@@ -4,7 +4,7 @@ import com.tyrael.kharazim.base.dto.PageResponse;
 import com.tyrael.kharazim.pharmacy.app.vo.inbound.AddInboundRequest;
 import com.tyrael.kharazim.pharmacy.app.vo.inbound.InboundOrderVO;
 import com.tyrael.kharazim.pharmacy.app.vo.inbound.PageInboundOrderRequest;
-import com.tyrael.kharazim.pharmacy.model.message.CreatePurchaseInboundOrderMessage;
+import com.tyrael.kharazim.pharmacy.sdk.model.message.CreatePurchaseInboundOrderMessage;
 import com.tyrael.kharazim.user.sdk.model.AuthUser;
 
 /**

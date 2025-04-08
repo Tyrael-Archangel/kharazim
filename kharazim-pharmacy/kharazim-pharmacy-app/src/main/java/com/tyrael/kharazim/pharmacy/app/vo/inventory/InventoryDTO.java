@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class InventoryVO {
+public class InventoryDTO {
 
     @Schema(description = "诊所编码")
     private String clinicCode;

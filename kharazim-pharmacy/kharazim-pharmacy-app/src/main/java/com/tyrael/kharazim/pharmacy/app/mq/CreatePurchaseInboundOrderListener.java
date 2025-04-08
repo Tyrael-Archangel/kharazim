@@ -3,7 +3,7 @@ package com.tyrael.kharazim.pharmacy.app.mq;
 
 import com.tyrael.kharazim.mq.MqConsumer;
 import com.tyrael.kharazim.pharmacy.app.service.InboundOrderService;
-import com.tyrael.kharazim.pharmacy.model.message.CreatePurchaseInboundOrderMessage;
+import com.tyrael.kharazim.pharmacy.sdk.model.message.CreatePurchaseInboundOrderMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

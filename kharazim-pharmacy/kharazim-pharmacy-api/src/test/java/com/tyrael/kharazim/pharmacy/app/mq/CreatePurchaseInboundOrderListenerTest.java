@@ -1,7 +1,7 @@
 package com.tyrael.kharazim.pharmacy.app.mq;
 
 import com.tyrael.kharazim.mq.Message;
-import com.tyrael.kharazim.pharmacy.model.message.CreatePurchaseInboundOrderMessage;
+import com.tyrael.kharazim.pharmacy.sdk.model.message.CreatePurchaseInboundOrderMessage;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

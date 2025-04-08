@@ -1,7 +1,7 @@
 package com.tyrael.kharazim.purchase.app.event;
 
 import com.tyrael.kharazim.mq.MqProducer;
-import com.tyrael.kharazim.pharmacy.model.message.CreatePurchaseInboundOrderMessage;
+import com.tyrael.kharazim.pharmacy.sdk.model.message.CreatePurchaseInboundOrderMessage;
 import com.tyrael.kharazim.purchase.app.domain.PurchaseOrder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;

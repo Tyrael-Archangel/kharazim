@@ -17,7 +17,7 @@ public interface InventoryService {
      * @param pageRequest {@link PageInventoryRequest}
      * @return 库存分页数据
      */
-    PageResponse<InventoryVO> page(PageInventoryRequest pageRequest);
+    PageResponse<InventoryDTO> page(PageInventoryRequest pageRequest);
 
     /**
      * 查询诊所库存数据
@@ -25,7 +25,7 @@ public interface InventoryService {
      * @param listRequest 诊所+sku
      * @return 诊所库存数据
      */
-    List<InventoryVO> listOfClinic(ListInventoryOfClinicRequest listRequest);
+    List<InventoryDTO> listOfClinic(ListInventoryOfClinicRequest listRequest);
 
     /**
      * 库存日志数据分页
