@@ -1,7 +1,7 @@
 package com.tyrael.kharazim.purchase.app.mq;
 
 import com.tyrael.kharazim.mq.MqConsumer;
-import com.tyrael.kharazim.pharmacy.model.message.InboundOrderReceivedMessage;
+import com.tyrael.kharazim.pharmacy.sdk.model.message.InboundOrderReceivedMessage;
 import com.tyrael.kharazim.purchase.app.service.PurchaseOrderReceivedService;
 import com.tyrael.kharazim.purchase.app.vo.purchaseorder.PurchaseOrderReceivedVO;
 import lombok.RequiredArgsConstructor;

@@ -22,6 +22,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * @author Tyrael Archangel
@@ -95,6 +97,12 @@ public class SkuPublishServiceImpl implements SkuPublishService {
         skuPublish.setUpdateUser(currentUser.getCode(), currentUser.getNickName());
 
         skuPublishMapper.saveCanceled(skuPublish);
+    }
+
+    @Override
+    public List<SkuPublishVO> listClinicEffective(String clinicCode, Collection<String> skuCodes) {
+        List<SkuPublish> skuPublishes = skuPublishMapper.listClinicEffective(clinicCode, skuCodes);
+        return skuPublishConverter.skuPublishVOs(skuPublishes);
     }
 
 }

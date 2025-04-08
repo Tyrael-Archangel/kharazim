@@ -5,7 +5,7 @@ import com.tyrael.kharazim.basicdata.sdk.service.ClinicServiceApi;
 import com.tyrael.kharazim.pharmacy.app.domain.Inventory;
 import com.tyrael.kharazim.pharmacy.app.domain.InventoryLog;
 import com.tyrael.kharazim.pharmacy.app.vo.inventory.InventoryLogVO;
-import com.tyrael.kharazim.pharmacy.app.vo.inventory.InventoryVO;
+import com.tyrael.kharazim.pharmacy.app.vo.inventory.InventoryDTO;
 import com.tyrael.kharazim.product.sdk.model.ProductSkuVO;
 import com.tyrael.kharazim.product.sdk.service.ProductServiceApi;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +32,7 @@ public class InventoryConverter {
     /**
      * Inventories -> InventoryVOs
      */
-    public List<InventoryVO> inventories(Collection<Inventory> inventories) {
+    public List<InventoryDTO> inventories(Collection<Inventory> inventories) {
         if (inventories == null || inventories.isEmpty()) {
             return new ArrayList<>();
         }
@@ -50,7 +50,7 @@ public class InventoryConverter {
                 .map(inventory -> {
                     ClinicVO clinic = clinicMap.get(inventory.getClinicCode());
                     ProductSkuVO skuVO = skuMap.get(inventory.getSkuCode());
-                    return InventoryVO.builder()
+                    return InventoryDTO.builder()
                             .clinicCode(clinic.getCode())
                             .clinicName(clinic.getName())
                             .skuCode(skuVO.getCode())

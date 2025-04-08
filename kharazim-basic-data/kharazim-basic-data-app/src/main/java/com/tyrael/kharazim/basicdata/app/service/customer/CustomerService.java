@@ -6,6 +6,7 @@ import com.tyrael.kharazim.user.sdk.model.AuthUser;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -21,6 +22,20 @@ public interface CustomerService {
      * @return 会员基本信息
      */
     CustomerBaseVO findByCode(String code);
+
+    /**
+     * list by codes
+     *
+     * @param codes 会员编码
+     * @return 会员基本信息
+     */
+    List<CustomerBaseVO> listByCodes(Collection<String> codes);
+
+    /**
+     * list all
+     * @return 会员基本信息
+     */
+    List<CustomerBaseVO> listAll();
 
     /**
      * 会员分页

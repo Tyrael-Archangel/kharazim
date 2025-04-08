@@ -1,20 +1,18 @@
-package com.tyrael.kharazim.pharmacy.model.message;
+package com.tyrael.kharazim.pharmacy.sdk.model.message;
 
 import lombok.Data;
 
 import java.util.List;
 
 /**
- * 入库单已收货消息
- *
  * @author Tyrael Archangel
  * @since 2025/4/7
  */
 @Data
-public class InboundOrderReceivedMessage {
+public class InventoryOccupyMessage {
 
-    private String sourceBusinessCode;
-    private String serialCode;
+    private String businessCode;
+    private String clinicCode;
     private List<Item> items;
     private String operator;
     private String operatorCode;
@@ -24,4 +22,5 @@ public class InboundOrderReceivedMessage {
         private String skuCode;
         private Integer quantity;
     }
+
 }

@@ -1,0 +1,130 @@
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.2.4</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>com.tyrael</groupId>
+    <artifactId>kharazim-diagnosis-treatment</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>kharazim-diagnosis-treatment-api</module>
+        <module>kharazim-diagnosis-treatment-app</module>
+        <module>kharazim-diagnosis-treatment-sdk</module>
+    </modules>
+
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <properties>
+                <profiles.active>dev</profiles.active>
+            </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+
+        <profile>
+            <id>prod</id>
+            <properties>
+                <profiles.active>prod</profiles.active>
+            </properties>
+        </profile>
+    </profiles>
+
+    <properties>
+        <java.version>17</java.version>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <kharazim-diagnosis-treatment.version>1.0-SNAPSHOT</kharazim-diagnosis-treatment.version>
+        <kharazim-product.version>1.0-SNAPSHOT</kharazim-product.version>
+        <kharazim-pharmacy.version>1.0-SNAPSHOT</kharazim-pharmacy.version>
+        <kharazim-lib.version>1.0-SNAPSHOT</kharazim-lib.version>
+        <kharazim-user.version>1.0-SNAPSHOT</kharazim-user.version>
+        <kharazim-basic-data.version>1.0-SNAPSHOT</kharazim-basic-data.version>
+        <kharazim-id-generator.version>1.0-SNAPSHOT</kharazim-id-generator.version>
+        <spring-cloud-alibaba.version>2023.0.1.0</spring-cloud-alibaba.version>
+        <spring-cloud.version>2023.0.1</spring-cloud.version>
+        <knife4j.version>4.3.0</knife4j.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.tyrael</groupId>
+            <artifactId>kharazim-lib-base</artifactId>
+        </dependency>
+    </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.tyrael</groupId>
+                <artifactId>kharazim-diagnosis-treatment-app</artifactId>
+                <version>${kharazim-diagnosis-treatment.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.tyrael</groupId>
+                <artifactId>kharazim-diagnosis-treatment-sdk</artifactId>
+                <version>${kharazim-diagnosis-treatment.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.tyrael</groupId>
+                <artifactId>kharazim-lib-pom</artifactId>
+                <version>${kharazim-lib.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.tyrael</groupId>
+                <artifactId>kharazim-basic-data-sdk</artifactId>
+                <version>${kharazim-basic-data.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.tyrael</groupId>
+                <artifactId>kharazim-product-sdk</artifactId>
+                <version>${kharazim-product.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.tyrael</groupId>
+                <artifactId>kharazim-pharmacy-sdk</artifactId>
+                <version>${kharazim-pharmacy.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.tyrael</groupId>
+                <artifactId>kharazim-user-sdk</artifactId>
+                <version>${kharazim-user.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.tyrael</groupId>
+                <artifactId>kharazim-user-api-sdk</artifactId>
+                <version>${kharazim-user.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+
+    </dependencyManagement>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+    </build>
+</project>

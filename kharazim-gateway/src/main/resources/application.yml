@@ -64,6 +64,15 @@ spring:
           filters:
             - RewritePath=/pharmacy-api/?(?<segment>.*), /$\{segment}
 
+        - id: diagnosis_treatment_api_route
+          uri: lb://kharazim-diagnosis-treatment
+          predicates:
+            - Path=
+              /prescription/**,
+              /diagnosis-treatment-api/**
+          filters:
+            - RewritePath=/diagnosis-treatment-api/?(?<segment>.*), /$\{segment}
+
 knife4j:
   gateway:
     routes:
@@ -77,6 +86,8 @@ knife4j:
         url: /purchase-api/v3/api-docs
       - name: 药房服务
         url: /pharmacy-api/v3/api-docs
+      - name: 诊疗服务
+        url: /diagnosis-treatment-api/v3/api-docs
 
     basic:
       enable: true

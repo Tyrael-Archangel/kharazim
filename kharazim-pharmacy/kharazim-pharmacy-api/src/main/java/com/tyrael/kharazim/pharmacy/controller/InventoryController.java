@@ -27,13 +27,13 @@ public class InventoryController {
 
     @GetMapping("/page")
     @Operation(summary = "库存数据分页")
-    public PageResponse<InventoryVO> page(@ParameterObject PageInventoryRequest pageRequest) {
+    public PageResponse<InventoryDTO> page(@ParameterObject PageInventoryRequest pageRequest) {
         return inventoryService.page(pageRequest);
     }
 
     @GetMapping("/list-clinic")
     @Operation(summary = "查询诊所库存数据")
-    public MultiResponse<InventoryVO> listOfClinic(@ParameterObject ListInventoryOfClinicRequest listRequest) {
+    public MultiResponse<InventoryDTO> listOfClinic(@ParameterObject ListInventoryOfClinicRequest listRequest) {
         return MultiResponse.success(inventoryService.listOfClinic(listRequest));
     }
 

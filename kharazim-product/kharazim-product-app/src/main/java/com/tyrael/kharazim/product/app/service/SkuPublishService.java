@@ -6,6 +6,9 @@ import com.tyrael.kharazim.product.app.vo.skupublish.PublishSkuRequest;
 import com.tyrael.kharazim.product.app.vo.skupublish.SkuPublishVO;
 import com.tyrael.kharazim.user.sdk.model.AuthUser;
 
+import java.util.Collection;
+import java.util.List;
+
 /**
  * @author Tyrael Archangel
  * @since 2024/3/16
@@ -35,5 +38,14 @@ public interface SkuPublishService {
      * @param currentUser 操作人
      */
     void cancelPublish(String code, AuthUser currentUser);
+
+    /**
+     * list clinic effective skuPublishes
+     *
+     * @param clinicCode 诊所
+     * @param skuCodes   sku
+     * @return 商品发布数据
+     */
+    List<SkuPublishVO> listClinicEffective(String clinicCode, Collection<String> skuCodes);
 
 }
