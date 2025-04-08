@@ -2,7 +2,6 @@ package com.tyrael.kharazim.user.controller;
 
 import com.tyrael.kharazim.authentication.PrincipalHolder;
 import com.tyrael.kharazim.test.mock.BaseControllerTest;
-import com.tyrael.kharazim.user.UserApiApplication;
 import com.tyrael.kharazim.user.app.dto.role.request.SaveRoleRequest;
 import com.tyrael.kharazim.user.app.enums.EnableStatusEnum;
 import com.tyrael.kharazim.user.sdk.service.UserServiceApi;
@@ -16,7 +15,7 @@ import java.util.List;
  * @author Tyrael Archangel
  * @since 2024/9/30
  */
-@SpringBootTest(classes = UserApiApplication.class)
+@SpringBootTest
 public class AddRoleTest extends BaseControllerTest<RoleController> {
 
     @Autowired

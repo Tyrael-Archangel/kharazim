@@ -7,7 +7,6 @@ import com.tyrael.kharazim.base.exception.ShouldNotHappenException;
 import com.tyrael.kharazim.base.util.CollectionUtils;
 import com.tyrael.kharazim.basicdata.sdk.model.ClinicVO;
 import com.tyrael.kharazim.product.DubboReferenceHolder;
-import com.tyrael.kharazim.product.ProductApiApplication;
 import com.tyrael.kharazim.product.app.service.ProductSkuService;
 import com.tyrael.kharazim.product.app.vo.sku.PageProductSkuRequest;
 import com.tyrael.kharazim.product.app.vo.sku.ProductSkuDTO;
@@ -26,7 +25,7 @@ import java.util.*;
  * @author Tyrael Archangel
  * @since 2024/3/26
  */
-@SpringBootTest(classes = ProductApiApplication.class)
+@SpringBootTest
 public class PublishSkuTest extends BaseControllerTest<SkuPublishController> {
 
     @Autowired

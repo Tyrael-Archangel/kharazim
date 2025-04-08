@@ -63,7 +63,10 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public CustomerBaseVO findByCode(String code) {
-        Customer customer = customerMapper.exactlyFindByCode(code);
+        Customer customer = customerMapper.findByCode(code);
+        if (customer == null) {
+            return null;
+        }
         return customerConverter.customerBaseVO(customer);
     }
 

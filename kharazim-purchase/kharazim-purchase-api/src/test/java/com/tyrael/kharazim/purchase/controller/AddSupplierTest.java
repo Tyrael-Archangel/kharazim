@@ -4,7 +4,6 @@ import com.tyrael.kharazim.authentication.PrincipalHolder;
 import com.tyrael.kharazim.base.dto.Pair;
 import com.tyrael.kharazim.base.dto.Pairs;
 import com.tyrael.kharazim.purchase.DubboReferenceHolder;
-import com.tyrael.kharazim.purchase.PurchaseApiApplication;
 import com.tyrael.kharazim.purchase.app.vo.supplier.AddSupplierRequest;
 import com.tyrael.kharazim.test.mock.BaseControllerTest;
 import org.junit.jupiter.api.Test;
@@ -15,7 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
  * @author Tyrael Archangel
  * @since 2024/2/22
  */
-@SpringBootTest(classes = PurchaseApiApplication.class)
+@SpringBootTest
 public class AddSupplierTest extends BaseControllerTest<SupplierController> {
 
     @Autowired

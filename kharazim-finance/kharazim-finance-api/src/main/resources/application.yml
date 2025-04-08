@@ -1,0 +1,40 @@
+spring:
+  main:
+    banner-mode: off
+  datasource:
+    url: jdbc:mysql://${MYSQL_SERVER:localhost}:${MYSQL_PORT:3306}/${DB_NAME:kharazim_finance_db}?useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true
+    username: ${MYSQL_USER:root}
+    password: ${MYSQL_PASSWORD:123456}
+    hikari:
+      maximum-pool-size: 200
+      minimum-idle: 10
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      database: ${REDIS_DATABASE:0}
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+  mvc:
+    format:
+      date-time: yyyy-MM-dd HH:mm:ss
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+
+  cache:
+    type: redis
+    redis:
+      key-prefix: KHARAZIM_FINANCE_CACHE
+      time-to-live: 20m
+
+logging:
+  level:
+    root: info
+
+mybatis-plus:
+  global-config:
+    banner: false

@@ -1,6 +1,5 @@
 package com.tyrael.kharazim.basicdata.controller.customer;
 
-import com.tyrael.kharazim.basicdata.BasicDataApiApplication;
 import com.tyrael.kharazim.basicdata.DubboReferenceHolder;
 import com.tyrael.kharazim.basicdata.app.dto.customer.family.*;
 import com.tyrael.kharazim.test.mock.BaseControllerTest;
@@ -12,7 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
  * @author Tyrael Archangel
  * @since 2024/1/19
  */
-@SpringBootTest(classes = BasicDataApiApplication.class)
+@SpringBootTest
 class FamilyControllerTest extends BaseControllerTest<FamilyController> {
 
     @Autowired

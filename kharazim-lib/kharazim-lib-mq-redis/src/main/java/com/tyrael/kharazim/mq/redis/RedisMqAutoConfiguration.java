@@ -55,8 +55,8 @@ public class RedisMqAutoConfiguration {
     public RedisMqConsumerContainer redisMqConsumerContainer(
             StringRedisTemplate redisTemplate,
             ObjectMapper objectMapper,
-            @Value("${spring.application.name:}") String consumerGroup,
-            @Value("${server.port:}") Integer serverPort,
+            @Value("${spring.application.name}") String consumerGroup,
+            @Value("${server.port}") Integer serverPort,
             @Value("${mq.redis.topic-prefix:" + defaultTopicPrefix + "}") String topicPrefix,
             List<MqConsumer<?>> mqConsumers) {
         String hostName;

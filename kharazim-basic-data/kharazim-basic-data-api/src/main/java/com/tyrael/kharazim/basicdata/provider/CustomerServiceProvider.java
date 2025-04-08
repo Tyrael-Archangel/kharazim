@@ -24,10 +24,15 @@ public class CustomerServiceProvider implements CustomerServiceApi {
     private final CustomerService customerService;
 
     @Override
+    public CustomerVO findByCode(String code) {
+        return this.customerVO(customerService.findByCode(code));
+    }
+
+    @Override
     public List<CustomerVO> listAll() {
         List<CustomerBaseVO> customers = customerService.listAll();
         return customers.stream()
-                .map(e -> new CustomerVO().setCode(e.getCode()).setName(e.getName()))
+                .map(this::customerVO)
                 .collect(Collectors.toList());
     }
 
@@ -35,8 +40,17 @@ public class CustomerServiceProvider implements CustomerServiceApi {
     public List<CustomerVO> listByCodes(Collection<String> codes) {
         List<CustomerBaseVO> customers = customerService.listByCodes(codes);
         return customers.stream()
-                .map(e -> new CustomerVO().setCode(e.getCode()).setName(e.getName()))
+                .map(this::customerVO)
                 .collect(Collectors.toList());
+    }
+
+    private CustomerVO customerVO(CustomerBaseVO customerBaseVO) {
+        if (customerBaseVO == null) {
+            return null;
+        }
+        return new CustomerVO()
+                .setCode(customerBaseVO.getCode())
+                .setName(customerBaseVO.getName());
     }
 
 }

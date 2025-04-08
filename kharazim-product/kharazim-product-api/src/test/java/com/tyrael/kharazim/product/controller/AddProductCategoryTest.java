@@ -3,7 +3,6 @@ package com.tyrael.kharazim.product.controller;
 import com.tyrael.kharazim.authentication.PrincipalHolder;
 import com.tyrael.kharazim.base.dto.DataResponse;
 import com.tyrael.kharazim.product.DubboReferenceHolder;
-import com.tyrael.kharazim.product.ProductApiApplication;
 import com.tyrael.kharazim.product.app.service.ProductCategoryService;
 import com.tyrael.kharazim.product.app.vo.category.AddProductCategoryRequest;
 import com.tyrael.kharazim.test.mock.BaseControllerTest;
@@ -21,7 +20,7 @@ import java.util.List;
  * @author Tyrael Archangel
  * @since 2024/2/27
  */
-@SpringBootTest(classes = ProductApiApplication.class)
+@SpringBootTest
 public class AddProductCategoryTest extends BaseControllerTest<ProductCategoryController> {
 
     @Autowired

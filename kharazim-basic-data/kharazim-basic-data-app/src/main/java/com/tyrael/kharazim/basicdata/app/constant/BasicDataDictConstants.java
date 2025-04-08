@@ -17,7 +17,6 @@ public interface BasicDataDictConstants {
     DictConstant CUSTOMER_CERTIFICATE_TYPE  = dict("customer_certificate_type",  CustomerCertificateTypeEnum.class,  "会员证件类型");
     DictConstant SYSTEM_ADDRESS_LEVEL       = dict("system_address_level",       AddressLevelEnum.class,             "地址行政等级");
     DictConstant CLINIC_STATUS              = dict("clinic_status",              ClinicStatus.class,                 "诊所状态");
-    DictConstant CUSTOMER_RECHARGE_STATUS   = dict("customer_recharge_status",   CustomerRechargeCardStatus.class,   "会员储值单状态");
 
     DictConstant CUSTOMER_SOURCE_CHANNEL    = dict("customer_source_channel",   "会员来源渠道");
     DictConstant INSURANCE_COMPANY          = dict("insurance_company",         "保险公司");

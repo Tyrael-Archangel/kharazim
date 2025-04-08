@@ -1,7 +1,6 @@
 package com.tyrael.kharazim.product.controller;
 
 import com.tyrael.kharazim.product.DubboReferenceHolder;
-import com.tyrael.kharazim.product.ProductApiApplication;
 import com.tyrael.kharazim.product.app.vo.unit.ListProductUnitRequest;
 import com.tyrael.kharazim.product.app.vo.unit.ModifyProductUnitRequest;
 import com.tyrael.kharazim.product.app.vo.unit.PageProductUnitRequest;
@@ -14,7 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
  * @author Tyrael Archangel
  * @since 2024/2/20
  */
-@SpringBootTest(classes = ProductApiApplication.class)
+@SpringBootTest
 class ProductUnitControllerTest extends BaseControllerTest<ProductUnitController> {
 
     @Autowired

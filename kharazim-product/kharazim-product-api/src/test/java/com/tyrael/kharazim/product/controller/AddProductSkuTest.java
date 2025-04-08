@@ -5,7 +5,6 @@ import com.tyrael.kharazim.base.exception.ShouldNotHappenException;
 import com.tyrael.kharazim.base.util.CollectionUtils;
 import com.tyrael.kharazim.basicdata.sdk.model.UploadFileVO;
 import com.tyrael.kharazim.product.DubboReferenceHolder;
-import com.tyrael.kharazim.product.ProductApiApplication;
 import com.tyrael.kharazim.product.app.service.ProductCategoryService;
 import com.tyrael.kharazim.product.app.service.ProductUnitService;
 import com.tyrael.kharazim.product.app.vo.category.ProductCategoryTreeNodeDTO;
@@ -39,7 +38,7 @@ import java.util.stream.Collectors;
  * @since 2024/3/4
  */
 @Slf4j
-@SpringBootTest(classes = ProductApiApplication.class)
+@SpringBootTest
 public class AddProductSkuTest extends BaseControllerTest<ProductSkuController> {
 
     @Autowired

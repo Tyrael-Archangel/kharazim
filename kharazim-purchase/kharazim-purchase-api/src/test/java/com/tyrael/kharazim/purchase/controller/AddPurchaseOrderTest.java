@@ -4,7 +4,6 @@ import com.tyrael.kharazim.base.util.CollectionUtils;
 import com.tyrael.kharazim.basicdata.sdk.model.ClinicVO;
 import com.tyrael.kharazim.product.sdk.model.ProductSkuVO;
 import com.tyrael.kharazim.purchase.DubboReferenceHolder;
-import com.tyrael.kharazim.purchase.PurchaseApiApplication;
 import com.tyrael.kharazim.purchase.app.domain.SupplierDO;
 import com.tyrael.kharazim.purchase.app.mapper.SupplierMapper;
 import com.tyrael.kharazim.purchase.app.vo.purchaseorder.CreatePurchaseOrderRequest;
@@ -25,7 +24,7 @@ import java.util.Set;
  * @author Tyrael Archangel
  * @since 2024/8/9
  */
-@SpringBootTest(classes = PurchaseApiApplication.class)
+@SpringBootTest
 public class AddPurchaseOrderTest extends BaseControllerTest<PurchaseOrderController> {
 
     @Autowired

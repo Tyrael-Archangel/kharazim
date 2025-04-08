@@ -1,7 +1,6 @@
 package com.tyrael.kharazim.product.controller;
 
 import com.tyrael.kharazim.product.DubboReferenceHolder;
-import com.tyrael.kharazim.product.ProductApiApplication;
 import com.tyrael.kharazim.product.app.vo.skupublish.PageSkuPublishRequest;
 import com.tyrael.kharazim.product.app.vo.skupublish.PublishSkuRequest;
 import com.tyrael.kharazim.test.mock.BaseControllerTest;
@@ -16,7 +15,7 @@ import java.time.LocalDateTime;
  * @author Tyrael Archangel
  * @since 2024/3/26
  */
-@SpringBootTest(classes = ProductApiApplication.class)
+@SpringBootTest
 class SkuPublishControllerTest extends BaseControllerTest<SkuPublishController> {
 
     @Autowired
