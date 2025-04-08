@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.connection.stream.ObjectRecord;
 import org.springframework.data.redis.connection.stream.StreamRecords;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.util.Map;
 
@@ -28,6 +30,21 @@ public class RedisMqProducer implements MqProducer {
     @Override
     public <T> void send(Message<T> message) {
 
+        if (TransactionSynchronizationManager.isSynchronizationActive()) {
+            TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+                @Override
+                public void afterCommit() {
+                    sendMessage(message);
+                }
+            });
+
+        } else {
+            sendMessage(message);
+        }
+
+    }
+
+    private <T> void sendMessage(Message<T> message) {
         String messageBody;
         try {
             messageBody = objectMapper.writeValueAsString(message);
