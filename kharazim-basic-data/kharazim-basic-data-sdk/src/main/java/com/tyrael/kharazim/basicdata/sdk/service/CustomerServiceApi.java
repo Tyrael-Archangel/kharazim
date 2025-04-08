@@ -1,5 +1,6 @@
 package com.tyrael.kharazim.basicdata.sdk.service;
 
+import com.tyrael.kharazim.base.exception.DomainNotFoundException;
 import com.tyrael.kharazim.basicdata.sdk.model.CustomerVO;
 
 import java.util.Collection;
@@ -12,6 +13,26 @@ import java.util.stream.Collectors;
  * @since 2025/4/7
  */
 public interface CustomerServiceApi {
+
+    /**
+     * find by code
+     *
+     * @param code code
+     * @return CustomerVO
+     */
+    CustomerVO findByCode(String code);
+
+    /**
+     * exactly find by code
+     *
+     * @param code code
+     * @return CustomerVO
+     */
+    default CustomerVO exactlyFindByCode(String code) {
+        CustomerVO customer = findByCode(code);
+        DomainNotFoundException.assertFound(customer, code);
+        return customer;
+    }
 
     /**
      * list all

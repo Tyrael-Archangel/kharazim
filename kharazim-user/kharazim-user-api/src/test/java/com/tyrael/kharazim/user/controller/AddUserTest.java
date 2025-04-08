@@ -8,7 +8,6 @@ import com.tyrael.kharazim.base.util.CollectionUtils;
 import com.tyrael.kharazim.basicdata.sdk.model.UploadFileVO;
 import com.tyrael.kharazim.test.mock.BaseControllerTest;
 import com.tyrael.kharazim.user.DubboReferenceHolder;
-import com.tyrael.kharazim.user.UserApiApplication;
 import com.tyrael.kharazim.user.app.domain.Role;
 import com.tyrael.kharazim.user.app.dto.user.request.AddUserRequest;
 import com.tyrael.kharazim.user.app.enums.UserCertificateTypeEnum;
@@ -47,7 +46,7 @@ import static com.tyrael.kharazim.user.app.enums.UserGenderEnum.MALE;
  * @since 2023/12/27
  */
 @Slf4j
-@SpringBootTest(classes = UserApiApplication.class)
+@SpringBootTest
 public class AddUserTest extends BaseControllerTest<UserController> {
 
     @Autowired

@@ -4,7 +4,6 @@ import com.tyrael.kharazim.authentication.PrincipalHolder;
 import com.tyrael.kharazim.base.dto.Pair;
 import com.tyrael.kharazim.base.dto.Pairs;
 import com.tyrael.kharazim.product.DubboReferenceHolder;
-import com.tyrael.kharazim.product.ProductApiApplication;
 import com.tyrael.kharazim.product.app.vo.unit.AddProductUnitRequest;
 import com.tyrael.kharazim.test.mock.BaseControllerTest;
 import org.junit.jupiter.api.Test;
@@ -15,7 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
  * @author Tyrael Archangel
  * @since 2024/2/20
  */
-@SpringBootTest(classes = ProductApiApplication.class)
+@SpringBootTest
 public class AddProductUnitTest extends BaseControllerTest<ProductUnitController> {
 
     @Autowired

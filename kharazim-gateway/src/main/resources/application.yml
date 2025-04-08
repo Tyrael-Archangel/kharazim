@@ -29,8 +29,6 @@ spring:
               /system/**,
               /clinic/**,
               /customer/**,
-              /recharge-card-type/**,
-              /recharge-card/**,
               /basic-api/**
           filters:
             - RewritePath=/basic-api/?(?<segment>.*), /$\{segment}
@@ -73,6 +71,16 @@ spring:
           filters:
             - RewritePath=/diagnosis-treatment-api/?(?<segment>.*), /$\{segment}
 
+        - id: finance_api_route
+          uri: lb://kharazim-finance
+          predicates:
+            - Path=
+              /recharge-card-type/**,
+              /recharge-card/**,
+              /finance-api/**
+          filters:
+            - RewritePath=/finance-api/?(?<segment>.*), /$\{segment}
+
 knife4j:
   gateway:
     routes:
@@ -88,6 +96,8 @@ knife4j:
         url: /pharmacy-api/v3/api-docs
       - name: 诊疗服务
         url: /diagnosis-treatment-api/v3/api-docs
+      - name: 财务服务
+        url: /finance-api/v3/api-docs
 
     basic:
       enable: true

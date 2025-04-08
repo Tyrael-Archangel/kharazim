@@ -3,7 +3,6 @@ package com.tyrael.kharazim.basicdata.controller.customer;
 import com.tyrael.kharazim.base.dto.Pair;
 import com.tyrael.kharazim.base.dto.Pairs;
 import com.tyrael.kharazim.base.util.CollectionUtils;
-import com.tyrael.kharazim.basicdata.BasicDataApiApplication;
 import com.tyrael.kharazim.basicdata.DubboReferenceHolder;
 import com.tyrael.kharazim.basicdata.app.constant.BasicDataDictConstants;
 import com.tyrael.kharazim.basicdata.app.dto.customer.communication.AddCustomerCommunicationLogRequest;
@@ -27,7 +26,7 @@ import java.util.Set;
  * @author Tyrael Archangel
  * @since 2024/1/24
  */
-@SpringBootTest(classes = BasicDataApiApplication.class)
+@SpringBootTest
 public class AddCustomerCommunicationLogTest extends BaseControllerTest<CustomerCommunicationLogController> {
 
     @Autowired

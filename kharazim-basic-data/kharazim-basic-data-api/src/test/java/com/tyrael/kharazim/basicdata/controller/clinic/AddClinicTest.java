@@ -1,7 +1,6 @@
 package com.tyrael.kharazim.basicdata.controller.clinic;
 
 import com.tyrael.kharazim.authentication.PrincipalHolder;
-import com.tyrael.kharazim.basicdata.BasicDataApiApplication;
 import com.tyrael.kharazim.basicdata.DubboReferenceHolder;
 import com.tyrael.kharazim.basicdata.app.dto.clinic.AddClinicRequest;
 import com.tyrael.kharazim.basicdata.sdk.model.UploadFileVO;
@@ -24,7 +23,7 @@ import java.util.List;
  * @since 2023/12/31
  */
 @Slf4j
-@SpringBootTest(classes = BasicDataApiApplication.class)
+@SpringBootTest
 public class AddClinicTest extends BaseControllerTest<ClinicController> {
 
     @Autowired

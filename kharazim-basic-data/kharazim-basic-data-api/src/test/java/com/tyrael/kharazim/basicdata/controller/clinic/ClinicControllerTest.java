@@ -1,6 +1,5 @@
 package com.tyrael.kharazim.basicdata.controller.clinic;
 
-import com.tyrael.kharazim.basicdata.BasicDataApiApplication;
 import com.tyrael.kharazim.basicdata.DubboReferenceHolder;
 import com.tyrael.kharazim.basicdata.app.dto.clinic.ListClinicRequest;
 import com.tyrael.kharazim.basicdata.app.dto.clinic.ModifyClinicRequest;
@@ -16,7 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
  * @since 2023/12/31
  */
 @Slf4j
-@SpringBootTest(classes = BasicDataApiApplication.class)
+@SpringBootTest
 class ClinicControllerTest extends BaseControllerTest<ClinicController> {
 
     @Autowired

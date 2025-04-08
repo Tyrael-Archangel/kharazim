@@ -3,7 +3,6 @@ package com.tyrael.kharazim.basicdata.controller.customer;
 import com.tyrael.kharazim.base.dto.Pair;
 import com.tyrael.kharazim.base.dto.Pairs;
 import com.tyrael.kharazim.base.util.CollectionUtils;
-import com.tyrael.kharazim.basicdata.BasicDataApiApplication;
 import com.tyrael.kharazim.basicdata.DubboReferenceHolder;
 import com.tyrael.kharazim.basicdata.app.constant.BasicDataDictConstants;
 import com.tyrael.kharazim.basicdata.app.dto.address.AddressTreeNodeDTO;
@@ -29,7 +28,7 @@ import java.util.*;
  * @author Tyrael Archangel
  * @since 2024/1/8
  */
-@SpringBootTest(classes = BasicDataApiApplication.class)
+@SpringBootTest
 public class AddCustomerTest extends BaseControllerTest<CustomerController> {
 
     @Autowired

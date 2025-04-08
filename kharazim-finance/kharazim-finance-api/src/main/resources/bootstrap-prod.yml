@@ -1,0 +1,26 @@
+spring:
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${NACOS_SERVER_HOST:localhost}:${NACOS_SERVER_PORT:8848}
+        namespace: ${NACOS_DISCOVERY_NAMESPACE:kharazim}
+        group: ${NACOS_DISCOVERY_GROUP:kharazim}
+        username: ${NACOS_USERNAME:}
+        password: ${NACOS_PASSWORD:}
+
+  kafka:
+    bootstrap-servers: ${KAFKA_SERVERS:localhost:9092}
+    consumer:
+      group-id: ${spring.application.name}
+      auto-offset-reset: earliest
+      enable-auto-commit: true
+
+dubbo:
+  registry:
+    address: nacos://${NACOS_SERVER_HOST:localhost}:${NACOS_SERVER_PORT:8848}?namespace=dubbo_kharazim
+    username: ${NACOS_USERNAME:}
+    password: ${NACOS_PASSWORD:}
+
+knife4j:
+  enable: false
+  production: true
