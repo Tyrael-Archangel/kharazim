@@ -13,8 +13,8 @@ public enum FinanceBusinessIdConstants implements BusinessIdConstant<FinanceBusi
 
     CUSTOMER_RECHARGE_CARD("会员储值单", "CRC"),
     CUSTOMER_WALLET_TRANSACTION("会员交易流水号编码", "TRS"),
-
     RECHARGE_CARD_TYPE("储值卡项", "RCT"),
+    SETTLEMENT_ORDER("结算单", "BO"),
     ;
 
     private final String prefix;

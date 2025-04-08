@@ -1,4 +1,4 @@
-package com.tyrael.kharazim.finance.app.service;
+package com.tyrael.kharazim.finance.app.service.impl;
 
 import com.tyrael.kharazim.base.dto.PageResponse;
 import com.tyrael.kharazim.base.exception.BusinessException;
@@ -6,6 +6,7 @@ import com.tyrael.kharazim.base.exception.DomainNotFoundException;
 import com.tyrael.kharazim.finance.app.constant.FinanceBusinessIdConstants;
 import com.tyrael.kharazim.finance.app.domain.RechargeCardType;
 import com.tyrael.kharazim.finance.app.mapper.RechargeCardTypeMapper;
+import com.tyrael.kharazim.finance.app.service.RechargeCardTypeService;
 import com.tyrael.kharazim.finance.app.vo.recharge.*;
 import com.tyrael.kharazim.lib.idgenerator.IdGenerator;
 import com.tyrael.kharazim.user.sdk.model.AuthUser;

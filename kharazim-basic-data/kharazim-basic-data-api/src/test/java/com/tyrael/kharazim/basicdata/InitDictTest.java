@@ -22,7 +22,6 @@ public class InitDictTest {
         dictServiceApi.init(BasicDataDictConstants.CUSTOMER_CERTIFICATE_TYPE);
         dictServiceApi.init(BasicDataDictConstants.SYSTEM_ADDRESS_LEVEL);
         dictServiceApi.init(BasicDataDictConstants.CLINIC_STATUS);
-        dictServiceApi.init(BasicDataDictConstants.CUSTOMER_RECHARGE_STATUS);
 
         dictServiceApi.init(BasicDataDictConstants.CUSTOMER_SOURCE_CHANNEL);
         dictServiceApi.init(BasicDataDictConstants.INSURANCE_COMPANY);

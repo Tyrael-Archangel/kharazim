@@ -48,6 +48,7 @@
         <kharazim-diagnosis-treatment.version>1.0-SNAPSHOT</kharazim-diagnosis-treatment.version>
         <kharazim-product.version>1.0-SNAPSHOT</kharazim-product.version>
         <kharazim-pharmacy.version>1.0-SNAPSHOT</kharazim-pharmacy.version>
+        <kharazim-finance.version>1.0-SNAPSHOT</kharazim-finance.version>
         <kharazim-lib.version>1.0-SNAPSHOT</kharazim-lib.version>
         <kharazim-user.version>1.0-SNAPSHOT</kharazim-user.version>
         <kharazim-basic-data.version>1.0-SNAPSHOT</kharazim-basic-data.version>
@@ -97,6 +98,11 @@
                 <groupId>com.tyrael</groupId>
                 <artifactId>kharazim-pharmacy-sdk</artifactId>
                 <version>${kharazim-pharmacy.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.tyrael</groupId>
+                <artifactId>kharazim-finance-sdk</artifactId>
+                <version>${kharazim-finance.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.tyrael</groupId>

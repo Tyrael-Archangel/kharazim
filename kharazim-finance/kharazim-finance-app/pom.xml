@@ -20,6 +20,10 @@
                     <groupId>com.tyrael</groupId>
                     <artifactId>kharazim-lib-dubbo-registry-redis</artifactId>
                 </dependency>
+                <dependency>
+                    <groupId>com.tyrael</groupId>
+                    <artifactId>kharazim-lib-mq-redis</artifactId>
+                </dependency>
             </dependencies>
         </profile>
 
@@ -29,6 +33,10 @@
                 <dependency>
                     <groupId>com.tyrael</groupId>
                     <artifactId>kharazim-lib-dubbo-registry-nacos</artifactId>
+                </dependency>
+                <dependency>
+                    <groupId>com.tyrael</groupId>
+                    <artifactId>kharazim-lib-mq-kafka</artifactId>
                 </dependency>
             </dependencies>
         </profile>
@@ -64,6 +72,11 @@
         <dependency>
             <groupId>com.tyrael</groupId>
             <artifactId>kharazim-user-sdk</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.tyrael</groupId>
+            <artifactId>kharazim-product-sdk</artifactId>
         </dependency>
 
         <dependency>

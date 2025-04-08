@@ -2,6 +2,8 @@ package com.tyrael.kharazim.diagnosistreatment.app.service.prescription;
 
 import com.tyrael.kharazim.diagnosistreatment.app.vo.prescription.CreatePrescriptionRequest;
 
+import java.time.LocalDateTime;
+
 /**
  * @author Tyrael Archangel
  * @since 2024/3/14
@@ -27,8 +29,9 @@ public interface PrescriptionLifecycleService {
     /**
      * 处方已支付回调
      *
-     * @param code 处方编码
+     * @param code     处方编码
+     * @param paidTime 支付时间
      */
-    void paidCallback(String code);
+    void paidCallback(String code, LocalDateTime paidTime);
 
 }
