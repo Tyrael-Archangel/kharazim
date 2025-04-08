@@ -1,4 +1,4 @@
-package com.tyrael.kharazim.finance.app.vo.recharge;
+package com.tyrael.kharazim.finance.app.vo.settlement;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;

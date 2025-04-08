@@ -2,6 +2,7 @@ package com.tyrael.kharazim.finance.app.service;
 
 import com.tyrael.kharazim.base.dto.PageResponse;
 import com.tyrael.kharazim.finance.app.vo.recharge.*;
+import com.tyrael.kharazim.finance.app.vo.settlement.SettlementPayCommand;
 import com.tyrael.kharazim.user.sdk.model.AuthUser;
 
 import java.util.List;

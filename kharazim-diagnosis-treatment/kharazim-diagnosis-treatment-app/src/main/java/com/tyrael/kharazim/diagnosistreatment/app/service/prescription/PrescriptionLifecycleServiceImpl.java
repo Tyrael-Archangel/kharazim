@@ -11,6 +11,7 @@ import com.tyrael.kharazim.diagnosistreatment.app.enums.PrescriptionCreateStatus
 import com.tyrael.kharazim.diagnosistreatment.app.mapper.PrescriptionMapper;
 import com.tyrael.kharazim.diagnosistreatment.app.mapper.PrescriptionProductMapper;
 import com.tyrael.kharazim.diagnosistreatment.app.vo.prescription.CreatePrescriptionRequest;
+import com.tyrael.kharazim.finance.sdk.model.message.CreatePrescriptionSettlementMessage;
 import com.tyrael.kharazim.lib.idgenerator.IdGenerator;
 import com.tyrael.kharazim.mq.MqProducer;
 import com.tyrael.kharazim.pharmacy.sdk.model.InventoryVO;
@@ -26,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -206,22 +208,38 @@ public class PrescriptionLifecycleServiceImpl implements PrescriptionLifecycleSe
     }
 
     private void pushSettlement(Prescription prescription) {
-        // TODO
+        List<CreatePrescriptionSettlementMessage.Item> items = prescription.getProducts()
+                .stream()
+                .map(e -> new CreatePrescriptionSettlementMessage.Item()
+                        .setSkuCode(e.getSkuCode())
+                        .setQuantity(e.getQuantity())
+                        .setPrice(e.getPrice())
+                        .setAmount(e.getAmount()))
+                .collect(Collectors.toList());
+        CreatePrescriptionSettlementMessage message = new CreatePrescriptionSettlementMessage()
+                .setPrescriptionCode(prescription.getCode())
+                .setCustomerCode(prescription.getCustomerCode())
+                .setClinicCode(prescription.getClinicCode())
+                .setTotalAmount(prescription.getTotalAmount())
+                .setItems(items);
+
+        mqProducer.send("CREATE_PRESCRIPTION_SETTLEMENT", message);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void paidCallback(String code) {
-
+    public void paidCallback(String code, LocalDateTime paidTime) {
         Prescription prescription = prescriptionMapper.findByCodeForUpdate(code);
-        prescription.setProducts(prescriptionProductMapper.listByPrescriptionCode(code));
-        prescription.markPaid();
+        if (prescription.paid()) {
+            return;
+        }
 
+        prescription.markPaid(paidTime);
         prescriptionMapper.updateById(prescription);
 
-        // 处方已支付, 创建出库单
-        this.pushOutbound(prescription);
+        prescription.setProducts(prescriptionProductMapper.listByPrescriptionCode(code));
 
+        this.pushOutbound(prescription);
     }
 
     private void pushOutbound(Prescription prescription) {

@@ -79,8 +79,12 @@ public class Prescription extends BaseDO {
         this.createStatus = PrescriptionCreateStatus.CREATE_FAILED;
     }
 
-    public void markPaid() {
-        this.paidTime = LocalDateTime.now();
+    public boolean paid() {
+        return this.paidTime != null;
+    }
+
+    public void markPaid(LocalDateTime paidTime) {
+        this.paidTime = paidTime;
     }
 
 }
