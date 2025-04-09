@@ -13,6 +13,9 @@ public enum PharmacyBusinessIdConstants implements BusinessIdConstant<PharmacyBu
 
     INBOUND_ORDER("入库单", 5, "IO"),
     INVENTORY_INBOUND("库存入库流水", "IIN"),
+
+    OUTBOUND_ORDER("出库单", 5, "DO"),
+    INVENTORY_OUTBOUND("库存出库流水", "IOT"),
     ;
 
     private final String prefix;

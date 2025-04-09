@@ -15,6 +15,7 @@ import com.tyrael.kharazim.finance.sdk.model.message.CreatePrescriptionSettlemen
 import com.tyrael.kharazim.lib.idgenerator.IdGenerator;
 import com.tyrael.kharazim.mq.MqProducer;
 import com.tyrael.kharazim.pharmacy.sdk.model.InventoryVO;
+import com.tyrael.kharazim.pharmacy.sdk.model.message.CreatePrescriptionOutboundOrderMessage;
 import com.tyrael.kharazim.pharmacy.sdk.model.message.InventoryOccupyMessage;
 import com.tyrael.kharazim.pharmacy.sdk.service.InventoryQueryServiceApi;
 import com.tyrael.kharazim.product.sdk.model.ProductSkuVO;
@@ -243,7 +244,21 @@ public class PrescriptionLifecycleServiceImpl implements PrescriptionLifecycleSe
     }
 
     private void pushOutbound(Prescription prescription) {
-        // TODO
+
+        List<CreatePrescriptionOutboundOrderMessage.Item> items = prescription.getProducts()
+                .stream()
+                .map(e -> new CreatePrescriptionOutboundOrderMessage.Item()
+                        .setSkuCode(e.getSkuCode())
+                        .setQuantity(e.getQuantity()))
+                .collect(Collectors.toList());
+        CreatePrescriptionOutboundOrderMessage message = new CreatePrescriptionOutboundOrderMessage()
+                .setSourceBusinessCode(prescription.getCode())
+                .setCustomerCode(prescription.getCustomerCode())
+                .setClinicCode(prescription.getClinicCode())
+                .setRemark(prescription.getRemark())
+                .setItems(items);
+
+        mqProducer.send("CREATE_PRESCRIPTION_OUTBOUND_ORDER", message);
     }
 
 }
