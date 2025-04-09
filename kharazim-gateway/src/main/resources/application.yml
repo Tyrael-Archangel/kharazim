@@ -58,6 +58,7 @@ spring:
             - Path=
               /inventory/**,
               /inbound-order/**,
+              /outbound-order/**,
               /pharmacy-api/**
           filters:
             - RewritePath=/pharmacy-api/?(?<segment>.*), /$\{segment}

@@ -31,6 +31,19 @@ public interface SettlementOrderMapper extends BasePageMapper<SettlementOrder> {
     }
 
     /**
+     * find by code FOR UPDATE
+     *
+     * @param code 结算单编码
+     * @return 结算单
+     */
+    default SettlementOrder findByCodeForUpdate(String code) {
+        LambdaQueryWrapper<SettlementOrder> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.eq(SettlementOrder::getCode, code);
+        queryWrapper.last(" FOR UPDATE ");
+        return selectOne(queryWrapper);
+    }
+
+    /**
      * 结算单分页
      *
      * @param pageRequest {@link PageSettlementOrderRequest}

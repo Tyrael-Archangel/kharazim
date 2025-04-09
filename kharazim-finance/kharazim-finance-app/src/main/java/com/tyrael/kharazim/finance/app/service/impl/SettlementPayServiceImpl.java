@@ -34,7 +34,7 @@ public class SettlementPayServiceImpl implements SettlementPayService {
     @Transactional(rollbackFor = Exception.class)
     public void payWithRechargeCard(SettlementPayCommand payCommand, AuthUser currentUser) {
 
-        SettlementOrder settlementOrder = settlementOrderMapper.findByCode(payCommand.getSettlementOrderCode());
+        SettlementOrder settlementOrder = settlementOrderMapper.findByCodeForUpdate(payCommand.getSettlementOrderCode());
         DomainNotFoundException.assertFound(settlementOrder, payCommand.getSettlementOrderCode());
         BusinessException.assertTrue(SettlementOrderStatus.UNPAID.equals(settlementOrder.getStatus()),
                 "该结算单已结算");
