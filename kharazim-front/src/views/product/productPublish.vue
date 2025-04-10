@@ -43,7 +43,7 @@
       v-model:current-page="pageRequest.pageIndex"
       v-model:page-size="pageRequest.pageSize"
       :page-sizes="[10, 20, 50, 100]"
-      :total="pageInfo.totalCount"
+      :total="skuPublishPageData.totalCount"
       background
       layout="total, sizes, prev, pager, next, jumper"
       @size-change="loadProductPublish"
@@ -99,7 +99,7 @@
       v-model:current-page="pageRequest.pageIndex"
       v-model:page-size="pageRequest.pageSize"
       :page-sizes="[10, 20, 50, 100]"
-      :total="pageInfo.totalCount"
+      :total="skuPublishPageData.totalCount"
       background
       layout="total, sizes, prev, pager, next, jumper"
       @size-change="loadProductPublish"
@@ -155,11 +155,6 @@ const initPageRequest = {
 };
 
 const pageRequest = reactive({ ...initPageRequest });
-
-const pageInfo = reactive({
-  totalCount: 0,
-  pageSizes: [10, 20, 50, 100],
-});
 
 function statusTagType(publishStatus: string) {
   switch (publishStatus) {
