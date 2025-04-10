@@ -74,7 +74,6 @@ public class RedisMqAutoConfiguration {
 
         private final AtomicInteger threadId = new AtomicInteger(0);
         private final StringRedisTemplate redisTemplate;
-        private final String topicPrefix;
         private final String consumerGroup;
         private final String consumerName;
         private final Map<String, MqConsumerWrapper<?>> consumerMap;
@@ -96,11 +95,12 @@ public class RedisMqAutoConfiguration {
                                         String consumerGroup,
                                         String consumerName) {
             this.redisTemplate = redisTemplate;
-            this.topicPrefix = topicPrefix;
             this.consumerGroup = consumerGroup;
             this.consumerName = consumerName;
             this.consumerMap = mqConsumers.stream()
-                    .collect(Collectors.toMap(MqConsumer::getTopic, e -> new MqConsumerWrapper<>(e, objectMapper)));
+                    .collect(Collectors.toMap(
+                            e -> topicPrefix + e.getTopic(),
+                            e -> new MqConsumerWrapper<>(e, objectMapper)));
         }
 
         @EventListener(ApplicationReadyEvent.class)
@@ -111,14 +111,14 @@ public class RedisMqAutoConfiguration {
             @SuppressWarnings({"unchecked"})
             StreamOffset<String>[] streamOffsets = consumerMap.keySet()
                     .stream()
-                    .map(topic -> StreamOffset.create(topicPrefix + topic, ReadOffset.lastConsumed()))
+                    .map(topic -> StreamOffset.create(topic, ReadOffset.lastConsumed()))
                     .toList()
                     .toArray(new StreamOffset[0]);
 
             new Thread(() -> {
 
                 for (String topic : consumerMap.keySet()) {
-                    autoCreateTopicAndGroup(topicPrefix + topic, consumerGroup);
+                    autoCreateTopicAndGroup(topic, consumerGroup);
                 }
 
                 while (running) {

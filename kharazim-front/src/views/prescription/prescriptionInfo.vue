@@ -90,6 +90,8 @@
         <el-table-column label="总金额（元）" prop="totalAmount" width="160" />
         <el-table-column label="创建人" prop="creator" width="160" />
         <el-table-column label="创建时间" prop="createTime" width="180" />
+        <el-table-column label="创建状态" prop="createStatusName" width="100" />
+        <el-table-column label="支付时间" prop="paidTime" width="180" />
         <el-table-column label="备注" prop="remark" />
       </el-table>
     </div>

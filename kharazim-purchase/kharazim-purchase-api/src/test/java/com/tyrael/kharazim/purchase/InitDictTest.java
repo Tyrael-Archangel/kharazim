@@ -17,8 +17,10 @@ public class InitDictTest {
 
     @Test
     public void initDict() {
-        dubboReferenceHolder.dictServiceApi.init(PurchaseDictConstants.PURCHASE_RECEIVE_STATUS);
-        dubboReferenceHolder.dictServiceApi.init(PurchaseDictConstants.PURCHASE_PAYMENT_STATUS);
+        dubboReferenceHolder.dictServiceApi.init(
+                PurchaseDictConstants.PURCHASE_RECEIVE_STATUS,
+                PurchaseDictConstants.PURCHASE_PAYMENT_STATUS
+        );
     }
 
 }

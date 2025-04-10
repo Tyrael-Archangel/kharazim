@@ -66,9 +66,20 @@ public interface DictServiceApi {
     /**
      * init DictConstants
      *
+     * @param dictConstants DictConstants
+     */
+    default void init(DictConstant... dictConstants) {
+        for (DictConstant dictionary : dictConstants) {
+            initDict(dictionary);
+        }
+    }
+
+    /**
+     * init DictConstants
+     *
      * @param dict DictConstant
      */
-    default void init(DictConstant dict) {
+    default void initDict(DictConstant dict) {
 
         DictVO dictVO;
         List<DictItemVO> dictItems;

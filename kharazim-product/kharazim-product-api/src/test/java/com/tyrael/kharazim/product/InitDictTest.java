@@ -17,7 +17,9 @@ public class InitDictTest {
 
     @Test
     public void initDict() {
-        dubboReferenceHolder.dictServiceApi.init(ProductDictConstants.SKU_PUBLISH_STATUS);
+        dubboReferenceHolder.dictServiceApi.init(
+                ProductDictConstants.SKU_PUBLISH_STATUS
+        );
     }
 
 }

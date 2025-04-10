@@ -17,8 +17,10 @@ public class InitDictTest {
 
     @Test
     public void initDict() {
-        dubboReferenceHolder.dictServiceApi.init(UserDictConstants.ENABLE_STATUS);
-        dubboReferenceHolder.dictServiceApi.init(UserDictConstants.USER_GENDER);
+        dubboReferenceHolder.dictServiceApi.init(
+                UserDictConstants.ENABLE_STATUS,
+                UserDictConstants.USER_GENDER
+        );
     }
 
 }
