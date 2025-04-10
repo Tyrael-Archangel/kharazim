@@ -214,7 +214,7 @@ function loadSystemRequestLogs() {
 }
 
 const columnShow = ref({
-  endpoint: { name: "endpoint", show: true },
+  endpoint: { name: "endpoint", show: false },
   uri: { name: "请求URI", show: true },
   requestParams: { name: "请求参数", show: false },
   requestBody: { name: "请求体", show: false },
