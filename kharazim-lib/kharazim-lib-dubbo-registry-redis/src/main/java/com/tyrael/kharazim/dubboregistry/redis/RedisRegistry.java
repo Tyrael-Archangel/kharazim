@@ -74,7 +74,7 @@ public class RedisRegistry extends FailbackRegistry {
         if (!group.endsWith(PATH_SEPARATOR)) {
             group = group + PATH_SEPARATOR;
         }
-        this.root = "dubbo_registry:" + group;
+        this.root = "DUBBO_REGISTRY:" + group;
 
         this.expirePeriod = url.getParameter(SESSION_TIMEOUT_KEY, DEFAULT_SESSION_TIMEOUT);
         this.expireFuture = expireExecutor.scheduleWithFixedDelay(() -> {

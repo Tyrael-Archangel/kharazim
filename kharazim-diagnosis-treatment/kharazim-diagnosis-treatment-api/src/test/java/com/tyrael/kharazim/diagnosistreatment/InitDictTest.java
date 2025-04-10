@@ -17,7 +17,9 @@ public class InitDictTest {
 
     @Test
     public void initDict() {
-        dubboReferenceHolder.dictServiceApi.init(DiagnosisTreatmentDictConstants.PRESCRIPTION_CREATE_STATUS);
+        dubboReferenceHolder.dictServiceApi.init(
+                DiagnosisTreatmentDictConstants.PRESCRIPTION_CREATE_STATUS
+        );
     }
 
 }

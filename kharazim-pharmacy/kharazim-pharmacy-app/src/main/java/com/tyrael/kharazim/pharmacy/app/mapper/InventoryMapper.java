@@ -110,6 +110,23 @@ public interface InventoryMapper extends BasePageMapper<Inventory> {
                        @Param("occupyQuantity") int occupyQuantity);
 
     /**
+     * 减少预占
+     *
+     * @param clinicCode       诊所编码
+     * @param skuCode          SKU编码
+     * @param decreaseQuantity 减少的数量
+     */
+    @Update("""
+            update `inventory`
+            set `occupied_quantity` = `occupied_quantity` - #{decreaseQuantity}
+            where `clinic_code` = #{clinicCode}
+             and `sku_code` = #{skuCode}
+            """)
+    void decreaseOccupy(@Param("clinicCode") String clinicCode,
+                        @Param("skuCode") String skuCode,
+                        @Param("decreaseQuantity") int decreaseQuantity);
+
+    /**
      * 根据预占减少库存
      *
      * @param clinicCode 诊所编码

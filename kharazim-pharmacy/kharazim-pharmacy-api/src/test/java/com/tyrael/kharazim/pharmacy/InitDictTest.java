@@ -17,8 +17,11 @@ public class InitDictTest {
 
     @Test
     public void initDict() {
-        dubboReferenceHolder.dictServiceApi.init(PharmacyDictConstants.INVENTORY_CHANGE_TYPE);
-        dubboReferenceHolder.dictServiceApi.init(PharmacyDictConstants.INBOUND_ORDER_STATUS);
+        dubboReferenceHolder.dictServiceApi.init(
+                PharmacyDictConstants.INVENTORY_CHANGE_TYPE,
+                PharmacyDictConstants.INBOUND_ORDER_STATUS,
+                PharmacyDictConstants.OUTBOUND_ORDER_STATUS
+        );
     }
 
 }

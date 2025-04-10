@@ -78,6 +78,7 @@ spring:
             - Path=
               /recharge-card-type/**,
               /recharge-card/**,
+              /settlement-order/**,
               /finance-api/**
           filters:
             - RewritePath=/finance-api/?(?<segment>.*), /$\{segment}

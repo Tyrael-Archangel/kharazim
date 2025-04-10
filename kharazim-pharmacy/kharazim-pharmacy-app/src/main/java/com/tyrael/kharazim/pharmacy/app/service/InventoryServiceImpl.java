@@ -91,6 +91,45 @@ public class InventoryServiceImpl implements InventoryService {
     @Transactional(rollbackFor = Exception.class)
     public void occupy(InventoryOccupyCommand occupyCommand) {
 
+        // 先将业务单据原来的预占释放掉（可能没有预占过）
+        this.releaseByBusinessCode(occupyCommand);
+
+        // 然后重新预占
+        this.doOccupy(occupyCommand);
+
+    }
+
+    private void releaseByBusinessCode(InventoryOccupyCommand occupyCommand) {
+
+        String businessCode = occupyCommand.getBusinessCode();
+        String clinicCode = occupyCommand.getClinicCode();
+
+        List<InventoryOccupy> occupied = inventoryOccupyMapper.findOccupied(businessCode, clinicCode);
+        if (occupied.isEmpty()) {
+            return;
+        }
+
+        List<InventoryOccupy> sortedOccupied = occupied.stream()
+                .sorted(Comparator.comparing(InventoryOccupy::getSkuCode))
+                .toList();
+
+        for (InventoryOccupy inventoryOccupy : sortedOccupied) {
+            String skuCode = inventoryOccupy.getSkuCode();
+            Integer quantity = inventoryOccupy.getQuantity();
+
+            int updatedRows = inventoryOccupyMapper.releaseExactly(clinicCode, skuCode, businessCode, quantity);
+            BusinessException.assertTrue(updatedRows == 1, "处理库存预占失败");
+
+            inventoryMapper.decreaseOccupy(clinicCode, skuCode, quantity);
+            // save occupy log
+            saveInventoryChangeLog(occupyCommand, new InventoryChangeCommand.Item(skuCode, quantity));
+        }
+
+        occupied = inventoryOccupyMapper.findOccupied(businessCode, clinicCode);
+        BusinessException.assertTrue(occupied.isEmpty(), "处理库存预占失败（可能同一个单据存在并发）");
+    }
+
+    private void doOccupy(InventoryOccupyCommand occupyCommand) {
         List<InventoryChangeCommand.Item> sortedItems = occupyCommand.getItems()
                 .stream()
                 .sorted(Comparator.comparing(InventoryChangeCommand.Item::skuCode))
@@ -108,7 +147,6 @@ public class InventoryServiceImpl implements InventoryService {
             // save prescription occupy record
             saveOccupyRecord(occupyCommand, item);
         }
-
     }
 
     private void saveOccupyRecord(InventoryOccupyCommand occupyCommand, InventoryChangeCommand.Item item) {

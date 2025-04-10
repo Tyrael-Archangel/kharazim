@@ -9,6 +9,8 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Update;
 
+import java.util.List;
+
 /**
  * @author Tyrael Archangel
  * @since 2024/8/30
@@ -32,6 +34,21 @@ public interface InventoryOccupyMapper extends BasePageMapper<InventoryOccupy> {
         queryWrapper.orderByDesc(InventoryOccupy::getId);
 
         return page(pageRequest, queryWrapper);
+    }
+
+    /**
+     * 查询已预占数据
+     *
+     * @param businessCode 业务编码
+     * @param clinicCode   诊所编码
+     * @return 已预占数据
+     */
+    default List<InventoryOccupy> findOccupied(String businessCode, String clinicCode) {
+        LambdaQueryWrapper<InventoryOccupy> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(InventoryOccupy::getBusinessCode, businessCode)
+                .eq(InventoryOccupy::getClinicCode, clinicCode)
+                .ne(InventoryOccupy::getQuantity, 0);
+        return selectList(queryWrapper);
     }
 
     /**
@@ -66,5 +83,27 @@ public interface InventoryOccupyMapper extends BasePageMapper<InventoryOccupy> {
     default void release(String clinicCode, String skuCode, String businessCode, int quantity) {
         occupy(clinicCode, skuCode, businessCode, -quantity);
     }
+
+    /**
+     * 按照预期的占用进行释放
+     *
+     * @param clinicCode   诊所编码
+     * @param skuCode      SKU编码
+     * @param businessCode 业务编码
+     * @param quantity     数量
+     * @return updated rows
+     */
+    @Update("""
+            update inventory_occupy
+            set quantity = quantity - #{quantity}
+            where business_code = #{businessCode}
+              and clinic_code = #{clinicCode}
+              and sku_code = #{skuCode}
+              and quantity = #{quantity}
+            """)
+    int releaseExactly(@Param("clinicCode") String clinicCode,
+                       @Param("skuCode") String skuCode,
+                       @Param("businessCode") String businessCode,
+                       @Param("quantity") int quantity);
 
 }

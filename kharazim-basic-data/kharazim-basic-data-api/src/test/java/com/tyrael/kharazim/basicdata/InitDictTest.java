@@ -18,16 +18,17 @@ public class InitDictTest {
 
     @Test
     public void initDict() {
-        dictServiceApi.init(BasicDataDictConstants.CUSTOMER_GENDER);
-        dictServiceApi.init(BasicDataDictConstants.CUSTOMER_CERTIFICATE_TYPE);
-        dictServiceApi.init(BasicDataDictConstants.SYSTEM_ADDRESS_LEVEL);
-        dictServiceApi.init(BasicDataDictConstants.CLINIC_STATUS);
-
-        dictServiceApi.init(BasicDataDictConstants.CUSTOMER_SOURCE_CHANNEL);
-        dictServiceApi.init(BasicDataDictConstants.INSURANCE_COMPANY);
-        dictServiceApi.init(BasicDataDictConstants.CUSTOMER_TAG);
-        dictServiceApi.init(BasicDataDictConstants.COMMUNICATION_TYPE);
-        dictServiceApi.init(BasicDataDictConstants.COMMUNICATION_EVALUATE);
+        dictServiceApi.init(
+                BasicDataDictConstants.CUSTOMER_GENDER,
+                BasicDataDictConstants.CUSTOMER_CERTIFICATE_TYPE,
+                BasicDataDictConstants.SYSTEM_ADDRESS_LEVEL,
+                BasicDataDictConstants.CLINIC_STATUS,
+                BasicDataDictConstants.CUSTOMER_SOURCE_CHANNEL,
+                BasicDataDictConstants.INSURANCE_COMPANY,
+                BasicDataDictConstants.CUSTOMER_TAG,
+                BasicDataDictConstants.COMMUNICATION_TYPE,
+                BasicDataDictConstants.COMMUNICATION_EVALUATE
+        );
     }
 
 }

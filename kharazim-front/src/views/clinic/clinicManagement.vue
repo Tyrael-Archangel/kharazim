@@ -75,6 +75,7 @@ import { onMounted, reactive, ref, toRaw } from "vue";
 import { ACCESS_TOKEN, getToken } from "@/utils/auth.js";
 import { AxiosResponse } from "axios";
 import { DictOption, loadDictOptions } from "@/views/dict/dict-item";
+import { fileUrl } from "@/utils/fileUrl.ts";
 
 const clinicPageResponse = ref({
   data: [] as ClinicVO[],
@@ -90,6 +91,9 @@ const pageRequest = reactive({
 
 function loadClinic() {
   axios.get("/kharazim-api/clinic/page", { params: toRaw(pageRequest) }).then((response: AxiosResponse) => {
+    response.data.data.forEach((item: ClinicVO) => {
+      item.imageUrl = fileUrl(item.image);
+    });
     clinicPageResponse.value = response.data;
   });
 }

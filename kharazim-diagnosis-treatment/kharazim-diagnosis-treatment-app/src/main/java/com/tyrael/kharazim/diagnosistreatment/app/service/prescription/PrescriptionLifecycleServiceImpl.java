@@ -198,6 +198,8 @@ public class PrescriptionLifecycleServiceImpl implements PrescriptionLifecycleSe
             prescription.markCreateSuccess();
             prescriptionMapper.updateById(prescription);
 
+            prescription.setProducts(prescriptionProductMapper.listByPrescriptionCode(code));
+
             // 预占成功，创建结算单
             this.pushSettlement(prescription);
 
