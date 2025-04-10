@@ -97,7 +97,7 @@ public class AuthController {
     public Response forceLogout(@Parameter(description = "token", required = true)
                                 @RequestParam("token") String token) {
         String principalToken = Optional.ofNullable(PrincipalHolder.getPrincipal())
-                .map(e -> ((Principal) e).getCode())
+                .map(e -> ((Principal) e).getToken())
                 .orElse(null);
         if (StringUtils.equals(principalToken, token)) {
             throw new ForbiddenException("can't force logout yourself");
