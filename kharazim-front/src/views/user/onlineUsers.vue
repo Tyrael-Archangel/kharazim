@@ -24,7 +24,9 @@
       <el-table-column label="浏览器版本" prop="browserVersion" />
       <el-table-column align="center" label="操作" width="100">
         <template v-slot="{ row }">
-          <el-link :underline="false" type="primary" @click="forceLogout(row)">强制退出</el-link>
+          <el-link v-if="notCurrent(row.token)" :underline="false" type="primary" @click="forceLogout(row)">
+            强制退出
+          </el-link>
         </template>
       </el-table-column>
     </el-table>
@@ -49,6 +51,7 @@ import { onMounted, reactive, ref, toRaw } from "vue";
 import { AxiosResponse } from "axios";
 import { ElMessage } from "element-plus";
 import { fileUrl } from "@/utils/fileUrl.ts";
+import { getToken } from "@/utils/auth.js";
 
 const initPageRequest = {
   pageIndex: 1,
@@ -83,6 +86,10 @@ function forceLogout(onlineUserData: OnlineUserData) {
     ElMessage.success("操作成功");
     loadOnlineUsers();
   });
+}
+
+function notCurrent(token: string) {
+  return getToken() !== token;
 }
 
 onMounted(() => {
