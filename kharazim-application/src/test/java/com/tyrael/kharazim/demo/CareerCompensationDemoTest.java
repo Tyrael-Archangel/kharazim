@@ -247,7 +247,8 @@ public class CareerCompensationDemoTest {
                 new Compensation("starlinke", LocalDate.of(2024, 12, 10), 17038.40, SALARY),
                 new Compensation("starlinke", LocalDate.of(2025, 1, 10), 17974.72, SALARY),
                 new Compensation("starlinke", LocalDate.of(2025, 2, 10), 17974.72, SALARY),
-                new Compensation("starlinke", LocalDate.of(2025, 3, 10), 17685.76, SALARY)
+                new Compensation("starlinke", LocalDate.of(2025, 3, 10), 17685.76, SALARY),
+                new Compensation("starlinke", LocalDate.of(2025, 4, 10), 17038.40, SALARY)
 
         );
     }
