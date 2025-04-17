@@ -22,28 +22,28 @@ public class KafkaMqProducer implements MqProducer {
     @Override
     public <T> void send(Message<T> message) {
 
-        if (TransactionSynchronizationManager.isSynchronizationActive()) {
-            TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
-                @Override
-                public void afterCommit() {
-                    sendMessage(message);
-                }
-            });
-
-        } else {
-            sendMessage(message);
-        }
-
-    }
-
-    private <T> void sendMessage(Message<T> message) {
+        String topic = message.getTopic();
+        String messageId = message.getId();
         String messageBody;
         try {
             messageBody = objectMapper.writeValueAsString(message);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
-        kafkaTemplate.send(message.getTopic(), message.getId(), messageBody);
+
+
+        if (TransactionSynchronizationManager.isSynchronizationActive()) {
+            TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+                @Override
+                public void afterCommit() {
+                    kafkaTemplate.send(topic, messageId, messageBody);
+                }
+            });
+
+        } else {
+            kafkaTemplate.send(topic, messageId, messageBody);
+        }
+
     }
 
 }
