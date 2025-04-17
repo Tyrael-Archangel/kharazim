@@ -30,32 +30,29 @@ public class RedisMqProducer implements MqProducer {
     @Override
     public <T> void send(Message<T> message) {
 
-        if (TransactionSynchronizationManager.isSynchronizationActive()) {
-            TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
-                @Override
-                public void afterCommit() {
-                    sendMessage(message);
-                }
-            });
-
-        } else {
-            sendMessage(message);
-        }
-
-    }
-
-    private <T> void sendMessage(Message<T> message) {
         String messageBody;
         try {
             messageBody = objectMapper.writeValueAsString(message);
         } catch (JsonProcessingException e) {
             throw new MessageSerializeException(e);
         }
-
-        ObjectRecord<String, Map<String, String>> record = StreamRecords.newRecord()
+        ObjectRecord<String, Map<String, String>> messageRecord = StreamRecords.newRecord()
                 .ofObject(Map.of(MESSAGE_BODY_KEY, messageBody))
                 .withStreamKey(topicPrefix + message.getTopic());
-        redisTemplate.opsForStream().add(record);
+
+
+        if (TransactionSynchronizationManager.isSynchronizationActive()) {
+            TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+                @Override
+                public void afterCommit() {
+                    redisTemplate.opsForStream().add(messageRecord);
+                }
+            });
+
+        } else {
+            redisTemplate.opsForStream().add(messageRecord);
+        }
+
     }
 
 }
