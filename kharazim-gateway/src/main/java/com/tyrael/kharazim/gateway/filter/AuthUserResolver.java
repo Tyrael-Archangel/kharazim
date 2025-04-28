@@ -20,12 +20,13 @@ import static com.tyrael.kharazim.authentication.PrincipalHeader.TOKEN;
 @Component
 public class AuthUserResolver {
 
+    private final String authUserAttributeKey = AuthUser.class.getName();
+
     @DubboReference
     private AuthServiceApi authServiceApi;
 
     public AuthUser resolveUser(ServerWebExchange exchange) {
 
-        String authUserAttributeKey = AuthUser.class.getName();
         Object authUserAttribute = exchange.getAttribute(authUserAttributeKey);
 
         if (authUserAttribute instanceof AuthUser authUser) {
