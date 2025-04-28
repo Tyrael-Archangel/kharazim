@@ -24,7 +24,6 @@ import org.springframework.http.server.reactive.ServerHttpResponseDecorator;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
-import org.springframework.util.StringUtils;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -177,9 +176,7 @@ public class SystemRequestLogFilter implements GlobalFilter {
         @NonNull
         public Mono<Void> writeWith(@NonNull Publisher<? extends DataBuffer> body) {
             String contentType = this.getHeaders().getFirst("Content-Type");
-            if (StringUtils.hasText(contentType)
-                    && contentType.toLowerCase().contains(MediaType.APPLICATION_JSON_VALUE)
-                    && body instanceof Flux<? extends DataBuffer> fluxBody) {
+            if (isJsonContentType(contentType) && body instanceof Flux<? extends DataBuffer> fluxBody) {
                 return fluxBody.collectList().flatMap(dataBuffers -> {
 
                     byte[] responseBytes = mergeBytes(dataBuffers);
@@ -189,6 +186,14 @@ public class SystemRequestLogFilter implements GlobalFilter {
                 });
             }
             return super.writeWith(body);
+        }
+
+        private boolean isJsonContentType(String contentType) {
+            try {
+                return MediaType.parseMediaType(contentType).includes(MediaType.APPLICATION_JSON);
+            } catch (Exception e) {
+                return false;
+            }
         }
 
         private void saveRequestLog(byte[] responseBytes) {
