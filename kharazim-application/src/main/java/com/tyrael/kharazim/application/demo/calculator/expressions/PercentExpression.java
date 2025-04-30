@@ -40,8 +40,8 @@ public class PercentExpression extends CalculableExpression {
         public PercentExpression reduce() {
 
             PercentExpression percentExpression = new PercentExpression((CalculableExpression) this.prev);
-            join(percentExpression, this.next);
-            join(this.prev.prev, percentExpression);
+            connect(percentExpression, this.next);
+            connect(this.prev.prev, percentExpression);
 
             return percentExpression;
         }

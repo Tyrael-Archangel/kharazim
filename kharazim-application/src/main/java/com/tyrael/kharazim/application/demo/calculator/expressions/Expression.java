@@ -10,7 +10,7 @@ public abstract class Expression {
 
     protected Expression next;
 
-    public static void join(Expression node, Expression next) {
+    public static void connect(Expression node, Expression next) {
         if (node == null) {
             next.prev = null;
         } else if (next == null) {
@@ -39,14 +39,14 @@ public abstract class Expression {
     }
 
     public Expression append(Expression next) {
-        join(this, next);
+        connect(this, next);
         return next;
     }
 
     public static class VirtualHeadExpression extends Expression {
 
         public VirtualHeadExpression(Expression next) {
-            join(this, next);
+            connect(this, next);
         }
 
         public VirtualHeadExpression() {

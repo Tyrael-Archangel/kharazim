@@ -42,8 +42,8 @@ public class SinExpression extends CalculableExpression {
         public SinExpression reduce() {
 
             SinExpression sinExpression = new SinExpression((CalculableExpression) this.next);
-            join(sinExpression, this.next.next);
-            join(this.prev, sinExpression);
+            connect(sinExpression, this.next.next);
+            connect(this.prev, sinExpression);
 
             return sinExpression;
 
