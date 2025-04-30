@@ -48,8 +48,8 @@ public class DivideExpression extends CalculableExpression {
 
             DivideExpression divideExpression = new DivideExpression(
                     (CalculableExpression) this.prev, (CalculableExpression) this.next);
-            join(divideExpression, this.next.next);
-            join(this.prev.prev, divideExpression);
+            connect(divideExpression, this.next.next);
+            connect(this.prev.prev, divideExpression);
 
             return divideExpression;
         }

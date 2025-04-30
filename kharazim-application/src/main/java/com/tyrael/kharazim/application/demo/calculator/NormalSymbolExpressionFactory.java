@@ -18,25 +18,21 @@ public class NormalSymbolExpressionFactory implements SymbolExpressionFactory {
     }
 
     private void initSymbolExpressionInstances() {
-        registerSymbolExpression(
-                new AddExpression.AddSymbol(),
-                new SubtractExpression.SubtractSymbol(),
-                new MultiplyExpression.MultiplySymbol(),
-                new DivideExpression.DivideSymbol(),
-                new FactorialExpression.FactorialSymbol(),
-                new PowerExpression.PowerSymbol(),
-                new SinExpression.SinSymbol(),
-                new CosExpression.CosSymbol(),
-                new BracketSymbolExpression.Left(),
-                new BracketSymbolExpression.Right(),
-                new PercentExpression.PercentSymbol()
-        );
+        registerSymbolExpression(new AddExpression.AddSymbol());
+        registerSymbolExpression(new SubtractExpression.SubtractSymbol());
+        registerSymbolExpression(new MultiplyExpression.MultiplySymbol());
+        registerSymbolExpression(new DivideExpression.DivideSymbol());
+        registerSymbolExpression(new FactorialExpression.FactorialSymbol());
+        registerSymbolExpression(new PowerExpression.PowerSymbol());
+        registerSymbolExpression(new SinExpression.SinSymbol());
+        registerSymbolExpression(new CosExpression.CosSymbol());
+        registerSymbolExpression(new BracketSymbolExpression.Left());
+        registerSymbolExpression(new BracketSymbolExpression.Right());
+        registerSymbolExpression(new PercentExpression.PercentSymbol());
     }
 
-    public void registerSymbolExpression(SymbolExpression<?>... symbolExpressions) {
-        for (SymbolExpression<?> symbolExpression : symbolExpressions) {
-            symbolExpressionMap.put(symbolExpression.sign(), symbolExpression);
-        }
+    public void registerSymbolExpression(SymbolExpression<?> symbolExpression) {
+        symbolExpressionMap.put(symbolExpression.sign(), symbolExpression);
     }
 
     @Override

@@ -119,8 +119,8 @@ public class SimpleCalculator {
 
                 Expression subExpression = shrinkBracket(bracketExpression);
                 // 把subExpression链接回去
-                Expression.join(left.prev(), subExpression);
-                Expression.join(subExpression, right.next());
+                Expression.connect(left.prev(), subExpression);
+                Expression.connect(subExpression, right.next());
 
                 if (node == head) {
                     // head为左括号的情况

@@ -46,8 +46,8 @@ public class SubtractExpression extends CalculableExpression {
 
             SubtractExpression subtractExpression = new SubtractExpression(
                     (CalculableExpression) this.prev, (CalculableExpression) this.next);
-            join(subtractExpression, this.next.next);
-            join(this.prev.prev, subtractExpression);
+            connect(subtractExpression, this.next.next);
+            connect(this.prev.prev, subtractExpression);
 
             return subtractExpression;
         }
@@ -76,11 +76,11 @@ public class SubtractExpression extends CalculableExpression {
                 nextExpression = this.next;
             }
 
-            Expression.join(this.prev, leftBracket);
-            Expression.join(leftBracket, zero);
-            Expression.join(zero, this);
-            Expression.join(rightBracket, nextExpression.next);
-            Expression.join(nextExpression, rightBracket);
+            Expression.connect(this.prev, leftBracket);
+            Expression.connect(leftBracket, zero);
+            Expression.connect(zero, this);
+            Expression.connect(rightBracket, nextExpression.next);
+            Expression.connect(nextExpression, rightBracket);
         }
 
     }

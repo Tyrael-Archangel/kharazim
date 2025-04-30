@@ -46,8 +46,8 @@ public class MultiplyExpression extends CalculableExpression {
 
             MultiplyExpression multiplyExpression = new MultiplyExpression(
                     (CalculableExpression) this.prev, (CalculableExpression) this.next);
-            join(multiplyExpression, this.next.next);
-            join(this.prev.prev, multiplyExpression);
+            connect(multiplyExpression, this.next.next);
+            connect(this.prev.prev, multiplyExpression);
 
             return multiplyExpression;
         }
