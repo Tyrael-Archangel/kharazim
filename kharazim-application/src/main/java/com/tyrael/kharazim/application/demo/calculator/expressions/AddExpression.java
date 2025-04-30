@@ -43,8 +43,8 @@ public class AddExpression extends CalculableExpression {
 
             AddExpression addExpression = new AddExpression(
                     (CalculableExpression) this.prev, (CalculableExpression) this.next);
-            join(addExpression, this.next.next);
-            join(this.prev.prev, addExpression);
+            connect(addExpression, this.next.next);
+            connect(this.prev.prev, addExpression);
 
             return addExpression;
         }

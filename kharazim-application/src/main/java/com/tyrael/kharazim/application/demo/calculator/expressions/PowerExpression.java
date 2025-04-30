@@ -49,8 +49,8 @@ public class PowerExpression extends CalculableExpression {
             PowerExpression powerExpression = new PowerExpression(
                     (CalculableExpression) this.prev, (CalculableExpression) this.next);
 
-            join(powerExpression, this.next.next);
-            join(this.prev.prev, powerExpression);
+            connect(powerExpression, this.next.next);
+            connect(this.prev.prev, powerExpression);
 
             return powerExpression;
 

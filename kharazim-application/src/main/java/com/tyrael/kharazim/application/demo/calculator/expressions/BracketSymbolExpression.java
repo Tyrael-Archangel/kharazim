@@ -53,10 +53,12 @@ public abstract class BracketSymbolExpression extends SymbolExpression<Calculabl
 
         @Override
         public void processAbbr() {
+            // 如果左边括号前面是数字，则在数字和左边括号之间添加一个乘号
+            // 8(3+3) -> 8*(3+3)
             if (this.prev instanceof NumberExpression) {
                 MultiplyExpression.MultiplySymbol multiplySymbol = new MultiplyExpression.MultiplySymbol();
-                Expression.join(this.prev, multiplySymbol);
-                Expression.join(multiplySymbol, this);
+                Expression.connect(this.prev, multiplySymbol);
+                Expression.connect(multiplySymbol, this);
             }
         }
 
