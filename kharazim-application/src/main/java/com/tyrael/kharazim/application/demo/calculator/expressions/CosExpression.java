@@ -41,8 +41,8 @@ public class CosExpression extends CalculableExpression {
         public CosExpression reduce() {
 
             CosExpression cos = new CosExpression((CalculableExpression) this.next);
-            join(cos, this.next.next);
-            join(this.prev, cos);
+            connect(cos, this.next.next);
+            connect(this.prev, cos);
 
             return cos;
 

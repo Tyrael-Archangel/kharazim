@@ -74,8 +74,8 @@ public class FactorialExpression extends CalculableExpression {
         public FactorialExpression reduce() {
 
             FactorialExpression factorialExpression = new FactorialExpression((CalculableExpression) this.prev);
-            join(factorialExpression, this.next);
-            join(this.prev.prev, factorialExpression);
+            connect(factorialExpression, this.next);
+            connect(this.prev.prev, factorialExpression);
 
             return factorialExpression;
 
