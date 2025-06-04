@@ -21,6 +21,8 @@ public class ProductDiscount extends BaseDO {
     @TableId(type = IdType.AUTO)
     private Long id;
 
+    private String clinicCode;
+
     private LocalDateTime effectBegin;
 
     private LocalDateTime effectEnd;
