@@ -1,10 +1,12 @@
 package com.tyrael.kharazim.diagnosistreatment.controller;
 
 import com.tyrael.kharazim.base.dto.DataResponse;
+import com.tyrael.kharazim.base.dto.MultiResponse;
 import com.tyrael.kharazim.base.dto.PageResponse;
 import com.tyrael.kharazim.diagnosistreatment.app.service.prescription.PrescriptionLifecycleService;
 import com.tyrael.kharazim.diagnosistreatment.app.service.prescription.PrescriptionQueryService;
 import com.tyrael.kharazim.diagnosistreatment.app.vo.prescription.CreatePrescriptionRequest;
+import com.tyrael.kharazim.diagnosistreatment.app.vo.prescription.DailySalesModels;
 import com.tyrael.kharazim.diagnosistreatment.app.vo.prescription.PagePrescriptionRequest;
 import com.tyrael.kharazim.diagnosistreatment.app.vo.prescription.PrescriptionVO;
 import io.swagger.v3.oas.annotations.Operation;
@@ -54,6 +56,12 @@ public class PrescriptionController {
     @Operation(summary = "创建处方", description = "创建处方，返回处方编码")
     public DataResponse<String> create(@RequestBody @Valid CreatePrescriptionRequest request) {
         return DataResponse.success(prescriptionLifecycleService.create(request));
+    }
+
+    @GetMapping("/statistics/daily-sales")
+    @Operation(summary = "每日销售数据统计")
+    public MultiResponse<DailySalesModels.View> dailySales(@ParameterObject DailySalesModels.FilterCommand filter) {
+        return MultiResponse.success(prescriptionQueryService.dailySales(filter));
     }
 
 }

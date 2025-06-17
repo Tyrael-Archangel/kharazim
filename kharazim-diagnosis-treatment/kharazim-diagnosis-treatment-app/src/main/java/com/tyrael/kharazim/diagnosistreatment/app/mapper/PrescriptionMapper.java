@@ -5,12 +5,17 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.tyrael.kharazim.base.dto.PageResponse;
 import com.tyrael.kharazim.diagnosistreatment.app.domain.prescription.Prescription;
+import com.tyrael.kharazim.diagnosistreatment.app.vo.prescription.DailySalesModels;
 import com.tyrael.kharazim.diagnosistreatment.app.vo.prescription.PagePrescriptionRequest;
 import com.tyrael.kharazim.mybatis.BasePageMapper;
 import com.tyrael.kharazim.mybatis.LambdaQueryWrapperX;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.cursor.Cursor;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 import static com.tyrael.kharazim.base.util.DateTimeUtil.endTimeOfDate;
 import static com.tyrael.kharazim.base.util.DateTimeUtil.startTimeOfDate;
@@ -74,5 +79,24 @@ public interface PrescriptionMapper extends BasePageMapper<Prescription> {
 
         return page(pageCondition, queryWrapper);
     }
+
+    @Select("""
+            <script>
+                select
+                    date_format(create_time, '%Y-%m-%d') as date,
+                    sum(total_amount)                    as amount
+                from prescription
+                <where>
+                    create_time between #{startTime} and #{endTime}
+                    <if test="clinicCode != null and clinicCode != ''">
+                        and clinic_code = #{clinicCode}
+                    </if>
+                </where>
+                group by date
+            </script>
+            """)
+    List<DailySalesModels.View> dailySales(@Param("clinicCode") String clinicCode,
+                                           @Param("startTime") LocalDateTime startTime,
+                                           @Param("endTime") LocalDateTime endTime);
 
 }
