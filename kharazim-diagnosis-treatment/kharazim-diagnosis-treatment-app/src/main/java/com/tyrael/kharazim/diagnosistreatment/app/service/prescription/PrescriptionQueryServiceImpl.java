@@ -11,6 +11,7 @@ import com.tyrael.kharazim.diagnosistreatment.app.domain.prescription.Prescripti
 import com.tyrael.kharazim.diagnosistreatment.app.domain.prescription.PrescriptionProduct;
 import com.tyrael.kharazim.diagnosistreatment.app.mapper.PrescriptionMapper;
 import com.tyrael.kharazim.diagnosistreatment.app.mapper.PrescriptionProductMapper;
+import com.tyrael.kharazim.diagnosistreatment.app.vo.prescription.DailySalesModels;
 import com.tyrael.kharazim.diagnosistreatment.app.vo.prescription.PagePrescriptionRequest;
 import com.tyrael.kharazim.diagnosistreatment.app.vo.prescription.PrescriptionExportVO;
 import com.tyrael.kharazim.diagnosistreatment.app.vo.prescription.PrescriptionVO;
@@ -25,12 +26,18 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+
+import static com.tyrael.kharazim.base.util.DateTimeUtil.endTimeOfDate;
+import static com.tyrael.kharazim.base.util.DateTimeUtil.startTimeOfDate;
 
 /**
  * @author Tyrael Archangel
@@ -133,6 +140,30 @@ public class PrescriptionQueryServiceImpl implements PrescriptionQueryService {
                     + URLEncoder.encode("处方数据.xlsx", StandardCharsets.UTF_8));
             response.setContentType("application/vnd.ms-excel;charset=UTF-8");
         }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<DailySalesModels.View> dailySales(DailySalesModels.FilterCommand filter) {
+        String clinicCode = filter.getClinicCode();
+        LocalDate startDate = filter.getStart();
+        LocalDate endDate = filter.getEnd();
+
+        List<DailySalesModels.View> dailySales = prescriptionMapper.dailySales(
+                clinicCode, startTimeOfDate(startDate), endTimeOfDate(endDate));
+        Map<LocalDate, DailySalesModels.View> dailySalesMap = dailySales.stream()
+                .collect(Collectors.toMap(DailySalesModels.View::getDate, e -> e));
+
+        List<DailySalesModels.View> result = new ArrayList<>();
+        for (LocalDate date = startDate; !date.isAfter(endDate); date = date.plusDays(1)) {
+            DailySalesModels.View view = dailySalesMap.get(date);
+            if (view == null) {
+                view = new DailySalesModels.View(date, BigDecimal.ZERO);
+            }
+            result.add(view);
+        }
+
+        return result;
     }
 
     private List<PrescriptionProduct> listPrescriptionProducts(Collection<Prescription> prescriptions) {
