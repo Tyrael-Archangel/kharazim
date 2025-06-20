@@ -1,5 +1,6 @@
 package com.tyrael.kharazim.diagnosistreatment.controller;
 
+import com.tyrael.kharazim.base.dto.PageCommand;
 import com.tyrael.kharazim.diagnosistreatment.app.vo.prescription.DailySalesModels;
 import com.tyrael.kharazim.diagnosistreatment.app.vo.prescription.PagePrescriptionRequest;
 import com.tyrael.kharazim.test.mock.BaseControllerTest;
@@ -30,11 +31,19 @@ class PrescriptionControllerTest extends BaseControllerTest<PrescriptionControll
     }
 
     @Test
-    void dailySales() {
+    void dailySalesTrends() {
         DailySalesModels.FilterCommand filter = new DailySalesModels.FilterCommand();
         filter.setStart(LocalDate.now());
         filter.setEnd(LocalDate.now().plusDays(30));
-        super.performWhenCall(mockController.dailySales(filter));
+        super.performWhenCall(mockController.dailySalesTrends(filter));
+    }
+
+    @Test
+    void dailySalesPage() {
+        DailySalesModels.FilterCommand filter = new DailySalesModels.FilterCommand();
+        filter.setStart(LocalDate.now());
+        filter.setEnd(LocalDate.now().plusDays(30));
+        super.performWhenCall(mockController.dailySalesPage(filter, new PageCommand()));
     }
 
 }

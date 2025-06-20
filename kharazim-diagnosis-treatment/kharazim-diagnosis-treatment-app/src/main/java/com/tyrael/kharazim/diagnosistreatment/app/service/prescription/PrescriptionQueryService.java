@@ -1,5 +1,6 @@
 package com.tyrael.kharazim.diagnosistreatment.app.service.prescription;
 
+import com.tyrael.kharazim.base.dto.PageCommand;
 import com.tyrael.kharazim.base.dto.PageResponse;
 import com.tyrael.kharazim.diagnosistreatment.app.vo.prescription.DailySalesModels;
 import com.tyrael.kharazim.diagnosistreatment.app.vo.prescription.PagePrescriptionRequest;
@@ -49,11 +50,29 @@ public interface PrescriptionQueryService {
     void export(PagePrescriptionRequest pageRequest, HttpServletResponse httpServletResponse) throws IOException;
 
     /**
-     * 每日销售数据统计
+     * 每日销售数据统计趋势
      *
      * @param filter 过滤条件
      * @return 每日销售数据统计
      */
-    List<DailySalesModels.View> dailySales(DailySalesModels.FilterCommand filter);
+    List<DailySalesModels.View> dailySalesTrends(DailySalesModels.FilterCommand filter);
+
+    /**
+     * 每日销售数据统计分页查询
+     *
+     * @param filter      过滤条件
+     * @param pageCommand 分页条件
+     * @return 每日销售数据统计分页数据
+     */
+    PageResponse<DailySalesModels.View> dailySalesPage(DailySalesModels.FilterCommand filter, PageCommand pageCommand);
+
+    /**
+     * 每日销售数据统计导出
+     *
+     * @param filter   过滤条件
+     * @param response HttpServletResponse
+     * @throws IOException IOException
+     */
+    void dailySalesExport(DailySalesModels.FilterCommand filter, HttpServletResponse response) throws IOException;
 
 }
