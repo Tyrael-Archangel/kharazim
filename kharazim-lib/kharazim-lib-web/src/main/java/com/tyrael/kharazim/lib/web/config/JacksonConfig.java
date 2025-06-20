@@ -1,5 +1,6 @@
 package com.tyrael.kharazim.lib.web.config;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonStreamContext;
@@ -9,6 +10,7 @@ import com.fasterxml.jackson.databind.cfg.DeserializerFactoryConfig;
 import com.fasterxml.jackson.databind.deser.BeanDeserializerFactory;
 import com.fasterxml.jackson.databind.deser.DefaultDeserializationContext;
 import com.fasterxml.jackson.databind.deser.DeserializerFactory;
+import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
@@ -18,6 +20,7 @@ import org.springframework.boot.autoconfigure.jackson.JacksonProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.util.StringUtils;
 
@@ -26,6 +29,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -45,8 +49,9 @@ public class JacksonConfig {
         }
 
         JavaTimeModule javaTimeModule = new JavaTimeModule();
-        javaTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(DateTimeFormatter.ofPattern(dateFormat)));
-        javaTimeModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(DateTimeFormatter.ofPattern(dateFormat)));
+        javaTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeI18nSerializer(dateFormat));
+        javaTimeModule.addDeserializer(LocalDateTime.class, new LocalDateTimeI18nDeserializer(dateFormat));
+
         return javaTimeModule;
     }
 
@@ -64,6 +69,84 @@ public class JacksonConfig {
         BaseNameAndValueEnumSerializer baseNameAndValueEnumSerializer = new BaseNameAndValueEnumSerializer();
         return jacksonObjectMapperBuilder -> jacksonObjectMapperBuilder
                 .serializerByType(BaseHasNameEnum.class, baseNameAndValueEnumSerializer);
+    }
+
+    public static class LocalDateTimeI18nSerializer extends LocalDateTimeSerializer {
+
+        private final LocalDateTimeSerializer delegate;
+
+        public LocalDateTimeI18nSerializer(String dateFormat) {
+            this(new LocalDateTimeSerializer(DateTimeFormatter.ofPattern(dateFormat)));
+        }
+
+        public LocalDateTimeI18nSerializer(LocalDateTimeSerializer delegate) {
+            this.delegate = delegate;
+        }
+
+        protected LocalDateTimeI18nSerializer(LocalDateTimeSerializer delegate, Boolean useTimestamp, Boolean useNanoseconds, DateTimeFormatter f) {
+            super(delegate, useTimestamp, useNanoseconds, f);
+            this.delegate = delegate;
+        }
+
+        @Override
+        protected LocalDateTimeI18nSerializer withFormat(Boolean useTimestamp, DateTimeFormatter f, JsonFormat.Shape shape) {
+            return new LocalDateTimeI18nSerializer(delegate, useTimestamp, _useNanoseconds, f);
+        }
+
+        @Override
+        public void serialize(LocalDateTime value, JsonGenerator g, SerializerProvider provider) throws IOException {
+            delegate.serialize(convertTimeZone(value), g, provider);
+        }
+
+        @Override
+        public void serializeWithType(LocalDateTime value, JsonGenerator g, SerializerProvider provider, TypeSerializer typeSer) throws IOException {
+            delegate.serializeWithType(convertTimeZone(value), g, provider, typeSer);
+        }
+
+        private LocalDateTime convertTimeZone(LocalDateTime value) {
+            if (value == null) {
+                return null;
+            }
+            return value.atZone(TimeZone.getDefault().toZoneId())
+                    .withZoneSameInstant(LocaleContextHolder.getTimeZone().toZoneId())
+                    .toLocalDateTime();
+        }
+
+    }
+
+    public static class LocalDateTimeI18nDeserializer extends LocalDateTimeDeserializer {
+
+        private final LocalDateTimeDeserializer delegate;
+
+        public LocalDateTimeI18nDeserializer(String dateFormat) {
+            this(new LocalDateTimeDeserializer(DateTimeFormatter.ofPattern(dateFormat)));
+        }
+
+        public LocalDateTimeI18nDeserializer(LocalDateTimeDeserializer delegate) {
+            this.delegate = delegate;
+        }
+
+        public LocalDateTimeI18nDeserializer(LocalDateTimeDeserializer delegate, DateTimeFormatter formatter) {
+            super(formatter);
+            this.delegate = delegate;
+        }
+
+        @Override
+        protected LocalDateTimeI18nDeserializer withDateFormat(DateTimeFormatter formatter) {
+            return new LocalDateTimeI18nDeserializer(delegate, formatter);
+        }
+
+        @Override
+        public LocalDateTime deserialize(JsonParser parser, DeserializationContext context) throws IOException {
+            LocalDateTime localDateTime = delegate.deserialize(parser, context);
+            if (localDateTime == null) {
+                return null;
+            }
+            return localDateTime.atZone(TimeZone.getDefault().toZoneId())
+                    .withZoneSameInstant(LocaleContextHolder.getTimeZone().toZoneId())
+                    .toLocalDateTime();
+        }
+
     }
 
     public static class BaseNameAndValueEnumSerializer extends JsonSerializer<BaseHasNameEnum<?>> {
