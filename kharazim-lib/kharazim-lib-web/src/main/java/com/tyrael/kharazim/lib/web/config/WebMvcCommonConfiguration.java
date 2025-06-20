@@ -14,7 +14,8 @@ import org.springframework.context.annotation.Import;
         SystemErrorController.class,
         JacksonConfig.class,
         SystemGlobalWebConfig.class,
-        WebMvcEnumConverterConfiguration.class
+        WebMvcEnumConverterConfiguration.class,
+        WebMvcTimeZoneConfiguration.class
 })
 @AutoConfigureBefore(ErrorMvcAutoConfiguration.class)
 @ConditionalOnMissingBean(DisableWebCommonConfiguration.class)
