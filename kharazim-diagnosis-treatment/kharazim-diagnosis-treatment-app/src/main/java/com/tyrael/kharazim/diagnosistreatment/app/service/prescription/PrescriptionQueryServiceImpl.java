@@ -4,6 +4,7 @@ import cn.idev.excel.ExcelWriter;
 import cn.idev.excel.FastExcelFactory;
 import cn.idev.excel.write.metadata.WriteSheet;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.tyrael.kharazim.base.dto.PageCommand;
 import com.tyrael.kharazim.base.dto.PageResponse;
 import com.tyrael.kharazim.base.exception.DomainNotFoundException;
 import com.tyrael.kharazim.diagnosistreatment.app.converter.PrescriptionConverter;
@@ -30,6 +31,7 @@ import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -142,35 +144,113 @@ public class PrescriptionQueryServiceImpl implements PrescriptionQueryService {
         }
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public List<DailySalesModels.View> dailySales(DailySalesModels.FilterCommand filter) {
-        String clinicCode = filter.getClinicCode();
-        LocalDate startDate = filter.getStart();
-        LocalDate endDate = filter.getEnd();
-
-        List<DailySalesModels.View> dailySales = prescriptionMapper.dailySales(
-                clinicCode, startTimeOfDate(startDate), endTimeOfDate(endDate));
-        Map<LocalDate, DailySalesModels.View> dailySalesMap = dailySales.stream()
-                .collect(Collectors.toMap(DailySalesModels.View::getDate, e -> e));
-
-        List<DailySalesModels.View> result = new ArrayList<>();
-        for (LocalDate date = startDate; !date.isAfter(endDate); date = date.plusDays(1)) {
-            DailySalesModels.View view = dailySalesMap.get(date);
-            if (view == null) {
-                view = new DailySalesModels.View(date, BigDecimal.ZERO);
-            }
-            result.add(view);
-        }
-
-        return result;
-    }
-
     private List<PrescriptionProduct> listPrescriptionProducts(Collection<Prescription> prescriptions) {
         List<String> prescriptionCodes = prescriptions.stream()
                 .map(Prescription::getCode)
                 .collect(Collectors.toList());
         return prescriptionProductMapper.listByPrescriptionCodes(prescriptionCodes);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<DailySalesModels.View> dailySalesTrends(DailySalesModels.FilterCommand filter) {
+        return new DailySalesQueryProvider()
+                .dailySales(filter.getClinicCode(), filter.getStart(), filter.getEnd());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PageResponse<DailySalesModels.View> dailySalesPage(DailySalesModels.FilterCommand filter, PageCommand pageCommand) {
+        return new DailySalesQueryProvider().page(filter, pageCommand);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void dailySalesExport(DailySalesModels.FilterCommand filter, HttpServletResponse response) throws IOException {
+        new DailySalesQueryProvider().export(filter, response);
+    }
+
+    private class DailySalesQueryProvider {
+
+        PageResponse<DailySalesModels.View> page(DailySalesModels.FilterCommand filter, PageCommand pageCommand) {
+
+            String clinicCode = filter.getClinicCode();
+            LocalDate startDate = filter.getStart();
+            LocalDate endDate = filter.getEnd();
+
+            long totalItems = startDate.until(endDate, ChronoUnit.DAYS);
+            if (totalItems <= 0) {
+                return PageResponse.success(List.of(), 0);
+            }
+
+            Integer pageIndex = pageCommand.getPageIndex();
+            Integer pageSize = pageCommand.getPageSize();
+
+            LocalDate pageBegin = startDate.plusDays((pageIndex - 1L) * pageSize);
+            LocalDate pageEnd = pageBegin.plusDays(pageSize - 1L);
+            if (pageEnd.isAfter(endDate)) {
+                pageEnd = endDate;
+            }
+
+            List<DailySalesModels.View> views = dailySales(clinicCode, pageBegin, pageEnd);
+            return PageResponse.success(views, (int) totalItems);
+        }
+
+        void export(DailySalesModels.FilterCommand filter, HttpServletResponse response) throws IOException {
+
+            String clinicCode = filter.getClinicCode();
+            LocalDate queryBegin = filter.getStart();
+            LocalDate queryEnd = filter.getEnd();
+
+            int pageSize = 50;
+
+            WriteSheet writeSheet = FastExcelFactory.writerSheet("daily-sales")
+                    .head(DailySalesModels.View.class)
+                    .build();
+
+            try (ExcelWriter excelWriter = FastExcelFactory.write(response.getOutputStream()).build()) {
+
+                LocalDate begin = queryBegin;
+
+                List<DailySalesModels.View> exports;
+                do {
+
+                    LocalDate end = begin.plusDays(pageSize - 1);
+                    if (end.isAfter(queryEnd)) {
+                        end = queryEnd;
+                    }
+
+                    exports = dailySales(clinicCode, begin, end);
+                    excelWriter.write(exports, writeSheet);
+
+                    begin = begin.plusDays(pageSize);
+                } while (!exports.isEmpty());
+
+                response.addHeader("Content-disposition", "attachment;filename="
+                        + URLEncoder.encode("daily_sales.xlsx", StandardCharsets.UTF_8));
+                response.setContentType("application/vnd.ms-excel;charset=UTF-8");
+            }
+        }
+
+        List<DailySalesModels.View> dailySales(String clinicCode, LocalDate startDate, LocalDate endDate) {
+
+            List<DailySalesModels.View> dailySales = prescriptionMapper.dailySales(
+                    clinicCode, startTimeOfDate(startDate), endTimeOfDate(endDate));
+            Map<LocalDate, DailySalesModels.View> dailySalesMap = dailySales.stream()
+                    .collect(Collectors.toMap(DailySalesModels.View::getDate, e -> e));
+
+            List<DailySalesModels.View> result = new ArrayList<>();
+            for (LocalDate date = startDate; !date.isAfter(endDate); date = date.plusDays(1)) {
+                DailySalesModels.View view = dailySalesMap.get(date);
+                if (view == null) {
+                    view = new DailySalesModels.View(date, BigDecimal.ZERO);
+                }
+                result.add(view);
+            }
+
+            return result;
+        }
+
     }
 
 }

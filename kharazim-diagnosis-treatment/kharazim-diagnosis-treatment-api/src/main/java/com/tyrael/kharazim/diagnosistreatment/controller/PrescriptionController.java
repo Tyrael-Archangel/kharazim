@@ -2,6 +2,7 @@ package com.tyrael.kharazim.diagnosistreatment.controller;
 
 import com.tyrael.kharazim.base.dto.DataResponse;
 import com.tyrael.kharazim.base.dto.MultiResponse;
+import com.tyrael.kharazim.base.dto.PageCommand;
 import com.tyrael.kharazim.base.dto.PageResponse;
 import com.tyrael.kharazim.diagnosistreatment.app.service.prescription.PrescriptionLifecycleService;
 import com.tyrael.kharazim.diagnosistreatment.app.service.prescription.PrescriptionQueryService;
@@ -58,10 +59,24 @@ public class PrescriptionController {
         return DataResponse.success(prescriptionLifecycleService.create(request));
     }
 
-    @GetMapping("/statistics/daily-sales")
+    @GetMapping("/statistics/daily-sales/trends")
     @Operation(summary = "每日销售数据统计")
-    public MultiResponse<DailySalesModels.View> dailySales(@ParameterObject DailySalesModels.FilterCommand filter) {
-        return MultiResponse.success(prescriptionQueryService.dailySales(filter));
+    public MultiResponse<DailySalesModels.View> dailySalesTrends(@ParameterObject DailySalesModels.FilterCommand filter) {
+        return MultiResponse.success(prescriptionQueryService.dailySalesTrends(filter));
+    }
+
+    @GetMapping("/statistics/daily-sales/page")
+    @Operation(summary = "每日销售数据统计分页查询")
+    public PageResponse<DailySalesModels.View> dailySalesPage(@ParameterObject DailySalesModels.FilterCommand filter,
+                                                              @ParameterObject PageCommand pageCommand) {
+        return prescriptionQueryService.dailySalesPage(filter, pageCommand);
+    }
+
+    @GetMapping("/statistics/daily-sales/export")
+    @Operation(summary = "每日销售数据统计导出")
+    public void dailySalesExport(@ParameterObject DailySalesModels.FilterCommand filter,
+                                 HttpServletResponse httpServletResponse) throws IOException {
+        prescriptionQueryService.dailySalesExport(filter, httpServletResponse);
     }
 
 }
