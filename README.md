@@ -2,6 +2,19 @@
 
 A quality outpatient operate system
 
+---
+This project is divided into two modules
+
+* kharazim-application, providing high-quality outpatient management system backend services
+    * Using spring-boot as the core framework, handling logic with simple and clear code
+    * Integrating mybatis-plus as an enhancement tool for mybatis persistence layer
+    * Using knife4j to manage API documentation
+* kharazim-front, providing high-quality outpatient management system frontend services
+    * vue3 + vite + element-plus
+
+This project is currently splitting kharazim-application into multiple microservices
+
+---
 该项目分为两个模块
 
 * kharazim-application，提供高质量的门诊管理系统后端服务
