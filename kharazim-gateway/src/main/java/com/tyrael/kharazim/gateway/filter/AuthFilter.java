@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -35,8 +34,7 @@ import static com.tyrael.kharazim.authentication.PrincipalHeader.*;
  */
 @Component
 @RequiredArgsConstructor
-@Order(Ordered.HIGHEST_PRECEDENCE + 2)
-public class AuthFilter implements GlobalFilter {
+public class AuthFilter implements GlobalFilter, Ordered {
 
     private final ObjectMapper objectMapper;
     private final AuthWhiteListChecker authWhiteListChecker;
@@ -99,6 +97,11 @@ public class AuthFilter implements GlobalFilter {
             return null;
         }
         return URLEncoder.encode(value, StandardCharsets.UTF_8);
+    }
+
+    @Override
+    public int getOrder() {
+        return FilterOrders.getOrder(this.getClass());
     }
 
 }

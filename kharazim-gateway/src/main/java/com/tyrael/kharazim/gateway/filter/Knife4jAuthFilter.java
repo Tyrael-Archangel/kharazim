@@ -6,11 +6,9 @@ import com.tyrael.kharazim.authentication.PrincipalHeader;
 import com.tyrael.kharazim.base.exception.UnauthorizedException;
 import com.tyrael.kharazim.user.sdk.service.AuthServiceApi;
 import com.tyrael.kharazim.user.sdk.vo.ClientInfo;
-import eu.bitwalker.useragentutils.UserAgent;
 import lombok.RequiredArgsConstructor;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
@@ -22,18 +20,15 @@ import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
-import java.net.InetSocketAddress;
-import java.util.Objects;
-import java.util.Optional;
-
 /**
  * @author Tyrael Archangel
  * @since 2025/2/25
  */
-@Order(Ordered.HIGHEST_PRECEDENCE)
 @Component
 @RequiredArgsConstructor
-public class Knife4jAuthFilter extends WebFluxSecurityBasicAuthFilter {
+public class Knife4jAuthFilter extends WebFluxSecurityBasicAuthFilter implements Ordered {
+
+    private final RequestClientInfoResolver requestClientInfoResolver;
 
     @DubboReference
     private AuthServiceApi authServiceApi;
@@ -80,45 +75,19 @@ public class Knife4jAuthFilter extends WebFluxSecurityBasicAuthFilter {
         if (userNameAndPasswordArray.length != 2) {
             throw new UnauthorizedException("Unauthorized");
         }
-        ClientInfo clientInfo = getClientInfo(exchange);
+        ClientInfo clientInfo = requestClientInfoResolver.resolveClientInfo(exchange);
         return authServiceApi.login(userNameAndPasswordArray[0], userNameAndPasswordArray[1], clientInfo);
-    }
-
-    private ClientInfo getClientInfo(ServerWebExchange exchange) {
-        HttpHeaders headers = exchange.getRequest().getHeaders();
-        String host = headers.getFirst("X-Forwarded-For");
-        if (!StringUtils.hasText(host) || "unknown".equalsIgnoreCase(host)) {
-            // noinspection UastIncorrectHttpHeaderInspection
-            host = headers.getFirst("X-Real-IP");
-        }
-        if (!StringUtils.hasText(host) || "unknown".equalsIgnoreCase(host)) {
-            host = Optional.ofNullable(exchange.getRequest().getRemoteAddress())
-                    .map(InetSocketAddress::getHostString)
-                    .orElse("");
-        }
-        if (host.contains(",")) {
-            host = host.split(",")[0];
-        }
-
-        ClientInfo clientInfo = new ClientInfo();
-        clientInfo.setHost(host);
-
-        try {
-            UserAgent userAgent = UserAgent.parseUserAgentString(headers.getFirst("User-Agent"));
-            clientInfo.setOs(userAgent.getOperatingSystem().getName());
-            clientInfo.setBrowser(userAgent.getBrowser().getName());
-            clientInfo.setBrowserVersion(Objects.toString(userAgent.getBrowserVersion()));
-        } catch (Exception ignore) {
-            // ignore
-        }
-
-        return clientInfo;
     }
 
     private void writeForbiddenStatus(ServerWebExchange exchange) {
         ServerHttpResponse response = exchange.getResponse();
         response.setStatusCode(HttpStatus.UNAUTHORIZED);
         response.getHeaders().add(HttpHeaders.WWW_AUTHENTICATE, "Basic realm=\"Restricted Area\"");
+    }
+
+    @Override
+    public int getOrder() {
+        return FilterOrders.getOrder(this.getClass());
     }
 
 }

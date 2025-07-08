@@ -11,7 +11,6 @@ import org.reactivestreams.Publisher;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
@@ -47,8 +46,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 @SuppressWarnings("UastIncorrectHttpHeaderInspection")
 @Component
 @RequiredArgsConstructor
-@Order(Ordered.HIGHEST_PRECEDENCE + 1)
-public class SystemRequestLogFilter implements GlobalFilter {
+public class SystemRequestLogFilter implements GlobalFilter, Ordered {
 
     private final AuthUserResolver authUserResolver;
     private final SystemRequestLogPathMather requestLogPathMather;
@@ -144,6 +142,11 @@ public class SystemRequestLogFilter implements GlobalFilter {
         }
 
         return allocate.array();
+    }
+
+    @Override
+    public int getOrder() {
+        return FilterOrders.getOrder(this.getClass());
     }
 
     private static class BodyCacheServerHttpRequestDecorator extends ServerHttpRequestDecorator {
