@@ -12,7 +12,6 @@ import reactor.core.publisher.Mono;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @author Tyrael Archangel
@@ -69,7 +68,6 @@ public class RateLimiterFilter implements GlobalFilter, Ordered {
         private final long refillRate;
         private final AtomicLong tokens;
         private final AtomicLong lastRefillTime;
-        private final ReentrantLock lock = new ReentrantLock();
 
         public TokenBucket(long capacity, long refillRate) {
             this.capacity = capacity;
@@ -78,21 +76,17 @@ public class RateLimiterFilter implements GlobalFilter, Ordered {
             this.lastRefillTime = new AtomicLong(System.currentTimeMillis());
         }
 
-        public boolean tryConsume(long tokensRequested) {
+        public synchronized boolean tryConsume(long tokensRequested) {
 
             refill();
 
-            lock.lock();
-            try {
-                long currentTokens = tokens.get();
-                if (currentTokens >= tokensRequested) {
-                    tokens.set(currentTokens - tokensRequested);
-                    return true;
-                }
-                return false;
-            } finally {
-                lock.unlock();
+            long currentTokens = tokens.get();
+            if (currentTokens >= tokensRequested) {
+                tokens.set(currentTokens - tokensRequested);
+                return true;
             }
+
+            return false;
         }
 
         private void refill() {
