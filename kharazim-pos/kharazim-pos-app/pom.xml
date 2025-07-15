@@ -1,0 +1,116 @@
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.tyrael</groupId>
+        <artifactId>kharazim-pos</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>kharazim-pos-app</artifactId>
+
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>com.tyrael</groupId>
+                    <artifactId>kharazim-lib-dubbo-registry-redis</artifactId>
+                </dependency>
+                <dependency>
+                    <groupId>com.tyrael</groupId>
+                    <artifactId>kharazim-lib-mq-redis</artifactId>
+                </dependency>
+            </dependencies>
+        </profile>
+
+        <profile>
+            <id>prod</id>
+            <dependencies>
+                <dependency>
+                    <groupId>com.tyrael</groupId>
+                    <artifactId>kharazim-lib-dubbo-registry-nacos</artifactId>
+                </dependency>
+                <dependency>
+                    <groupId>com.tyrael</groupId>
+                    <artifactId>kharazim-lib-mq-kafka</artifactId>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>com.tyrael</groupId>
+            <artifactId>kharazim-basic-data-sdk</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.tyrael</groupId>
+            <artifactId>kharazim-product-sdk</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.tyrael</groupId>
+            <artifactId>kharazim-user-sdk</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-bootstrap</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.tyrael</groupId>
+            <artifactId>kharazim-lib-dubbo</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.tyrael</groupId>
+            <artifactId>kharazim-lib-cache</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.tyrael</groupId>
+            <artifactId>kharazim-lib-id-generator</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.tyrael</groupId>
+            <artifactId>kharazim-lib-mybatis</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.tyrael</groupId>
+            <artifactId>kharazim-lib-export</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.xiaoymin</groupId>
+            <artifactId>knife4j-openapi3-jakarta-spring-boot-starter</artifactId>
+            <version>${knife4j.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+
+    </dependencies>
+</project>
