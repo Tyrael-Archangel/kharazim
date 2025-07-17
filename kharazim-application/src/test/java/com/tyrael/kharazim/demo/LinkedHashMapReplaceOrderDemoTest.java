@@ -17,6 +17,7 @@ public class LinkedHashMapReplaceOrderDemoTest {
         map.put(1L, "A");
         map.put(2L, "B");
         map.put(3L, "C");
+        map.put(4L, "C");
         System.out.println("Before replacement: " + map);
 
         // Replace the value for key 2
