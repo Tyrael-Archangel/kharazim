@@ -14,8 +14,8 @@ import java.time.LocalDateTime;
 /**
  * 店铺订单
  *
- * @author yangjie
- * @since 2025/5/12
+ * @author Tyrael Archangel
+ * @since 2025/7/15
  */
 @Getter
 @Setter(AccessLevel.PRIVATE)
