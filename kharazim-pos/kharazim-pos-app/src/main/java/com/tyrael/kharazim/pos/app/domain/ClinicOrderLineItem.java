@@ -15,7 +15,7 @@ import java.math.BigDecimal;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class ShopOrderLineItem {
+public class ClinicOrderLineItem {
 
     @TableId(type = IdType.AUTO)
     private Long id;

@@ -11,11 +11,15 @@ import lombok.RequiredArgsConstructor;
  */
 @Getter
 @RequiredArgsConstructor
-public enum ShopOrderSourceEnum implements BaseHasNameEnum<ShopOrderSourceEnum> {
+public enum ClinicOrderStatusEnum implements BaseHasNameEnum<ClinicOrderStatusEnum> {
 
-    POS("POS");
+    UNPAID(1, "待付款"),
+    CANCEL(2, "已取消"),
+    COMPLETED(3, "已完成"),
+    AFTER_SALE(4, "已售后");
 
     @EnumValue
+    private final Integer value;
     private final String name;
 
 }

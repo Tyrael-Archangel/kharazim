@@ -17,7 +17,7 @@ import java.math.BigDecimal;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class ShopOrderLineItemFlat {
+public class ClinicOrderLineItemFlat {
 
     @TableId(type = IdType.AUTO)
     private Long id;
@@ -32,7 +32,7 @@ public class ShopOrderLineItemFlat {
     private BigDecimal price;
 
     /**
-     * {@linkplain ShopOrderLineItem#getSalePrice 商品原价}
+     * {@linkplain ClinicOrderLineItem#getSalePrice 商品原价}
      */
     private BigDecimal salePrice;
 

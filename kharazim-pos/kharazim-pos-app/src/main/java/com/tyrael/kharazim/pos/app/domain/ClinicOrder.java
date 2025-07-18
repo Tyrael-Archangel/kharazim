@@ -3,8 +3,7 @@ package com.tyrael.kharazim.pos.app.domain;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.tyrael.kharazim.mybatis.BaseDO;
-import com.tyrael.kharazim.pos.app.enums.ShopOrderSourceEnum;
-import com.tyrael.kharazim.pos.app.enums.ShopOrderStatusEnum;
+import com.tyrael.kharazim.pos.app.enums.ClinicOrderStatusEnum;
 import lombok.*;
 import org.springframework.lang.Nullable;
 
@@ -22,20 +21,15 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class ShopOrder extends BaseDO {
+public class ClinicOrder extends BaseDO {
 
     @TableId(type = IdType.AUTO)
     private Long id;
 
     /**
-     * 经销商
-     */
-    private String tenantCode;
-
-    /**
      * 店铺ID
      */
-    private Long shopId;
+    private String clinicCode;
 
     /**
      * 店铺订单号
@@ -53,9 +47,7 @@ public class ShopOrder extends BaseDO {
     /**
      * 订单状态
      */
-    private ShopOrderStatusEnum status;
-
-    private ShopOrderSourceEnum orderSource;
+    private ClinicOrderStatusEnum status;
 
     /**
      * 订单交易额 = {@linkplain #totalLineItemPrice 商品销售价金额合计} + {@linkplain #totalTax 订单总税费} - {@linkplain #totalDiscountPrice 总折扣金额}
