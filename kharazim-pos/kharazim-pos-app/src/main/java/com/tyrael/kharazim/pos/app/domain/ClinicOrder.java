@@ -50,37 +50,43 @@ public class ClinicOrder extends BaseDO {
     private ClinicOrderStatusEnum status;
 
     /**
-     * 订单交易额 = {@linkplain #totalLineItemPrice 商品销售价金额合计} + {@linkplain #totalTax 订单总税费} - {@linkplain #totalDiscountPrice 总折扣金额}
+     * 订单交易额 = {@linkplain #totalLineItemAmount 商品销售价金额合计}
+     * + {@linkplain #totalTaxAmount 订单总税费}
+     * - {@linkplain #orderLevelDiscountAmount 订单折扣}
+     * - {@linkplain #totalProductDiscountAmount 商品折扣}
      */
-    private BigDecimal totalPrice;
-    private BigDecimal currentTotalPrice;
+    private BigDecimal totalAmount;
+    private BigDecimal currentTotalAmount;
 
     /**
      * 商品销售价金额合计（不含任何折扣、税费）
      */
-    private BigDecimal totalLineItemPrice;
-    private BigDecimal currentTotalLineItemPrice;
+    private BigDecimal totalLineItemAmount;
+    private BigDecimal currentTotalLineItemAmount;
 
     /**
      * 小计（含折扣、不含税）
      */
-    private BigDecimal subtotalPrice;
-    private BigDecimal currentSubtotalPrice;
+    private BigDecimal subtotalAmount;
+    private BigDecimal currentSubtotalAmount;
 
     /**
      * 订单总税费
      */
-    private BigDecimal totalTax;
-    private BigDecimal currentTotalTax;
+    private BigDecimal totalTaxAmount;
+    private BigDecimal currentTotalTaxAmount;
 
     /**
-     * 总折扣金额
-     * <pre>
-     *  总折扣金额 = 商品折扣 + 订单折扣
-     * </pre>
+     * 订单折扣
      */
-    private BigDecimal totalDiscountPrice;
-    private BigDecimal currentTotalDiscountPrice;
+    private BigDecimal orderLevelDiscountAmount;
+    private BigDecimal currentOrderLevelDiscountAmount;
+
+    /**
+     * 商品折扣
+     */
+    private BigDecimal totalProductDiscountAmount;
+    private BigDecimal currentTotalProductDiscountAmount;
 
     private Integer skuCount;
     private Integer currentSkuCount;
@@ -91,13 +97,9 @@ public class ClinicOrder extends BaseDO {
     private String note;
 
     /**
-     * 销售员工ID
+     * 销售员工
      */
-    private Long saleUserId;
-    /**
-     * 销售员工名
-     */
-    private String saleUserName;
+    private String saleUserCode;
 
     /**
      * 支付渠道
@@ -113,25 +115,5 @@ public class ClinicOrder extends BaseDO {
      * 付款成功时间
      */
     private LocalDateTime paidAt;
-
-    /**
-     * 销售员工ID
-     */
-    @Setter
-    private Long createdUserId;
-    /**
-     * 销售员工
-     */
-    @Setter
-    private String createdUserName;
-    @Setter
-    private LocalDateTime createdAt;
-
-    @Setter
-    private Long updatedUserId;
-    @Setter
-    private String updatedUserName;
-    @Setter
-    private LocalDateTime updatedAt;
 
 }
