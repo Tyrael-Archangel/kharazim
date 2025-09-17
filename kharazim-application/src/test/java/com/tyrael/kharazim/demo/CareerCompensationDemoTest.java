@@ -66,7 +66,12 @@ public class CareerCompensationDemoTest {
                 .min(LocalDate::compareTo)
                 .orElseThrow(() -> new IllegalStateException("should not happen"));
 
-        long untilMonths = firstDay.until(LocalDate.now(), ChronoUnit.MONTHS);
+        long untilMonths = compensations.stream()
+                .map(Compensation::getDate)
+                .map(e -> YearMonth.of(e.getYear(), e.getMonth()))
+                .distinct()
+                .count();
+
         long untilDays = firstDay.until(LocalDate.now(), ChronoUnit.DAYS);
 
         System.out.println("Entire career compensation:\t" + finalSumCompensation
@@ -259,7 +264,9 @@ public class CareerCompensationDemoTest {
                 new Compensation("starlinke", LocalDate.of(2025, 4, 10), 17038.40, SALARY, 2400),
                 new Compensation("starlinke", LocalDate.of(2025, 5, 9), 17038.40, SALARY, 2400),
                 new Compensation("starlinke", LocalDate.of(2025, 6, 10), 17038.40, SALARY, 2400),
-                new Compensation("starlinke", LocalDate.of(2025, 7, 10), 17038.40, SALARY, 2400)
+                new Compensation("starlinke", LocalDate.of(2025, 7, 10), 17038.40, SALARY, 2400),
+                new Compensation("starlinke", LocalDate.of(2025, 8, 8), 17488.40, SALARY, 2400),
+                new Compensation("starlinke", LocalDate.of(2025, 9, 10), 17027.60, SALARY, 2400)
 
         );
     }
