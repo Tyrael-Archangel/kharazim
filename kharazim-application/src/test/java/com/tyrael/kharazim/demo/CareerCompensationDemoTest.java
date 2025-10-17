@@ -11,8 +11,6 @@ import java.time.YearMonth;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
-import static com.tyrael.kharazim.demo.CareerCompensationDemoTest.CompensationType.*;
-
 /**
  * @author Tyrael Archangel
  * @since 2025/3/27
@@ -26,6 +24,11 @@ public class CareerCompensationDemoTest {
     private static final String CYAN = "\u001B[36m"; // 青色
     private static final String YELLOW = "\u001B[33m"; // 黄色
     private static final String BLUE = "\u001B[34m"; // 蓝色
+
+    private static final String SALARY = "SALARY"; // 工资
+    private static final String BONUS = "BONUS"; // 奖金
+    private static final String SEVERANCE_PAY = "SEVERANCE_PAY"; // 离职补偿
+    private static final String RESETTLEMENT_ALLOWANCE = "RESETTLEMENT_ALLOWANCE"; // 安置金
 
     @Test
     public void careerCompensation() {
@@ -272,39 +275,20 @@ public class CareerCompensationDemoTest {
         );
     }
 
-    enum CompensationType {
-        /**
-         * 工资
-         */
-        SALARY,
-        /**
-         * 奖金
-         */
-        BONUS,
-        /**
-         * 离职补偿
-         */
-        SEVERANCE_PAY,
-        /**
-         * 安置金
-         */
-        RESETTLEMENT_ALLOWANCE
-    }
-
     @Getter
     private static class Compensation {
 
         private final String company;
         private final LocalDate date;
         private final BigDecimal amount;
-        private final CompensationType type;
+        private final String type;
         private final BigDecimal housingFund;
 
-        private Compensation(String company, LocalDate date, double amount, CompensationType type) {
+        private Compensation(String company, LocalDate date, double amount, String type) {
             this(company, date, amount, type, 0);
         }
 
-        private Compensation(String company, LocalDate date, double amount, CompensationType type, double housingFund) {
+        private Compensation(String company, LocalDate date, double amount, String type, double housingFund) {
             this.company = company;
             this.date = date;
             this.amount = BigDecimal.valueOf(amount).setScale(2, RoundingMode.HALF_UP);
