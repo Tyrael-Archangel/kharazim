@@ -3,10 +3,10 @@ package com.tyrael.kharazim.application.user.service.component;
 import com.tyrael.kharazim.common.exception.ShouldNotHappenException;
 import org.springframework.stereotype.Component;
 
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -16,19 +16,11 @@ import java.util.concurrent.ThreadLocalRandom;
 @Component
 public class PasswordEncoder {
 
-    private final MessageDigest md5;
-    private final Random random;
     private final int saltLength;
     private final ByteEncoder byteEncoder;
 
     public PasswordEncoder() {
-        try {
-            md5 = MessageDigest.getInstance("MD5");
-        } catch (NoSuchAlgorithmException e) {
-            throw new ShouldNotHappenException(e);
-        }
         saltLength = 16;
-        random = ThreadLocalRandom.current();
         byteEncoder = new ByteEncoder();
     }
 
@@ -41,7 +33,7 @@ public class PasswordEncoder {
     public String encode(String rawPassword) {
 
         byte[] saltBytes = new byte[saltLength];
-        random.nextBytes(saltBytes);
+        ThreadLocalRandom.current().nextBytes(saltBytes);
 
         byte[] encodedBytes = encode(rawPassword, saltBytes);
 
@@ -76,9 +68,13 @@ public class PasswordEncoder {
     }
 
     private byte[] encode(String rawPassword, byte[] saltBytes) {
-        byte[] rawPasswordBytes = rawPassword.getBytes();
+        byte[] rawPasswordBytes = rawPassword.getBytes(StandardCharsets.UTF_8);
         byte[] rawPasswordAndSaltBytes = merge(rawPasswordBytes, saltBytes);
-        return md5.digest(rawPasswordAndSaltBytes);
+        try {
+            return MessageDigest.getInstance("MD5").digest(rawPasswordAndSaltBytes);
+        } catch (NoSuchAlgorithmException e) {
+            throw new ShouldNotHappenException(e);
+        }
     }
 
     private byte[] merge(byte[] a, byte[] b) {
@@ -92,28 +88,16 @@ public class PasswordEncoder {
 
         public String toString(byte[] bytes) {
             StringBuilder hexBuilder = new StringBuilder();
-            for (byte aByte : bytes) {
-                int digital = aByte;
-
-                if (digital < 0) {
-                    digital += 256;
-                }
-                if (digital < 16) {
-                    hexBuilder.append("0");
-                }
-                hexBuilder.append(Integer.toHexString(digital));
+            for (byte b : bytes) {
+                hexBuilder.append(String.format("%02x", b & 0xFF));
             }
             return hexBuilder.toString();
         }
 
         public byte[] parse(String str) {
             byte[] bytes = new byte[str.length() / 2];
-            for (int i = 0; i < str.length(); i += 2) {
-                int b = Integer.parseUnsignedInt(str.substring(i, i + 2), 16);
-                if (b > 127) {
-                    b -= 256;
-                }
-                bytes[i / 2] = (byte) b;
+            for (int i = 0; i < bytes.length; i++) {
+                bytes[i] = (byte) Integer.parseInt(str.substring(i * 2, i * 2 + 2), 16);
             }
             return bytes;
         }
