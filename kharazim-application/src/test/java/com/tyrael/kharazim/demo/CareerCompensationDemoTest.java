@@ -150,6 +150,7 @@ public class CareerCompensationDemoTest {
 
     private List<Compensation> getCompensations() {
         return List.of(
+                new Compensation("starlinke", LocalDate.of(2026, 3, 10), 22896.64, SALARY, 2424),
                 new Compensation("starlinke", LocalDate.of(2026, 2, 10), 18053.08, SALARY, 2424),
                 new Compensation("starlinke", LocalDate.of(2026, 1, 9), 18053.08, SALARY, 2424),
                 new Compensation("starlinke", LocalDate.of(2025, 12, 10), 15691.20, SALARY, 2424),
